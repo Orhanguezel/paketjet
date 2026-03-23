@@ -1,0 +1,53 @@
+{
+  "title": "PaketJet",
+  "slug": "paketjet",
+  "summary": "P2P cargo freight marketplace — carriers post route & capacity listings, customers book cargo space. BlaBlaCar model applied to freight logistics.",
+  "category": "MARKETPLACE PLATFORM",
+  "services": [
+    "Full-Stack Development",
+    "Marketplace Architecture",
+    "Admin Panel"
+  ],
+  "techs": [
+    "TypeScript",
+    "Next.js 15",
+    "React 19",
+    "Fastify v5",
+    "MySQL 8",
+    "Drizzle ORM",
+    "Bun",
+    "Zod",
+    "Zustand",
+    "Tailwind CSS v4"
+  ],
+  "features": [
+    "P2P cargo listing & booking",
+    "Real-time capacity management",
+    "Wallet & payment system",
+    "Carrier & customer dashboards",
+    "Multi-step listing wizard",
+    "Admin panel with revenue stats",
+    "JWT cookie auth with role guards"
+  ],
+  "designHighlights": [
+    "Token-based Tailwind v4 design system",
+    "Dark mode with data-theme attribute",
+    "Mobile-first responsive panel UI",
+    "Capacity bar visualization"
+  ],
+  "featured": false,
+  "displayOrder": 60,
+  "clientName": "Own Project",
+  "status": "active",
+  "startDate": "2026-03-01",
+  "completeDate": "2026-03-12",
+  "completionTimeLabel": "2 weeks",
+  "repoUrl": null,
+  "websiteUrl": null,
+  "demoUrl": null,
+  "featuredImage": "/assets/imgs/work/img-2.png",
+  "featuredImageAlt": "PaketJet Logistics Platform",
+  "resumeTitle": "PaketJet",
+  "resumeSubtitle": "Logistics & Delivery Platform",
+  "excludeFromPortfolio": false
+}

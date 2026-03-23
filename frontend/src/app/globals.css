@@ -1,0 +1,279 @@
+@import "tailwindcss";
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+/* ─────────────────────────────────────────────────────────
+   Dark mode: <html data-theme="dark"> attribute ile aktif
+   next-themes: attribute="data-theme"
+───────────────────────────────────────────────────────── */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ─────────────────────────────────────────────────────────
+   @theme — Tailwind v4 token tanımları
+   Tüm --color-* değerleri bg-*, text-*, border-* olarak
+   otomatik kullanılabilir hale gelir.
+   Örnek: bg-brand, text-foreground, border-border vb.
+───────────────────────────────────────────────────────── */
+@theme {
+  /* Brand — Turuncu (Primary CTA) */
+  --color-brand:        hsl(27 96% 53%);   /* #F97316 */
+  --color-brand-dark:   hsl(22 92% 44%);   /* #D4610B — hover */
+  --color-brand-light:  hsl(27 96% 94%);   /* #FEE8D6 — tint */
+  --color-brand-xlight: hsl(27 96% 97%);   /* #FFF4ED — zebra */
+
+  /* Navy — Lacivert */
+  --color-navy:         hsl(215 68% 16%);  /* #0F2340 — footer, dark header */
+  --color-navy-mid:     hsl(215 52% 26%);  /* #1F3B63 — dark section */
+  --color-navy-soft:    hsl(215 38% 36%);  /* #385880 — muted dark */
+
+  /* Semantic */
+  --color-success:      hsl(142 76% 36%);  /* #16A34A — Satın Al */
+  --color-success-bg:   hsl(142 76% 95%);  /* #DCFCE7 */
+  --color-warning:      hsl(38 92% 50%);   /* #F59E0B */
+  --color-danger:       hsl(0 84% 60%);    /* #EF4444 */
+  --color-danger-bg:    hsl(0 84% 95%);    /* #FEE2E2 */
+  --color-info:         hsl(199 89% 48%);  /* #0EA5E9 */
+
+  /* Neutral — Light mode defaults */
+  --color-foreground:   hsl(215 28% 9%);   /* #0F172A — birincil metin */
+  --color-muted:        hsl(215 16% 47%);  /* #64748B — ikincil metin */
+  --color-faint:        hsl(215 14% 66%);  /* #94A3B8 — disabled/hint */
+  --color-border:       hsl(215 20% 88%);  /* #CBD5E1 — input border */
+  --color-border-soft:  hsl(215 20% 94%);  /* #E2E8F0 — subtle divider */
+  --color-surface:      hsl(0 0% 100%);    /* #FFFFFF — kart, form yüzeyi */
+  --color-background:   hsl(210 17% 98%);  /* #F8FAFC — sayfa bg */
+  --color-bg-alt:       hsl(210 17% 95%);  /* #EEF2F7 — alt section bg */
+
+  /* ── Font stacks ── */
+  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  /* ── Border radius ── */
+  --radius-sm:   0.25rem;
+  --radius:      0.5rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-2xl:  1.5rem;
+  --radius-full: 9999px;
+
+  /* ── Custom shadows ── */
+  --shadow-brand: 0 4px 16px hsl(27 96% 53% / 0.30);
+
+  /* ── Animations ── */
+  --animate-fade-in: fade-in 200ms ease forwards;
+  --animate-scale-in: scale-in 150ms ease forwards;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Raw CSS tokens — Dark mode renk geçişleri
+   Doğrudan CSS'te kullanım: hsl(var(--col-brand) / 0.9)
+   Bu değerler @theme'deki renkleri tema geçişinde override eder
+───────────────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  /* Açık tema raw token'ları — @theme ile senkron */
+  --col-brand:         27 96% 53%;
+  --col-brand-dark:    22 92% 44%;
+  --col-brand-light:   27 96% 94%;
+  --col-brand-xlight:  27 96% 97%;
+  --col-foreground:    215 28%  9%;
+  --col-muted:         215 16% 47%;
+  --col-faint:         215 14% 66%;
+  --col-border:        215 20% 88%;
+  --col-border-soft:   215 20% 94%;
+  --col-surface:         0  0% 100%;
+  --col-bg:            210 17% 98%;
+  --col-bg-alt:        210 17% 95%;
+  --col-navy:          215 68% 16%;
+  --col-navy-mid:      215 52% 26%;
+  --col-navy-soft:     215 38% 36%;
+  --col-success:       142 76% 36%;
+  --col-success-bg:    142 76% 95%;
+  --col-danger:          0 84% 60%;
+  --col-danger-bg:       0 84% 95%;
+  --col-warning:        38 92% 50%;
+  --col-info:          199 89% 48%;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Koyu tema raw token'ları */
+  --col-brand:         27 96% 53%;   /* turuncu aynı kalır */
+  --col-brand-dark:    27 96% 63%;   /* dark'ta biraz açılır */
+  --col-brand-light:   27 60% 15%;
+  --col-brand-xlight:  27 50% 12%;
+  --col-foreground:    215  5% 93%;
+  --col-muted:         215 10% 60%;
+  --col-faint:         215 10% 40%;
+  --col-border:        215 20% 18%;
+  --col-border-soft:   215 20% 14%;
+  --col-surface:       215 30% 11%;
+  --col-bg:            215 35%  7%;
+  --col-bg-alt:        215 30% 10%;
+  --col-navy:          215 68%  6%;
+  --col-navy-mid:      215 52%  8%;
+  --col-navy-soft:     215 38% 12%;
+  --col-success:       142 70% 44%;
+  --col-success-bg:    142 40% 12%;
+  --col-danger:          0 80% 65%;
+  --col-danger-bg:       0 40% 12%;
+  --col-warning:        38 80% 55%;
+  --col-info:          199 70% 55%;
+
+  /* Tailwind --color-* override'ları — bg-*, text-*, border-* utility'lerini dark'ta doğru çalıştırır */
+  --color-foreground:   hsl(215 5% 93%);
+  --color-muted:        hsl(215 10% 60%);
+  --color-faint:        hsl(215 10% 40%);
+  --color-border:       hsl(215 20% 18%);
+  --color-border-soft:  hsl(215 20% 14%);
+  --color-surface:      hsl(215 30% 11%);
+  --color-background:   hsl(215 35% 7%);
+  --color-bg-alt:       hsl(215 30% 10%);
+  --color-brand-dark:   hsl(27 96% 63%);
+  --color-brand-light:  hsl(27 60% 15%);
+  --color-brand-xlight: hsl(27 50% 12%);
+  --color-success:      hsl(142 70% 44%);
+  --color-success-bg:   hsl(142 40% 12%);
+  --color-danger:       hsl(0 80% 65%);
+  --color-danger-bg:    hsl(0 40% 12%);
+  --color-warning:      hsl(38 80% 55%);
+  --color-info:         hsl(199 70% 55%);
+  --color-navy:         hsl(215 68%  6%);
+  --color-navy-mid:     hsl(215 52%  8%);
+  --color-navy-soft:    hsl(215 38% 12%);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Base stiller — @layer base içinde olmalı, aksi halde
+   Tailwind @layer utilities'i ezer (spacing çalışmaz)
+───────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--color-background);
+    scrollbar-color: hsl(var(--col-border)) hsl(var(--col-bg));
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-muted);
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  h1, h2, h3, h4, h5 {
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    line-height: 1.6;
+  }
+}
+
+@layer base {
+  /* Focus ring — marka rengi */
+  :focus-visible {
+    outline: 2px solid hsl(var(--col-brand));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Surface utilities — Tailwind v4 @utility
+   Tekrarlanan yüzey kombinasyonları tek isimle kullanılır.
+   Örnek: <div className="surface-card"> ...
+───────────────────────────────────────────────────────── */
+@utility surface-page {
+  background-color: var(--color-background);
+}
+
+@utility surface-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+}
+
+@utility surface-card-muted {
+  background-color: var(--color-bg-alt);
+  border: 1px solid var(--color-border-soft);
+  border-radius: var(--radius-xl);
+}
+
+@utility surface-elevated {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 12px hsl(215 20% 50% / 0.08);
+}
+
+@utility surface-input {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  color: var(--color-foreground);
+}
+
+@utility surface-hero-overlay {
+  position: relative;
+  background-color: var(--color-navy);
+  color: white;
+}
+
+@utility surface-dark-shell {
+  background-color: var(--color-navy);
+  color: white;
+}
+
+@utility surface-brand-cta {
+  background-color: var(--color-brand);
+  color: white;
+}
+
+@utility text-heading-on-dark {
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+@utility text-body-on-dark {
+  color: hsl(215 30% 75%);
+}
+
+@utility ring-brand-focus {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
