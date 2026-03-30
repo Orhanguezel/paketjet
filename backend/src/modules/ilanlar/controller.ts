@@ -19,6 +19,7 @@ import {
 import { buildIlanPatch, createIlanInsertPayload } from "./helpers";
 import {
   repoGetIlanById,
+  repoGetIlanBySlugOrId,
   repoListIlans,
   repoCreateIlan,
   repoUpdateIlan,
@@ -60,7 +61,8 @@ export const getIlan: RouteHandler = async (req, reply) => {
     const cached = await repoGetCacheJson<Awaited<ReturnType<typeof repoGetIlanById>>>(cacheKey);
     if (cached) return reply.send(cached);
 
-    const ilan = await repoGetIlanById(id);
+    // Slug veya UUID ile sorgula
+    const ilan = await repoGetIlanBySlugOrId(id);
     if (!ilan) return sendNotFound(reply);
     await repoSetCacheJson(cacheKey, ilan, CACHE_TTL.ilanDetail);
     return reply.send(ilan);

@@ -3,6 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
 import { OrganizationSchema } from "@/components/JsonLd";
+import SplashLoader from "@/components/SplashLoader";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -27,8 +28,17 @@ async function fetchGlobalSeo() {
   }
 }
 
+async function fetchIcons() {
+  try {
+    const res = await fetch(`${API_URL}/api/site_settings/seo_app_icons`, { next: { revalidate: 300 } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.value ?? null;
+  } catch { return null; }
+}
+
 export async function generateMetadata(): Promise<Metadata> {
-  const { seo, meta } = await fetchGlobalSeo();
+  const [{ seo, meta }, icons] = await Promise.all([fetchGlobalSeo(), fetchIcons()]);
   const bingVerification = process.env.BING_VERIFICATION ?? "";
 
   const siteName = seo?.site_name ?? "PaketJet";
@@ -57,11 +67,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(SITE_URL),
     icons: {
       icon: [
-        { url: "/assets/logo/favicon.ico" },
-        { url: "/assets/logo/logo.jpeg", type: "image/jpeg" },
+        { url: icons?.favicon ?? "/uploads/media/logo/favicon.ico" },
+        { url: icons?.logoIcon192 ?? "/uploads/media/logo/favicon-192x192.png", type: "image/png", sizes: "192x192" },
       ],
-      shortcut: "/assets/logo/favicon.ico",
-      apple: "/assets/logo/logo.jpeg",
+      shortcut: icons?.favicon ?? "/uploads/media/logo/favicon.ico",
+      apple: icons?.appleTouchIcon ?? "/uploads/media/logo/apple-touch-icon.png",
     },
     openGraph: {
       siteName,
@@ -80,17 +90,33 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+async function fetchSplashVideos(): Promise<string[] | null> {
+  try {
+    const res = await fetch(`${API_URL}/api/site_settings/splash_videos`, { next: { revalidate: 300 } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const val = data?.value;
+    if (Array.isArray(val)) return val;
+    if (typeof val === "string") { try { return JSON.parse(val); } catch { return null; } }
+    return null;
+  } catch { return null; }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const splashVideos = await fetchSplashVideos();
+
   return (
     <html lang="tr" suppressHydrationWarning className={`${dmSans.variable} font-sans`}>
       <body suppressHydrationWarning>
         <OrganizationSchema />
         <ThemeProvider>
-          {children}
+          <SplashLoader videos={splashVideos}>
+            {children}
+          </SplashLoader>
         </ThemeProvider>
       </body>
     </html>

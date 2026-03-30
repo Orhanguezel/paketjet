@@ -11,11 +11,11 @@ import { cn } from "@/lib/utils";
 const inputCls = (err?: string) =>
   cn(
     "w-full px-4 py-3 rounded-xl border text-foreground text-sm outline-none transition bg-bg-alt",
-    "placeholder:text-faint focus:border-brand focus:ring-2 focus:ring-brand/20 focus:bg-surface",
+    "placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/20 focus:bg-surface",
     err ? "border-red-400" : "border-border"
   );
 
-function GirisForm() {
+function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUrl?: string | null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const nextPath = searchParams.get("next") ?? ROUTES.panel.musteri;
@@ -63,34 +63,48 @@ function GirisForm() {
 
   return (
     <div className="min-h-screen flex">
-      <div className="hidden lg:flex lg:w-5/12 bg-navy flex-col justify-between px-12 py-10">
-        <Link href={ROUTES.home} className="text-2xl font-extrabold text-white tracking-tight">
-          paket<span className="text-brand">jet</span>
-        </Link>
-        <div>
-          <h1 className="text-4xl font-black text-white leading-tight mb-4">
-            Hoş geldin<br /><span className="text-brand">tekrar.</span>
-          </h1>
-          <p className="text-white/60 text-sm leading-relaxed mb-8">
-            Hesabına giriş yap ve kargo işlemlerine devam et.
-          </p>
-          <ul className="space-y-3">
-            {["Anlık kargo takibi", "Güvenli ödeme sistemi", "7/24 müşteri desteği", "Aktif ilan arama"].map((item) => (
-              <li key={item} className="flex items-center gap-2.5 text-sm text-white/80">
-                <span className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
-                  <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
+      {/* Sol — Görsel panel */}
+      <div className="hidden lg:flex lg:w-5/12 relative overflow-hidden">
+        {bgImageUrl ? (
+          <img src={bgImageUrl} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        ) : (
+          <div className="absolute inset-0 bg-navy" />
+        )}
+        <div className="absolute inset-0 bg-navy/70" />
+        <div className="relative z-10 flex flex-col justify-between px-12 py-10 w-full">
+          <Link href={ROUTES.home}>
+            {logoUrl ? (
+              <img src={logoUrl} alt="PaketJet" className="h-16 w-auto max-w-44 object-contain " />
+            ) : (
+              <span className="text-2xl font-extrabold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
+            )}
+          </Link>
+          <div>
+            <h1 className="text-4xl font-black text-white leading-tight mb-4">
+              Hoş geldin<br /><span className="text-brand">tekrar.</span>
+            </h1>
+            <p className="text-white/70 text-sm leading-relaxed mb-8">
+              Hesabına giriş yap ve kargo işlemlerine devam et.
+            </p>
+            <ul className="space-y-3">
+              {["Anlık kargo takibi", "Güvenli ödeme sistemi", "7/24 müşteri desteği", "Aktif ilan arama"].map((item) => (
+                <li key={item} className="flex items-center gap-2.5 text-sm text-white/90">
+                  <span className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
+                    <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <p className="text-white/30 text-xs">© 2026 PaketJet</p>
         </div>
-        <p className="text-white/30 text-xs">© 2026 PaketJet</p>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center px-6 py-12 bg-bg-alt">
+      {/* Sağ — Form */}
+      <div className="flex-1 flex flex-col justify-center px-6 py-12 bg-background">
         <div className="w-full max-w-md mx-auto">
           <div className="lg:hidden mb-6">
             <Link href={ROUTES.home} className="text-xl font-extrabold text-brand tracking-tight">
@@ -98,7 +112,7 @@ function GirisForm() {
             </Link>
           </div>
 
-          <div className="bg-surface rounded-2xl border border-border shadow-sm px-8 py-8">
+          <div className="bg-surface rounded-2xl border border-border-soft shadow-sm px-8 py-8">
             <h2 className="text-2xl font-extrabold text-foreground mb-1">Giriş Yap</h2>
             <p className="text-sm text-muted mb-6">
               Hesabın yok mu?{" "}
@@ -107,25 +121,46 @@ function GirisForm() {
 
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               {serverError && (
-                <div className="px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-600">{serverError}</div>
+                <div className="px-4 py-3 bg-danger-bg border border-danger/20 rounded-xl text-sm text-danger">{serverError}</div>
               )}
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">E-posta</label>
-                <input type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="ornek@mail.com" className={inputCls(errors.email)} />
-                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+                <label htmlFor="login-email" className="block text-sm font-medium text-foreground mb-1.5">E-posta</label>
+                <input id="login-email" type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="ornek@mail.com" className={inputCls(errors.email)} />
+                {errors.email && <p className="mt-1 text-xs text-danger">{errors.email}</p>}
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-sm font-medium text-foreground">Şifre</label>
+                  <label htmlFor="login-password" className="text-sm font-medium text-foreground">Şifre</label>
                   <Link href={ROUTES.auth.forgotPassword} className="text-xs text-brand hover:underline">Şifremi unuttum</Link>
                 </div>
-                <input type="password" name="password" autoComplete="current-password" value={form.password} onChange={handleChange} placeholder="Şifreniz" className={inputCls(errors.password)} />
-                {errors.password && <p className="mt-1 text-xs text-red-500">{errors.password}</p>}
+                <input id="login-password" type="password" name="password" autoComplete="current-password" value={form.password} onChange={handleChange} placeholder="Şifreniz" className={inputCls(errors.password)} />
+                {errors.password && <p className="mt-1 text-xs text-danger">{errors.password}</p>}
               </div>
               <button type="submit" disabled={loading} className="w-full py-3.5 bg-brand text-white font-bold rounded-xl hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm">
                 {loading ? "Giriş yapılıyor…" : "Giriş Yap →"}
               </button>
             </form>
+
+            {/* Test hesapları */}
+            <div className="mt-6 pt-5 border-t border-border-soft">
+              <p className="text-xs text-muted mb-3 text-center">Hızlı giriş (test hesapları)</p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => { setForm({ email: "musteri@kamanilan.com", password: "Musteri@2026!" }); setErrors({}); }}
+                  className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground"
+                >
+                  👤 Müşteri
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setForm({ email: "satici@paketjet.com", password: "Tasiyici@2026!" }); setErrors({}); }}
+                  className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground"
+                >
+                  🚚 Taşıyıcı
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -133,6 +168,6 @@ function GirisForm() {
   );
 }
 
-export default function GirisClient() {
-  return <Suspense><GirisForm /></Suspense>;
+export default function GirisClient({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUrl?: string | null }) {
+  return <Suspense><GirisForm bgImageUrl={bgImageUrl} logoUrl={logoUrl} /></Suspense>;
 }

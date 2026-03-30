@@ -3,8 +3,8 @@ import { getPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("listings", {
-    title: "Tasima Ilanlari",
-    description: "Aktif kargo tasima ilanlari. Sehir, tarih ve arac tipine gore filtrele, en uygun tasiyiciyi bul.",
+    title: "Taşıma İlanları",
+    description: "Aktif kargo taşıma ilanları. Şehir, tarih ve araç tipine göre filtrele, en uygun taşıyıcıyı bul.",
   });
 }
 

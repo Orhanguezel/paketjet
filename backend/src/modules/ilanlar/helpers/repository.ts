@@ -49,14 +49,24 @@ export function buildIlanListWhere(filters: {
   return and(...conditions);
 }
 
+import { generateIlanSlug } from "../slug";
+
 export function buildCreateIlanInsert(
   userId: string,
   data: Omit<NewIlan, "id" | "user_id" | "available_capacity_kg">,
   id: string,
 ): NewIlan {
+  const slug = generateIlanSlug({
+    from_city: data.from_city,
+    to_city: data.to_city,
+    vehicle_type: data.vehicle_type ?? undefined,
+    departure_date: data.departure_date,
+  });
+
   return {
     ...data,
     id,
+    slug,
     user_id: userId,
     available_capacity_kg: data.total_capacity_kg,
   };

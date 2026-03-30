@@ -87,7 +87,7 @@ export function ContactPageClient({ contactInfo }: { contactInfo?: ContactInfo |
         <div className="overflow-hidden rounded-3xl border border-border-soft bg-surface">
           <iframe
             title="PaketJet ofis konumu"
-            src={contactInfo?.maps_embed_url ?? "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.5!2d32.85!3d39.92"}
+            src={contactInfo?.maps_embed_url ?? "https://www.google.com/maps?q=Çankaya,Ankara,Turkey&output=embed"}
             className="h-full min-h-80 w-full border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

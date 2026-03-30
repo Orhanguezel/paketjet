@@ -69,7 +69,7 @@ INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
    "city": "Ankara",
    "country": "Türkiye",
    "working_hours": "Pazartesi - Cuma: 09:00 - 18:00",
-   "maps_embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.5!2d32.85!3d39.92",
+   "maps_embed_url": "https://www.google.com/maps?q=Çankaya,Ankara,Turkey&output=embed",
    "maps_lat": "39.9208",
    "maps_lng": "32.8541"
  }')
@@ -247,6 +247,24 @@ ON DUPLICATE KEY UPDATE `value` = VALUES(`value`), `updated_at` = NOW(3);
 
 INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
 (UUID(), 'footer_copyright', '*', '"© 2026 PaketJet Teknoloji A.Ş. Tüm hakları saklıdır."')
+ON DUPLICATE KEY UPDATE `value` = VALUES(`value`), `updated_at` = NOW(3);
+
+-- =============================================================
+-- AUTH SAYFA GÖRSELLERİ
+-- =============================================================
+INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
+(UUID(), 'auth_login_image', '*', '"/uploads/media/images/sing_in.jpg"')
+ON DUPLICATE KEY UPDATE `value` = VALUES(`value`), `updated_at` = NOW(3);
+
+INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
+(UUID(), 'auth_register_image', '*', '"/uploads/media/images/sing_up.jpg"')
+ON DUPLICATE KEY UPDATE `value` = VALUES(`value`), `updated_at` = NOW(3);
+
+-- =============================================================
+-- SPLASH VİDEO
+-- =============================================================
+INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
+(UUID(), 'splash_videos', '*', '["/uploads/media/video/acilis.mp4"]')
 ON DUPLICATE KEY UPDATE `value` = VALUES(`value`), `updated_at` = NOW(3);
 
 -- =============================================================

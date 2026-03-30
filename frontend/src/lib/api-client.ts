@@ -17,13 +17,13 @@ async function request<T>(
 ): Promise<T> {
   const url = `${BASE_URL}${path}`;
 
+  const headers: Record<string, string> = { ...(options.headers as Record<string, string> ?? {}) };
+  if (options.body) headers["Content-Type"] = "application/json";
+
   const res = await fetch(url, {
     ...options,
     credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers ?? {}),
-    },
+    headers,
   });
 
     if (!res.ok) {

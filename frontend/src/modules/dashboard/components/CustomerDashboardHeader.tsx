@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getCustomerDashboard, type CustomerDashboard } from "@/modules/dashboard/dashboard.service";
-import { ROUTES } from "@/config/routes";
+import { useAuthStore } from "@/modules/auth/auth.store";
 
 export function CustomerDashboardOverview() {
+  const { user } = useAuthStore();
   const [dashboard, setDashboard] = useState<CustomerDashboard | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -22,12 +23,17 @@ export function CustomerDashboardOverview() {
     { label: "Cüzdan Bakiyesi", value: loading ? "—" : `₺${dashboard?.balance ?? "0.00"}` },
   ];
 
+  const displayName = user?.full_name ?? "Üye";
+
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-extrabold text-foreground">Müşteri Paneli</h1>
-        <Link href="/ilanlar" className="inline-flex px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors">
-          Hemen Kargo Gönder
+        <div>
+          <p className="text-sm text-muted">Hoş geldin,</p>
+          <h1 className="text-2xl font-extrabold text-foreground">{displayName}</h1>
+        </div>
+        <Link href="/ilanlar" className="inline-flex px-5 py-3 bg-brand text-white text-base font-bold rounded-xl hover:bg-brand-dark transition-colors">
+          Hemen İlan Bul
         </Link>
       </div>
 

@@ -4,6 +4,7 @@ export type IlanStatus = "active" | "paused" | "completed" | "cancelled";
 /** Backend API'den gelen ilan objesi */
 export interface Ilan {
   id: string;
+  slug?: string;
   user_id: string;
   from_city: string;
   to_city: string;

@@ -8,7 +8,7 @@ import { listIlans } from "@/modules/ilan/ilan.service";
 import type { Ilan, VehicleType } from "@/modules/ilan/ilan.type";
 
 const VEHICLE_OPTIONS: { value: VehicleType | ""; label: string }[] = [
-  { value: "", label: "Tum araclar" },
+  { value: "", label: "Tüm araçlar" },
   { value: "car", label: "Otomobil" },
   { value: "van", label: "Minivan" },
   { value: "truck", label: "Kamyon" },
@@ -146,9 +146,9 @@ export default function IlanlarClient({
     <div className="bg-background">
       <div className="mx-auto max-w-4xl px-4 pt-8 pb-16">
         <div className="mb-6">
-          <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Tasima Ilanlari</h1>
+          <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Taşıma İlanları</h1>
           <p className="mt-1 text-sm text-muted">
-            {loading ? "Guncelleniyor..." : `${total} aktif ilan AI crawlerlar ve ziyaretciler icin sunuluyor`}
+            {loading ? "Güncelleniyor..." : `${total} ilan listeleniyor`}
           </p>
         </div>
 

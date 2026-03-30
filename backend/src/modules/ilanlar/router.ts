@@ -14,7 +14,7 @@ export async function registerIlanlar(app: FastifyInstance) {
     schema: { tags: ['ilanlar'], summary: 'Ilanlari listele', querystring: fromZodSchema(searchIlansSchema, 'SearchIlansQuery'), response: { 200: okResponseSchema } },
   }, listIlans);
   app.get(`${B}/:id`, {
-    schema: { tags: ['ilanlar'], summary: 'Ilan detayi', params: idParamsSchema, response: { 200: okResponseSchema } },
+    schema: { tags: ['ilanlar'], summary: 'Ilan detayi (slug veya UUID)', params: { type: 'object', properties: { id: { type: 'string' } }, required: ['id'] }, response: { 200: okResponseSchema } },
   }, getIlan);
   app.get(`${B}/my`, {
     preHandler: [requireAuth],

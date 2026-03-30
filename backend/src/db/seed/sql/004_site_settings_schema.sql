@@ -108,13 +108,7 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 (
   UUID(), 'header_menu', '*',
-  '[
-    {"title":"ANASAYFA","path":"/","pageKey":"home","type":"link"},
-    {"title":"İLANLAR","path":"/ilanlar","pageKey":"listings","type":"link"},
-    {"title":"KARGO GÖNDER","path":"/ilan-ver","pageKey":"ilan-ver","type":"link"},
-    {"title":"KURUMSAL","path":"#","pageKey":"kurumsal","type":"dropdown","itemsKey":"menu_kurumsal"},
-    {"title":"İLETİŞİM","path":"/iletisim","pageKey":"contact","type":"link"}
-  ]'
+  '[{"title":"Anasayfa","path":"/"},{"title":"İlanlar","path":"/ilanlar"},{"title":"Hakkımızda","path":"/hakkimizda"},{"title":"İletişim","path":"/iletisim"}]'
 );
 
 -- =============================================================
@@ -123,7 +117,7 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 (UUID(), 'footer_keywords',    '*', '["P2P Kargo","Taşıyıcı İlanı","Kargo Gönder","Rezervasyon","Güvenli Kargo","PaketJet"]'),
 (UUID(), 'footer_services',    '*', '["Kargo Gönder","İlan Ara","Taşıyıcı Ol"]'),
-(UUID(), 'footer_quick_links', '*', '[{"title":"Anasayfa","path":"/","pageKey":"home"},{"title":"İlanlar","path":"/ilanlar","pageKey":"listings"},{"title":"Kargo Gönder","path":"/ilan-ver","pageKey":"ilan-ver"},{"title":"Hakkımızda","path":"/hakkimizda","pageKey":"about"},{"title":"İletişim","path":"/iletisim","pageKey":"contact"}]');
+(UUID(), 'footer_quick_links', '*', '[{"title":"Anasayfa","path":"/"},{"title":"İlanlar","path":"/ilanlar"},{"title":"Hakkımızda","path":"/hakkimizda"},{"title":"İletişim","path":"/iletisim"},{"title":"Destek","path":"/destek"}]');
 
 -- =============================================================
 -- MENU (Header dropdown)

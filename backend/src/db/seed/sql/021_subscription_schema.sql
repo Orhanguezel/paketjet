@@ -33,9 +33,9 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
   CONSTRAINT fk_user_subs_plan FOREIGN KEY (plan_id) REFERENCES plans(id) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Varsayilan planlar
+-- Varsayılan planlar
 INSERT IGNORE INTO plans (id, name, slug, price, ilan_limit, commission_rate, duration_days, features, sort_order, is_active) VALUES
-  (UUID(), 'Ucretsiz',  'free',     0.00,   1,  NULL,  30, '["Ayda 1 ilan","Temel ozellikler"]',                              0, 1),
-  (UUID(), 'Starter',   'starter',  49.00,  5,  12.00, 30, '["Ayda 5 ilan","%12 komisyon","E-posta destek"]',                  1, 1),
-  (UUID(), 'Pro',       'pro',      149.00, 20, 8.00,  30, '["Ayda 20 ilan","%8 komisyon","One cikarma","Oncelikli siralama"]', 2, 1),
-  (UUID(), 'Business',  'business', 349.00, 0,  5.00,  30, '["Sinirsiz ilan","%5 komisyon","Premium badge","Oncelikli destek"]', 3, 1);
+  (UUID(), 'Ücretsiz',  'free',     0.00,   1,  NULL,  30, '["Ayda 1 ilan","Temel özellikler"]',                                  0, 1),
+  (UUID(), 'Starter',   'starter',  49.00,  5,  12.00, 30, '["Ayda 5 ilan","%12 komisyon","E-posta destek"]',                      1, 1),
+  (UUID(), 'Pro',       'pro',      149.00, 20, 8.00,  30, '["Ayda 20 ilan","%8 komisyon","Öne çıkarma","Öncelikli sıralama"]',    2, 1),
+  (UUID(), 'Business',  'business', 349.00, 0,  5.00,  30, '["Sınırsız ilan","%5 komisyon","Premium badge","Öncelikli destek"]',   3, 1);

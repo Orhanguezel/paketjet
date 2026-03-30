@@ -6,6 +6,27 @@ import { and, desc, eq, gte, sql } from "drizzle-orm";
 import { buildCreateIlanInsert, buildIlanListWhere, getUserIlanOrder, mapIlanRow } from "./helpers";
 import { ilanlar, ilanPhotos, type NewIlan } from "./schema";
 import { users } from "../auth/schema";
+
+/** Slug veya ID ile ilan getir */
+export async function repoGetIlanBySlugOrId(slugOrId: string) {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slugOrId);
+  const condition = isUuid ? eq(ilanlar.id, slugOrId) : eq(ilanlar.slug, slugOrId);
+
+  const [row] = await db
+    .select({ ilan: ilanlar, user_full_name: users.full_name })
+    .from(ilanlar)
+    .leftJoin(users, eq(ilanlar.user_id, users.id))
+    .where(condition)
+    .limit(1);
+
+  if (!row) return null;
+
+  const ilanId = row.ilan.id;
+  const photos = await db.select().from(ilanPhotos).where(eq(ilanPhotos.ilan_id, ilanId)).orderBy(ilanPhotos.order);
+
+  return { ...mapIlanRow(row), photos };
+}
+
 export async function repoGetIlanById(id: string) {
   const [row] = await db
     .select({

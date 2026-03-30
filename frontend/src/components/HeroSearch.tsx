@@ -142,13 +142,7 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (
-        <Image
-          src="/assets/images/featured.png"
-          alt="Paketlerin raflarda hazırlandığı lojistik depo görünümü"
-          fill
-          priority
-          className="object-cover"
-        />
+        <div className="absolute inset-0 bg-navy" />
       )}
       <div className="absolute inset-0 bg-black/55" />
 
@@ -236,8 +230,8 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
                   <label htmlFor="hero-agirlik" className="mb-1.5 text-sm font-semibold text-muted text-left block">Ağırlık</label>
                   <div className="h-11 flex items-center gap-2 border border-border rounded-lg px-3 bg-background focus-within:ring-2 focus-within:ring-brand/30 transition">
                     <Image src="/assets/icons/box_open.png" alt="" width={16} height={16} className="h-4 w-4 shrink-0 brightness-0 opacity-70" aria-hidden />
-                    <select id="hero-agirlik" aria-label="Ağırlık seçin" className="text-sm outline-none text-foreground bg-transparent pr-1 w-full">
-                      {WEIGHT_OPTIONS.map((w) => (<option key={w}>{w}</option>))}
+                    <select id="hero-agirlik" aria-label="Ağırlık seçin" className="text-sm outline-none text-foreground bg-background pr-1 w-full">
+                      {WEIGHT_OPTIONS.map((w) => (<option key={w} className="bg-surface text-foreground">{w}</option>))}
                     </select>
                   </div>
                 </div>

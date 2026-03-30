@@ -9,7 +9,7 @@ import { useAuthStore } from "@/modules/auth/auth.store";
 import type { Ilan } from "@/modules/ilan/ilan.type";
 import type { PaymentMethod, BankDetails } from "@/modules/booking/booking.type";
 import { ROUTES } from "@/config/routes";
-import { cn } from "@/lib/utils";
+import { cn, maskName } from "@/lib/utils";
 import dynamic from "next/dynamic";
 import PaymentMethodSelector from "@/modules/booking/components/PaymentMethodSelector";
 import BankTransferInfo from "@/modules/booking/components/BankTransferInfo";
@@ -130,7 +130,7 @@ export default function IlanDetailClient() {
     setBooking(true);
     try {
       const res = await createBooking({
-        ilan_id: id,
+        ilan_id: ilan?.id ?? id,
         kg_amount: kgValue,
         customer_notes: notes || undefined,
         payment_method: paymentMethod,
@@ -233,10 +233,10 @@ export default function IlanDetailClient() {
             {/* Taşıyıcı */}
             <div className="flex items-center gap-3 p-4 bg-background rounded-xl mb-6">
               <div className="w-10 h-10 rounded-full bg-brand-xlight flex items-center justify-center text-brand font-bold text-sm">
-                {(ilan.carrier_name ?? "?")[0]}
+                {maskName(ilan.carrier_name ?? "T")[0]}
               </div>
               <div>
-                <p className="text-sm font-semibold text-foreground">{ilan.carrier_name ?? "Taşıyıcı"}</p>
+                <p className="text-sm font-semibold text-foreground">{maskName(ilan.carrier_name ?? "Taşıyıcı")}</p>
                 <p className="text-xs text-muted">Taşıyıcı</p>
               </div>
             </div>

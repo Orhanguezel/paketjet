@@ -10,11 +10,22 @@ import { logout } from "@/modules/auth/auth.service";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { ROUTES } from "@/config/routes";
 
+type NavLink = { title: string; path: string };
+
 interface HeaderProps {
   overlay?: boolean;
+  logoUrl?: string;
+  logoAlt?: string;
+  navLinks?: NavLink[] | null;
 }
 
-export default function Header({ overlay = false }: HeaderProps) {
+const DEFAULT_NAV: NavLink[] = [
+  { title: "Kargo Gönder", path: "/ilanlar" },
+  { title: "İlanlar", path: "/ilanlar" },
+  { title: "Destek", path: "/destek" },
+];
+
+export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: HeaderProps) {
   const router = useRouter();
   const { user, isAuthenticated, logout: authLogout } = useAuthStore();
   const { unreadCount, fetchUnreadCount, reset } = useNotificationStore();
@@ -49,28 +60,38 @@ export default function Header({ overlay = false }: HeaderProps) {
     <header className={overlay
       ? "absolute top-0 left-0 right-0 z-50"
       : "sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border-soft"}>
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
         {/* Logo */}
         <Link
           href={ROUTES.home}
           aria-label="PaketJet ana sayfa"
           className="inline-flex items-center p-0"
         >
-          <Image
-            src="/assets/logo/logo.jpeg"
-            alt="PaketJet logosu"
-            width={82}
-            height={82}
-            priority={overlay}
-            className={overlay ? "h-12 w-12 object-contain" : "h-12 w-12 object-contain"}
-          />
+          {logoUrl ? (
+            <img
+              src={logoUrl}
+              alt={logoAlt ?? "PaketJet"}
+              className="h-16 w-auto max-w-44 object-contain py-1 dark:brightness-0 dark:invert"
+            />
+          ) : (
+            <Image
+              src="/assets/logo/logo.jpeg"
+              alt="PaketJet logosu"
+              width={120}
+              height={120}
+              priority={overlay}
+              className="h-16 w-16 object-contain py-1 dark:brightness-0 dark:invert"
+            />
+          )}
         </Link>
 
         {/* Nav */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link href={ROUTES.ilanlar.list} title="PaketJet ile kargo gonder" className={`text-sm transition-colors ${navText}`}>Kargo Gönder</Link>
-          <Link href={ROUTES.ilanlar.list} title="Tasima ilanlari listesi" className={`text-sm transition-colors ${navText}`}>İlanlar</Link>
-          <Link href={ROUTES.static.destek} title="Destek merkezi" className={`text-sm transition-colors ${navText}`}>Destek</Link>
+          {(navLinks ?? DEFAULT_NAV).map((link) => (
+            <Link key={link.path + link.title} href={link.path} className={`text-sm font-medium transition-colors ${navText}`}>
+              {link.title}
+            </Link>
+          ))}
         </nav>
 
         {/* Actions */}

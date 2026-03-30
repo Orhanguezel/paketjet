@@ -25,9 +25,14 @@
   --color-navy-mid:     hsl(215 52% 26%);  /* #1F3B63 — dark section */
   --color-navy-soft:    hsl(215 38% 36%);  /* #385880 — muted dark */
 
+  /* Accent — Logo "jet" moru (ikincil CTA) */
+  --color-accent:       hsl(270 52% 36%);  /* #5B2D8E — logodaki mor */
+  --color-accent-dark:  hsl(270 52% 28%);  /* #462170 — hover */
+  --color-accent-light: hsl(270 52% 94%);  /* #F0E6F7 — tint */
+
   /* Semantic */
-  --color-success:      hsl(142 76% 36%);  /* #16A34A — Satın Al */
-  --color-success-bg:   hsl(142 76% 95%);  /* #DCFCE7 */
+  --color-success:      hsl(270 52% 36%);  /* Mor — Satın Al (logodaki jet rengi) */
+  --color-success-bg:   hsl(270 52% 94%);  /* #F0E6F7 */
   --color-warning:      hsl(38 92% 50%);   /* #F59E0B */
   --color-danger:       hsl(0 84% 60%);    /* #EF4444 */
   --color-danger-bg:    hsl(0 84% 95%);    /* #FEE2E2 */
@@ -97,8 +102,8 @@
   --col-navy:          215 68% 16%;
   --col-navy-mid:      215 52% 26%;
   --col-navy-soft:     215 38% 36%;
-  --col-success:       142 76% 36%;
-  --col-success-bg:    142 76% 95%;
+  --col-success:       270 52% 36%;
+  --col-success-bg:    270 52% 94%;
   --col-danger:          0 84% 60%;
   --col-danger-bg:       0 84% 95%;
   --col-warning:        38 92% 50%;
@@ -124,8 +129,8 @@
   --col-navy:          215 68%  6%;
   --col-navy-mid:      215 52%  8%;
   --col-navy-soft:     215 38% 12%;
-  --col-success:       142 70% 44%;
-  --col-success-bg:    142 40% 12%;
+  --col-success:       270 52% 50%;
+  --col-success-bg:    270 40% 12%;
   --col-danger:          0 80% 65%;
   --col-danger-bg:       0 40% 12%;
   --col-warning:        38 80% 55%;
@@ -143,8 +148,10 @@
   --color-brand-dark:   hsl(27 96% 63%);
   --color-brand-light:  hsl(27 60% 15%);
   --color-brand-xlight: hsl(27 50% 12%);
-  --color-success:      hsl(142 70% 44%);
-  --color-success-bg:   hsl(142 40% 12%);
+  --color-success:      hsl(270 52% 50%);
+  --color-success-bg:   hsl(270 40% 12%);
+  --color-accent:       hsl(270 52% 50%);
+  --color-accent-dark:  hsl(270 52% 42%);
   --color-danger:       hsl(0 80% 65%);
   --color-danger-bg:    hsl(0 40% 12%);
   --color-warning:      hsl(38 80% 55%);

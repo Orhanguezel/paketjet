@@ -71,7 +71,7 @@ function TasiyiciContent() {
   const tabs: { key: Tab; label: string; count?: number }[] = [
     { key: "talepler", label: "Gelen Talepler", count: pendingCount },
     { key: "ilanlar",  label: "İlanlarım" },
-    { key: "yeni-ilan", label: "+ Yeni İlan" },
+    { key: "yeni-ilan", label: "Hızlı İlan Aç" },
     { key: "gecmis",   label: "Geçmiş" },
     { key: "finans",   label: "Finans" },
     { key: "abonelik", label: "Abonelik" },
@@ -80,10 +80,16 @@ function TasiyiciContent() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-extrabold text-foreground">Taşıyıcı Paneli</h1>
-        <Link href="/panel/tasiyici?tab=yeni-ilan" className="inline-flex px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors">
-          + Yeni İlan
-        </Link>
+        <div>
+          <p className="text-sm text-muted">Hoş geldin,</p>
+          <h1 className="text-2xl font-extrabold text-foreground">{user?.full_name ?? "Taşıyıcı"}</h1>
+        </div>
+        <button
+          onClick={() => setTab("yeni-ilan")}
+          className="inline-flex px-6 py-3 bg-brand text-white text-base font-bold rounded-xl hover:bg-brand-dark transition-colors"
+        >
+          Hızlı İlan Aç
+        </button>
       </div>
 
       {/* Stats */}

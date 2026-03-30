@@ -148,3 +148,12 @@ VALUES
    'Samsun → Ankara Kamyon',
    'Karadeniz''den başkente düzenli sefer. Her boy yük kabul edilir.',
    '+905301112233', 'active');
+
+-- Boş slug'ları otomatik doldur: sehir-sehir-aractip-rastgele
+UPDATE ilanlar SET slug = CONCAT(
+  LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(from_city, 'İ','i'),'ı','i'),'ğ','g'),'ü','u'),'ş','s'),'ö','o'),'ç','c'),'Ğ','g'),'Ü','u'),'Ş','s'),'Ö','o'),'Ç','c')),
+  '-',
+  LOWER(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(to_city, 'İ','i'),'ı','i'),'ğ','g'),'ü','u'),'ş','s'),'ö','o'),'ç','c'),'Ğ','g'),'Ü','u'),'Ş','s'),'Ö','o'),'Ç','c')),
+  '-', vehicle_type,
+  '-', SUBSTRING(id, 1, 4)
+) WHERE slug = '' OR slug IS NULL;

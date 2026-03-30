@@ -10,6 +10,8 @@ CREATE TABLE IF NOT EXISTS ilanlar (
   id                    CHAR(36)        NOT NULL,
   user_id               CHAR(36)        NOT NULL,
 
+  slug                  VARCHAR(255)    NOT NULL DEFAULT '',
+
   -- Güzergah
   from_city             VARCHAR(128)    NOT NULL,
   to_city               VARCHAR(128)    NOT NULL,
@@ -41,6 +43,7 @@ CREATE TABLE IF NOT EXISTS ilanlar (
   updated_at            DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
 
   PRIMARY KEY (id),
+  KEY ilanlar_slug_idx          (slug),
   KEY ilanlar_user_id_idx      (user_id),
   KEY ilanlar_status_idx       (status),
   KEY ilanlar_from_city_idx    (from_city),

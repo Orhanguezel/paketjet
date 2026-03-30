@@ -10,8 +10,6 @@ import { getPageMetadata } from "@/lib/seo";
 import { apiGet } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
 import RouteMapAnimation from "@/components/RouteMapAnimation";
-import { listFaqs } from "@/modules/support/support.service";
-import { TURKEY_CITIES } from "@/data/turkey-cities";
 import { WebSiteSchema, ServiceSchema, HowToSchema, BreadcrumbSchema } from "@/components/JsonLd";
 
 export const revalidate = 60;
@@ -46,32 +44,28 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-type HomepageStat = {
-  label: string;
-  value: string;
-  iconSrc: string;
-  iconAlt: string;
-  source: string;
-};
-
-const STAT_ICONS = [
+const STATS = [
   {
-    label: "Aktif Ilan",
+    label: "Aktif Taşıyıcı",
+    value: "1.200+",
     iconSrc: "/assets/icons/delivery.png",
-    iconAlt: "Tasiyici kamyoneti simgesi",
+    iconAlt: "Taşıyıcı kamyoneti simgesi",
   },
   {
-    label: "SSS Basligi",
+    label: "Tamamlanan Taşıma",
+    value: "48.000+",
     iconSrc: "/assets/icons/box.png",
-    iconAlt: "Teslim edilmis paket simgesi",
+    iconAlt: "Teslim edilmiş paket simgesi",
   },
   {
-    label: "Kapsanan Sehir",
+    label: "Kapsanan Şehir",
+    value: "81",
     iconSrc: "/assets/icons/location.png",
-    iconAlt: "Konum ignesi simgesi",
+    iconAlt: "Konum iğnesi simgesi",
   },
   {
-    label: "Veri Guncelleme",
+    label: "Müşteri Memnuniyeti",
+    value: "%98",
     iconSrc: "/assets/icons/like.png",
     iconAlt: "Memnuniyet simgesi",
   },
@@ -86,35 +80,10 @@ const HOW_IT_WORKS = [
 ];
 
 export default async function HomePage() {
-  const [featuredResult, featured, heroConfig, faqList] = await Promise.all([
-    listIlans({ limit: 1 }).catch(() => ({ data: [], total: 0, page: 1, limit: 1 })),
+  const [featured, heroConfig] = await Promise.all([
     listIlans({ limit: 4 }).then((r) => r.data ?? []).catch(() => [] as Ilan[]),
     fetchHeroConfig(),
-    listFaqs({ locale: "tr", limit: 50 }).catch(() => []),
   ]);
-
-  const stats: HomepageStat[] = [
-    {
-      ...STAT_ICONS[0],
-      value: String(featuredResult.total),
-      source: "Canli /api/ilanlar toplam aktif ilan verisi",
-    },
-    {
-      ...STAT_ICONS[1],
-      value: String(faqList.length),
-      source: "Canli /api/support/faqs yayinlanmis soru sayisi",
-    },
-    {
-      ...STAT_ICONS[2],
-      value: String(TURKEY_CITIES.length),
-      source: "frontend/src/data/turkey-cities.ts sehir kapsami",
-    },
-    {
-      ...STAT_ICONS[3],
-      value: "60 sn",
-      source: "Sayfa revalidate suresi",
-    },
-  ];
 
   return (
     <>
@@ -128,7 +97,7 @@ export default async function HomePage() {
         {/* Stats Bar */}
         <div className="bg-navy">
           <div className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((s) => (
+            {STATS.map((s) => (
               <div key={s.label} className="flex items-center gap-3">
                 <Image
                   src={s.iconSrc}
@@ -143,18 +112,6 @@ export default async function HomePage() {
                 </div>
               </div>
             ))}
-          </div>
-          <div className="mx-auto max-w-5xl px-4 pb-6">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-4 text-xs text-white/70">
-              <p className="font-semibold text-white">Istatistik kaynaklari</p>
-              <ul className="mt-2 space-y-1">
-                {stats.map((stat) => (
-                  <li key={`${stat.label}-source`}>
-                    {stat.label}: {stat.source}
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </div>
 

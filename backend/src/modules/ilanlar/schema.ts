@@ -21,6 +21,8 @@ export const ilanlar = mysqlTable(
     id: char("id", { length: 36 }).primaryKey().notNull(),
     user_id: char("user_id", { length: 36 }).notNull(),
 
+    slug: varchar("slug", { length: 255 }).notNull().default(""),
+
     // Güzergah
     from_city: varchar("from_city", { length: 128 }).notNull(),
     to_city: varchar("to_city", { length: 128 }).notNull(),
@@ -54,6 +56,7 @@ export const ilanlar = mysqlTable(
     updated_at: datetime("updated_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`).$onUpdateFn(() => new Date()),
   },
   (t) => [
+    index("ilanlar_slug_idx").on(t.slug),
     index("ilanlar_user_id_idx").on(t.user_id),
     index("ilanlar_status_idx").on(t.status),
     index("ilanlar_from_city_idx").on(t.from_city),

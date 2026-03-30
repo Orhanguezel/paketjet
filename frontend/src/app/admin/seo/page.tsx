@@ -14,13 +14,13 @@ type Tab = "global" | "pages";
 
 const PAGE_KEYS = [
   { key: "home",           label: "Ana Sayfa" },
-  { key: "listings",       label: "Ilan Listesi" },
-  { key: "listing_detail", label: "Ilan Detayi" },
-  { key: "ilan_ver",       label: "Ilan Ver" },
-  { key: "fiyat",          label: "Fiyatlandirma" },
-  { key: "iletisim",       label: "Iletisim" },
-  { key: "login",          label: "Giris" },
-  { key: "register",       label: "Uye Ol" },
+  { key: "listings",       label: "İlan Listesi" },
+  { key: "listing_detail", label: "İlan Detayı" },
+  { key: "ilan_ver",       label: "İlan Ver" },
+  { key: "fiyat",          label: "Fiyatlandırma" },
+  { key: "iletisim",       label: "İletişim" },
+  { key: "login",          label: "Giriş" },
+  { key: "register",       label: "Üye Ol" },
 ];
 
 interface SeoForm {

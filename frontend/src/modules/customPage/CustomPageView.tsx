@@ -6,6 +6,7 @@ interface CustomPageViewProps {
   html?: string | null;
   createdAt?: string;
   updatedAt?: string;
+  heroVideoUrl?: string | null;
 }
 
 function formatDate(value?: string) {
@@ -19,7 +20,7 @@ function formatDate(value?: string) {
   });
 }
 
-export function CustomPageView({ title, summary, html, createdAt, updatedAt }: CustomPageViewProps) {
+export function CustomPageView({ title, summary, html, createdAt, updatedAt, heroVideoUrl }: CustomPageViewProps) {
   // Handle JSON content if provided as {"html": "..."}
   let displayHtml = html ?? "<p>İçerik bulunamadı.</p>";
   if (html && html.trim().startsWith('{')) {
@@ -51,6 +52,25 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt }: C
           ) : null}
         </div>
       </section>
+      {/* Hero Video — içerik altında */}
+      {heroVideoUrl ? (
+        <section className="bg-navy">
+          <div className="mx-auto max-w-5xl px-6 py-8">
+            <div className="overflow-hidden rounded-2xl shadow-2xl">
+              <video
+                src={heroVideoUrl}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="w-full object-cover"
+              />
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
         <article
           className="prose prose-neutral max-w-none prose-headings:font-extrabold prose-a:text-brand"

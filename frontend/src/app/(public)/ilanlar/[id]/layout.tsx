@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const ilan = await fetchIlan(id);
 
   if (!ilan) {
-    return { title: "Ilan Detayi" };
+    return { title: "İlan Detayı" };
   }
 
   return getPageMetadata("listing_detail", {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Ilan } from "@/modules/ilan/ilan.type";
+import { maskName } from "@/lib/utils";
 
 interface IlanCardProps {
   ilan: Ilan;
@@ -28,7 +29,8 @@ function LetterAvatar({ name }: { name: string }) {
 }
 
 export default function IlanCard({ ilan }: IlanCardProps) {
-  const carrierName = ilan.carrier_name?.trim() || "Taşıyıcı";
+  const carrierFullName = ilan.carrier_name?.trim() || "Taşıyıcı";
+  const carrierName = maskName(carrierFullName);
   const departureDate = new Date(ilan.departure_date);
   const dateLabel = departureDate.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
   const timeLabel = departureDate.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
@@ -36,7 +38,7 @@ export default function IlanCard({ ilan }: IlanCardProps) {
 
   return (
     <Link
-      href={`/ilanlar/${ilan.id}`}
+      href={`/ilanlar/${ilan.slug || ilan.id}`}
       title={`${ilan.from_city} - ${ilan.to_city} kargo ilani`}
       className="flex items-center gap-4 p-4 bg-surface rounded-xl border border-border shadow-sm hover:border-brand/40 hover:shadow-md transition-all group"
     >

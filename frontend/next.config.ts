@@ -25,6 +25,14 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
 
+  // /uploads/* isteklerini backend'e proxy et (favicon, logo, video, vb.)
+  rewrites: async () => [
+    {
+      source: "/uploads/:path*",
+      destination: `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "http://localhost:8078"}/uploads/:path*`,
+    },
+  ],
+
   // Security + cache headers
   headers: async () => [
     {

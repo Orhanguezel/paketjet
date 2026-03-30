@@ -43,7 +43,7 @@ export default function AdminContactsPage() {
 
   return (
     <div>
-      <AdminPageHeader title="Iletisim Mesajlari" subtitle={`${rows.length} mesaj`} />
+      <AdminPageHeader title="İletişim Mesajları" subtitle={`${rows.length} mesaj`} />
 
       <div className="flex gap-6">
         {/* List */}

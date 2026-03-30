@@ -22,8 +22,8 @@ function normalizePage(page: string | undefined) {
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("listings", {
-    title: "Tasima Ilanlari",
-    description: "PaketJet uzerindeki aktif tasima ilanlarini guzergah, tarih ve arac tipine gore inceleyin.",
+    title: "Taşıma İlanları",
+    description: "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
     canonicalPath: "/ilanlar",
   });
 }
@@ -53,7 +53,7 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
 
   return (
     <>
-      <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "Ilanlar" }]} />
+      <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "İlanlar" }]} />
       <IlanlarClient
         initialIlans={result.data}
         initialTotal={result.total}
