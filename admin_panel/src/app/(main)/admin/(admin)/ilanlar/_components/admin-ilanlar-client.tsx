@@ -205,7 +205,7 @@ export default function AdminIlanlarClient() {
                           {formatAdminIlanDate(ilan.departure_date)}
                         </TableCell>
                         <TableCell>
-                          <span className="text-sm">{formatAdminIlanWeight(ilan.available_kg)}</span>
+                          <span className="text-sm">{formatAdminIlanWeight(ilan.available_capacity_kg)}</span>
                         </TableCell>
                         <TableCell>
                           <span className="text-sm">{formatAdminIlanPrice(ilan.price_per_kg)}</span>

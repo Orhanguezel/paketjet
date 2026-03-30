@@ -1,5 +1,5 @@
 {
-  "name": "konig-admin",
+  "name": "paketjet-admin",
   "version": "2.2.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,7 @@
     "prebuild": "npm run locales:generate",
     "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev -p 3030",
     "dev:turbo": "next dev --turbo -p 3030",
-    "build": "next build",
+    "build": "NODE_OPTIONS='--no-deprecation' next build",
     "start": "next start",
     "lint": "biome lint",
     "format": "biome format --write",

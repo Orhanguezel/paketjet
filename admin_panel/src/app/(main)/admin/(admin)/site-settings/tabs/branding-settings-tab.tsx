@@ -34,6 +34,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { AdminImageUploadField } from '@/app/(main)/admin/_components/common/admin-image-upload-field';
 
 export type BrandingSettingsTabProps = {
   locale: string;
@@ -225,6 +226,48 @@ export const BrandingSettingsTab: React.FC<BrandingSettingsTabProps> = ({ locale
             </div>
 
             <div className="space-y-2">
+              <AdminImageUploadField
+                label={t('admin.siteSettings.branding.fields.logo')}
+                bucket="public"
+                folder="logo"
+                metadata={{ module: 'admin-branding', field: 'logo' }}
+                value={form.logo}
+                onChange={(url) => handleChange('logo', url)}
+                disabled={busy}
+                previewAspect="4x3"
+                previewObjectFit="contain"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <AdminImageUploadField
+                label={t('admin.siteSettings.branding.fields.logoDark')}
+                bucket="public"
+                folder="logo"
+                metadata={{ module: 'admin-branding', field: 'logo_dark' }}
+                value={form.logo_dark}
+                onChange={(url) => handleChange('logo_dark', url)}
+                disabled={busy}
+                previewAspect="4x3"
+                previewObjectFit="contain"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <AdminImageUploadField
+                label={t('admin.siteSettings.branding.fields.logoIcon')}
+                bucket="public"
+                folder="logo"
+                metadata={{ module: 'admin-branding', field: 'logo_icon' }}
+                value={form.logo_icon}
+                onChange={(url) => handleChange('logo_icon', url)}
+                disabled={busy}
+                previewAspect="1x1"
+                previewObjectFit="contain"
+              />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="branding_og_image">
                 {t('admin.siteSettings.branding.fields.ogImage')}
               </Label>
@@ -238,41 +281,44 @@ export const BrandingSettingsTab: React.FC<BrandingSettingsTabProps> = ({ locale
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="branding_favicon_16">
-                {t('admin.siteSettings.branding.fields.favicon16')}
-              </Label>
-              <Input
-                id="branding_favicon_16"
+              <AdminImageUploadField
+                label={t('admin.siteSettings.branding.fields.favicon16')}
+                bucket="public"
+                folder="logo"
+                metadata={{ module: 'admin-branding', field: 'favicon_16' }}
                 value={form.favicon_16}
-                onChange={(e) => handleChange('favicon_16', e.target.value)}
-                placeholder={t(`admin.siteSettings.branding.placeholders.${SITE_SETTINGS_BRANDING_PLACEHOLDER_KEYS.favicon_16}`)}
+                onChange={(url) => handleChange('favicon_16', url)}
                 disabled={busy}
+                previewAspect="1x1"
+                previewObjectFit="contain"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="branding_favicon_32">
-                {t('admin.siteSettings.branding.fields.favicon32')}
-              </Label>
-              <Input
-                id="branding_favicon_32"
+              <AdminImageUploadField
+                label={t('admin.siteSettings.branding.fields.favicon32')}
+                bucket="public"
+                folder="logo"
+                metadata={{ module: 'admin-branding', field: 'favicon_32' }}
                 value={form.favicon_32}
-                onChange={(e) => handleChange('favicon_32', e.target.value)}
-                placeholder={t(`admin.siteSettings.branding.placeholders.${SITE_SETTINGS_BRANDING_PLACEHOLDER_KEYS.favicon_32}`)}
+                onChange={(url) => handleChange('favicon_32', url)}
                 disabled={busy}
+                previewAspect="1x1"
+                previewObjectFit="contain"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="branding_apple_touch_icon">
-                {t('admin.siteSettings.branding.fields.appleTouchIcon')}
-              </Label>
-              <Input
-                id="branding_apple_touch_icon"
+              <AdminImageUploadField
+                label={t('admin.siteSettings.branding.fields.appleTouchIcon')}
+                bucket="public"
+                folder="logo"
+                metadata={{ module: 'admin-branding', field: 'apple_touch_icon' }}
                 value={form.apple_touch_icon}
-                onChange={(e) => handleChange('apple_touch_icon', e.target.value)}
-                placeholder={t(`admin.siteSettings.branding.placeholders.${SITE_SETTINGS_BRANDING_PLACEHOLDER_KEYS.apple_touch_icon}`)}
+                onChange={(url) => handleChange('apple_touch_icon', url)}
                 disabled={busy}
+                previewAspect="1x1"
+                previewObjectFit="contain"
               />
             </div>
           </div>

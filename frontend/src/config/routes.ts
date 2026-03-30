@@ -50,5 +50,7 @@ export const ROUTES = {
     kvkk: "/kvkk",
     kullanim: "/kullanim-kosullari",
     tasimaKurallari: "/tasima-kurallari",
+    blog: "/blog",
+    rota: (slug: string) => `/rota/${slug}`,
   },
 } as const;

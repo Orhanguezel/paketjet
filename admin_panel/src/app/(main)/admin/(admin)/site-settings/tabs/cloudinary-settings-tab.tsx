@@ -126,8 +126,13 @@ export const CloudinarySettingsTab: React.FC<CloudinarySettingsTabProps> = ({ lo
           data?.error?.message ||
           data?.message ||
           err?.message ||
-          'Cloudinary test failed.';
-        toast.error(t('admin.siteSettings.cloudinary.testFailedStep', { step: step || 'unknown', message: msg }));
+          t('admin.siteSettings.messages.error');
+        toast.error(
+          t('admin.siteSettings.cloudinary.testFailedStep', {
+            step: step || t('admin.siteSettings.list.dash'),
+            message: msg,
+          }),
+        );
         return;
       }
 

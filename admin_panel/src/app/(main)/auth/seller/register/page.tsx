@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Suspense } from 'react';
 
+import { AuthBrandPanel } from '../../_components/auth-brand-panel';
 import { RegisterForm } from '../../_components/register-form';
 
 function RegisterFormFallback() {
@@ -20,19 +20,10 @@ function RegisterFormFallback() {
 export default function SellerRegisterPage() {
   return (
     <div className="flex min-h-dvh">
-      <div className="hidden bg-primary lg:block lg:w-1/3">
-        <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-          <div className="space-y-6">
-            <div className="relative mx-auto size-24">
-              <Image src="/logo/logo-horizontal.svg" alt="PaketJet" fill className="object-contain" />
-            </div>
-            <div className="space-y-2">
-              <h1 className="font-light text-5xl text-primary-foreground">Satici Kaydi</h1>
-              <p className="text-xl text-primary-foreground/80">Satici hesabinizi olusturup panele girin</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AuthBrandPanel
+        title="Satici Kaydi"
+        subtitle="Satici hesabinizi olusturup panele girin"
+      />
 
       <div className="flex w-full items-center justify-center bg-background p-8 lg:w-2/3">
         <div className="w-full max-w-md space-y-10 py-24 lg:py-32">

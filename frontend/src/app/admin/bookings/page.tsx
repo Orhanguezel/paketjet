@@ -114,12 +114,12 @@ export default function AdminBookingsPage() {
                   <p className="text-xs text-muted">
                     {String(r.kg_amount)} kg · ₺{String(r.total_price)} · {String(r.customer_name ?? r.customer_email ?? "—")} · {formatDate(String(r.created_at))}
                   </p>
-                  {String(r.payment_status) === "awaiting_transfer" && r.payment_ref && (
+                  {String(r.payment_status) === "awaiting_transfer" && r.payment_ref ? (
                     <p className="text-xs mt-0.5">
                       <Badge color="warning">Havale Bekleniyor</Badge>
                       <span className="ml-2 font-mono font-semibold text-brand">{String(r.payment_ref)}</span>
                     </p>
-                  )}
+                  ) : null}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {String(r.payment_status) === "awaiting_transfer" && (

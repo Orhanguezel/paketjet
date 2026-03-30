@@ -12,7 +12,20 @@ const INITIAL_FORM: ContactFormData = {
   message: "",
 };
 
-export function ContactPageClient() {
+interface ContactInfo {
+  company_name?: string;
+  phone?: string;
+  phone_2?: string;
+  email?: string;
+  email_2?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  working_hours?: string;
+  maps_embed_url?: string;
+}
+
+export function ContactPageClient({ contactInfo }: { contactInfo?: ContactInfo | null }) {
   const [form, setForm] = useState(INITIAL_FORM);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState<string | null>(null);
@@ -34,20 +47,51 @@ export function ContactPageClient() {
     <div className="mx-auto max-w-5xl px-6 py-16">
       <div className="mb-12 text-center">
         <h1 className="mb-3 text-3xl font-extrabold text-foreground">İletişim</h1>
-        <p className="text-lg text-muted">Kurumsal talepler, iş birlikleri ve genel iletişim için bize yazın.</p>
+        <p className="text-lg text-muted">
+          Kurumsal talepler, is birlikleri ve operasyonel destek icin PaketJet ekibiyle dogrudan iletisime gecin.
+        </p>
       </div>
       <div className="mb-14 grid gap-4 sm:grid-cols-2">
         <div className="bg-surface border border-border-soft rounded-2xl p-6">
-          <div className="text-2xl mb-2">✉️</div>
+          <div className="mb-2 text-2xl">✉️</div>
           <h3 className="font-semibold text-foreground mb-1">E-posta</h3>
-          <p className="text-sm text-muted mb-3">Genellikle 1 iş günü içinde yanıt veririz.</p>
-          <a href="mailto:destek@paketjet.com" className="text-sm text-brand font-medium hover:underline">destek@paketjet.com</a>
+          <p className="text-sm text-muted mb-3">Genellikle 1 is gunu icinde yanit veririz.</p>
+          <a href={`mailto:${contactInfo?.email_2 ?? contactInfo?.email ?? "destek@paketjet.com"}`} className="text-sm text-brand font-medium hover:underline">
+            {contactInfo?.email_2 ?? contactInfo?.email ?? "destek@paketjet.com"}
+          </a>
         </div>
         <div className="bg-surface border border-border-soft rounded-2xl p-6">
-          <div className="text-2xl mb-2">💬</div>
+          <div className="mb-2 text-2xl">💬</div>
           <h3 className="font-semibold text-foreground mb-1">WhatsApp</h3>
-          <p className="text-sm text-muted mb-3">Hızlı sorularınız için doğrudan yazın.</p>
-          <a href="https://wa.me/905000000000" target="_blank" rel="noopener noreferrer" className="text-sm text-brand font-medium hover:underline">+90 500 000 00 00</a>
+          <p className="text-sm text-muted mb-3">Hizli sorulariniz icin dogrudan yazin.</p>
+          <a
+            href={`https://wa.me/${(contactInfo?.phone_2 ?? contactInfo?.phone ?? "+905000000000").replace(/\D/g, "")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-brand font-medium hover:underline"
+          >
+            {contactInfo?.phone_2 ?? contactInfo?.phone ?? "+90 500 000 00 00"}
+          </a>
+        </div>
+      </div>
+      <div className="mb-10 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="rounded-3xl border border-border-soft bg-surface p-6 shadow-sm">
+          <h2 className="text-xl font-bold text-foreground">Ofis Bilgileri</h2>
+          <div className="mt-5 space-y-4 text-sm text-muted">
+            <p><span className="font-semibold text-foreground">Sirket:</span> {contactInfo?.company_name ?? "PaketJet Teknoloji A.S."}</p>
+            <p><span className="font-semibold text-foreground">Adres:</span> {contactInfo?.address ?? "Cankaya, Ankara, Turkiye"}</p>
+            <p><span className="font-semibold text-foreground">Telefon:</span> {contactInfo?.phone ?? "+90 312 000 00 00"}</p>
+            <p><span className="font-semibold text-foreground">Calisma Saatleri:</span> {contactInfo?.working_hours ?? "Pazartesi - Cuma: 09:00 - 18:00"}</p>
+          </div>
+        </div>
+        <div className="overflow-hidden rounded-3xl border border-border-soft bg-surface">
+          <iframe
+            title="PaketJet ofis konumu"
+            src={contactInfo?.maps_embed_url ?? "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.5!2d32.85!3d39.92"}
+            className="h-full min-h-80 w-full border-0"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </div>
       <form onSubmit={handleSubmit} className="rounded-3xl border border-border-soft bg-surface p-6 shadow-sm mb-24">

@@ -7,8 +7,6 @@
 // =============================================================
 
 import Link from 'next/link';
-import { LayoutDashboard } from 'lucide-react';
-
 import {
   Sidebar,
   SidebarContent,
@@ -26,7 +24,7 @@ import type { AdminSidebarRole } from '@/navigation/sidebar/sidebar-items';
 import { useAdminUiCopy } from '@/app/(main)/admin/_components/common/use-admin-ui-copy';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 import type { TranslateFn } from '@/i18n';
-import { normalizeMeFromStatus } from '@/integrations/shared';
+import { normalizeMeFromStatus, cleanAppName } from '@/integrations/shared';
 
 import { useMemo } from 'react';
 import { NavMain } from './nav-main';
@@ -51,14 +49,7 @@ function hasRole(me: SidebarMe, role: Role) {
   return rs.includes(role);
 }
 
-function withPanelTitle(appNameRaw: string, isAdmin: boolean): string {
-  const panelTitle = isAdmin ? 'Admin Panel' : 'Satici Panel';
-  const cleaned = appNameRaw
-    .replace(/\badmin\s*panel\b/gi, '')
-    .replace(/\bsatici\s*panel\b/gi, '')
-    .trim();
-  return cleaned ? `${cleaned} ${panelTitle}` : panelTitle;
-}
+
 
 export function AppSidebar({
   me,
@@ -115,18 +106,31 @@ export function AppSidebar({
   // ✅ admin ise tüm menu, değilse sadece dashboard
   const sidebarRole: AdminSidebarRole = hasRole(currentUser as any, 'admin') ? 'admin' : 'seller';
   const groupsForMe: NavGroup[] = buildAdminSidebarItems(copy.nav, wrappedT, sidebarRole);
-  const panelLabel = withPanelTitle(baseName, sidebarRole === 'admin');
-  const panelSub = sidebarRole === 'admin' ? 'Admin Panel' : 'Taşıyıcı Panel';
+  // ✅ Clean app name for header
+  const cleanedName = cleanAppName(baseName) || 'PaketJet';
+  const panelSub = sidebarRole === 'admin' 
+    ? t('sidebar.adminPanel', undefined, 'Admin Panel') 
+    : t('sidebar.carrierPanel', undefined, 'Taşıyıcı Panel');
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
       <SidebarHeader>
         <Link prefetch={false} href="/admin/dashboard" className="flex items-center gap-3 px-3 py-4 hover:bg-sidebar-accent/50 transition-colors">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-            <LayoutDashboard className="size-5" />
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-brand text-brand-foreground shadow-sm">
+            {branding?.logo_icon || branding?.logo ? (
+              <img
+                src={branding.logo_icon || branding.logo}
+                alt={cleanedName}
+                className="size-6 object-contain"
+              />
+            ) : (
+              <span className="text-xs font-bold">
+                {cleanedName.slice(0, 1)}
+              </span>
+            )}
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
-            <span className="font-bold text-lg tracking-tight">{panelLabel || 'Admin Panel'}</span>
+            <span className="font-bold text-lg tracking-tight text-foreground">{cleanedName}</span>
             <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">{panelSub}</span>
           </div>
         </Link>

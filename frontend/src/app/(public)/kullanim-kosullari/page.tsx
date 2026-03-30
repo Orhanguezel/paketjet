@@ -11,6 +11,13 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
       title: page.meta_title || page.title,
       description: page.meta_description || page.summary || "PaketJet kullanım koşulları.",
+      openGraph: {
+        title: page.meta_title || page.title,
+        description: page.meta_description || page.summary || "PaketJet kullanım koşulları.",
+        type: "article",
+        publishedTime: page.created_at,
+        modifiedTime: page.updated_at,
+      },
     };
   } catch {
     return { title: "Kullanım Koşulları | PaketJet" };
@@ -20,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function KullanimKosullariPage() {
   try {
     const page = await getCustomPageBySlug("kullanim-kosullari");
-    return <CustomPageView title={page.title} summary={page.summary} html={page.content} />;
+    return <CustomPageView title={page.title} summary={page.summary} html={page.content} createdAt={page.created_at} updatedAt={page.updated_at} />;
   } catch {
     notFound();
   }

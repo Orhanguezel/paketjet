@@ -1,7 +1,9 @@
 // src/modules/wallet/commission.ts
 // Platform komisyon hesaplama servisi
+// Öncelik: carrier agreement → plan → platform default (site_settings)
 
 import { repoGetFirstRowByFallback } from "@/modules/siteSettings/repository";
+import { repoGetCarrierCommissionRate } from "@/modules/carrier-agreements/repository";
 
 export interface CommissionConfig {
   rate: number;
@@ -10,7 +12,8 @@ export interface CommissionConfig {
 
 const DEFAULT_CONFIG: CommissionConfig = { rate: 0, type: "percentage" };
 
-export async function getCommissionRate(): Promise<CommissionConfig> {
+/** Platform geneli varsayılan komisyon oranını getir (site_settings) */
+export async function getPlatformCommissionRate(): Promise<CommissionConfig> {
   const row = await repoGetFirstRowByFallback("platform_commission", ["*", "tr"]);
   if (!row) return DEFAULT_CONFIG;
   try {
@@ -20,6 +23,21 @@ export async function getCommissionRate(): Promise<CommissionConfig> {
   } catch {
     return DEFAULT_CONFIG;
   }
+}
+
+/**
+ * Taşıyıcıya özel efektif komisyon oranını getir
+ * Fallback zinciri: carrier_agreement.commission_rate → plan.commission_rate → platform default
+ */
+export async function getCommissionRateForCarrier(carrierId: string): Promise<CommissionConfig> {
+  const carrierRate = await repoGetCarrierCommissionRate(carrierId);
+  if (carrierRate != null) return { rate: carrierRate, type: "percentage" };
+  return getPlatformCommissionRate();
+}
+
+/** Eski API — geriye uyumluluk (platform default döner) */
+export async function getCommissionRate(): Promise<CommissionConfig> {
+  return getPlatformCommissionRate();
 }
 
 export function calculateCarrierPayout(totalPrice: number, rate: number) {

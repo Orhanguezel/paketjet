@@ -8,6 +8,7 @@ export function createAdminPlanInsert(body: CreatePlanInput): Omit<NewPlan, "id"
     slug: body.slug,
     price: String(body.price),
     ilan_limit: body.ilan_limit,
+    commission_rate: body.commission_rate != null ? String(body.commission_rate) : null,
     duration_days: body.duration_days,
     features: body.features,
     sort_order: body.sort_order,
@@ -26,6 +27,7 @@ export function buildAdminPlanPatch(body: UpdatePlanInput): Partial<NewPlan> {
   if (body.features !== undefined) patch.features = body.features;
   if (body.sort_order !== undefined) patch.sort_order = body.sort_order;
   if (body.is_active !== undefined) patch.is_active = body.is_active;
+  if (body.commission_rate !== undefined) patch.commission_rate = body.commission_rate != null ? String(body.commission_rate) : null;
 
   return patch;
 }

@@ -8,7 +8,10 @@ import {
   BookOpen,
   Contact2,
   FolderTree,
+  Handshake,
+  CreditCard,
   HardDrive,
+  Percent,
   LayoutDashboard,
   Mail,
   MessageSquare,
@@ -97,6 +100,9 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
         url: '/admin/carriers',
         icon: Users,
       },
+      { key: 'carrier_agreements', url: '/admin/carrier-agreements', icon: Handshake },
+      { key: 'commission_settings', url: '/admin/commission-settings', icon: Percent },
+      { key: 'payment_settings', url: '/admin/payment-settings', icon: CreditCard },
       { key: 'wallets', url: '/admin/wallet', icon: Wallet },
       {
         key: 'reports',
@@ -165,6 +171,9 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   theme: 'Tema',
   storage: 'Depolama',
   audit: 'Denetim',
+  carrier_agreements: 'Taşıyıcı Anlaşmaları',
+  commission_settings: 'Komisyon & Abonelik',
+  payment_settings: 'Ödeme Ayarları',
 };
 
 export const ADMIN_NAV_ROUTE_MAP: Record<AdminNavItemKey, string> = adminNavConfig

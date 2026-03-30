@@ -140,9 +140,18 @@ VALUES
 ('00009400-0000-4000-8000-000000000093','logo3.jpg','default','media/logo/logo3.jpg','media/logo','image/jpeg',238719,'/uploads/media/logo/logo3.jpg','local','media/logo/logo3.jpg','image','jpg'),
 ('00009400-0000-4000-8000-000000000094','logo4.jpg','default','media/logo/logo4.jpg','media/logo','image/jpeg',46872,'/uploads/media/logo/logo4.jpg','local','media/logo/logo4.jpg','image','jpg'),
 -- ── HERO / OG ─────────────────────────────────────────────────────────────
-('00009400-0000-4000-8000-000000000095','hero-bg.jpg','default','media/hero/hero-bg.jpg','media/hero','image/jpeg',285000,'/uploads/media/hero/hero-bg.jpg','local','media/hero/hero-bg.jpg','image','jpg'),
-('00009400-0000-4000-8000-000000000096','hero-bg-dark.jpg','default','media/hero/hero-bg-dark.jpg','media/hero','image/jpeg',195000,'/uploads/media/hero/hero-bg-dark.jpg','local','media/hero/hero-bg-dark.jpg','image','jpg'),
-('00009400-0000-4000-8000-000000000097','banner-1.jpg','default','media/hero/banner-1.jpg','media/hero','image/jpeg',220000,'/uploads/media/hero/banner-1.jpg','local','media/hero/banner-1.jpg','image','jpg'),
-('00009400-0000-4000-8000-000000000098','banner-2.jpg','default','media/hero/banner-2.jpg','media/hero','image/jpeg',210000,'/uploads/media/hero/banner-2.jpg','local','media/hero/banner-2.jpg','image','jpg'),
-('00009400-0000-4000-8000-000000000099','og-default.jpg','default','media/hero/og-default.jpg','media/hero','image/jpeg',180000,'/uploads/media/hero/og-default.jpg','local','media/hero/og-default.jpg','image','jpg'),
-('00009400-0000-4000-8000-000000000100','og-ilanlar.jpg','default','media/hero/og-ilanlar.jpg','media/hero','image/jpeg',175000,'/uploads/media/hero/og-ilanlar.jpg','local','media/hero/og-ilanlar.jpg','image','jpg');
+('00009400-0000-4000-8000-000000000095','hero-animasyon.gif','default','media/hero/Adsız tasarım.gif','media/hero','image/gif',12113653,'/uploads/media/hero/arkaplan.gif','local','media/hero/Adsız tasarım.gif','image','gif'),
+-- ── VIDEO ──────────────────────────────────────────────────────────────────
+('00009400-0000-4000-8000-000000000096','hero.mp4','default','media/video/hero.mp4','media/video','video/mp4',4979303,'/uploads/media/video/hero.mp4','local','media/video/hero.mp4','video','mp4'),
+('00009400-0000-4000-8000-000000000097','acilis.mp4','default','media/video/acilis.mp4','media/video','video/mp4',5212710,'/uploads/media/video/acilis.mp4','local','media/video/acilis.mp4','video','mp4'),
+-- ── LOGO EKSTRA ────────────────────────────────────────────────────────────
+('00009400-0000-4000-8000-000000000098','logo-animasyon.gif','default','media/logo/Adsız tasarım.gif','media/logo','image/gif',12113653,'/uploads/media/logo/Ads%C4%B1z%20tasar%C4%B1m.gif','local','media/logo/Adsız tasarım.gif','image','gif'),
+('00009400-0000-4000-8000-000000000101','apple-touch-icon.png','default','media/logo/apple-touch-icon.png','media/logo','image/png',35930,'/uploads/media/logo/apple-touch-icon.png','local','media/logo/apple-touch-icon.png','image','png'),
+('00009400-0000-4000-8000-000000000102','favicon-192x192.png','default','media/logo/favicon-192x192.png','media/logo','image/png',39877,'/uploads/media/logo/favicon-192x192.png','local','media/logo/favicon-192x192.png','image','png'),
+('00009400-0000-4000-8000-000000000103','favicon-32x32.png','default','media/logo/favicon-32x32.png','media/logo','image/png',2361,'/uploads/media/logo/favicon-32x32.png','local','media/logo/favicon-32x32.png','image','png'),
+('00009400-0000-4000-8000-000000000104','favicon.ico','default','media/logo/favicon.ico','media/logo','image/x-icon',899,'/uploads/media/logo/favicon.ico','local','media/logo/favicon.ico','image','ico'),
+('00009400-0000-4000-8000-000000000105','logo-512x512.png','default','media/logo/logo-512x512.png','media/logo','image/png',200323,'/uploads/media/logo/logo-512x512.png','local','media/logo/logo-512x512.png','image','png'),
+('00009400-0000-4000-8000-000000000106','logo-transparent.png','default','media/logo/logo-transparent.png','media/logo','image/png',533021,'/uploads/media/logo/logo-transparent.png','local','media/logo/logo-transparent.png','image','png'),
+-- ── WALLET ─────────────────────────────────────────────────────────────────
+('00009400-0000-4000-8000-000000000099','wallet1.png','default','media/wallet/wallet1.png','media/wallet','image/png',1582,'/uploads/media/wallet/wallet1.png','local','media/wallet/wallet1.png','image','png'),
+('00009400-0000-4000-8000-000000000100','Shopier.png','default','media/wallet/Shopier.png','media/wallet','image/png',25010,'/uploads/media/wallet/Shopier.png','local','media/wallet/Shopier.png','image','png');

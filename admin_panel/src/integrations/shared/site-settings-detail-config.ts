@@ -16,7 +16,9 @@ export type SiteSettingsStructuredRendererKey =
   | 'socials'
   | 'company_profile'
   | 'ui_header'
-  | 'businessHours';
+  | 'businessHours'
+  | 'homepage_hero'
+  | 'footer_links';
 
 export function toShortSiteSettingsLocale(value: unknown): string {
   return String(value || '')
@@ -106,6 +108,9 @@ export function resolveSiteSettingsStructuredRendererKey(
   if (settingKey === 'company_profile') return 'company_profile';
   if (settingKey === 'ui_header') return 'ui_header';
   if (settingKey === 'businessHours') return 'businessHours';
+  if (settingKey === 'homepage_hero') return 'homepage_hero';
+  if (settingKey === 'hero_config') return 'homepage_hero';
+  if (settingKey === 'footer_quick_links' || settingKey === 'footer_legal_links') return 'footer_links';
 
   return 'json';
 }

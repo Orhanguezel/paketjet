@@ -25,7 +25,7 @@ import {
   cancelBookingSchema,
 } from "./validation";
 import { deductForBooking, creditCarrier, refundToCustomer } from "../wallet/service";
-import { getCommissionRate, calculateCarrierPayout } from "../wallet/commission";
+import { getCommissionRateForCarrier, calculateCarrierPayout } from "../wallet/commission";
 import { repoGetFirstRowByFallback } from "../siteSettings/repository";
 import {
   notifyBookingCreated,
@@ -182,7 +182,7 @@ export const updateBookingStatus: RouteHandler = async (req, reply) => {
 
     if (status === "delivered") {
       const totalPrice = parseFloat(booking.total_price);
-      const { rate } = await getCommissionRate();
+      const { rate } = await getCommissionRateForCarrier(booking.carrier_id);
       const { carrierPayout, commissionAmount } = calculateCarrierPayout(totalPrice, rate);
       await creditCarrier(booking.carrier_id, carrierPayout, id);
       await repoUpdateBookingCommission(id, rate, commissionAmount);

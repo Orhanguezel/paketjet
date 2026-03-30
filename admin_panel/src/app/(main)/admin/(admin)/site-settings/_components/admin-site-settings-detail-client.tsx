@@ -107,6 +107,18 @@ import {
   type BackgroundItem,
 } from '../tabs/structured/home-backgrounds-structured-form';
 
+import {
+  HomepageHeroStructuredForm,
+  homepageHeroObjToForm,
+  homepageHeroFormToObj,
+} from '../tabs/structured/homepage-hero-structured-form';
+
+import {
+  FooterLinksStructuredForm,
+  footerLinksObjToForm,
+  footerLinksFormToObj,
+} from '../tabs/structured/footer-links-structured-form';
+
 /* ----------------------------- structured renderers ----------------------------- */
 
 type StructuredRenderProps = {
@@ -434,6 +446,50 @@ const BusinessHoursStructuredRenderer: React.FC<StructuredRenderProps> = ({
   );
 };
 
+const HomepageHeroStructuredRenderer: React.FC<StructuredRenderProps> = ({
+  value,
+  setValue,
+  disabled,
+}) => {
+  const base = React.useMemo(() => {
+    const v = coerceSiteSettingsDetailValue(value) ?? {};
+    return typeof v === 'object' && v ? v : {};
+  }, [value]);
+
+  const [form, setForm] = React.useState(() => homepageHeroObjToForm(base));
+  React.useEffect(() => setForm(homepageHeroObjToForm(base)), [base]);
+
+  return (
+    <HomepageHeroStructuredForm
+      value={form}
+      onChange={(next) => { setForm(next); setValue(homepageHeroFormToObj(next)); }}
+      disabled={!!disabled}
+    />
+  );
+};
+
+const FooterLinksStructuredRenderer: React.FC<StructuredRenderProps> = ({
+  value,
+  setValue,
+  disabled,
+}) => {
+  const base = React.useMemo(() => {
+    const v = coerceSiteSettingsDetailValue(value);
+    return Array.isArray(v) ? v : [];
+  }, [value]);
+
+  const [form, setForm] = React.useState(() => footerLinksObjToForm(base));
+  React.useEffect(() => setForm(footerLinksObjToForm(base)), [base]);
+
+  return (
+    <FooterLinksStructuredForm
+      value={form}
+      onChange={(next) => { setForm(next); setValue(footerLinksFormToObj(next)); }}
+      disabled={!!disabled}
+    />
+  );
+};
+
 /* ----------------------------- component ----------------------------- */
 
 export default function SiteSettingsDetailClient({ id }: { id: string }) {
@@ -745,6 +801,8 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
               if (renderStructuredKey === 'company_profile') return React.createElement(CompanyStructuredRenderer as any, commonProps);
               if (renderStructuredKey === 'ui_header') return React.createElement(UiHeaderStructuredRenderer as any, commonProps);
               if (renderStructuredKey === 'businessHours') return React.createElement(BusinessHoursStructuredRenderer as any, commonProps);
+              if (renderStructuredKey === 'homepage_hero') return React.createElement(HomepageHeroStructuredRenderer as any, commonProps);
+              if (renderStructuredKey === 'footer_links') return React.createElement(FooterLinksStructuredRenderer as any, commonProps);
 
               return React.createElement(JsonStructuredRenderer as any, commonProps);
             }}

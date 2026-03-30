@@ -2,10 +2,10 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Suspense } from 'react';
 
 import { LoginForm } from '../_components/login-form';
+import { AuthBrandPanel } from '../_components/auth-brand-panel';
 import { useLocaleContext } from '@/i18n';
 
 function LoginFormFallback() {
@@ -23,29 +23,10 @@ export default function Login() {
   const { t } = useLocaleContext();
   return (
     <div className="flex min-h-dvh">
-      {/* Sol (marka) */}
-      <div className="hidden bg-primary lg:block lg:w-1/3">
-        <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-          <div className="space-y-6">
-            <div className="mx-auto size-24 relative">
-              <Image
-                src="/logo/logo-horizontal.svg"
-                alt="PaketJet"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="space-y-2">
-              <h1 className="font-light text-5xl text-primary-foreground">
-                {t('admin.auth.login.welcomeBack')}
-              </h1>
-              <p className="text-primary-foreground/80 text-xl">
-                {t('admin.auth.login.continueLogin')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AuthBrandPanel
+        title={t('admin.auth.login.welcomeBack')}
+        subtitle={t('admin.auth.login.continueLogin')}
+      />
 
       {/* Sağ (form) */}
       <div className="flex w-full items-center justify-center bg-background p-8 lg:w-2/3">

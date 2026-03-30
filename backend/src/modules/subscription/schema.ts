@@ -24,6 +24,7 @@ export const plans = mysqlTable(
     slug: varchar("slug", { length: 100 }).notNull(),
     price: decimal("price", { precision: 10, scale: 2 }).notNull().default("0.00"),
     ilan_limit: int("ilan_limit").notNull().default(1),
+    commission_rate: decimal("commission_rate", { precision: 5, scale: 2 }),
     duration_days: int("duration_days").notNull().default(30),
     features: json("features").$type<string[]>().default([]),
     sort_order: int("sort_order").notNull().default(0),

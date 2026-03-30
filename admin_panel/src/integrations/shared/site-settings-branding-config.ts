@@ -6,6 +6,9 @@ export type SiteSettingsBrandingForm = {
   app_copyright: string;
   html_lang: string;
   theme_color: string;
+  logo: string;
+  logo_dark: string;
+  logo_icon: string;
   favicon_16: string;
   favicon_32: string;
   apple_touch_icon: string;
@@ -23,6 +26,9 @@ export const EMPTY_SITE_SETTINGS_BRANDING_FORM: SiteSettingsBrandingForm = {
   app_copyright: '',
   html_lang: '',
   theme_color: '',
+  logo: '',
+  logo_dark: '',
+  logo_icon: '',
   favicon_16: '',
   favicon_32: '',
   apple_touch_icon: '',
@@ -40,6 +46,9 @@ export const SITE_SETTINGS_BRANDING_PLACEHOLDER_KEYS = {
   app_copyright: 'copyright',
   html_lang: 'htmlLang',
   theme_color: 'themeColor',
+  logo: 'logo',
+  logo_dark: 'logoDark',
+  logo_icon: 'logoIcon',
   og_image: 'ogImage',
   favicon_16: 'favicon16',
   favicon_32: 'favicon32',
@@ -60,6 +69,9 @@ export function brandingToSiteSettingsForm(
     app_copyright: branding.app_copyright || '',
     html_lang: branding.html_lang || '',
     theme_color: branding.theme_color || '',
+    logo: branding.logo || '',
+    logo_dark: branding.logo_dark || '',
+    logo_icon: branding.logo_icon || '',
     favicon_16: branding.favicon_16 || '',
     favicon_32: branding.favicon_32 || '',
     apple_touch_icon: branding.apple_touch_icon || '',
@@ -81,6 +93,9 @@ export function siteSettingsFormToBranding(
     app_copyright: trimStr(form.app_copyright),
     html_lang: trimStr(form.html_lang),
     theme_color: trimStr(form.theme_color),
+    logo: trimStr(form.logo),
+    logo_dark: trimStr(form.logo_dark),
+    logo_icon: trimStr(form.logo_icon),
     favicon_16: trimStr(form.favicon_16),
     favicon_32: trimStr(form.favicon_32),
     apple_touch_icon: trimStr(form.apple_touch_icon),
@@ -105,10 +120,20 @@ export function normalizeSiteSettingsBrandingConfig(
   const branding = config.branding && typeof config.branding === 'object' ? (config.branding as UnknownRow) : {};
   const brandingMeta =
     branding.meta && typeof branding.meta === 'object' ? (branding.meta as UnknownRow) : {};
+  const favicon16 = trimStr(branding.favicon_16) || trimStr(branding.favicon);
+  const favicon32 = trimStr(branding.favicon_32) || trimStr(branding.favicon_svg) || favicon16;
+  const logo = trimStr(branding.logo);
+  const logoDark = trimStr(branding.logo_dark) || logo;
+  const logoIcon = trimStr(branding.logo_icon) || favicon32 || favicon16 || logo;
 
   return {
     ...DEFAULT_BRANDING,
     ...branding,
+    logo: logo || DEFAULT_BRANDING.logo,
+    logo_dark: logoDark || DEFAULT_BRANDING.logo_dark,
+    logo_icon: logoIcon || DEFAULT_BRANDING.logo_icon,
+    favicon_16: favicon16 || DEFAULT_BRANDING.favicon_16,
+    favicon_32: favicon32 || DEFAULT_BRANDING.favicon_32,
     meta: {
       ...DEFAULT_BRANDING.meta,
       ...brandingMeta,

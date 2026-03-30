@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8078").replace(/\/$/, "");
 
 interface IlanSitemapItem {
   id: string;
@@ -26,19 +26,29 @@ async function fetchActiveIlans(): Promise<IlanSitemapItem[]> {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const ilans = await fetchActiveIlans();
+  const now = new Date().toISOString();
 
   const staticPages: MetadataRoute.Sitemap = [
-    { url: SITE_URL, lastModified: "2026-03-20", changeFrequency: "daily", priority: 1 },
-    { url: `${SITE_URL}/ilanlar`, lastModified: "2026-03-20", changeFrequency: "hourly", priority: 0.9 },
-    { url: `${SITE_URL}/iletisim`, lastModified: "2026-03-15", changeFrequency: "monthly", priority: 0.5 },
+    { url: SITE_URL, lastModified: "2026-03-30", changeFrequency: "daily", priority: 1 },
+    { url: `${SITE_URL}/ilanlar`, lastModified: "2026-03-30", changeFrequency: "hourly", priority: 0.9 },
     { url: `${SITE_URL}/ilan-ver`, lastModified: "2026-03-15", changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE_URL}/gizlilik`, lastModified: "2026-03-15", changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/destek`, lastModified: "2026-03-30", changeFrequency: "weekly", priority: 0.6 },
+    { url: `${SITE_URL}/hakkimizda`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.4 },
+    { url: `${SITE_URL}/iletisim`, lastModified: "2026-03-15", changeFrequency: "monthly", priority: 0.5 },
+    { url: `${SITE_URL}/kvkk`, lastModified: "2026-03-20", changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/gizlilik-politikasi`, lastModified: "2026-03-30", changeFrequency: "yearly", priority: 0.3 },
     { url: `${SITE_URL}/kullanim-kosullari`, lastModified: "2026-03-15", changeFrequency: "yearly", priority: 0.3 },
+    { url: `${SITE_URL}/tasima-kurallari`, lastModified: "2026-03-15", changeFrequency: "yearly", priority: 0.4 },
+    { url: `${SITE_URL}/blog`, lastModified: "2026-03-30", changeFrequency: "weekly", priority: 0.7 },
+    { url: `${SITE_URL}/blog/p2p-kargo-nedir`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/blog/paketjet-nasil-kullanilir`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.7 },
+    { url: `${SITE_URL}/rota/istanbul-ankara`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.6 },
+    { url: `${SITE_URL}/rota/istanbul-izmir`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.6 },
   ];
 
   const ilanPages: MetadataRoute.Sitemap = ilans.map((ilan) => ({
     url: `${SITE_URL}/ilanlar/${ilan.id}`,
-    lastModified: ilan.updated_at ? new Date(ilan.updated_at) : "2026-03-20",
+    lastModified: ilan.updated_at ? new Date(ilan.updated_at) : now,
     changeFrequency: "daily" as const,
     priority: 0.8,
   }));

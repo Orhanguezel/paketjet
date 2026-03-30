@@ -122,7 +122,7 @@ export default function Header({ overlay = false }: HeaderProps) {
               <Link
                 href={ROUTES.auth.register}
                 title="PaketJet uye ol"
-                className="px-4 py-2.5 text-sm text-white bg-brand rounded-lg hover:bg-brand-dark transition-colors font-semibold"
+                className="px-4 py-2.5 text-sm text-white bg-brand-dark rounded-lg hover:brightness-110 transition-colors font-semibold"
               >
                 Üye Ol
               </Link>

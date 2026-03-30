@@ -40,6 +40,14 @@ INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUE
   (UUID(), 'integration.iyzico.base_url',   '"https://sandbox-api.iyzipay.com"',    NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE `updated_at` = NOW(3);
 
+-- PayTR (ödeme sistemi)
+INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
+  (UUID(), 'integration.paytr.enabled',       'false', NOW(3), NOW(3)),
+  (UUID(), 'integration.paytr.merchant_id',   '""',    NOW(3), NOW(3)),
+  (UUID(), 'integration.paytr.merchant_key',  '""',    NOW(3), NOW(3)),
+  (UUID(), 'integration.paytr.merchant_salt', '""',    NOW(3), NOW(3))
+ON DUPLICATE KEY UPDATE `updated_at` = NOW(3);
+
 -- Facebook (sosyal giriş)
 INSERT INTO `site_settings` (`id`,`key`,`value`,`created_at`,`updated_at`) VALUES
   (UUID(), 'integration.facebook.enabled',      'false', NOW(3), NOW(3)),

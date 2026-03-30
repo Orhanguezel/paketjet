@@ -6,6 +6,8 @@
   "quickCreate": "Hızlı Oluştur",
   "inbox": "Gelen Kutusu",
   "comingSoon": "Yakında",
+  "adminPanel": "Admin Panel",
+  "carrierPanel": "Taşıyıcı Panel",
   "user": {
     "account": "Hesap",
     "billing": "Faturalama",
@@ -89,6 +91,9 @@
     "storage": "Depolama",
     "theme": "Tema",
     "telegram": "Telegram",
-    "audit": "Denetim"
+    "audit": "Denetim",
+    "carrier_agreements": "Taşıyıcı Anlaşmaları",
+    "commission_settings": "Komisyon & Abonelik",
+    "payment_settings": "Ödeme Ayarları"
   }
 }

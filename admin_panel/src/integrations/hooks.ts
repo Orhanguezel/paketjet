@@ -183,3 +183,21 @@ export {
   useListBookingsAdminQuery,
   useUpdateBookingStatusAdminMutation,
 } from '@/integrations/endpoints/admin/bookings-admin-endpoints';
+
+export {
+  useListCarrierAgreementsAdminQuery,
+  useGetCarrierAgreementAdminQuery,
+  useCreateCarrierAgreementAdminMutation,
+  useUpdateCarrierAgreementAdminMutation,
+  useDeleteCarrierAgreementAdminMutation,
+} from '@/integrations/endpoints/admin/carrier-agreements-admin-endpoints';
+
+export {
+  useGetCommissionRateQuery,
+  useUpdateCommissionRateMutation,
+  useListPlansAdminQuery,
+  useGetPlanAdminQuery,
+  useCreatePlanAdminMutation,
+  useUpdatePlanAdminMutation,
+  useDeletePlanAdminMutation,
+} from '@/integrations/endpoints/admin/commission-settings-admin-endpoints';

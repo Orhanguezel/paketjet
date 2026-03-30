@@ -51,10 +51,12 @@ export const SITE_SETTINGS_GLOBAL_TABS: SiteSettingsTab[] = [
   'brand_media',
   'api',
   'locales',
+  'branding',
 ];
 
 export const SITE_SETTINGS_GENERAL_KEYS = [
   'app_locales',
+  'homepage_hero',
   'hero',
   'hero_video',
   'hero_config',
@@ -65,6 +67,10 @@ export const SITE_SETTINGS_GENERAL_KEYS = [
   'businessHours',
   'company_profile',
   'ui_header',
+  'footer_about',
+  'footer_quick_links',
+  'footer_legal_links',
+  'footer_copyright',
 ] as const;
 
 export type SiteSettingsGeneralKey = (typeof SITE_SETTINGS_GENERAL_KEYS)[number];
@@ -81,6 +87,11 @@ export const SITE_SETTINGS_DEFAULTS_BY_KEY: Record<SiteSettingsGeneralKey, Setti
     { code: 'tr', label: 'Türkçe', is_default: true, is_active: true },
     { code: 'en', label: 'English', is_default: false, is_active: true },
   ],
+  homepage_hero: {
+    title: '', subtitle: '', bgImage: '', bgImageDark: '',
+    ctaLabel: '', ctaPath: '', ctaSecondaryLabel: '', ctaSecondaryPath: '',
+    videoLoops: 2, videoPauseMs: 8000, videoFadeMs: 1000,
+  },
   hero: { video_desktop: '', video_mobile: '', headline_tr: '', headline_en: '' },
   hero_video: { desktop: '', mobile: '' },
   hero_config: { headline: '', sub_headline: '', button_text: '', button_link: '' },
@@ -98,13 +109,14 @@ export const SITE_SETTINGS_DEFAULTS_BY_KEY: Record<SiteSettingsGeneralKey, Setti
   ],
   company_profile: { company_name: '', slogan: '', about: '' },
   ui_header: {
-    nav_home: 'Home',
-    nav_products: 'Products',
-    nav_services: 'Services',
-    nav_contact: 'Contact',
-    cta_label: 'Get Offer',
+    nav_home: 'Anasayfa', nav_products: 'İlanlar', nav_services: 'Nasıl Çalışır',
+    nav_about: 'Hakkımızda', nav_contact: 'İletişim', cta_label: 'Kargo Gönder',
   },
   home_backgrounds: [],
+  footer_about: '',
+  footer_quick_links: [],
+  footer_legal_links: [],
+  footer_copyright: '',
 };
 
 export const SITE_SETTINGS_BRAND = (process.env.NEXT_PUBLIC_SITE_BRAND || 'paketjet').trim();

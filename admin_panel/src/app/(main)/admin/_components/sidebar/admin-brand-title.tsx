@@ -1,27 +1,31 @@
 'use client';
 
 import { useStatusQuery } from '@/integrations/hooks';
-import { normalizeMeFromStatus } from '@/integrations/shared';
+import { normalizeMeFromStatus, cleanAppName } from '@/integrations/shared';
 import { useAdminSettings } from '../admin-settings-provider';
 
-function withPanelTitle(appNameRaw: string, isAdmin: boolean): string {
-  const panelTitle = isAdmin ? 'Admin Panel' : 'Satici Panel';
-  const cleaned = appNameRaw
-    .replace(/\badmin\s*panel\b/gi, '')
-    .replace(/\bsatici\s*panel\b/gi, '')
-    .trim();
-  return cleaned ? `${cleaned} ${panelTitle}` : panelTitle;
-}
+import { useAdminT } from '../common/use-admin-t';
 
 export function AdminBrandTitle() {
   const { branding } = useAdminSettings();
   const statusQ = useStatusQuery();
+  const t = useAdminT();
   const me = normalizeMeFromStatus(statusQ.data as any);
   const isAdmin = me?.isAdmin === true;
   const appName = branding?.app_name || '';
+  const cleanedName = cleanAppName(appName) || 'PaketJet';
+  const panelType = isAdmin 
+    ? t('sidebar.adminPanel', undefined, 'Admin') 
+    : t('sidebar.carrierPanel', undefined, 'Taşıyıcı');
+
   return (
-    <h2 className="text-sm font-semibold tracking-tight hidden sm:block">
-      {withPanelTitle(appName, isAdmin)}
-    </h2>
+    <div className="flex items-center gap-2">
+      <h2 className="text-sm font-semibold tracking-tight hidden sm:block text-foreground">
+        {cleanedName}
+      </h2>
+      <span className="text-[10px] bg-sidebar-accent/50 text-muted-foreground px-1.5 py-0.5 rounded border border-border font-medium uppercase tracking-widest">
+        {panelType}
+      </span>
+    </div>
   );
 }

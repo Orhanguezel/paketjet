@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
+import { OrganizationSchema } from "@/components/JsonLd";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ async function fetchGlobalSeo() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo, meta } = await fetchGlobalSeo();
+  const bingVerification = process.env.BING_VERIFICATION ?? "";
 
   const siteName = seo?.site_name ?? "PaketJet";
   const titleTemplate = seo?.title_template ?? "%s | PaketJet";
@@ -72,6 +74,9 @@ export async function generateMetadata(): Promise<Metadata> {
       card: twitterCard as "summary_large_image",
       ...(twitterSite && { site: twitterSite }),
     },
+    verification: bingVerification
+      ? { other: { "msvalidate.01": bingVerification } }
+      : undefined,
   };
 }
 
@@ -83,6 +88,7 @@ export default function RootLayout({
   return (
     <html lang="tr" suppressHydrationWarning className={`${dmSans.variable} font-sans`}>
       <body suppressHydrationWarning>
+        <OrganizationSchema />
         <ThemeProvider>
           {children}
         </ThemeProvider>

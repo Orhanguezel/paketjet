@@ -178,6 +178,14 @@ export function safeText(v: unknown, fb = ''): string {
   return s ? s : fb;
 }
 
+/** Clean app name by removing "Admin Panel" or "Satici Panel" suffixes (case-insensitive) */
+export function cleanAppName(name: unknown): string {
+  return safeText(name)
+    .replace(/\badmin\s*panel\b/gi, '')
+    .replace(/\bsatici\s*panel\b/gi, '')
+    .trim();
+}
+
 export function getErrorMessage(err: unknown, fallback = ''): string {
   const source = err as {
     data?: { message?: unknown; error?: { message?: unknown } };

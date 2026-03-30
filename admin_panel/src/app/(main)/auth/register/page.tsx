@@ -1,10 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Suspense } from 'react';
 
 import { RegisterForm } from '../_components/register-form';
+import { AuthBrandPanel } from '../_components/auth-brand-panel';
 import { useAdminTranslations } from '@/i18n';
 import { useLocaleShort } from '@/i18n/use-locale-short';
 
@@ -25,29 +25,10 @@ export default function Register() {
 
   return (
     <div className="flex min-h-dvh">
-      {/* Sol (marka) */}
-      <div className="hidden bg-primary lg:block lg:w-1/3">
-        <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-          <div className="space-y-6">
-            <div className="mx-auto size-24 relative">
-              <Image
-                src="/logo/logo-horizontal.svg"
-                alt="PaketJet"
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="space-y-2">
-              <h1 className="font-light text-5xl text-primary-foreground">
-                {t('admin.auth.register.createAccount')}
-              </h1>
-              <p className="text-primary-foreground/80 text-xl">
-                {t('admin.auth.register.continueRegister')}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <AuthBrandPanel
+        title={t('admin.auth.register.createAccount')}
+        subtitle={t('admin.auth.register.continueRegister')}
+      />
 
       {/* Sağ (form) */}
       <div className="flex w-full items-center justify-center bg-background p-8 lg:w-2/3">

@@ -14,7 +14,7 @@ SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 -- =============================================================
 INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
 (UUID(), 'paketjet__site_logo', '*',
- '{"url":"/uploads/media/logo/logo.jpeg","alt":"PaketJet Logo","urlDark":"/uploads/media/logo/logo2.jpeg","altDark":"PaketJet Logo Dark","favicon":"/uploads/media/logo/logo4.jpg","faviconAlt":"PaketJet Favicon","appleTouchIcon":"/uploads/media/logo/logo3.jpg","appleTouchIconAlt":"PaketJet Apple Touch","ogImage":"/uploads/media/hero/og-default.jpg","ogImageAlt":"PaketJet OG Image"}')
+ '{"url":"/uploads/media/logo/logo-transparent.png","alt":"PaketJet Logo","urlDark":"/uploads/media/logo/logo-transparent.png","altDark":"PaketJet Logo Dark","favicon":"/uploads/media/logo/favicon.ico","faviconAlt":"PaketJet Favicon","appleTouchIcon":"/uploads/media/logo/apple-touch-icon.png","appleTouchIconAlt":"PaketJet Apple Touch","ogImage":"/uploads/media/logo/logo-512x512.png","ogImageAlt":"PaketJet OG Image"}')
 ON DUPLICATE KEY UPDATE
   `value` = VALUES(`value`),
   `updated_at` = NOW(3);
@@ -23,7 +23,7 @@ ON DUPLICATE KEY UPDATE
 -- paketjet__logo  (legacy fallback)
 -- =============================================================
 INSERT INTO `site_settings` (`id`, `key`, `locale`, `value`) VALUES
-(UUID(), 'paketjet__logo', '*', '"/uploads/media/logo/logo.jpeg"')
+(UUID(), 'paketjet__logo', '*', '"/uploads/media/logo/logo-transparent.png"')
 ON DUPLICATE KEY UPDATE
   `value` = VALUES(`value`),
   `updated_at` = NOW(3);

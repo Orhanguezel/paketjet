@@ -151,6 +151,7 @@ export default function AdminSiteSettingsClient() {
     localeSettingsQ.isLoading;
 
   const disabled = headerLoading || isDeleting;
+  const dash = t('admin.siteSettings.list.dash');
 
   const onRefresh = async () => {
     try {
@@ -167,7 +168,7 @@ export default function AdminSiteSettingsClient() {
     if (!key) return;
 
     const ok = window.confirm(
-      t('admin.siteSettings.list.deleteConfirm', { key, locale: rowLocale || locale || '—' }),
+      t('admin.siteSettings.list.deleteConfirm', { key, locale: rowLocale || locale || dash }),
     );
     if (!ok) return;
 
@@ -324,6 +325,9 @@ export default function AdminSiteSettingsClient() {
                   <TabsTrigger value="locales" className="whitespace-nowrap text-xs sm:text-sm">
                     {t('admin.siteSettings.tabs.locales')}
                   </TabsTrigger>
+                  <TabsTrigger value="branding" className="whitespace-nowrap text-xs sm:text-sm">
+                    {t('admin.siteSettings.tabs.branding')}
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
@@ -357,6 +361,10 @@ export default function AdminSiteSettingsClient() {
 
               <TabsContent value="locales" className="mt-3 sm:mt-4">
                 <LocalesSettingsTab settingPrefix={brandPrefix} />
+              </TabsContent>
+
+              <TabsContent value="branding" className="mt-3 sm:mt-4">
+                <BrandingSettingsTab locale="*" />
               </TabsContent>
 
 

@@ -13,6 +13,9 @@ export type AdminBrandingConfig = {
   app_copyright: string;
   html_lang: string;
   theme_color: string;
+  logo: string;
+  logo_dark: string;
+  logo_icon: string;
   favicon_16: string;
   favicon_32: string;
   apple_touch_icon: string;
@@ -32,9 +35,12 @@ export const DEFAULT_BRANDING: AdminBrandingConfig = {
   app_copyright: 'PaketJet',
   html_lang: FALLBACK_LOCALE,
   theme_color: '#F97316',
-  favicon_16: '/favicon/favicon.svg',
-  favicon_32: '/favicon/favicon.svg',
-  apple_touch_icon: '/apple/apple-touch-icon.png',
+  logo: '',
+  logo_dark: '',
+  logo_icon: '',
+  favicon_16: '',
+  favicon_32: '',
+  apple_touch_icon: '',
   meta: {
     title: 'PaketJet Admin Panel',
     description:
@@ -43,7 +49,7 @@ export const DEFAULT_BRANDING: AdminBrandingConfig = {
     og_title: 'PaketJet Admin Panel',
     og_description:
       'PaketJet yonetim paneli ile ilan ve rezervasyon yonetimini merkezi olarak yapin.',
-    og_image: '/logo/og-image.png',
+    og_image: '',
     twitter_card: 'summary_large_image',
   },
 };

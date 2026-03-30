@@ -1,0 +1,116 @@
+{
+  "list": {
+    "title": "Taşıyıcı Anlaşmaları",
+    "description": "Taşıyıcıların platform ile anlaşma tiplerini ve komisyon oranlarını yönetin.",
+    "filters": {
+      "title": "Filtreler",
+      "description": "Anlaşma tipi ve duruma göre filtreleyin.",
+      "searchLabel": "Arama",
+      "searchPlaceholder": "Taşıyıcı adı, e-posta...",
+      "typeLabel": "Anlaşma Tipi",
+      "typePlaceholder": "Tümü",
+      "statusLabel": "Durum",
+      "statusPlaceholder": "Tümü",
+      "searchButton": "Ara",
+      "resetButton": "Sıfırla",
+      "refreshButton": "Yenile"
+    },
+    "table": {
+      "title": "Anlaşma Listesi",
+      "loading": "Yükleniyor…",
+      "totalRecords": "Toplam: {count} kayıt",
+      "loadError": "Liste yüklenemedi.",
+      "retryButton": "Yeniden dene",
+      "noRecords": "Kayıt bulunamadı.",
+      "carrier": "Taşıyıcı",
+      "email": "E-posta",
+      "type": "Anlaşma Tipi",
+      "commissionRate": "Komisyon",
+      "plan": "Plan",
+      "status": "Durum",
+      "startDate": "Başlangıç",
+      "actions": "İşlem",
+      "viewButton": "Detay",
+      "emptyValue": "—"
+    },
+    "pagination": {
+      "offset": "Offset: {offset}",
+      "limit": "Limit: {limit}",
+      "previous": "Önceki",
+      "next": "Sonraki"
+    },
+    "addButton": "Yeni Anlaşma"
+  },
+  "detail": {
+    "title": "Anlaşma Detay",
+    "backButton": "Geri",
+    "loadError": "Anlaşma yüklenemedi.",
+    "loading": "Yükleniyor…",
+    "retryButton": "Yeniden dene",
+    "info": {
+      "title": "Anlaşma Bilgileri",
+      "description": "Anlaşma tipini, komisyon oranını ve plan seçimini yönetin.",
+      "typeLabel": "Anlaşma Tipi",
+      "commissionRateLabel": "Komisyon Oranı (%)",
+      "commissionRatePlaceholder": "Boş bırakılırsa platform varsayılanı kullanılır",
+      "planLabel": "Abonelik Planı",
+      "planNone": "Plan yok",
+      "statusLabel": "Durum",
+      "adminNoteLabel": "Admin Notu",
+      "adminNotePlaceholder": "İsteğe bağlı not...",
+      "saveButton": "Kaydet",
+      "saved": "Anlaşma güncellendi."
+    },
+    "carrier": {
+      "title": "Taşıyıcı Bilgileri",
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "startDate": "Başlangıç Tarihi",
+      "expiryDate": "Bitiş Tarihi",
+      "noExpiry": "Süresiz"
+    },
+    "commission": {
+      "title": "Efektif Komisyon",
+      "description": "Taşıyıcıya uygulanan komisyon hesaplaması.",
+      "carrierRate": "Taşıyıcıya özel oran",
+      "planRate": "Plan komisyon oranı",
+      "platformRate": "Platform varsayılan oranı",
+      "effectiveRate": "Uygulanan oran",
+      "notSet": "Belirlenmedi"
+    },
+    "delete": {
+      "title": "Tehlikeli İşlem",
+      "description": "Anlaşmayı kalıcı olarak siler.",
+      "button": "Anlaşmayı Sil",
+      "confirm": "Bu anlaşma silinecek. Devam edilsin mi?",
+      "deleted": "Anlaşma silindi."
+    },
+    "errorFallback": "İşlem başarısız. Lütfen tekrar deneyin."
+  },
+  "create": {
+    "title": "Yeni Anlaşma",
+    "description": "Bir taşıyıcı için yeni anlaşma oluşturun.",
+    "carrierLabel": "Taşıyıcı",
+    "carrierPlaceholder": "Taşıyıcı seçin...",
+    "typeLabel": "Anlaşma Tipi",
+    "commissionRateLabel": "Komisyon Oranı (%)",
+    "commissionRatePlaceholder": "Boş bırakılırsa platform varsayılanı",
+    "planLabel": "Abonelik Planı",
+    "planNone": "Plan yok",
+    "adminNoteLabel": "Admin Notu",
+    "adminNotePlaceholder": "İsteğe bağlı not...",
+    "submitButton": "Oluştur",
+    "cancelButton": "İptal",
+    "created": "Anlaşma oluşturuldu.",
+    "alreadyExists": "Bu taşıyıcının zaten bir anlaşması var."
+  },
+  "types": {
+    "commission": "Komisyon",
+    "subscription": "Abonelik"
+  },
+  "statuses": {
+    "active": "Aktif",
+    "suspended": "Askıda",
+    "expired": "Süresi Dolmuş"
+  }
+}

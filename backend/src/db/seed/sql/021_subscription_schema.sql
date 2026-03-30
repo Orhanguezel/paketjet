@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS plans (
   slug        VARCHAR(100) NOT NULL,
   price       DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   ilan_limit  INT NOT NULL DEFAULT 1,
+  commission_rate DECIMAL(5,2) DEFAULT NULL,
   duration_days INT NOT NULL DEFAULT 30,
   features    JSON DEFAULT NULL,
   sort_order  INT NOT NULL DEFAULT 0,
@@ -33,8 +34,8 @@ CREATE TABLE IF NOT EXISTS user_subscriptions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Varsayilan planlar
-INSERT IGNORE INTO plans (id, name, slug, price, ilan_limit, duration_days, features, sort_order, is_active) VALUES
-  (UUID(), 'Ucretsiz',  'free',     0.00,   1,  30, '["Ayda 1 ilan","Temel ozellikler"]',                              0, 1),
-  (UUID(), 'Starter',   'starter',  49.00,  5,  30, '["Ayda 5 ilan","Temel ozellikler","E-posta destek"]',              1, 1),
-  (UUID(), 'Pro',       'pro',      149.00, 20, 30, '["Ayda 20 ilan","One cikarma","Oncelikli siralama"]',              2, 1),
-  (UUID(), 'Business',  'business', 349.00, 0,  30, '["Sinirsiz ilan","Premium badge","Oncelikli destek","API erisim"]', 3, 1);
+INSERT IGNORE INTO plans (id, name, slug, price, ilan_limit, commission_rate, duration_days, features, sort_order, is_active) VALUES
+  (UUID(), 'Ucretsiz',  'free',     0.00,   1,  NULL,  30, '["Ayda 1 ilan","Temel ozellikler"]',                              0, 1),
+  (UUID(), 'Starter',   'starter',  49.00,  5,  12.00, 30, '["Ayda 5 ilan","%12 komisyon","E-posta destek"]',                  1, 1),
+  (UUID(), 'Pro',       'pro',      149.00, 20, 8.00,  30, '["Ayda 20 ilan","%8 komisyon","One cikarma","Oncelikli siralama"]', 2, 1),
+  (UUID(), 'Business',  'business', 349.00, 0,  5.00,  30, '["Sinirsiz ilan","%5 komisyon","Premium badge","Oncelikli destek"]', 3, 1);

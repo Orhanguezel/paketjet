@@ -89,11 +89,11 @@
     "deleted": "\"{key}\" ({locale}) silindi.",
     "deleteError": "Silme sırasında hata oluştu.",
     "modes": {
-      "structured": "Structured",
-      "raw": "Raw"
+      "structured": "Form",
+      "raw": "JSON"
     },
-    "structuredMissingTitle": "Structured renderer yok",
-    "structuredMissingDesc": "Bu key için structured renderer tanımlı değil. Raw modunu kullanın.",
+    "structuredMissingTitle": "Form düzenleyici yok",
+    "structuredMissingDesc": "Bu key için özel structured form tanımlı değil. Structured mod JSON editor olarak çalışır.",
     "rawHelp": "Raw: Geçerli JSON girersen parse edilerek kaydedilir; değilse düz string kaydedilir.",
     "rawPlaceholder": "Örn: {\"title\":\"...\"} veya düz metin",
     "rawTip": "İpucu: JSON formatında kaydetmek istiyorsan başı “{” veya “[” ile başlamalı."
@@ -165,7 +165,43 @@
     "missingGlobalError": "GLOBAL (*) kayıt bulunamadı. Önce global değer oluşturmalısın.",
     "globalBootstrapSuccess": "Eksik GLOBAL (*) General/UI kayıtları oluşturuldu.",
     "loadingNote": "Global + locale kayıtları çekiliyor.",
-    "deleteTooltip": "İpucu: \"Sil*\" GLOBAL (*) kaydını siler. \"Sil\" seçili locale override'ını siler."
+    "deleteTooltip": "İpucu: \"Sil*\" GLOBAL (*) kaydını siler. \"Sil\" seçili locale override'ını siler.",
+    "keyLabels": {
+      "app_locales": "Uygulama Dilleri",
+      "hero": "Hero İçeriği",
+      "hero_video": "Hero Video",
+      "hero_config": "Hero Yapılandırması",
+      "home_backgrounds": "Anasayfa Arka Planları",
+      "seo_pages": "SEO Sayfaları",
+      "contact_info": "İletişim Bilgileri",
+      "socials": "Sosyal Medya Linkleri",
+      "businessHours": "Çalışma Saatleri",
+      "company_profile": "Şirket Profili",
+      "ui_header": "Üst Menü",
+      "homepage_hero": "Anasayfa Hero Ayarları",
+      "footer_about": "Footer Hakkında Metni",
+      "footer_quick_links": "Footer Hızlı Linkler",
+      "footer_legal_links": "Footer Yasal Linkler",
+      "footer_copyright": "Footer Telif Hakkı"
+    },
+    "keyDescriptions": {
+      "app_locales": "Panel ve uygulamada kullanılacak aktif dilleri yönetir.",
+      "hero": "Anasayfa hero alanındaki başlık, alt başlık ve CTA içeriklerini tutar.",
+      "hero_video": "Hero alanında kullanılan video kaynaklarını yönetir.",
+      "hero_config": "Hero alanı için ek yapılandırma değerlerini tutar.",
+      "home_backgrounds": "Anasayfa arka plan görsellerini ve alternatif metinlerini yönetir.",
+      "seo_pages": "Sayfa bazlı SEO başlık, açıklama ve OG görsellerini tutar.",
+      "contact_info": "Adres, telefon, e-posta ve harita gibi iletişim alanlarını yönetir.",
+      "socials": "Sosyal ağ bağlantılarını tek yerden düzenler.",
+      "businessHours": "Haftalık çalışma saatleri ve kapalı gün bilgilerini tutar.",
+      "company_profile": "Şirket adı, slogan ve kurumsal açıklama alanlarını içerir.",
+      "ui_header": "Header menü etiketleri ve CTA buton metnini yönetir.",
+      "homepage_hero": "Arka plan görseli, başlık, alt başlık, CTA butonları ve video döngü ayarları (loops, bekleme, fade süresi).",
+      "footer_about": "Sitenin alt bölümünde gösterilen kısa firma tanıtım metni.",
+      "footer_quick_links": "Footer'daki hızlı erişim linkleri (Anasayfa, İlanlar, vb.).",
+      "footer_legal_links": "Footer'daki yasal linkler (Gizlilik, KVKK, Kullanım Koşulları, vb.).",
+      "footer_copyright": "Footer'ın en altında görünen telif hakkı metni."
+    }
   },
   "cloudinary": {
     "title": "Cloudinary / Storage Ayarları",
@@ -219,6 +255,9 @@
       "htmlLang": "HTML Dili",
       "htmlLangHelp": "<html lang=\"...\"> özelliği. Ör: de, en, tr",
       "themeColor": "Tema Rengi",
+      "logo": "Panel Logosu",
+      "logoDark": "Koyu Zemin Logosu",
+      "logoIcon": "Panel Logo İkonu",
       "favicon16": "Favicon 16×16",
       "favicon32": "Favicon 32×32",
       "appleTouchIcon": "Apple Touch Icon",
@@ -235,6 +274,9 @@
       "copyright": "PaketJet",
       "htmlLang": "tr",
       "themeColor": "#F97316",
+      "logo": "/logo/logo-horizontal.svg",
+      "logoDark": "/logo/logo-horizontal-dark.svg",
+      "logoIcon": "/logo/logo-icon.svg",
       "ogImage": "/logo/png/paketjet_logo_512.png",
       "favicon16": "/favicon/favicon-16.png",
       "favicon32": "/favicon/favicon-32.png",
@@ -283,6 +325,20 @@
         "logo_dark_url": "Koyu Zemin Logo",
         "favicon_url": "Favicon",
         "apple_touch_icon_url": "Apple Touch Icon"
+      },
+      "admin": {
+        "title": "Admin Panel Medyaları",
+        "description": "Admin login, sidebar ve favicon için kullanılan görseller. Dosyalar storage üzerinden seçilir ve preview burada görünür.",
+        "saved": "Admin panel medya ayarları kaydedildi.",
+        "saveError": "Admin panel medya ayarları kaydedilemedi.",
+        "labels": {
+          "logo": "Admin Logo",
+          "logoDark": "Admin Logo (Koyu)",
+          "logoIcon": "Admin Logo İkonu",
+          "favicon16": "Admin Favicon 16x16",
+          "favicon32": "Admin Favicon 32x32",
+          "appleTouchIcon": "Admin Apple Touch Icon"
+        }
       }
     }
   },
@@ -492,10 +548,19 @@
     "contact": {
       "description": "İletişim bilgileri. Boş bırakılan alanlar boş string olarak kaydedilir.",
       "labels": {
+        "companyName": "Şirket Adı",
         "phone": "Telefon",
+        "phone2": "Telefon 2",
         "email": "E-posta",
+        "email2": "E-posta 2",
         "whatsapp": "WhatsApp",
-        "address": "Adres"
+        "address": "Adres",
+        "city": "Şehir",
+        "country": "Ülke",
+        "workingHours": "Çalışma Saatleri",
+        "mapsEmbedUrl": "Harita Embed URL",
+        "mapsLat": "Harita Enlem",
+        "mapsLng": "Harita Boylam"
       }
     },
     "socials": {
@@ -527,11 +592,13 @@
     "uiHeader": {
       "description": "Header navigasyon ve CTA label metinleri. Dil bazlı override için locale satırı kullan.",
       "labels": {
-        "navHome": "Menü: Home",
-        "navProducts": "Menü: Products",
-        "navServices": "Menü: Services",
-        "navContact": "Menü: Contact",
-        "ctaLabel": "CTA Label"
+        "navHome": "Menü: Ana Sayfa",
+        "navProducts": "Menü: Ürünler",
+        "navServices": "Menü: Hizmetler",
+        "navNews": "Menü: Haberler",
+        "navAbout": "Menü: Hakkımızda",
+        "navContact": "Menü: İletişim",
+        "ctaLabel": "CTA Etiketi"
       }
     },
     "businessHours": {

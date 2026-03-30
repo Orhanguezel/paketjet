@@ -6,6 +6,7 @@ export const createPlanSchema = z.object({
   slug: z.string().trim().min(1).max(100).regex(/^[a-z0-9-]+$/),
   price: z.number().min(0),
   ilan_limit: z.number().int().min(0),
+  commission_rate: z.number().min(0).max(100).nullable().optional(),
   duration_days: z.number().int().min(1).default(30),
   features: z.array(z.string()).default([]),
   sort_order: z.number().int().default(0),

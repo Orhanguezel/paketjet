@@ -21,19 +21,30 @@ import { LocaleProvider } from '@/i18n/locale-provider';
 
 import './globals.css';
 
+function toTwitterCard(value: string): 'summary' | 'summary_large_image' | 'app' | 'player' {
+  if (value === 'summary' || value === 'app' || value === 'player') return value;
+  return 'summary_large_image';
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await fetchBrandingConfig();
+  const icon = [branding.favicon_16, branding.favicon_32]
+    .filter(Boolean)
+    .map((url, index) => ({
+      url,
+      sizes: index === 0 ? '16x16' : '32x32',
+    }));
+  const apple = branding.apple_touch_icon || undefined;
+  const shortcut = branding.logo_icon || branding.favicon_32 || branding.favicon_16 || undefined;
 
   return {
     metadataBase: new URL(branding.meta.og_url || 'https://paketjet.com'),
     title: branding.meta.title,
     description: branding.meta.description,
     icons: {
-      icon: [
-        { url: branding.favicon_16, sizes: '16x16', type: 'image/svg+xml' },
-        { url: branding.favicon_32, sizes: '32x32', type: 'image/svg+xml' },
-      ],
-      apple: branding.apple_touch_icon,
+      ...(icon.length ? { icon } : {}),
+      ...(shortcut ? { shortcut } : {}),
+      ...(apple ? { apple } : {}),
     },
     openGraph: {
       type: 'website',
@@ -43,7 +54,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [branding.meta.og_image],
     },
     twitter: {
-      card: 'summary_large_image',
+      card: toTwitterCard(branding.meta.twitter_card),
       title: branding.meta.og_title,
       description: branding.meta.og_description,
       images: [branding.meta.og_image],

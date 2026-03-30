@@ -4,6 +4,7 @@
 // =============================================================
 
 import { DEFAULT_BRANDING, type AdminBrandingConfig } from '@/config/app-config';
+import { normalizeSiteSettingsBrandingConfig } from '@/integrations/shared';
 
 /**
  * Backend API base URL (server-side only).
@@ -37,16 +38,7 @@ export async function fetchBrandingConfig(): Promise<AdminBrandingConfig> {
     if (!res.ok) return DEFAULT_BRANDING;
 
     const data = await res.json();
-    const value = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
-    const branding = value?.branding;
-
-    if (!branding?.meta?.title) return DEFAULT_BRANDING;
-
-    return {
-      ...DEFAULT_BRANDING,
-      ...branding,
-      meta: { ...DEFAULT_BRANDING.meta, ...branding.meta },
-    };
+    return normalizeSiteSettingsBrandingConfig(data);
   } catch {
     return DEFAULT_BRANDING;
   }

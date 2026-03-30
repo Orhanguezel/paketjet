@@ -92,7 +92,7 @@ export const SmtpSettingsTab: React.FC<SmtpSettingsTabProps> = ({ locale }) => {
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant="secondary" className="text-xs">{t('admin.siteSettings.smtp.badge', { locale: locale || '—' })}</Badge>
             <Button type="button" variant="outline" size="sm" onClick={refetch} disabled={busy}>
-              {t('admin.common.refresh')}
+              {t('admin.siteSettings.actions.refresh')}
             </Button>
           </div>
         </div>
@@ -101,7 +101,7 @@ export const SmtpSettingsTab: React.FC<SmtpSettingsTabProps> = ({ locale }) => {
       <CardContent className="space-y-4 px-3 pb-3 sm:space-y-6 sm:px-6 sm:pb-6">
         {busy && (
           <div>
-            <Badge variant="secondary">{t('admin.common.loading')}</Badge>
+            <Badge variant="secondary">{t('admin.siteSettings.messages.loading')}</Badge>
           </div>
         )}
 
@@ -209,7 +209,7 @@ export const SmtpSettingsTab: React.FC<SmtpSettingsTabProps> = ({ locale }) => {
 
         <div className="flex justify-end gap-2">
           <Button type="button" variant="default" disabled={busy} onClick={handleSave}>
-            {isSaving ? t('admin.common.saving') : t('admin.common.save')}
+            {isSaving ? t('admin.siteSettings.actions.saving') : t('admin.siteSettings.actions.save')}
           </Button>
         </div>
       </CardContent>

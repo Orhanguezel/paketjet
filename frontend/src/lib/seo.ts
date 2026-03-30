@@ -56,7 +56,7 @@ function interpolate(template: string, vars: Record<string, string>): string {
  */
 export function buildMetadata(
   seo: PageSeoData | null,
-  overrides?: Partial<Metadata> & { vars?: Record<string, string> },
+  overrides?: Partial<Metadata> & { vars?: Record<string, string>; publishedTime?: string; modifiedTime?: string },
 ): Metadata {
   const vars = overrides?.vars ?? {};
 
@@ -83,6 +83,8 @@ export function buildMetadata(
       ...(seo?.open_graph?.type && { type: seo.open_graph.type as "website" }),
       ...(ogImages?.length && { images: ogImages }),
       siteName: "PaketJet",
+      ...(overrides?.publishedTime && { publishedTime: overrides.publishedTime }),
+      ...(overrides?.modifiedTime && { modifiedTime: overrides.modifiedTime }),
     },
     twitter: {
       card: (seo?.twitter?.card as "summary_large_image") ?? "summary_large_image",
@@ -103,13 +105,32 @@ export function buildMetadata(
  */
 export async function getPageMetadata(
   pageKey: string,
-  overrides?: Partial<Metadata> & { vars?: Record<string, string> },
+  overrides?: Partial<Metadata> & { vars?: Record<string, string>; canonicalPath?: string; fallbackDescription?: string },
 ): Promise<Metadata> {
   const seo = await fetchPageSeo(pageKey);
-  return buildMetadata(seo, overrides);
+  const meta = buildMetadata(seo, overrides);
+
+  if (!meta.description && overrides?.fallbackDescription) {
+    meta.description = overrides.fallbackDescription;
+  }
+
+  if (!meta.openGraph?.description && (meta.description || overrides?.fallbackDescription)) {
+    meta.openGraph = {
+      ...meta.openGraph,
+      description: meta.description ?? overrides?.fallbackDescription,
+    };
+  }
+
+  // Canonical URL
+  const path = overrides?.canonicalPath;
+  if (path) {
+    meta.alternates = { canonical: `${SITE_URL}${path}` };
+  }
+
+  return meta;
 }
 
 /** noindex sayfalar icin hizli metadata */
-export function noIndexMetadata(title: string): Metadata {
-  return { title, robots: { index: false, follow: false } };
+export function noIndexMetadata(title: string, description?: string): Metadata {
+  return { title, ...(description && { description }), robots: { index: false, follow: false } };
 }

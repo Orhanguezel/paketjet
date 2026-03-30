@@ -37,25 +37,25 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 -- BRAND MEDIA (storage_assets URLs)
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
-(UUID(), 'brand_logo',                  '*', '"/uploads/media/logo/logo.jpeg"'),
-(UUID(), 'brand_logo_dark',             '*', '"/uploads/media/logo/logo2.jpeg"'),
-(UUID(), 'brand_logo_icon',             '*', '"/uploads/media/logo/logo4.jpg"'),
-(UUID(), 'brand_logo_icon_transparent', '*', '"/uploads/media/logo/logo4.jpg"'),
-(UUID(), 'brand_logo_icon_192',         '*', '"/uploads/media/logo/logo3.jpg"'),
-(UUID(), 'brand_logo_icon_512',         '*', '"/uploads/media/logo/logo.jpeg"'),
-(UUID(), 'brand_og_image',              '*', '"/uploads/media/logo/logo.jpeg"');
+(UUID(), 'brand_logo',                  '*', '"/uploads/media/logo/logo-transparent.png"'),
+(UUID(), 'brand_logo_dark',             '*', '"/uploads/media/logo/logo-transparent.png"'),
+(UUID(), 'brand_logo_icon',             '*', '"/uploads/media/logo/favicon-32x32.png"'),
+(UUID(), 'brand_logo_icon_transparent', '*', '"/uploads/media/logo/logo-transparent.png"'),
+(UUID(), 'brand_logo_icon_192',         '*', '"/uploads/media/logo/favicon-192x192.png"'),
+(UUID(), 'brand_logo_icon_512',         '*', '"/uploads/media/logo/logo-512x512.png"'),
+(UUID(), 'brand_og_image',              '*', '"/uploads/media/logo/logo-512x512.png"');
 
 -- =============================================================
 -- SITE MEDIA (Logo & Favicon)
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
-(UUID(), 'site_logo',             '*', '{"url":"/uploads/media/logo/logo.jpeg","alt":"PaketJet Logo"}'),
-(UUID(), 'site_logo_dark',        '*', '{"url":"/uploads/media/logo/logo2.jpeg","alt":"PaketJet Logo Dark"}'),
-(UUID(), 'site_logo_light',       '*', '{"url":"/uploads/media/logo/logo.jpeg","alt":"PaketJet Logo Light"}'),
-(UUID(), 'site_favicon',          '*', '{"url":"/uploads/media/logo/logo4.jpg","alt":"PaketJet Favicon"}'),
-(UUID(), 'site_apple_touch_icon', '*', '{"url":"/uploads/media/logo/logo3.jpg","alt":"PaketJet Apple Touch"}'),
-(UUID(), 'site_app_icon_512',     '*', '{"url":"/uploads/media/logo/logo.jpeg","alt":"PaketJet Icon 512"}'),
-(UUID(), 'site_og_default_image', '*', '{"url":"/uploads/media/hero/og-default.jpg","alt":"PaketJet - P2P Kargo Pazaryeri"}');
+(UUID(), 'site_logo',             '*', '{"url":"/uploads/media/logo/logo-transparent.png","alt":"PaketJet Logo"}'),
+(UUID(), 'site_logo_dark',        '*', '{"url":"/uploads/media/logo/logo-transparent.png","alt":"PaketJet Logo Dark"}'),
+(UUID(), 'site_logo_light',       '*', '{"url":"/uploads/media/logo/logo-transparent.png","alt":"PaketJet Logo Light"}'),
+(UUID(), 'site_favicon',          '*', '{"url":"/uploads/media/logo/favicon.ico","alt":"PaketJet Favicon"}'),
+(UUID(), 'site_apple_touch_icon', '*', '{"url":"/uploads/media/logo/apple-touch-icon.png","alt":"PaketJet Apple Touch"}'),
+(UUID(), 'site_app_icon_512',     '*', '{"url":"/uploads/media/logo/logo-512x512.png","alt":"PaketJet Icon 512"}'),
+(UUID(), 'site_og_default_image', '*', '{"url":"/uploads/media/logo/logo-512x512.png","alt":"PaketJet - P2P Kargo Pazaryeri"}');
 
 -- =============================================================
 -- CONTACT
@@ -222,11 +222,11 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 
 -- Hero bölümü ayarları
 (UUID(), 'homepage_hero', '*',
- '{"title":"Kargo Göndermek Artık Çok Kolay","subtitle":"Taşıyıcı ilanlarına göz at, uygun güzergahı bul, kargo alanını hemen rezerve et.","bgImage":"/uploads/media/hero/hero-bg.jpg","bgImageDark":"/uploads/media/hero/hero-bg-dark.jpg","bgOverlayOpacity":0.6,"ctaLabel":"KARGO GÖNDER","ctaPath":"/ilan-ver","ctaSecondaryLabel":"İLANLARI GÖR","ctaSecondaryPath":"/ilanlar"}'),
+ '{"title":"Kargo Göndermek Artık Çok Kolay","subtitle":"Taşıyıcı ilanlarına göz at, uygun güzergahı bul, kargo alanını hemen rezerve et.","bgImage":"/uploads/media/hero/arkaplan.gif","bgImageDark":"/uploads/media/hero/arkaplan.gif","bgOverlayOpacity":0.55,"ctaLabel":"KARGO GÖNDER","ctaPath":"/ilan-ver","ctaSecondaryLabel":"İLANLARI GÖR","ctaSecondaryPath":"/ilanlar","videoLoops":2,"videoPauseMs":8000,"videoFadeMs":1000}'),
 
 -- Hero banner görselleri (slider/carousel)
 (UUID(), 'homepage_banners', '*',
- '[{"image":"/uploads/media/hero/banner-1.jpg","alt":"PaketJet - Güvenli Kargo","link":"/ilanlar","order":1},{"image":"/uploads/media/hero/banner-2.jpg","alt":"Taşıyıcı Ol, Kazan","link":"/ilan-ver","order":2}]');
+ '[{"image":"/uploads/media/hero/arkaplan.gif","alt":"PaketJet - P2P Kargo","link":"/ilanlar","order":1},{"image":"/uploads/media/logo/logo.jpeg","alt":"PaketJet Logo","link":"/ilan-ver","order":2}]');
 
 -- =============================================================
 -- CTA
@@ -251,19 +251,21 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
       "app_copyright":"PaketJet",
       "html_lang":"tr",
       "theme_color":"#F97316",
-      "favicon":"/uploads/media/logo/logo4.jpg",
-      "favicon_svg":"/uploads/media/logo/logo4.jpg",
-      "apple_touch_icon":"/uploads/media/logo/logo3.jpg",
-      "logo":"/uploads/media/logo/logo.jpeg",
-      "logo_dark":"/uploads/media/logo/logo2.jpeg",
-      "logo_icon":"/uploads/media/logo/logo4.jpg",
+      "favicon_16":"/uploads/media/logo/favicon-32x32.png",
+      "favicon_32":"/uploads/media/logo/favicon-32x32.png",
+      "favicon":"/uploads/media/logo/favicon.ico",
+      "favicon_svg":"/uploads/media/logo/favicon-32x32.png",
+      "apple_touch_icon":"/uploads/media/logo/apple-touch-icon.png",
+      "logo":"/uploads/media/logo/logo-transparent.png",
+      "logo_dark":"/uploads/media/logo/logo-transparent.png",
+      "logo_icon":"/uploads/media/logo/favicon-192x192.png",
       "meta":{
         "title":"PaketJet Admin Panel",
         "description":"PaketJet yönetim paneli. Taşıyıcılar, ilanlar, rezervasyonlar ve site ayarları yönetimi.",
         "og_url":"https://paketjet.com/admin",
         "og_title":"PaketJet Admin Panel",
         "og_description":"PaketJet yönetim paneli ile ilan ve rezervasyon yönetimini merkezi olarak yapın.",
-        "og_image":"/uploads/media/logo/logo.jpeg",
+        "og_image":"/uploads/media/logo/logo-512x512.png",
         "twitter_card":"summary_large_image"
       }
     }

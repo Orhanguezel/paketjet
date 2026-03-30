@@ -1,0 +1,74 @@
+{
+  "title": "Komisyon & Abonelik Ayarları",
+  "description": "Platform komisyon oranını ve taşıyıcı abonelik planlarını yönetin.",
+  "tabs": {
+    "commission": "Komisyon",
+    "plans": "Abonelik Planları"
+  },
+  "commission": {
+    "title": "Platform Komisyon Oranı",
+    "description": "Tüm taşıyıcılara varsayılan olarak uygulanan komisyon oranı. Taşıyıcıya özel oran varsa o geçerli olur.",
+    "rateLabel": "Komisyon Oranı (%)",
+    "ratePlaceholder": "Ör: 10",
+    "rateHelp": "0-100 arası bir değer girin. Taşıyıcı anlaşmasında özel oran yoksa bu oran uygulanır.",
+    "saveButton": "Kaydet",
+    "saved": "Komisyon oranı güncellendi.",
+    "loadError": "Komisyon ayarları yüklenemedi.",
+    "fallbackChain": {
+      "title": "Komisyon Öncelik Sırası",
+      "description": "Bir taşıma teslim edildiğinde komisyon şu sırayla belirlenir:",
+      "step1": "1. Taşıyıcıya özel oran (Taşıyıcı Anlaşmaları)",
+      "step2": "2. Abonelik planı komisyon oranı",
+      "step3": "3. Platform varsayılan oranı (bu ayar)"
+    }
+  },
+  "plans": {
+    "title": "Abonelik Planları",
+    "description": "Taşıyıcılara sunulan abonelik planlarını yönetin.",
+    "addButton": "Yeni Plan",
+    "loading": "Yükleniyor…",
+    "loadError": "Planlar yüklenemedi.",
+    "retryButton": "Yeniden dene",
+    "noRecords": "Henüz plan oluşturulmamış.",
+    "table": {
+      "name": "Plan Adı",
+      "price": "Fiyat",
+      "ilanLimit": "İlan Limiti",
+      "commissionRate": "Komisyon",
+      "duration": "Süre (gün)",
+      "status": "Durum",
+      "actions": "İşlem",
+      "unlimited": "Sınırsız",
+      "active": "Aktif",
+      "inactive": "Pasif",
+      "editButton": "Düzenle"
+    },
+    "form": {
+      "createTitle": "Yeni Plan Oluştur",
+      "editTitle": "Plan Düzenle",
+      "nameLabel": "Plan Adı",
+      "namePlaceholder": "Ör: Starter",
+      "slugLabel": "Slug",
+      "slugPlaceholder": "Ör: starter",
+      "priceLabel": "Aylık Fiyat (TRY)",
+      "pricePlaceholder": "Ör: 49",
+      "ilanLimitLabel": "Aylık İlan Limiti",
+      "ilanLimitPlaceholder": "0 = sınırsız",
+      "commissionRateLabel": "Komisyon Oranı (%)",
+      "commissionRatePlaceholder": "Boş = platform varsayılanı",
+      "durationLabel": "Süre (gün)",
+      "featuresLabel": "Özellikler",
+      "featuresPlaceholder": "Her satıra bir özellik yazın",
+      "sortOrderLabel": "Sıralama",
+      "isActiveLabel": "Aktif",
+      "saveButton": "Kaydet",
+      "cancelButton": "İptal",
+      "created": "Plan oluşturuldu.",
+      "updated": "Plan güncellendi.",
+      "deleteButton": "Sil",
+      "deleteConfirm": "Bu plan silinecek. Devam edilsin mi?",
+      "deleted": "Plan silindi."
+    },
+    "errorFallback": "İşlem başarısız. Lütfen tekrar deneyin."
+  }
+}

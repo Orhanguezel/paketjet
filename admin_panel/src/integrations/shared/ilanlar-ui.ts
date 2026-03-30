@@ -18,7 +18,8 @@ export function formatAdminIlanDate(iso: string) {
   return new Date(iso).toLocaleDateString('tr-TR');
 }
 
-export function formatAdminIlanWeight(kg: number) {
+export function formatAdminIlanWeight(kg: number | string | null | undefined) {
+  if (kg == null) return '—';
   return `${kg} kg`;
 }
 

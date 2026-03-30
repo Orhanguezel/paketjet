@@ -6,6 +6,21 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        userAgent: [
+          "GPTBot",
+          "ChatGPT-User",
+          "ClaudeBot",
+          "Claude-Enterprise",
+          "PerplexityBot",
+          "CCBot",
+          "Google-Extended",
+        ],
+        allow: ["/"],
+        disallow: ["/api/", "/panel/", "/admin/"],
+        crawlDelay: 10,
+      },
+      // Genel crawler'lar
+      {
         userAgent: "*",
         allow: "/",
         disallow: [

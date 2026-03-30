@@ -48,7 +48,7 @@ export default function FinansTab({ dashboard }: Props) {
     const result = carrierBankSchema.safeParse(bankForm);
     if (!result.success) {
       const errs: Record<string, string> = {};
-      result.error.errors.forEach(e => { errs[e.path[0] as string] = e.message; });
+      result.error.issues.forEach(e => { errs[e.path[0] as string] = e.message; });
       setBankErrors(errs);
       return;
     }

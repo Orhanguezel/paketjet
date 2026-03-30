@@ -31,6 +31,7 @@ import { registerSubscription, registerSubscriptionAdmin } from '@/modules/subsc
 import { registerCarriersAdmin } from '@/modules/carriers';
 import { registerCarrierBank } from '@/modules/carrier-bank';
 import { registerWithdrawal, registerWithdrawalAdmin } from '@/modules/withdrawal';
+import { registerCarrierAgreements, registerCarrierAgreementsAdmin } from '@/modules/carrier-agreements';
 
 import { registerEmailTemplatesAdmin } from '@/modules/emailTemplates/admin.routes';
 import { registerReportsAdmin } from '@/modules/reports';
@@ -59,6 +60,7 @@ const PUBLIC_ROUTE_REGISTRARS = [
   registerSubscription,
   registerCarrierBank,
   registerWithdrawal,
+  registerCarrierAgreements,
 ] as const;
 
 const ADMIN_ROUTE_REGISTRARS = [
@@ -82,6 +84,7 @@ const ADMIN_ROUTE_REGISTRARS = [
   registerSubscriptionAdmin,
   registerCarriersAdmin,
   registerWithdrawalAdmin,
+  registerCarrierAgreementsAdmin,
 ] as const;
 
 // ── Public route kayıtları ───────────────────────────────────────────────────

@@ -91,6 +91,9 @@ const emptyNav: AdminNavCopy = {
     theme:           '',
     telegram:        '',
     audit:           '',
+    carrier_agreements: '',
+    commission_settings: '',
+    payment_settings: '',
   },
 };
 
@@ -124,6 +127,9 @@ export function normalizeAdminUiCopy(raw: unknown): AdminUiCopy {
     theme:           uiText(itemsRaw.theme),
     telegram:        uiText(itemsRaw.telegram),
     audit:           uiText(itemsRaw.audit),
+    carrier_agreements: uiText(itemsRaw.carrier_agreements),
+    commission_settings: uiText(itemsRaw.commission_settings),
+    payment_settings: uiText(itemsRaw.payment_settings),
   };
 
   const commonRaw = parseJsonObject(o.common);

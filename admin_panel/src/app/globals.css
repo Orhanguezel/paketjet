@@ -71,6 +71,8 @@
   --color-sidebar-ring: var(--sidebar-ring);
 
   /* Brand Colors */
+  --color-brand: var(--primary);
+  --color-brand-foreground: var(--primary-foreground);
   --color-logo-coral-light: var(--logo-coral-light);
   --color-logo-coral: var(--logo-coral);
   --color-logo-coral-medium: var(--logo-coral-medium);

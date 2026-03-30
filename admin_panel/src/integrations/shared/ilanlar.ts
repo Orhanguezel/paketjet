@@ -14,7 +14,8 @@ export interface IlanAdminItem {
   departure_date: string;
   arrival_date: string | null;
   vehicle_type: VehicleType;
-  available_kg: number;
+  total_capacity_kg: string;
+  available_capacity_kg: string;
   price_per_kg: string;
   min_kg: number | null;
   max_kg: number | null;

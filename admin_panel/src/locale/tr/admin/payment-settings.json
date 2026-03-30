@@ -1,0 +1,57 @@
+{
+  "title": "Ödeme Ayarları",
+  "description": "Ödeme yöntemlerini, banka bilgilerini ve ödeme geçidi yapılandırmalarını yönetin.",
+  "tabs": {
+    "gateways": "Ödeme Geçitleri",
+    "bank": "Banka / Havale"
+  },
+  "gateways": {
+    "title": "Ödeme Geçitleri",
+    "description": "iyzico ve PayTR yapılandırmalarını buradan yönetin.",
+    "iyzico": {
+      "title": "iyzico",
+      "description": "Kredi kartı ödemeleri için iyzico ayarları.",
+      "enabledLabel": "iyzico Aktif",
+      "apiKeyLabel": "API Key",
+      "apiKeyPlaceholder": "iyzico API Key",
+      "secretKeyLabel": "Secret Key",
+      "secretKeyPlaceholder": "iyzico Secret Key",
+      "baseUrlLabel": "Base URL",
+      "testModeLabel": "Test Modu (Sandbox)",
+      "sandboxUrl": "https://sandbox-api.iyzipay.com",
+      "productionUrl": "https://api.iyzipay.com"
+    },
+    "paytr": {
+      "title": "PayTR",
+      "description": "PayTR iFrame ile ödeme almak için ayarlar.",
+      "enabledLabel": "PayTR Aktif",
+      "merchantIdLabel": "Merchant ID",
+      "merchantIdPlaceholder": "PayTR Merchant ID",
+      "merchantKeyLabel": "Merchant Key",
+      "merchantKeyPlaceholder": "PayTR Merchant Key",
+      "merchantSaltLabel": "Merchant Salt",
+      "merchantSaltPlaceholder": "PayTR Merchant Salt",
+      "testModeLabel": "Test Modu"
+    },
+    "saveButton": "Kaydet",
+    "saved": "Ödeme geçidi ayarları güncellendi.",
+    "loadError": "Ayarlar yüklenemedi.",
+    "errorFallback": "İşlem başarısız. Lütfen tekrar deneyin."
+  },
+  "bank": {
+    "title": "Banka / Havale Bilgileri",
+    "description": "Havale ile ödeme yapan müşterilere gösterilen banka bilgileri.",
+    "ibanLabel": "IBAN",
+    "ibanPlaceholder": "TR...",
+    "accountNameLabel": "Hesap Sahibi",
+    "accountNamePlaceholder": "Ör: PaketJet Teknoloji A.Ş.",
+    "bankNameLabel": "Banka Adı",
+    "bankNamePlaceholder": "Ör: Ziraat Bankası",
+    "descriptionLabel": "Açıklama",
+    "descriptionPlaceholder": "Havale/EFT talimatları...",
+    "saveButton": "Kaydet",
+    "saved": "Banka bilgileri güncellendi.",
+    "loadError": "Banka bilgileri yüklenemedi.",
+    "errorFallback": "İşlem başarısız. Lütfen tekrar deneyin."
+  }
+}
