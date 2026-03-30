@@ -19,6 +19,7 @@ export default function SplashLoader({
   const [phase, setPhase] = useState<"loading" | "video" | "fadeout" | "done">("loading");
   const [videoIdx, setVideoIdx] = useState(0);
   const [showSkip, setShowSkip] = useState(false);
+  const [unmuted, setUnmuted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const videoList = videos?.length ? videos : [];
@@ -69,11 +70,28 @@ export default function SplashLoader({
           key={videoIdx}
           src={toUrl(videoList[videoIdx])}
           autoPlay
-          muted
+          muted={!unmuted}
           playsInline
           onEnded={handleVideoEnded}
-          className="h-full w-full object-contain max-h-screen max-w-screen"
+          onClick={() => {
+            const v = videoRef.current;
+            if (v) { v.muted = false; setUnmuted(true); }
+          }}
+          className="h-full w-full object-contain max-h-screen max-w-screen cursor-pointer"
         />
+
+        {/* Ses aç butonu */}
+        {!unmuted && (
+          <button
+            onClick={() => {
+              const v = videoRef.current;
+              if (v) { v.muted = false; setUnmuted(true); }
+            }}
+            className="absolute bottom-8 left-8 px-4 py-2 text-sm text-white/60 hover:text-white border border-white/20 hover:border-white/40 rounded-full backdrop-blur-sm transition-all"
+          >
+            🔊 Sesi Aç
+          </button>
+        )}
 
         {/* Geç butonu */}
         <button

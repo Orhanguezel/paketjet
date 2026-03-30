@@ -147,7 +147,7 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => { setForm({ email: "musteri@kamanilan.com", password: "Musteri@2026!" }); setErrors({}); }}
+                  onClick={() => { setForm({ email: "musteri@paketjet.com", password: "Musteri@2026!" }); setErrors({}); }}
                   className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground"
                 >
                   👤 Müşteri

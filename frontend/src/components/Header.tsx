@@ -60,7 +60,7 @@ export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: 
     <header className={overlay
       ? "absolute top-0 left-0 right-0 z-50"
       : "sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border-soft"}>
-      <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-6 py-1 flex items-center justify-between">
         {/* Logo */}
         <Link
           href={ROUTES.home}
@@ -71,7 +71,7 @@ export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: 
             <img
               src={logoUrl}
               alt={logoAlt ?? "PaketJet"}
-              className="h-16 w-auto max-w-44 object-contain py-1 dark:brightness-0 dark:invert"
+              className="h-20 w-auto max-w-52 object-contain dark:brightness-0 dark:invert"
             />
           ) : (
             <Image
@@ -80,7 +80,7 @@ export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: 
               width={120}
               height={120}
               priority={overlay}
-              className="h-16 w-16 object-contain py-1 dark:brightness-0 dark:invert"
+              className="h-20 w-20 object-contain dark:brightness-0 dark:invert"
             />
           )}
         </Link>
