@@ -18,7 +18,9 @@ export type AdminPermissionKey =
   | 'admin.reports'
   | 'admin.carrier_agreements'
   | 'admin.commission_settings'
-  | 'admin.payment_settings';
+  | 'admin.payment_settings'
+  | 'admin.carrier_kyc'
+  | 'admin.disputes';
 
 export type AdminNavKey =
   | 'dashboard'
@@ -38,7 +40,9 @@ export type AdminNavKey =
   | 'reports'
   | 'carrier_agreements'
   | 'commission_settings'
-  | 'payment_settings';
+  | 'payment_settings'
+  | 'carrier_kyc'
+  | 'disputes';
 
 const ADMIN_ONLY: PanelRole[] = ['admin'];
 
@@ -61,6 +65,8 @@ const ADMIN_PERMISSION_ROLE_MAP: Record<AdminPermissionKey, PanelRole[]> = {
   'admin.carrier_agreements': ADMIN_ONLY,
   'admin.commission_settings': ADMIN_ONLY,
   'admin.payment_settings': ADMIN_ONLY,
+  'admin.carrier_kyc': ADMIN_ONLY,
+  'admin.disputes': ADMIN_ONLY,
 };
 
 export function canAccessAdminPermission(role: PanelRole, key: AdminPermissionKey): boolean {
