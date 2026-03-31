@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 const vehicleTypes = ["van", "truck", "motorcycle", "car", "other"] as const;
-const ilanStatuses = ["active", "paused", "completed", "cancelled"] as const;
+const ilanStatuses = ["active", "pending_approval", "paused", "completed", "cancelled"] as const;
 
 export const createIlanSchema = z.object({
   from_city: z.string().min(1).max(128),

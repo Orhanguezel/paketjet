@@ -25,7 +25,7 @@ export function createIlanInsertPayload(body: CreateIlanInput) {
     description: body.description ?? null,
     contact_phone: body.contact_phone,
     contact_email: body.contact_email ?? null,
-    status: "active" as const,
+    status: "pending_approval" as const,
   };
 }
 

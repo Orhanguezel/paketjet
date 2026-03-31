@@ -84,12 +84,13 @@ INSERT INTO users (
   '{{ADMIN_ID}}',
   '{{ADMIN_EMAIL}}',
   '{{ADMIN_PASSWORD_HASH}}',
-  'Orhan Güzel',
+  'PaketJet Admin',
   '+905551112233',
   0.00, 1, 1,
   CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)
 )
 ON DUPLICATE KEY UPDATE
+  email          = VALUES(email),
   password_hash  = VALUES(password_hash),
   full_name      = VALUES(full_name),
   phone          = VALUES(phone),
@@ -99,7 +100,7 @@ ON DUPLICATE KEY UPDATE
 
 -- ENV admin profile
 INSERT INTO profiles (id, full_name, phone, created_at, updated_at)
-VALUES ('{{ADMIN_ID}}', 'Orhan Güzel', '+905551112233', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3))
+VALUES ('{{ADMIN_ID}}', 'PaketJet Admin', '+905551112233', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3))
 ON DUPLICATE KEY UPDATE
   full_name = VALUES(full_name),
   phone     = VALUES(phone),
@@ -108,7 +109,7 @@ ON DUPLICATE KEY UPDATE
 -- Optional: sabit adminler için profile kaydı (id'yi users'tan çekiyoruz)
 
 INSERT INTO profiles (id, full_name, phone, created_at, updated_at)
-SELECT u.id, 'Orhan Güzel', '+905551112233', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)
+SELECT u.id, 'PaketJet Admin', '+905551112233', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3)
 FROM users u
 WHERE u.email = 'orhanguzel@gmail.com'
 ON DUPLICATE KEY UPDATE

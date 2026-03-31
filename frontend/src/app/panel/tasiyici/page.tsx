@@ -47,16 +47,20 @@ function TasiyiciContent() {
     if (VALID_TABS.includes(t)) setTab(t);
   }, [searchParams]);
 
-  useEffect(() => {
-    if (!hydrated || !allowed) return;
+  function refreshData() {
     Promise.all([getCarrierDashboard(), getMyIlans(), getCarrierBookings(undefined)])
       .then(([dash, list, bList]) => {
         setDashboard(dash);
         setIlanlar(list);
         setBookings(bList.data);
       })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .catch(console.error);
+  }
+
+  useEffect(() => {
+    if (!hydrated || !allowed) return;
+    refreshData();
+    setLoading(false);
   }, [hydrated, allowed]);
 
   if (!hydrated) {
@@ -136,7 +140,7 @@ function TasiyiciContent() {
       {tab === "gecmis" && <GecmisTab bookings={bookings} loading={loading} />}
       {tab === "finans" && <FinansTab dashboard={dashboard} />}
       {tab === "abonelik" && <AbonelikTab />}
-      {tab === "yeni-ilan" && <div className="mt-4"><IlanVerForm /></div>}
+      {tab === "yeni-ilan" && <div className="mt-4"><IlanVerForm onSuccess={() => { setTab("ilanlar"); refreshData(); }} /></div>}
     </div>
   );
 }

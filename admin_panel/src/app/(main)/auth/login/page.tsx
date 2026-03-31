@@ -55,17 +55,6 @@ export default function Login() {
                 {t('admin.auth.login.contactAdmin')}
               </Link>
             </p>
-            <p className="text-center text-muted-foreground text-xs">
-              Satici hesabi icin{' '}
-              <Link
-                prefetch={false}
-                href="/auth/seller/login"
-                className="text-primary underline-offset-4 hover:underline"
-              >
-                satici girisini kullan
-              </Link>
-              .
-            </p>
           </div>
         </div>
       </div>

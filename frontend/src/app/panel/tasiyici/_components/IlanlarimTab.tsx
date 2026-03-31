@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 
-const ILAN_STATUS_COLOR: Record<string, "success" | "muted" | "danger" | "brand"> = {
-  active: "success", paused: "muted", completed: "brand", cancelled: "danger",
+const ILAN_STATUS_COLOR: Record<string, "success" | "muted" | "danger" | "brand" | "warning"> = {
+  active: "success", pending_approval: "warning", paused: "muted", completed: "brand", cancelled: "danger",
 };
 const ILAN_STATUS_LABEL: Record<string, string> = {
-  active: "Aktif", paused: "Durduruldu", completed: "Tamamlandı", cancelled: "İptal",
+  active: "Aktif", pending_approval: "Onay Bekliyor", paused: "Durduruldu", completed: "Tamamlandı", cancelled: "İptal",
 };
 
 interface Props {
@@ -74,15 +74,19 @@ export default function IlanlarimTab({ ilanlar, setIlanlar, loading }: Props) {
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Link
-                href={`/panel/tasiyici/ilanlar/${ilan.id}/duzenle`}
-                className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border text-muted hover:bg-bg-alt transition-colors"
-              >
-                Düzenle
-              </Link>
-              <Button size="sm" variant={ilan.status === "active" ? "secondary" : "success"} loading={actionId === ilan.id} onClick={() => toggleStatus(ilan)}>
-                {ilan.status === "active" ? "Durdur" : "Aktif Et"}
-              </Button>
+              {ilan.status !== "pending_approval" && (
+                <>
+                  <Link
+                    href={`/panel/tasiyici/ilanlar/${ilan.id}/duzenle`}
+                    className="px-3 py-1.5 text-xs font-semibold rounded-lg border border-border text-muted hover:bg-bg-alt transition-colors"
+                  >
+                    Düzenle
+                  </Link>
+                  <Button size="sm" variant={ilan.status === "active" ? "secondary" : "success"} loading={actionId === ilan.id} onClick={() => toggleStatus(ilan)}>
+                    {ilan.status === "active" ? "Durdur" : "Aktif Et"}
+                  </Button>
+                </>
+              )}
               <Button size="sm" variant="danger" loading={actionId === ilan.id} onClick={() => handleDelete(ilan.id)}>Sil</Button>
             </div>
           </div>

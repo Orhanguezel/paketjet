@@ -174,6 +174,12 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
                   🚚 Taşıyıcı
                 </button>
               </div>
+              <a
+                href="http://localhost:3071/auth/login"
+                className="mt-2 block w-full py-2.5 text-xs font-semibold rounded-lg border border-navy/30 hover:border-navy hover:bg-navy/5 transition text-navy text-center"
+              >
+                🛡️ Admin Panel
+              </a>
             </div>
           </div>
         </div>

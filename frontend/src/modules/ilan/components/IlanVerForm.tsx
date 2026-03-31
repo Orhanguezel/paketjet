@@ -38,13 +38,24 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
   );
 }
 
-export default function IlanVerForm() {
+export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = {}) {
   const router = useRouter();
   const { user } = useAuthStore();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>({ currency: "TRY", is_negotiable: 0, vehicle_type: "car" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  // Pre-fill contact fields from user data
+  useEffect(() => {
+    if (user) {
+      setForm((prev) => ({
+        ...prev,
+        contact_phone: prev.contact_phone || user.phone || "",
+        contact_email: prev.contact_email || user.email || "",
+      }));
+    }
+  }, [user]);
 
   function update(patch: Partial<FormData>) {
     setForm((prev) => ({ ...prev, ...patch }));
@@ -59,12 +70,15 @@ export default function IlanVerForm() {
   const fromDistrictOptions = fromDistricts.map((district) => ({ value: district, label: district }));
   const toDistrictOptions = toDistricts.map((district) => ({ value: district, label: district }));
 
+  const [success, setSuccess] = useState(false);
+
   async function submit() {
     setSubmitting(true);
     setError("");
     try {
-      const ilan = await createIlan(form as CreateIlanInput);
-      router.push(ROUTES.ilanlar.detail(ilan.id));
+      await createIlan(form as CreateIlanInput);
+      setSuccess(true);
+      setSubmitting(false);
     } catch (e) {
       if (e instanceof ApiError) {
         if (e.status === 401) {
@@ -82,6 +96,29 @@ export default function IlanVerForm() {
       }
       setSubmitting(false);
     }
+  }
+
+  if (success) {
+    return (
+      <div className="max-w-xl">
+        <div className="bg-surface rounded-2xl border border-border-soft p-8 text-center">
+          <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-extrabold text-foreground mb-2">İlanınız Oluşturuldu!</h2>
+          <p className="text-sm text-muted mb-6">
+            İlanınız admin onayı bekliyor. Onaylandıktan sonra otomatik olarak yayına alınacaktır.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <Button onClick={() => onSuccess ? onSuccess() : router.push("/panel/tasiyici?tab=ilanlar")}>
+              İlanlarıma Git
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
