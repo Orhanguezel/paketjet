@@ -104,16 +104,18 @@ function promisify<T>(fn: (req: unknown, cb: (err: Error | null, result: T) => v
 
 export async function createCheckoutForm(req: CheckoutFormInitRequest): Promise<CheckoutFormInitResponse> {
   const iyzipay = getIyzipay();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return promisify<CheckoutFormInitResponse>(
-    iyzipay.checkoutFormInitialize.create.bind(iyzipay.checkoutFormInitialize),
+    (iyzipay.checkoutFormInitialize as any).create.bind(iyzipay.checkoutFormInitialize),
     req,
   );
 }
 
 export async function retrieveCheckoutForm(token: string, conversationId: string): Promise<CheckoutFormDetailResponse> {
   const iyzipay = getIyzipay();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return promisify<CheckoutFormDetailResponse>(
-    iyzipay.checkoutFormInitialize.retrieve.bind(iyzipay.checkoutFormInitialize),
+    (iyzipay.checkoutFormInitialize as any).retrieve.bind(iyzipay.checkoutFormInitialize),
     { locale: "tr", conversationId, token },
   );
 }

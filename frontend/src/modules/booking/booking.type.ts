@@ -1,4 +1,4 @@
-export type BookingStatus = "pending" | "confirmed" | "in_transit" | "delivered" | "cancelled" | "disputed";
+export type BookingStatus = "pending" | "confirmed" | "in_transit" | "awaiting_delivery_confirmation" | "delivered" | "cancelled" | "disputed";
 export type PaymentStatus = "unpaid" | "pending" | "paid" | "refunded" | "awaiting_transfer" | "failed";
 export type PaymentMethod = "wallet" | "card" | "transfer" | "paytr";
 

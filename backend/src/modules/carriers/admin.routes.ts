@@ -3,6 +3,7 @@ import type { FastifyInstance } from "fastify";
 import { adminGetCarrier, adminListCarriers } from "./controller";
 
 export async function registerCarriersAdmin(app: FastifyInstance) {
-  app.get("/carriers", adminListCarriers);
-  app.get("/carriers/:id", adminGetCarrier);
+  const B= "/carriers";
+  app.get(B, adminListCarriers);
+  app.get(`${B}/:id`, adminGetCarrier);
 }

@@ -13,8 +13,13 @@ export const createBookingSchema = z.object({
 });
 
 export const updateBookingStatusSchema = z.object({
-  status: z.enum(["confirmed", "in_transit", "delivered", "cancelled", "disputed"]),
+  status: z.enum(["confirmed", "in_transit", "awaiting_delivery_confirmation", "delivered", "cancelled", "disputed"]),
   carrier_notes: z.string().max(1000).optional(),
+});
+
+export const confirmDeliverySchema = z.object({
+  rating: z.coerce.number().int().min(1).max(5).optional(),
+  comment: z.string().max(500).optional(),
 });
 
 export const cancelBookingSchema = z.object({

@@ -1,7 +1,7 @@
 // src/modules/bookings/controller.ts
 import type { RouteHandler } from "fastify";
 import { db } from "@/db/client";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import {
   getAuthUserId,
   handleRouteError,
@@ -10,6 +10,7 @@ import {
 } from "@/modules/_shared";
 import { createUpdateBookingStatusExtra, parseBookingsListParams } from "./helpers";
 import { ilanlar } from "../ilanlar/schema";
+import { users } from "../auth/schema";
 import { repoDeductCapacity, repoRestoreCapacity } from "../ilanlar/repository";
 import {
   repoGetBookingById,
@@ -72,7 +73,14 @@ export const createBooking: RouteHandler = async (req, reply) => {
 
     if (paymentMethod === "wallet") {
       // Wallet: hemen öde, kapasite düş
-      await deductForBooking(customerId, totalPrice, body.ilan_id);
+      try {
+        await deductForBooking(customerId, totalPrice, body.ilan_id);
+      } catch (walletErr) {
+        if ((walletErr as Error).message === "insufficient_balance") {
+          return reply.code(400).send({ error: { message: "insufficient_balance", required: totalPrice } });
+        }
+        throw walletErr;
+      }
       const booking = await repoCreateBooking({ ...bookingData, paymentStatus: "paid" });
       if (!booking) return reply.code(500).send({ error: { message: "booking_creation_failed" } });
       await repoUpdatePaymentStatus(booking.id, "paid");
@@ -180,19 +188,46 @@ export const updateBookingStatus: RouteHandler = async (req, reply) => {
 
     if (status === "in_transit" && updated) void notifyBookingInTransit(updated);
 
-    if (status === "delivered") {
-      const totalPrice = parseFloat(booking.total_price);
-      const { rate } = await getCommissionRateForCarrier(booking.carrier_id);
-      const { carrierPayout, commissionAmount } = calculateCarrierPayout(totalPrice, rate);
-      await creditCarrier(booking.carrier_id, carrierPayout, id);
-      await repoUpdateBookingCommission(id, rate, commissionAmount);
-      await repoUpdatePaymentStatus(id, "paid");
-      if (updated) void notifyBookingDelivered(updated);
+    // Taşıyıcı "teslim ettim" dediğinde → müşteri onayı bekleniyor
+    if (status === "delivered" || status === "awaiting_delivery_confirmation") {
+      await repoUpdateBookingStatus(id, "awaiting_delivery_confirmation", { delivered_at: new Date() });
+      const awaitingBooking = await repoGetBookingById(id);
+      if (awaitingBooking) void notifyBookingDelivered(awaitingBooking);
+      return reply.send(awaitingBooking);
     }
 
     return reply.send(updated);
   } catch (e) {
     return handleRouteError(reply, req, e, "booking_status_update_failed");
+  }
+};
+
+// ── Müşteri Teslim Onayı ─────────────────────────────────────────────────────
+
+export const confirmDelivery: RouteHandler = async (req, reply) => {
+  const { id } = req.params as { id: string };
+  try {
+    const userId = getAuthUserId(req);
+    const booking = await repoGetBookingById(id);
+    if (!booking) return sendNotFound(reply);
+    if (booking.customer_id !== userId) return sendForbidden(reply);
+
+    if (booking.status !== "awaiting_delivery_confirmation") {
+      return reply.code(400).send({ error: { message: "not_awaiting_confirmation" } });
+    }
+
+    // Teslimi onayla + ödeme aktarımı
+    await repoUpdateBookingStatus(id, "delivered", {});
+    const totalPrice = parseFloat(booking.total_price);
+    const { rate } = await getCommissionRateForCarrier(booking.carrier_id);
+    const { carrierPayout, commissionAmount } = calculateCarrierPayout(totalPrice, rate);
+    await creditCarrier(booking.carrier_id, carrierPayout, id);
+    await repoUpdateBookingCommission(id, rate, commissionAmount);
+
+    const updated = await repoGetBookingById(id);
+    return reply.send(updated);
+  } catch (e) {
+    return handleRouteError(reply, req, e, "booking_confirm_delivery_failed");
   }
 };
 
@@ -222,6 +257,9 @@ export const cancelBooking: RouteHandler = async (req, reply) => {
     }
 
     void notifyBookingCancelled(booking, userId);
+
+    // İptal sayacını artır
+    await db.update(users).set({ cancellation_count: sql`cancellation_count + 1` }).where(eq(users.id, userId));
 
     return reply.send({ ok: true });
   } catch (e) {

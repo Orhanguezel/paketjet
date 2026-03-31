@@ -87,6 +87,13 @@ export const createIlan: RouteHandler = async (req, reply) => {
     const userId = getAuthUserId(req);
     const body = createIlanSchema.parse(req.body ?? {});
 
+    // KYC kontrolu
+    const { repoGetKycStatus } = await import("@/modules/carrier-kyc");
+    const kyc = await repoGetKycStatus(userId);
+    if (!kyc || kyc.kyc_status !== "approved") {
+      return reply.code(403).send({ error: { message: "kyc_required" } });
+    }
+
     // Ilan limit kontrolu
     const [sub, { quota: freeQuota }, monthlyCount] = await Promise.all([
       repoGetActiveSubscription(userId),

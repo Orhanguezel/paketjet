@@ -53,11 +53,11 @@ export default async function BlogDetailPage({ params }: Props) {
   return (
     <main className="bg-background text-foreground">
       <ArticleSchema
-        title={post.title}
+        headline={post.title}
         description={post.description}
         url={post.canonicalPath}
-        datePublished={post.publishedAt}
-        dateModified={post.updatedAt}
+        publishedTime={post.publishedAt}
+        modifiedTime={post.updatedAt}
         section="Blog"
       />
       <BreadcrumbSchema

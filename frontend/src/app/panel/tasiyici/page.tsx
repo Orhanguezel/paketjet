@@ -14,12 +14,13 @@ import IlanlarimTab from "./_components/IlanlarimTab";
 import GecmisTab from "./_components/GecmisTab";
 import FinansTab from "./_components/FinansTab";
 import AbonelikTab from "./_components/AbonelikTab";
+import KycTab from "./_components/KycTab";
 import IlanVerForm from "@/modules/ilan/components/IlanVerForm";
 import { CarrierDashboardOverview } from "@/modules/dashboard/components/CarrierDashboardHeader";
 
-type Tab = "talepler" | "ilanlar" | "gecmis" | "finans" | "abonelik" | "yeni-ilan";
+type Tab = "talepler" | "ilanlar" | "gecmis" | "finans" | "abonelik" | "yeni-ilan" | "kyc";
 
-const VALID_TABS: Tab[] = ["talepler", "ilanlar", "gecmis", "finans", "abonelik", "yeni-ilan"];
+const VALID_TABS: Tab[] = ["talepler", "ilanlar", "gecmis", "finans", "abonelik", "yeni-ilan", "kyc"];
 
 function TasiyiciContent() {
   const router = useRouter();
@@ -84,6 +85,7 @@ function TasiyiciContent() {
     { key: "gecmis",   label: "Geçmiş" },
     { key: "finans",   label: "Finans" },
     { key: "abonelik", label: "Abonelik" },
+    { key: "kyc",      label: "Doğrulama" },
   ];
 
   return (
@@ -140,6 +142,7 @@ function TasiyiciContent() {
       {tab === "gecmis" && <GecmisTab bookings={bookings} loading={loading} />}
       {tab === "finans" && <FinansTab dashboard={dashboard} />}
       {tab === "abonelik" && <AbonelikTab />}
+      {tab === "kyc" && <KycTab />}
       {tab === "yeni-ilan" && <div className="mt-4"><IlanVerForm onSuccess={() => { setTab("ilanlar"); refreshData(); }} /></div>}
     </div>
   );

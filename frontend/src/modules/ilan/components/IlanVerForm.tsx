@@ -45,6 +45,16 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
   const [form, setForm] = useState<FormData>({ currency: "TRY", is_negotiable: 0, vehicle_type: "car" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [kycBlocked, setKycBlocked] = useState(false);
+
+  // KYC kontrolü
+  useEffect(() => {
+    import("@/modules/carrier-kyc/carrier-kyc.service").then(({ getKycStatus }) => {
+      getKycStatus().then((res) => {
+        if (res.kyc_status !== "approved") setKycBlocked(true);
+      }).catch(() => {});
+    });
+  }, []);
 
   // Pre-fill contact fields from user data
   useEffect(() => {
@@ -86,6 +96,11 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
           router.push(`/giris?next=/ilan-ver`);
           return;
         }
+        if (e.code === "kyc_required") {
+          setKycBlocked(true);
+          setSubmitting(false);
+          return;
+        }
         if (e.code === "ilan_limit_reached" || e.code === "plan_required") {
           setError(e.code);
         } else {
@@ -96,6 +111,27 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
       }
       setSubmitting(false);
     }
+  }
+
+  if (kycBlocked) {
+    return (
+      <div className="max-w-xl">
+        <div className="bg-surface rounded-2xl border border-warning/30 p-8 text-center">
+          <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-extrabold text-foreground mb-2">Kimlik Doğrulama Gerekli</h2>
+          <p className="text-sm text-muted mb-6">
+            İlan açabilmek için önce kimlik doğrulama (KYC) işlemini tamamlamanız gerekmektedir.
+          </p>
+          <Button onClick={() => onSuccess ? onSuccess() : router.push("/panel/tasiyici?tab=kyc")}>
+            Doğrulama Sayfasına Git
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   if (success) {

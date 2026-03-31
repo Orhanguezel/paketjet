@@ -2,6 +2,7 @@ export type BookingStatus =
   | 'pending'
   | 'confirmed'
   | 'in_transit'
+  | 'awaiting_delivery_confirmation'
   | 'delivered'
   | 'cancelled'
   | 'refunded';

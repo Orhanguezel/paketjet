@@ -242,10 +242,15 @@ export async function update(req: FastifyRequest, reply: FastifyReply) {
     const parsed = updateBody.safeParse(req.body);
     if (!parsed.success) return reply.status(400).send({ error: { message: 'invalid_body' } });
 
-    const { email, password } = parsed.data as { email?: string; password?: string };
+    const { email, password, current_password } = parsed.data as { email?: string; password?: string; current_password?: string };
 
     if (email) { await repoUpdateUserEmail(p.sub, email); p.email = email; }
     if (password) {
+      if (!current_password) return reply.status(400).send({ error: { message: 'current_password_required' } });
+      const u = await repoGetUserById(p.sub);
+      if (!u || !(await verifyPasswordSmart(u.password_hash, current_password))) {
+        return reply.status(400).send({ error: { message: 'current_password_wrong' } });
+      }
       await repoUpdateUserPassword(p.sub, password);
       try { await repoCreatePasswordChangedNotification(p.sub); } catch (err) { req.log.error({ err }, 'password_change_notification_failed'); }
       const targetEmail = email ?? p.email;

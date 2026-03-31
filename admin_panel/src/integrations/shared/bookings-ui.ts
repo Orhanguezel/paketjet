@@ -12,6 +12,7 @@ export function getAdminBookingStatusVariant(
   if (status === 'pending') return 'secondary';
   if (status === 'confirmed') return 'default';
   if (status === 'in_transit') return 'default';
+  if (status === 'awaiting_delivery_confirmation') return 'secondary';
   if (status === 'delivered') return 'outline';
   return 'destructive';
 }

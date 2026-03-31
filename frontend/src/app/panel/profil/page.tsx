@@ -3,14 +3,11 @@ import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { apiPatch } from "@/lib/api-client";
+import { apiPatch, apiPut, ApiError } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
-import { CarrierDashboardOverview } from "@/modules/dashboard/components/CarrierDashboardHeader";
-import { CustomerDashboardOverview } from "@/modules/dashboard/components/CustomerDashboardHeader";
 
 export default function ProfilPage() {
   const { user, setUser } = useAuthStore();
-  const isCarrier = user?.role === "carrier";
   const [fullName, setFullName] = useState(user?.full_name ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url ?? "");
@@ -18,6 +15,14 @@ export default function ProfilPage() {
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
+
+  // Şifre değiştirme
+  const [currentPw, setCurrentPw] = useState("");
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwSuccess, setPwSuccess] = useState(false);
+  const [pwError, setPwError] = useState("");
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -50,7 +55,8 @@ export default function ProfilPage() {
       formData.append("file", file);
 
       // generic storage endpoint: POST /storage/:bucket/upload
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/storage/avatars/upload`, {
+      const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+      const res = await fetch(`${BASE_URL}/api/storage/avatars/upload`, {
         method: "POST",
         body: formData,
         credentials: "include"
@@ -69,9 +75,32 @@ export default function ProfilPage() {
     }
   }
 
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault();
+    setPwError("");
+    setPwSuccess(false);
+    if (newPw.length < 6) { setPwError("Yeni şifre en az 6 karakter olmalıdır."); return; }
+    if (newPw !== confirmPw) { setPwError("Şifreler eşleşmiyor."); return; }
+    setPwSaving(true);
+    try {
+      await apiPut("/api/auth/user", { current_password: currentPw, password: newPw });
+      setPwSuccess(true);
+      setCurrentPw("");
+      setNewPw("");
+      setConfirmPw("");
+    } catch (err) {
+      if (err instanceof ApiError && err.code === "current_password_wrong") {
+        setPwError("Mevcut şifre hatalı.");
+      } else {
+        setPwError("Şifre değiştirilemedi.");
+      }
+    } finally {
+      setPwSaving(false);
+    }
+  }
+
   return (
     <div>
-      {isCarrier ? <CarrierDashboardOverview /> : <CustomerDashboardOverview />}
       <h1 className="text-2xl font-extrabold text-foreground mb-6">Profil</h1>
 
       <div className="bg-surface rounded-xl border border-border-soft p-6 max-w-md">
@@ -120,6 +149,42 @@ export default function ProfilPage() {
           {error && <p className="text-sm text-danger">{error}</p>}
           {success && <p className="text-sm text-success">Kaydedildi!</p>}
           <Button type="submit" loading={saving}>Kaydet</Button>
+        </form>
+      </div>
+
+      {/* Şifre Değiştirme */}
+      <div className="bg-surface rounded-xl border border-border-soft p-6 max-w-md mt-6">
+        <h2 className="text-lg font-extrabold text-foreground mb-4">Şifre Değiştir</h2>
+        <form onSubmit={handlePasswordChange} className="flex flex-col gap-4">
+          <Input
+            label="Mevcut Şifre"
+            type="password"
+            value={currentPw}
+            onChange={(e) => setCurrentPw(e.target.value)}
+            placeholder="Mevcut şifreniz"
+            autoComplete="current-password"
+          />
+          <Input
+            label="Yeni Şifre"
+            type="password"
+            value={newPw}
+            onChange={(e) => setNewPw(e.target.value)}
+            placeholder="En az 6 karakter"
+            autoComplete="new-password"
+          />
+          <Input
+            label="Yeni Şifre (Tekrar)"
+            type="password"
+            value={confirmPw}
+            onChange={(e) => setConfirmPw(e.target.value)}
+            placeholder="Yeni şifrenizi tekrar girin"
+            autoComplete="new-password"
+          />
+          {pwError && <p className="text-sm text-danger">{pwError}</p>}
+          {pwSuccess && <p className="text-sm text-success">Şifreniz başarıyla değiştirildi!</p>}
+          <Button type="submit" loading={pwSaving} disabled={!currentPw || !newPw || !confirmPw}>
+            Şifreyi Değiştir
+          </Button>
         </form>
       </div>
     </div>

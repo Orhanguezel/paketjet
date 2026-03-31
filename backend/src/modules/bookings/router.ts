@@ -4,7 +4,7 @@ import { requireAuth } from "@/common/middleware/auth";
 import { authSecurity, fromZodSchema, idParamsSchema, okResponseSchema } from "@/modules/_shared";
 import { z } from "zod";
 import {
-  createBooking, listMyBookings, getBooking, confirmBooking, updateBookingStatus, cancelBooking, getBankDetails,
+  createBooking, listMyBookings, getBooking, confirmBooking, updateBookingStatus, cancelBooking, getBankDetails, confirmDelivery,
 } from "./controller";
 import { cancelBookingSchema, createBookingSchema, updateBookingStatusSchema } from "./validation";
 
@@ -42,6 +42,10 @@ export async function registerBookings(app: FastifyInstance) {
     config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
     schema: { tags: ['bookings'], summary: 'Rezervasyon durumunu guncelle', security: authSecurity, params: idParamsSchema, body: fromZodSchema(updateBookingStatusSchema, 'UpdateBookingStatusBody'), response: { 200: okResponseSchema } },
   }, updateBookingStatus);
+  app.patch(`${B}/:id/confirm-delivery`, {
+    preHandler: [requireAuth],
+    schema: { tags: ['bookings'], summary: 'Müşteri teslim onayı', security: authSecurity, params: idParamsSchema, response: { 200: okResponseSchema } },
+  }, confirmDelivery);
   app.get(`${B}/bank-details`, { ...auth, schema: { tags: ['bookings'], summary: 'Banka bilgileri' } }, getBankDetails);
   app.patch(`${B}/:id/cancel`, {
     preHandler: [requireAuth],

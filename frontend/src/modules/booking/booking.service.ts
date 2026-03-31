@@ -29,5 +29,8 @@ export const cancelBooking = (id: string, reason?: string) =>
 export const initiateBookingPayment = (bookingId: string) =>
   apiPost<BookingPaymentInitResponse>(API.bookings.payInitiate(bookingId), {});
 
+export const confirmDelivery = (id: string) =>
+  apiPatch<Booking>(`/api/bookings/${id}/confirm-delivery`, {});
+
 export const getBankDetails = () =>
   apiGet<BankDetails>(API.bookings.bankDetails);

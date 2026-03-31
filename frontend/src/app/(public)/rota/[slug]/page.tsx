@@ -53,11 +53,11 @@ export default async function RouteGuidePage({ params }: Props) {
   return (
     <main className="bg-background text-foreground">
       <ArticleSchema
-        title={`${guide.title} Kargo Rotasi`}
+        headline={`${guide.title} Kargo Rotasi`}
         description={guide.description}
         url={guide.canonicalPath}
-        datePublished={guide.publishedAt}
-        dateModified={guide.updatedAt}
+        publishedTime={guide.publishedAt}
+        modifiedTime={guide.updatedAt}
         section="Rota Rehberi"
       />
       <BreadcrumbSchema

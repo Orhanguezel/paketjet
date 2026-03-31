@@ -5,14 +5,18 @@ import type { Booking } from "@/modules/booking/booking.type";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { SkeletonCard } from "@/components/ui/Skeleton";
+import BookingChat from "@/modules/booking/components/BookingChat";
+import DisputeSection from "@/modules/booking/components/DisputeSection";
 
 const BOOKING_STATUS_COLOR: Record<string, "success" | "muted" | "danger" | "brand" | "warning"> = {
   pending: "warning", confirmed: "success", in_transit: "brand",
+  awaiting_delivery_confirmation: "warning",
   delivered: "success", cancelled: "danger", disputed: "danger",
 };
 const BOOKING_STATUS_LABEL: Record<string, string> = {
   pending: "Bekliyor", confirmed: "Onaylandı", in_transit: "Yolda",
-  delivered: "Teslim", cancelled: "İptal", disputed: "Anlaşmazlık",
+  awaiting_delivery_confirmation: "Teslim Onayı Bekleniyor",
+  delivered: "Teslim Edildi", cancelled: "İptal", disputed: "Anlaşmazlık",
 };
 
 function formatDate(iso: string) {
@@ -27,6 +31,7 @@ interface Props {
 
 export default function TaleplerTab({ bookings, setBookings, loading }: Props) {
   const [actionId, setActionId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   // Only show active bookings (not delivered/cancelled)
   const activeBookings = bookings.filter(b => !["delivered", "cancelled"].includes(b.status));
@@ -60,7 +65,7 @@ export default function TaleplerTab({ bookings, setBookings, loading }: Props) {
   }
 
   async function handleDeliver(id: string) {
-    if (!confirm("Teslimi onaylamak istediğinize emin misiniz? Ödeme cüzdanınıza aktarılacak.")) return;
+    if (!confirm("Kargoyu teslim ettiğinizi onaylıyor musunuz? Müşteri teslim onayından sonra ödeme aktarılacak.")) return;
     setActionId(id);
     try {
       const updated = await updateBookingStatus(id, "delivered");
@@ -119,14 +124,35 @@ export default function TaleplerTab({ bookings, setBookings, loading }: Props) {
             )}
             {b.status === "confirmed" && (
               <div className="flex items-center gap-2 shrink-0">
-                <Button size="sm" variant="primary" loading={actionId === b.id} onClick={() => handleTransit(b.id)}>Yola Çıktı</Button>
+                <Button size="sm" variant="primary" loading={actionId === b.id} onClick={() => handleTransit(b.id)}>Kargoyu Aldım</Button>
                 <Button size="sm" variant="danger" loading={actionId === b.id} onClick={() => handleCancel(b.id)}>İptal</Button>
               </div>
             )}
             {b.status === "in_transit" && (
-              <Button size="sm" variant="success" loading={actionId === b.id} onClick={() => handleDeliver(b.id)}>Teslim Edildi</Button>
+              <Button size="sm" variant="success" loading={actionId === b.id} onClick={() => handleDeliver(b.id)}>Teslim Ettim</Button>
+            )}
+            {b.status === "awaiting_delivery_confirmation" && (
+              <Badge color="warning">Müşteri onayı bekleniyor</Badge>
             )}
           </div>
+
+          {/* Mesajlaşma + Anlaşmazlık */}
+          {["confirmed", "in_transit", "awaiting_delivery_confirmation"].includes(b.status) && (
+            <div className="mt-3 pt-3 border-t border-border-soft">
+              <button
+                onClick={() => setExpandedId(expandedId === b.id ? null : b.id)}
+                className="text-xs text-brand font-semibold hover:underline"
+              >
+                {expandedId === b.id ? "Mesajları Gizle" : "Mesaj Gönder / Detay"}
+              </button>
+              {expandedId === b.id && (
+                <div className="mt-3 space-y-3">
+                  <BookingChat bookingId={b.id} bookingStatus={b.status} />
+                  <DisputeSection bookingId={b.id} bookingStatus={b.status} />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ))}
     </div>

@@ -58,6 +58,7 @@ export default function AdminBookingsClient() {
     pending: t('status.pending'),
     confirmed: t('status.confirmed'),
     in_transit: t('status.inTransit'),
+    awaiting_delivery_confirmation: 'Teslim Onayı Bekleniyor',
     delivered: t('status.delivered'),
     cancelled: t('status.cancelled'),
     refunded: t('status.refunded'),
