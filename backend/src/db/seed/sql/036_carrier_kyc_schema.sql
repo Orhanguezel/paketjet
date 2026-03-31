@@ -5,29 +5,26 @@
 
 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- ── users tablosuna KYC alanları ─────────────────────────────────────────────
+-- ── users tablosuna KYC alanları (MySQL 8 uyumlu — IF NOT EXISTS yok) ────────
 
-ALTER TABLE users
-  ADD COLUMN IF NOT EXISTS tc_identity VARCHAR(11) DEFAULT NULL AFTER phone,
-  ADD COLUMN IF NOT EXISTS tax_number VARCHAR(20) DEFAULT NULL AFTER tc_identity,
-  ADD COLUMN IF NOT EXISTS tax_office VARCHAR(100) DEFAULT NULL AFTER tax_number,
-  ADD COLUMN IF NOT EXISTS legal_company_title VARCHAR(255) DEFAULT NULL AFTER tax_office,
-  ADD COLUMN IF NOT EXISTS kyc_status ENUM('not_submitted','pending','approved','rejected') NOT NULL DEFAULT 'not_submitted' AFTER legal_company_title,
-  ADD COLUMN IF NOT EXISTS kyc_submitted_at DATETIME(3) DEFAULT NULL AFTER kyc_status,
-  ADD COLUMN IF NOT EXISTS kyc_approved_at DATETIME(3) DEFAULT NULL AFTER kyc_submitted_at,
-  ADD COLUMN IF NOT EXISTS iyzico_sub_merchant_key VARCHAR(100) DEFAULT NULL AFTER kyc_approved_at,
-  ADD COLUMN IF NOT EXISTS iyzico_sub_merchant_type VARCHAR(30) DEFAULT NULL AFTER iyzico_sub_merchant_key;
+SET @col_check = (SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'tc_identity');
+SET @q = IF(@col_check = 0,
+  'ALTER TABLE users ADD COLUMN tc_identity VARCHAR(11) DEFAULT NULL AFTER phone, ADD COLUMN tax_number VARCHAR(20) DEFAULT NULL AFTER tc_identity, ADD COLUMN tax_office VARCHAR(100) DEFAULT NULL AFTER tax_number, ADD COLUMN legal_company_title VARCHAR(255) DEFAULT NULL AFTER tax_office, ADD COLUMN kyc_status VARCHAR(30) NOT NULL DEFAULT ''not_submitted'' AFTER legal_company_title, ADD COLUMN kyc_submitted_at DATETIME(3) DEFAULT NULL AFTER kyc_status, ADD COLUMN kyc_approved_at DATETIME(3) DEFAULT NULL AFTER kyc_submitted_at, ADD COLUMN iyzico_sub_merchant_key VARCHAR(100) DEFAULT NULL AFTER kyc_approved_at, ADD COLUMN iyzico_sub_merchant_type VARCHAR(30) DEFAULT NULL AFTER iyzico_sub_merchant_key',
+  'SELECT 1');
+PREPARE stmt FROM @q;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
 -- ── carrier_kyc_documents tablosu ────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS carrier_kyc_documents (
   id CHAR(36) NOT NULL PRIMARY KEY,
   carrier_id CHAR(36) NOT NULL,
-  document_type ENUM('identity_front','identity_back','tax_certificate','address_proof','iban_document') NOT NULL,
+  document_type VARCHAR(30) NOT NULL,
   file_path VARCHAR(500) NOT NULL,
   original_name VARCHAR(255) NOT NULL,
   file_size INT UNSIGNED NOT NULL DEFAULT 0,
-  status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
   admin_note TEXT DEFAULT NULL,
   reviewed_by CHAR(36) DEFAULT NULL,
   reviewed_at DATETIME(3) DEFAULT NULL,
