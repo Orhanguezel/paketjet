@@ -120,6 +120,8 @@ const ADMIN_PERMISSION_PATHS: Record<AdminPermissionKey, string[]> = {
   'admin.carrier_agreements': ['/admin/carrier-agreements'],
   'admin.commission_settings': ['/admin/commission-settings'],
   'admin.payment_settings': ['/admin/payment-settings'],
+  'admin.carrier_kyc': ['/admin/kyc'],
+  'admin.disputes': ['/admin/disputes'],
 };
 
 function stripQueryAndHash(pathname: string): string {
