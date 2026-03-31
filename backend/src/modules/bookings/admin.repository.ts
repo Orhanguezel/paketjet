@@ -6,6 +6,7 @@ import { db } from '@/db/client';
 import { and, desc, eq, sql } from 'drizzle-orm';
 import { bookings } from './schema';
 import { users } from '../auth/schema';
+import { ilanlar } from '../ilanlar/schema';
 
 export async function repoAdminListBookings(params: {
   status?: string;
@@ -21,9 +22,15 @@ export async function repoAdminListBookings(params: {
   const where = conditions.length ? and(...conditions) : undefined;
 
   const [rows, [countRow]] = await Promise.all([
-    db.select({ booking: bookings, customer_name: users.full_name })
+    db.select({
+        booking: bookings,
+        customer_name: users.full_name,
+        from_city: ilanlar.from_city,
+        to_city: ilanlar.to_city,
+      })
       .from(bookings)
       .leftJoin(users, eq(bookings.customer_id, users.id))
+      .leftJoin(ilanlar, eq(bookings.ilan_id, ilanlar.id))
       .where(where)
       .orderBy(desc(bookings.created_at))
       .limit(params.limit)
@@ -32,7 +39,13 @@ export async function repoAdminListBookings(params: {
   ]);
 
   return {
-    data: rows.map((r) => ({ ...r.booking, customer_name: r.customer_name })),
+    data: rows.map((r) => ({
+      ...r.booking,
+      customer_name: r.customer_name,
+      from_city: r.from_city,
+      to_city: r.to_city,
+      kg: r.booking.kg_amount,
+    })),
     total: Number(countRow?.total ?? 0),
   };
 }
