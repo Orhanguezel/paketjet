@@ -18,7 +18,7 @@ const inputCls = (err?: string) =>
 function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUrl?: string | null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get("next") ?? ROUTES.panel.musteri;
+  const nextParam = searchParams.get("next");
   const setUser = useAuthStore((s) => s.setUser);
 
   const [form, setForm] = useState<LoginFormData>({ email: "", password: "" });
@@ -31,10 +31,10 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
     setErrors((prev) => ({ ...prev, [e.target.name]: undefined }));
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function doLogin(data: LoginFormData) {
     setServerError("");
-    const result = loginSchema.safeParse(form);
+    setErrors({});
+    const result = loginSchema.safeParse(data);
     if (!result.success) {
       const fieldErrors: Partial<LoginFormData> = {};
       for (const issue of result.error.issues) {
@@ -48,7 +48,9 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
     try {
       const res = await login(result.data);
       setUser(res.user);
-      router.push(nextPath);
+      const role = res.user.role;
+      const defaultPanel = role === "carrier" ? ROUTES.panel.tasiyici : ROUTES.panel.musteri;
+      router.push(nextParam ?? defaultPanel);
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       setServerError(
@@ -59,6 +61,16 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    await doLogin(form);
+  }
+
+  async function quickLogin(email: string, password: string) {
+    setForm({ email, password });
+    await doLogin({ email, password });
   }
 
   return (
@@ -147,15 +159,17 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
               <div className="flex gap-2">
                 <button
                   type="button"
-                  onClick={() => { setForm({ email: "musteri@paketjet.com", password: "Musteri@2026!" }); setErrors({}); }}
-                  className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground"
+                  disabled={loading}
+                  onClick={() => quickLogin("musteri@paketjet.com", "Musteri@2026!")}
+                  className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground disabled:opacity-60"
                 >
                   👤 Müşteri
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setForm({ email: "satici@paketjet.com", password: "Tasiyici@2026!" }); setErrors({}); }}
-                  className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground"
+                  disabled={loading}
+                  onClick={() => quickLogin("satici@paketjet.com", "Tasiyici@2026!")}
+                  className="flex-1 py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground disabled:opacity-60"
                 >
                   🚚 Taşıyıcı
                 </button>

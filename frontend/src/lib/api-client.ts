@@ -11,6 +11,31 @@ class ApiError extends Error {
   }
 }
 
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
+
+async function tryRefreshToken(): Promise<boolean> {
+  if (isRefreshing && refreshPromise) return refreshPromise;
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/auth/token/refresh`, {
+        method: "POST",
+        credentials: "include",
+      });
+      return res.ok;
+    } catch {
+      return false;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {}
@@ -20,28 +45,40 @@ async function request<T>(
   const headers: Record<string, string> = { ...(options.headers as Record<string, string> ?? {}) };
   if (options.body) headers["Content-Type"] = "application/json";
 
-  const res = await fetch(url, {
+  let res = await fetch(url, {
     ...options,
     credentials: "include",
     headers,
   });
 
-    if (!res.ok) {
-      let code = "request_failed";
-      try {
-        const body = await res.json();
-        code = body?.error?.message ?? code;
-      } catch {}
-
-      if (res.status === 401 && typeof window !== "undefined") {
-        localStorage.removeItem("paketjet-auth");
-        if (!window.location.pathname.startsWith("/giris")) {
-          window.location.href = "/giris?expired=true";
-        }
-      }
-
-      throw new ApiError(res.status, code, `${res.status} ${code}`);
+  // 401 → try refresh once, then retry the original request
+  if (res.status === 401 && typeof window !== "undefined" && !path.includes("/auth/token")) {
+    const refreshed = await tryRefreshToken();
+    if (refreshed) {
+      res = await fetch(url, {
+        ...options,
+        credentials: "include",
+        headers,
+      });
     }
+  }
+
+  if (!res.ok) {
+    let code = "request_failed";
+    try {
+      const body = await res.json();
+      code = body?.error?.message ?? code;
+    } catch {}
+
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("paketjet-auth");
+      if (!window.location.pathname.startsWith("/giris")) {
+        window.location.href = "/giris?expired=true";
+      }
+    }
+
+    throw new ApiError(res.status, code, `${res.status} ${code}`);
+  }
 
   // 204 No Content
   if (res.status === 204) return undefined as T;

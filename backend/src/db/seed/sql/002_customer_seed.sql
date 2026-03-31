@@ -12,7 +12,7 @@ SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 -- ───────────────────────────────────────────────────────
 INSERT INTO users (id, email, password_hash, full_name, phone, wallet_balance, is_active, email_verified, created_at, updated_at)
 VALUES ('{{CUSTOMER_ID}}', '{{CUSTOMER_EMAIL}}', '{{CUSTOMER_PASSWORD_HASH}}', 'Emre Yılmaz', '+905351234567', 0.00, 1, 1, CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3))
-ON DUPLICATE KEY UPDATE password_hash=VALUES(password_hash), full_name=VALUES(full_name), phone=VALUES(phone), is_active=1, email_verified=1, updated_at=CURRENT_TIMESTAMP(3);
+ON DUPLICATE KEY UPDATE email=VALUES(email), password_hash=VALUES(password_hash), full_name=VALUES(full_name), phone=VALUES(phone), is_active=1, email_verified=1, updated_at=CURRENT_TIMESTAMP(3);
 
 INSERT INTO profiles (id, full_name, phone, created_at, updated_at)
 VALUES ('{{CUSTOMER_ID}}', 'Emre Yılmaz', '+905351234567', CURRENT_TIMESTAMP(3), CURRENT_TIMESTAMP(3))

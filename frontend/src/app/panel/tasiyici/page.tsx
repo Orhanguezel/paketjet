@@ -2,7 +2,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { getMyIlans } from "@/modules/ilan/ilan.service";
 import { getCarrierDashboard } from "@/modules/dashboard/dashboard.service";
 import { getCarrierBookings } from "@/modules/booking/booking.service";
@@ -22,6 +22,7 @@ type Tab = "talepler" | "ilanlar" | "gecmis" | "finans" | "abonelik" | "yeni-ila
 const VALID_TABS: Tab[] = ["talepler", "ilanlar", "gecmis", "finans", "abonelik", "yeni-ilan"];
 
 function TasiyiciContent() {
+  const router = useRouter();
   const { user } = useAuthStore();
   const searchParams = useSearchParams();
   const [hydrated, setHydrated] = useState(false);
@@ -63,6 +64,10 @@ function TasiyiciContent() {
   }
 
   if (!allowed) {
+    if (user?.role === "customer") {
+      router.replace("/panel/musteri");
+      return null;
+    }
     return <div className="text-danger font-bold text-center py-12">Bu sayfaya erişim yetkiniz yok.</div>;
   }
 

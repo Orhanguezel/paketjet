@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import Link from "next/link";
 import { getMyBookings } from "@/modules/booking/booking.service";
@@ -11,6 +12,7 @@ import BookingList from "./_components/BookingList";
 import { CustomerDashboardOverview } from "@/modules/dashboard/components/CustomerDashboardHeader";
 
 export default function MusteriPage() {
+  const router = useRouter();
   const { user } = useAuthStore();
   const [hydrated, setHydrated] = useState(false);
   const [dashboard, setDashboard] = useState<CustomerDashboard | null>(null);
@@ -47,6 +49,10 @@ export default function MusteriPage() {
   }
 
   if (!allowed) {
+    if (user?.role === "carrier") {
+      router.replace("/panel/tasiyici");
+      return null;
+    }
     return <div className="text-danger font-bold text-center py-12">Bu sayfaya erişim yetkiniz yok.</div>;
   }
 
