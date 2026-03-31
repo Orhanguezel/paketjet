@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-
 interface CustomPageViewProps {
   title: string;
   summary?: string | null;
