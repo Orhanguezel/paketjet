@@ -1,5 +1,5 @@
 export type VehicleType = "van" | "truck" | "motorcycle" | "car" | "other";
-export type IlanStatus = "active" | "paused" | "completed" | "cancelled";
+export type IlanStatus = "active" | "pending_approval" | "paused" | "completed" | "cancelled";
 
 /** Backend API'den gelen ilan objesi */
 export interface Ilan {
