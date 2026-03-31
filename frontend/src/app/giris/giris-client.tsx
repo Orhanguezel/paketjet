@@ -175,7 +175,7 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
                 </button>
               </div>
               <a
-                href="http://localhost:3071/auth/login"
+                href={`${process.env.NEXT_PUBLIC_ADMIN_URL || "/admin"}/auth/login`}
                 className="mt-2 block w-full py-2.5 text-xs font-semibold rounded-lg border border-navy/30 hover:border-navy hover:bg-navy/5 transition text-navy text-center"
               >
                 🛡️ Admin Panel
