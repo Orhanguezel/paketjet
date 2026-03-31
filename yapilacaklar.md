@@ -48,6 +48,13 @@
 
 ## Kalan İşler
 
+### Header/Footer Tek Kaynak
+- [x] `SiteShell` server component oluşturuldu — Header + Footer tek yerden
+- [x] `(public)/layout.tsx` → `SiteShell` kullanıyor
+- [x] `panel/layout.tsx` → `SiteShell` + `PanelShell` kullanıyor
+- [x] `admin/layout.tsx` → `SiteShell` + `AdminShell` kullanıyor
+- [x] Login/Register → Header/Footer yok (doğru)
+- [x] Tüm sayfalar aynı Header ve Footer'ı görüyor
+
 ### Sonraki Sprint
-- [ ] Header/Footer tek kaynak: root layout'ta tüm sayfalara (login/register hariç)
 - [ ] Admin panel categories key/value düzeltmesi
