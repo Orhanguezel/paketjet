@@ -94,6 +94,8 @@ const emptyNav: AdminNavCopy = {
     carrier_agreements: '',
     commission_settings: '',
     payment_settings: '',
+    carrier_kyc: '',
+    disputes: '',
   },
 };
 
