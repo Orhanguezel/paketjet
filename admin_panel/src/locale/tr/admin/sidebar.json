@@ -92,6 +92,8 @@
     "theme": "Tema",
     "telegram": "Telegram",
     "audit": "Denetim",
+    "carrier_kyc": "KYC Doğrulama",
+    "disputes": "Anlaşmazlıklar",
     "carrier_agreements": "Taşıyıcı Anlaşmaları",
     "commission_settings": "Komisyon & Abonelik",
     "payment_settings": "Ödeme Ayarları"

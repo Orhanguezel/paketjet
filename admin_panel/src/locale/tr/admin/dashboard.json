@@ -65,7 +65,9 @@
     "announcements": "Duyurular",
     "articles": "Haberler",
     "news_suggestions": "Haber Önerileri",
-    "news_sources": "Haber Kaynakları"
+    "news_sources": "Haber Kaynakları",
+    "carrier_kyc": "KYC Doğrulama",
+    "disputes": "Anlaşmazlıklar"
   },
   "stats": {
     "deliveredOrders": "Yayınlanan İlan",
