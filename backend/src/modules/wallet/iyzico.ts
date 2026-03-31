@@ -119,3 +119,59 @@ export async function retrieveCheckoutForm(token: string, conversationId: string
     { locale: "tr", conversationId, token },
   );
 }
+
+// ── Sub-Merchant (Alt Üye İşyeri) ───────────────────────────────────────────
+
+export interface SubMerchantCreateRequest {
+  locale?: string;
+  conversationId?: string;
+  subMerchantExternalId: string;
+  subMerchantType: "PERSONAL" | "PRIVATE_COMPANY" | "LIMITED_OR_JOINT_STOCK_COMPANY";
+  address: string;
+  contactName: string;
+  contactSurname: string;
+  email: string;
+  gsmNumber: string;
+  name: string;
+  iban: string;
+  identityNumber: string;
+  taxOffice?: string;
+  legalCompanyTitle?: string;
+  taxNumber?: string;
+  currency?: string;
+}
+
+export interface SubMerchantResponse {
+  status: string;
+  errorCode?: string;
+  errorMessage?: string;
+  subMerchantKey?: string;
+  conversationId?: string;
+}
+
+export async function createSubMerchant(data: SubMerchantCreateRequest): Promise<SubMerchantResponse> {
+  const iyzipay = getIyzipay();
+  return promisify<SubMerchantResponse>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (iyzipay as any).subMerchant.create.bind((iyzipay as any).subMerchant),
+    { locale: data.locale ?? "tr", conversationId: data.conversationId ?? data.subMerchantExternalId, ...data },
+  );
+}
+
+export async function updateSubMerchant(data: SubMerchantCreateRequest & { subMerchantKey: string }): Promise<SubMerchantResponse> {
+  const iyzipay = getIyzipay();
+  return promisify<SubMerchantResponse>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (iyzipay as any).subMerchant.update.bind((iyzipay as any).subMerchant),
+    { locale: data.locale ?? "tr", conversationId: data.conversationId ?? data.subMerchantExternalId, ...data },
+  );
+}
+
+export async function retrieveSubMerchant(subMerchantExternalId: string): Promise<SubMerchantResponse> {
+  const iyzipay = getIyzipay();
+  return promisify<SubMerchantResponse>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (iyzipay as any).subMerchant.retrieve.bind((iyzipay as any).subMerchant),
+    { locale: "tr", conversationId: subMerchantExternalId, subMerchantExternalId },
+  );
+}

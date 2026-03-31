@@ -6,7 +6,7 @@
 // GET /admin/reports/locations
 // =============================================================
 import type { FastifyInstance } from 'fastify';
-import { adminReportsKpi, adminReportsUsersPerformance, adminReportsLocations } from './admin.controller';
+import { adminReportsKpi, adminReportsUsersPerformance, adminReportsLocations, adminReportsCommissions } from './admin.controller';
 
 export async function registerReportsAdmin(app: FastifyInstance) {
   const B = '/reports';
@@ -14,4 +14,5 @@ export async function registerReportsAdmin(app: FastifyInstance) {
   app.get(`${B}/kpi`,                adminReportsKpi);
   app.get(`${B}/users-performance`,  adminReportsUsersPerformance);
   app.get(`${B}/locations`,          adminReportsLocations);
+  app.get(`${B}/commissions`,        adminReportsCommissions);
 }

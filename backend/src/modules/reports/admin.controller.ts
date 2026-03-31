@@ -10,7 +10,7 @@ import {
   parseReportsPeriod,
   parseReportsUserRole,
 } from './helpers';
-import { repoGetKpiMetrics, repoGetUsersPerformance, repoGetLocationsStats } from './repository';
+import { repoGetKpiMetrics, repoGetUsersPerformance, repoGetLocationsStats, repoGetCommissionReport } from './repository';
 
 /** GET /admin/reports/kpi */
 export async function adminReportsKpi(req: FastifyRequest, reply: FastifyReply) {
@@ -46,5 +46,16 @@ export async function adminReportsLocations(req: FastifyRequest, reply: FastifyR
     return reply.send(rows);
   } catch (e) {
     return handleRouteError(reply, req, e, 'admin_reports_locations');
+  }
+}
+
+/** GET /admin/reports/commissions */
+export async function adminReportsCommissions(req: FastifyRequest, reply: FastifyReply) {
+  try {
+    const q = req.query as Record<string, string>;
+    const result = await repoGetCommissionReport(parseReportsDateRange(q));
+    return reply.send(result);
+  } catch (e) {
+    return handleRouteError(reply, req, e, 'admin_reports_commissions');
   }
 }
