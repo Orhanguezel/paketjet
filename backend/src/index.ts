@@ -20,7 +20,7 @@ function checkSecurityDefaults() {
 async function main() {
   checkSecurityDefaults();
   const app: FastifyInstance = await createApp();
-  await app.listen({ port: env.PORT, host: '0.0.0.0' });
+  await app.listen({ port: env.PORT, host: env.LISTEN_HOST });
   console.log(`API listening :${env.PORT} [${env.NODE_ENV}]`);
 }
 

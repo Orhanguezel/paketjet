@@ -6,6 +6,11 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const CORS_LIST = parseEnvList(process.env.CORS_ORIGIN);
 const CORS_ORIGIN = CORS_LIST.length ? CORS_LIST : [FRONTEND_URL];
 
+const IS_PROD = (process.env.NODE_ENV ?? "development") === "production";
+/** HTTP bind: production’da varsayılan 127.0.0.1 (Nginx arkası). LISTEN_HOST=0.0.0.0 ile tüm arayüz. */
+const LISTEN_HOST =
+  process.env.LISTEN_HOST || (IS_PROD ? "127.0.0.1" : "0.0.0.0");
+
 const RAW_STORAGE_DRIVER = (process.env.STORAGE_DRIVER || 'cloudinary').toLowerCase();
 const STORAGE_DRIVER = (RAW_STORAGE_DRIVER === 'local' ? 'local' : 'cloudinary') as
   | 'local'
@@ -14,6 +19,7 @@ const STORAGE_DRIVER = (RAW_STORAGE_DRIVER === 'local' ? 'local' : 'cloudinary')
 export const env = {
   NODE_ENV: process.env.NODE_ENV ?? "development",
   PORT: parseEnvInt(process.env.PORT, 8083),
+  LISTEN_HOST,
   SENTRY_DSN: process.env.SENTRY_DSN || '',
 
   // Redis
