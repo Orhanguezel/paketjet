@@ -2,6 +2,10 @@
 
 PaketJet, portfolio metadata'sinda lojistik ve kargo operasyon platformu olarak tanimlanmis bir projedir. Ancak mevcut checkout'ta uygulama kaynak kodu yerine dokuman odakli bir klasor yapisi gorunmektedir.
 
+## Canli Erisim Notu
+
+Canli server `vps-paketjet` SSH kisa yolundadir. Key ile sifresiz erisim: `ssh vps-paketjet`.
+
 ## Mevcut Workspace Durumu
 
 - `doku/`: dokumantasyon dosyalari

@@ -58,3 +58,15 @@
 
 ### Sonraki Sprint
 - [ ] Admin panel categories key/value düzeltmesi
+
+
+
+middelware deracated oldu onu kaldir. 
+
+tasiyicilarla ilgili belgeleri kyc belgelerini göremiyorum. belgeleirni görürsem eger iyizico da alt uye isyeri hesabi acacagim. 
+
+admin.categories.modules.ilanlar   keylerinin value karsiligi yok- 
+
+https://panel.paketjet.com/admin/site-settings  seo tabi, mevcut sayfalardan farkli. paketjet e uygun olarak yaz
+
+VPS erisimi: `ssh vps-paketjet` (key tabanli, sifre repoya yazilmaz).

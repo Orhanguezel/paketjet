@@ -1,5 +1,9 @@
 # AGENTS.md — PaketJet (Codex Talimatlari)
 
+## Canli Erisim Notu
+
+Canli server `vps-paketjet` SSH kisa yolundadir. Key ile sifresiz erisim: `ssh vps-paketjet`.
+
 ## Proje Ozeti
 
 PaketJet, P2P kargo pazaryeridir. Tasiyicilar guzergah/kapasite ilani acar, musteriler kargo alani satin alir (BlaBlaCar modeli, kargo icin).
