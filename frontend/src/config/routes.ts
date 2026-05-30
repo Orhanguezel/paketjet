@@ -27,9 +27,13 @@ export const ROUTES = {
     musteri:       "/panel/musteri",
     odemeSonuc:    "/panel/musteri/odeme-sonuc",
     tasiyici:      "/panel/tasiyici",
-    cuzdan:        "/panel/cuzdan",
+    ilanlarim:     "/panel/ilanlarim",
+    satinAldiklarim: "/panel/satin-aldiklarim",
+    ilanAlmaHakki: "/panel/ilan-alma-hakki",
+    cuzdan:        "/panel/ilan-alma-hakki",
     bildirimler:   "/panel/bildirimler",
     profil:        "/panel/profil",
+
   },
 
   ilanVer: "/ilan-ver",

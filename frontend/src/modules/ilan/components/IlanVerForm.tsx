@@ -12,8 +12,9 @@ import { cn } from "@/lib/utils";
 import { ROUTES } from "@/config/routes";
 import { TURKEY_CITIES } from "@/data/turkey-cities";
 import { useAuthStore } from "@/modules/auth/auth.store";
+import { getSiteSettingValue } from "@/lib/site-settings";
 
-const STEPS = ["Güzergah", "Kapasite & Tarih", "İletişim", "Önizleme"];
+const STEPS = ["Güzergah", "Gönderi & Tarih", "İletişim", "Önizleme"];
 
 const VEHICLE_OPTIONS: { value: VehicleType; label: string }[] = [
   { value: "car",        label: "Otomobil" },
@@ -24,6 +25,12 @@ const VEHICLE_OPTIONS: { value: VehicleType; label: string }[] = [
 ];
 
 type FormData = Partial<CreateIlanInput>;
+type ContentDeclarationCopy = {
+  title: string;
+  message: string;
+  acceptLabel: string;
+  cancelLabel: string;
+};
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
@@ -45,16 +52,10 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
   const [form, setForm] = useState<FormData>({ currency: "TRY", is_negotiable: 0, vehicle_type: "car" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [kycBlocked, setKycBlocked] = useState(false);
+  const [contentDeclaration, setContentDeclaration] = useState<ContentDeclarationCopy | null>(null);
+  const [showContentDeclaration, setShowContentDeclaration] = useState(false);
 
-  // KYC kontrolü
-  useEffect(() => {
-    import("@/modules/carrier-kyc/carrier-kyc.service").then(({ getKycStatus }) => {
-      getKycStatus().then((res) => {
-        if (res.kyc_status !== "approved") setKycBlocked(true);
-      }).catch(() => {});
-    });
-  }, []);
+  // KYC kaldırıldı (2026-05-30): ilan açmak serbest, doğrulama yok.
 
   // Pre-fill contact fields from user data
   useEffect(() => {
@@ -66,6 +67,10 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    getSiteSettingValue<ContentDeclarationCopy>("listing.content_declaration").then(setContentDeclaration);
+  }, []);
 
   function update(patch: Partial<FormData>) {
     setForm((prev) => ({ ...prev, ...patch }));
@@ -86,7 +91,7 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
     setSubmitting(true);
     setError("");
     try {
-      await createIlan(form as CreateIlanInput);
+      await createIlan({ ...form, content_declared: true } as CreateIlanInput);
       setSuccess(true);
       setSubmitting(false);
     } catch (e) {
@@ -94,11 +99,6 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
         if (e.status === 401) {
           setError("Oturum suresi dolmus. Lutfen tekrar giris yapin.");
           router.push(`/giris?next=/ilan-ver`);
-          return;
-        }
-        if (e.code === "kyc_required") {
-          setKycBlocked(true);
-          setSubmitting(false);
           return;
         }
         if (e.code === "ilan_limit_reached" || e.code === "plan_required") {
@@ -113,25 +113,12 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
     }
   }
 
-  if (kycBlocked) {
-    return (
-      <div className="max-w-xl">
-        <div className="bg-surface rounded-2xl border border-warning/30 p-8 text-center">
-          <div className="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-8 h-8 text-warning" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h2 className="text-xl font-extrabold text-foreground mb-2">Kimlik Doğrulama Gerekli</h2>
-          <p className="text-sm text-muted mb-6">
-            İlan açabilmek için önce kimlik doğrulama (KYC) işlemini tamamlamanız gerekmektedir.
-          </p>
-          <Button onClick={() => onSuccess ? onSuccess() : router.push("/panel/tasiyici?tab=kyc")}>
-            Doğrulama Sayfasına Git
-          </Button>
-        </div>
-      </div>
-    );
+  function requestPublish() {
+    if (!contentDeclaration) {
+      setError("İçerik beyanı yüklenemedi. Lütfen tekrar deneyin.");
+      return;
+    }
+    setShowContentDeclaration(true);
   }
 
   if (success) {
@@ -226,29 +213,18 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
           </div>
         )}
 
-        {/* Step 1: Capacity & Date */}
+        {/* Step 1: Shipment & Date */}
         {step === 1 && (
           <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                label="Toplam Kapasite (kg) *"
-                type="number"
-                min="0.1"
-                step="0.1"
-                value={form.total_capacity_kg ?? ""}
-                onChange={(e) => update({ total_capacity_kg: parseFloat(e.target.value) })}
-                placeholder="50"
-              />
-              <Input
-                label="Fiyat (₺/kg) *"
-                type="number"
-                min="0.1"
-                step="0.01"
-                value={form.price_per_kg ?? ""}
-                onChange={(e) => update({ price_per_kg: parseFloat(e.target.value) })}
-                placeholder="5.00"
-              />
-            </div>
+            <Input
+              label="Tahmini Ürün Değeri (₺) *"
+              type="number"
+              min="1"
+              step="1"
+              value={form.estimated_value ?? ""}
+              onChange={(e) => update({ estimated_value: parseFloat(e.target.value), estimated_value_currency: "TRY" })}
+              placeholder="1000"
+            />
             <Input
               label="Kalkış Tarihi & Saati *"
               type="datetime-local"
@@ -271,10 +247,10 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
               <span className="text-sm text-foreground">Fiyat pazarlıklı</span>
             </label>
             <Input
-              label="Açıklama (isteğe bağlı)"
+              label="Paket Açıklaması (isteğe bağlı)"
               value={form.description ?? ""}
               onChange={(e) => update({ description: e.target.value })}
-              placeholder="Taşıyabileceğiniz eşya türleri, özel notlar…"
+              placeholder="Paket içeriği, hassasiyet, teslim notu…"
             />
           </div>
         )}
@@ -312,8 +288,7 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
               {[
                 ["Güzergah", `${form.from_city} → ${form.to_city}`],
                 ["Araç",     VEHICLE_OPTIONS.find((v) => v.value === form.vehicle_type)?.label ?? form.vehicle_type],
-                ["Kapasite", `${form.total_capacity_kg} kg`],
-                ["Fiyat",    `₺${form.price_per_kg}/kg${form.is_negotiable ? " (pazarlıklı)" : ""}`],
+                ["Ürün Değeri", form.estimated_value ? `₺${form.estimated_value}` : "—"],
                 ["Kalkış",   form.departure_date ? new Date(form.departure_date).toLocaleString("tr-TR") : "—"],
                 ["Telefon",  form.contact_phone],
               ].map(([label, value]) => (
@@ -326,16 +301,16 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
             {error === "ilan_limit_reached" && (
               <div className="bg-warning/10 border border-warning/30 rounded-lg p-3">
                 <p className="text-sm text-foreground font-semibold">Bu ay icin ilan limitinize ulastiniz.</p>
-                <Link href="/panel/tasiyici?tab=abonelik" className="text-sm text-brand font-bold hover:underline mt-1 inline-block">
-                  Planinizi yukseltmek icin tiklayin →
+                <Link href="/panel/ilan-alma-hakki" className="text-sm text-brand font-bold hover:underline mt-1 inline-block">
+                  İlan alma hakkınızı artırmak için tıklayın →
                 </Link>
               </div>
             )}
             {error === "plan_required" && (
               <div className="bg-danger/10 border border-danger/30 rounded-lg p-3">
                 <p className="text-sm text-foreground font-semibold">Ilan vermek icin bir plan satin almaniz gerekiyor.</p>
-                <Link href="/panel/tasiyici?tab=abonelik" className="text-sm text-brand font-bold hover:underline mt-1 inline-block">
-                  Planlari incele →
+                <Link href="/panel/ilan-alma-hakki" className="text-sm text-brand font-bold hover:underline mt-1 inline-block">
+                  İlan alma haklarını incele →
                 </Link>
               </div>
             )}
@@ -358,18 +333,41 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
             onClick={next}
             disabled={
               (step === 0 && (!form.from_city || !form.to_city)) ||
-              (step === 1 && (!form.total_capacity_kg || !form.price_per_kg || !form.departure_date)) ||
+              (step === 1 && (!form.estimated_value || !form.departure_date)) ||
               (step === 2 && !form.contact_phone)
             }
           >
             İleri →
           </Button>
         ) : (
-          <Button onClick={submit} loading={submitting}>
+          <Button onClick={requestPublish} loading={submitting}>
             İlanı Yayınla
           </Button>
         )}
       </div>
+
+      {showContentDeclaration && contentDeclaration && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+          <div className="w-full max-w-md rounded-2xl border border-border-soft bg-surface p-6 shadow-xl">
+            <h3 className="text-lg font-extrabold text-foreground">{contentDeclaration.title}</h3>
+            <p className="mt-3 text-sm leading-relaxed text-muted">{contentDeclaration.message}</p>
+            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
+              <Button variant="ghost" onClick={() => setShowContentDeclaration(false)} disabled={submitting}>
+                {contentDeclaration.cancelLabel}
+              </Button>
+              <Button
+                onClick={() => {
+                  setShowContentDeclaration(false);
+                  void submit();
+                }}
+                loading={submitting}
+              >
+                {contentDeclaration.acceptLabel}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

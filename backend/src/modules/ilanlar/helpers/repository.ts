@@ -13,6 +13,24 @@ export function mapIlanRow(row: {
   };
 }
 
+/**
+ * Lead-reveal güvenlik: public yanıtlardan iletişim alanlarını çıkarır.
+ * İletişim yalnızca satın alma sonrası ayrı reveal endpoint ile açılır.
+ * Yalnızca PUBLIC repo fonksiyonlarında kullanılır (liste + slug/id detay);
+ * sahip/ownership ve reveal akışları tam veriyi kullanır.
+ */
+export function stripIlanContact<
+  T extends {
+    contact_phone?: unknown;
+    contact_email?: unknown;
+    contact_name?: unknown;
+    contact_address?: unknown;
+  },
+>(ilan: T) {
+  const { contact_phone, contact_email, contact_name, contact_address, ...rest } = ilan;
+  return { ...rest, contact_locked: true as const };
+}
+
 export function buildIlanListWhere(filters: {
   from_city?: string;
   to_city?: string;

@@ -3,13 +3,8 @@ import { useState, useEffect } from "react";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
 import type { CustomPage } from "@/modules/customPage/customPage.type";
 import { SkeletonCard } from "@/components/ui/Skeleton";
-import { useAuthStore } from "@/modules/auth/auth.store";
-import { CarrierDashboardOverview } from "@/modules/dashboard/components/CarrierDashboardHeader";
-import { CustomerDashboardOverview } from "@/modules/dashboard/components/CustomerDashboardHeader";
 
 export default function PanelTasimaKurallariPage() {
-  const { user } = useAuthStore();
-  const isCarrier = user?.role === "carrier";
   const [page, setPage] = useState<CustomPage | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -50,7 +45,6 @@ export default function PanelTasimaKurallariPage() {
 
   return (
     <div className="max-w-3xl">
-      {isCarrier ? <CarrierDashboardOverview /> : <CustomerDashboardOverview />}
       <h1 className="text-2xl font-extrabold text-foreground mb-2">{page.title}</h1>
       {page.summary && <p className="text-sm text-muted mb-6">{page.summary}</p>}
       <div className="bg-surface rounded-xl border border-border-soft p-6">

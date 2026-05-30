@@ -1,5 +1,5 @@
 export type VehicleType = "van" | "truck" | "motorcycle" | "car" | "other";
-export type IlanStatus = "active" | "pending_approval" | "paused" | "completed" | "cancelled";
+export type IlanStatus = "active" | "pending_approval" | "paused" | "sold" | "expired" | "removed" | "completed" | "cancelled";
 
 /** Backend API'den gelen ilan objesi */
 export interface Ilan {
@@ -20,8 +20,13 @@ export interface Ilan {
   vehicle_type: VehicleType;
   title?: string | null;
   description?: string | null;
-  contact_phone: string;
+  contact_phone?: string;
   contact_email?: string | null;
+  contact_name?: string | null;
+  contact_address?: string | null;
+  contact_locked?: boolean;
+  estimated_value?: string | null;
+  estimated_value_currency?: string | null;
   status: IlanStatus;
   carrier_name?: string | null;
   photos?: IlanPhoto[];
@@ -62,13 +67,18 @@ export interface CreateIlanInput {
   to_district?: string;
   departure_date: string;
   arrival_date?: string;
-  total_capacity_kg: number;
-  price_per_kg: number;
+  total_capacity_kg?: number;
+  price_per_kg?: number;
   currency?: string;
   is_negotiable?: number;
+  estimated_value: number;
+  estimated_value_currency?: string;
+  content_declared: boolean;
   vehicle_type?: VehicleType;
   title?: string;
   description?: string;
   contact_phone: string;
   contact_email?: string;
+  contact_name?: string;
+  contact_address?: string;
 }

@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { db } from "@/db/client";
 import { repoInvalidateDashboardCache, repoInvalidateIlanCache } from "@/modules/_shared";
 import { and, desc, eq, gte, sql } from "drizzle-orm";
-import { buildCreateIlanInsert, buildIlanListWhere, getUserIlanOrder, mapIlanRow } from "./helpers";
+import { buildCreateIlanInsert, buildIlanListWhere, getUserIlanOrder, mapIlanRow, stripIlanContact } from "./helpers";
 import { ilanlar, ilanPhotos, type NewIlan } from "./schema";
 import { users } from "../auth/schema";
 
@@ -24,7 +24,8 @@ export async function repoGetIlanBySlugOrId(slugOrId: string) {
   const ilanId = row.ilan.id;
   const photos = await db.select().from(ilanPhotos).where(eq(ilanPhotos.ilan_id, ilanId)).orderBy(ilanPhotos.order);
 
-  return { ...mapIlanRow(row), photos };
+  // PUBLIC detay → iletişim gizli (reveal ayrı endpoint)
+  return { ...stripIlanContact(mapIlanRow(row)), photos };
 }
 
 export async function repoGetIlanById(id: string) {
@@ -82,7 +83,8 @@ export async function repoListIlans(filters: {
     .where(where);
 
   return {
-    data: rows.map(mapIlanRow),
+    // PUBLIC liste → iletişim gizli (reveal ayrı endpoint)
+    data: rows.map(mapIlanRow).map(stripIlanContact),
     total: Number(countRow?.total ?? 0),
     page,
     limit,

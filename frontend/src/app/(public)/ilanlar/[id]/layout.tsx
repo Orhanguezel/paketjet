@@ -23,12 +23,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   return getPageMetadata("listing_detail", {
     title: `${ilan.from_city} → ${ilan.to_city} Kargo Ilani`,
-    description: `${ilan.from_city} - ${ilan.to_city} arasi kargo tasima ilani. ${ilan.available_capacity_kg} kg musait kapasite, ₺${ilan.price_per_kg}/kg.`,
+    description: `${ilan.from_city} - ${ilan.to_city} arasi gönderi ilani. İletişim bilgilerine PaketJet üzerinden erişin.`,
     vars: {
       from_city: ilan.from_city ?? "",
       to_city: ilan.to_city ?? "",
-      price_per_kg: ilan.price_per_kg ?? "",
-      capacity: ilan.available_capacity_kg ?? "",
+      estimated_value: ilan.estimated_value ?? "",
     },
   });
 }

@@ -18,6 +18,10 @@ export function register(data: RegisterInput): Promise<AuthResponse> {
   });
 }
 
+export function googleLogin(id_token: string): Promise<AuthResponse> {
+  return apiPost<AuthResponse>(API.auth.google, { id_token });
+}
+
 export function logout(): Promise<{ ok: boolean }> {
   return apiPost<{ ok: boolean }>(API.auth.logout);
 }

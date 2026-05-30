@@ -32,7 +32,6 @@ export function CarrierDashboardOverview() {
     { label: "Aktif İlan",       value: loading ? "—" : dashboard?.active_ilanlar },
     { label: "Bekleyen Talep",   value: loading ? "—" : pendingCount },
     { label: "Toplam Rezerv.",   value: loading ? "—" : dashboard?.total_bookings },
-    { label: "Bakiye",           value: loading ? "—" : `₺${dashboard?.balance ?? "0.00"}` },
     { label: "Bekleyen Kazanç",  value: loading ? "—" : `₺${dashboard?.pending_earnings?.toFixed(2) ?? "0.00"}` },
   ];
 
@@ -45,7 +44,7 @@ export function CarrierDashboardOverview() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {stats.map((s) => (
           <div key={s.label} className="bg-surface rounded-xl border border-border-soft p-4 text-center">
             <p className="text-xl font-extrabold text-foreground">{s.value}</p>

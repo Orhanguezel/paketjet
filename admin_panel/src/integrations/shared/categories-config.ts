@@ -4,6 +4,7 @@ export const CATEGORY_META_TITLE_LIMIT = 60;
 export const CATEGORY_META_DESCRIPTION_LIMIT = 155;
 
 export const CATEGORY_MODULE_KEYS = [
+  'ilanlar',
   'product',
   'services',
   'news',

@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { authSecurity, fromZodSchema, okResponseSchema } from '@/modules/_shared';
 import {
+  googleBody,
   passwordResetConfirmBody,
   passwordResetRequestBody,
   signupBody,
@@ -8,6 +9,7 @@ import {
   updateBody,
 } from './validation';
 import { signup, token, refresh, passwordResetRequest, passwordResetConfirm, me, status, update, logout } from './controller';
+import { googleAuth } from './google.controller';
 
 export async function registerAuth(app: FastifyInstance) {
   const B = '/auth';
@@ -16,6 +18,7 @@ export async function registerAuth(app: FastifyInstance) {
   const updateSchema = fromZodSchema(updateBody, 'AuthUpdateBody');
   const resetRequestSchema = fromZodSchema(passwordResetRequestBody, 'AuthPasswordResetRequestBody');
   const resetConfirmSchema = fromZodSchema(passwordResetConfirmBody, 'AuthPasswordResetConfirmBody');
+  const googleSchema = fromZodSchema(googleBody, 'AuthGoogleBody');
 
   app.post(`${B}/signup`, {
     config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
@@ -33,6 +36,10 @@ export async function registerAuth(app: FastifyInstance) {
     config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
     schema: { tags: ['auth'], summary: 'Email ve parola ile giris (alias)', body: tokenSchema, response: { 200: okResponseSchema } },
   }, token);
+  app.post(`${B}/google`, {
+    config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
+    schema: { tags: ['auth'], summary: 'Google ile giris (id_token)', body: googleSchema, response: { 200: okResponseSchema } },
+  }, googleAuth);
   app.post(`${B}/token/refresh`, {
     config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
     schema: { tags: ['auth'], summary: 'Refresh token yenile', response: { 200: okResponseSchema } },

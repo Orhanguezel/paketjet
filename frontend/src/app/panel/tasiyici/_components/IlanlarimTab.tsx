@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/Button";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 
 const ILAN_STATUS_COLOR: Record<string, "success" | "muted" | "danger" | "brand" | "warning"> = {
-  active: "success", pending_approval: "warning", paused: "muted", completed: "brand", cancelled: "danger",
+  active: "success", pending_approval: "warning", paused: "muted", sold: "brand", expired: "muted", removed: "danger", completed: "brand", cancelled: "danger",
 };
 const ILAN_STATUS_LABEL: Record<string, string> = {
-  active: "Aktif", pending_approval: "Onay Bekliyor", paused: "Durduruldu", completed: "Tamamlandı", cancelled: "İptal",
+  active: "Aktif", pending_approval: "Onay Bekliyor", paused: "Durduruldu", sold: "Satıldı", expired: "Süresi Doldu", removed: "Kaldırıldı", completed: "Tamamlandı", cancelled: "İptal",
 };
 
 interface Props {
@@ -49,9 +49,9 @@ export default function IlanlarimTab({ ilanlar, setIlanlar, loading }: Props) {
     return (
       <div className="text-center py-16 text-muted">
         <p className="text-lg font-semibold">Henüz ilan yok</p>
-        <p className="text-sm mt-1">Sefer ilanı vererek yük alabilirsiniz.</p>
-        <Link href="/ilan-ver" className="mt-4 inline-block px-5 py-2.5 bg-brand text-white rounded-lg text-sm font-semibold hover:bg-brand-dark transition-colors">
-          İlan Ver
+        <p className="text-sm mt-1">Ücretsiz ilan açarak listede görünür olun.</p>
+        <Link href="/ilan-ver" className="mt-4 inline-block px-5 py-2.5 bg-cta text-white rounded-lg text-sm font-black hover:bg-cta-dark transition-colors">
+          Hızlı İlan Aç
         </Link>
       </div>
     );
@@ -70,7 +70,7 @@ export default function IlanlarimTab({ ilanlar, setIlanlar, loading }: Props) {
                 </Badge>
               </div>
               <p className="text-xs text-muted">
-                {ilan.available_capacity_kg} / {ilan.total_capacity_kg} kg müsait · ₺{ilan.price_per_kg}/kg
+                Tahmini değer: {ilan.estimated_value ? `₺${Number(ilan.estimated_value).toLocaleString("tr-TR")}` : "Belirtilmemiş"}
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">

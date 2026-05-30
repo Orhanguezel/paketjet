@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 import CommissionRateCard from './commission-rate-card';
+import ListingCreditPricingCard from './listing-credit-pricing-card';
 import PlansManager from './plans-manager';
 
 export default function CommissionSettingsClient() {
@@ -19,11 +20,16 @@ export default function CommissionSettingsClient() {
       <Tabs defaultValue="commission">
         <TabsList>
           <TabsTrigger value="commission">{t('tabs.commission')}</TabsTrigger>
+          <TabsTrigger value="pricing">{t('tabs.pricing')}</TabsTrigger>
           <TabsTrigger value="plans">{t('tabs.plans')}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="commission" className="mt-4 space-y-6">
           <CommissionRateCard />
+        </TabsContent>
+
+        <TabsContent value="pricing" className="mt-4 space-y-6">
+          <ListingCreditPricingCard />
         </TabsContent>
 
         <TabsContent value="plans" className="mt-4 space-y-6">

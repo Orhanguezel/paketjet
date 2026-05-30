@@ -3,6 +3,7 @@
   "description": "Platform komisyon oranını ve taşıyıcı abonelik planlarını yönetin.",
   "tabs": {
     "commission": "Komisyon",
+    "pricing": "İlan Hakkı Fiyatları",
     "plans": "Abonelik Planları"
   },
   "commission": {
@@ -21,6 +22,25 @@
       "step2": "2. Abonelik planı komisyon oranı",
       "step3": "3. Platform varsayılan oranı (bu ayar)"
     }
+  },
+  "pricing": {
+    "title": "İlan Hakkı Fiyatları",
+    "description": "Tekil ilan hakkı ve kontör paket fiyatlarını veritabanından yönetin.",
+    "priceLabel": "Tekil ilan hakkı fiyatı",
+    "pricePlaceholder": "Ör: 50",
+    "priceHelp": "Frontend bu değeri site_settings üzerinden okur.",
+    "packagesTitle": "Kontör Paketleri",
+    "packagesDescription": "Her paket için anahtar, ilan hakkı adedi ve fiyat girin.",
+    "addPackage": "Paket Ekle",
+    "removePackage": "Sil",
+    "packageKeyPlaceholder": "starter",
+    "creditsPlaceholder": "Adet",
+    "packagePricePlaceholder": "Fiyat",
+    "saveButton": "Kaydet",
+    "saved": "İlan hakkı fiyatları güncellendi.",
+    "loadError": "Fiyat ayarları yüklenemedi.",
+    "saveError": "Fiyat ayarları kaydedilemedi.",
+    "invalidPrice": "Geçerli bir fiyat girin."
   },
   "plans": {
     "title": "Abonelik Planları",

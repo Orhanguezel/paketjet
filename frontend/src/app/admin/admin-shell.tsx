@@ -13,7 +13,6 @@ const NAV = [
   { href: "/admin/carriers",       label: "Taşıyıcılar",    icon: "🚚" },
   { href: "/admin/users",          label: "Kullanıcılar",    icon: "👥" },
   { href: "/admin/komisyon",       label: "Komisyon",        icon: "💸" },
-  { href: "/admin/cekim",          label: "Para Çekme",      icon: "🏧" },
   { href: "/admin/gelir",          label: "Gelir",           icon: "💰" },
   { href: "/admin/sayfalar",       label: "Sayfalar",        icon: "📄" },
   { href: "/admin/destek",         label: "Destek",          icon: "🎧" },

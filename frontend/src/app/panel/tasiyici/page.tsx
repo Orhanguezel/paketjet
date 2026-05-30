@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, Suspense } from "react";
 import { useAuthStore } from "@/modules/auth/auth.store";
-import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getMyIlans } from "@/modules/ilan/ilan.service";
 import { getCarrierDashboard } from "@/modules/dashboard/dashboard.service";
@@ -12,15 +11,11 @@ import type { Booking } from "@/modules/booking/booking.type";
 import TaleplerTab from "./_components/TaleplerTab";
 import IlanlarimTab from "./_components/IlanlarimTab";
 import GecmisTab from "./_components/GecmisTab";
-import FinansTab from "./_components/FinansTab";
-import AbonelikTab from "./_components/AbonelikTab";
-import KycTab from "./_components/KycTab";
 import IlanVerForm from "@/modules/ilan/components/IlanVerForm";
-import { CarrierDashboardOverview } from "@/modules/dashboard/components/CarrierDashboardHeader";
 
-type Tab = "talepler" | "ilanlar" | "gecmis" | "finans" | "abonelik" | "yeni-ilan" | "kyc";
+type Tab = "talepler" | "ilanlar" | "gecmis" | "yeni-ilan";
 
-const VALID_TABS: Tab[] = ["talepler", "ilanlar", "gecmis", "finans", "abonelik", "yeni-ilan", "kyc"];
+const VALID_TABS: Tab[] = ["talepler", "ilanlar", "gecmis", "yeni-ilan"];
 
 function TasiyiciContent() {
   const router = useRouter();
@@ -83,9 +78,6 @@ function TasiyiciContent() {
     { key: "ilanlar",  label: "İlanlarım" },
     { key: "yeni-ilan", label: "Hızlı İlan Aç" },
     { key: "gecmis",   label: "Geçmiş" },
-    { key: "finans",   label: "Finans" },
-    { key: "abonelik", label: "Abonelik" },
-    { key: "kyc",      label: "Doğrulama" },
   ];
 
   return (
@@ -104,13 +96,11 @@ function TasiyiciContent() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
         {[
-          { label: "Aktif İlan",       value: loading ? "—" : dashboard?.active_ilanlar },
-          { label: "Bekleyen Talep",   value: loading ? "—" : pendingCount },
-          { label: "Toplam Rezerv.",   value: loading ? "—" : dashboard?.total_bookings },
-          { label: "Bakiye",           value: loading ? "—" : `₺${dashboard?.balance ?? "0.00"}` },
-          { label: "Bekleyen Kazanç",  value: loading ? "—" : `₺${dashboard?.pending_earnings?.toFixed(2) ?? "0.00"}` },
+          { label: "Aktif İlan",     value: loading ? "—" : dashboard?.active_ilanlar },
+          { label: "Bekleyen Talep", value: loading ? "—" : pendingCount },
+          { label: "Toplam Rezerv.", value: loading ? "—" : dashboard?.total_bookings },
         ].map((s) => (
           <div key={s.label} className="bg-surface rounded-xl border border-border-soft p-4 text-center">
             <p className="text-xl font-extrabold text-foreground">{s.value}</p>
@@ -138,11 +128,8 @@ function TasiyiciContent() {
       </div>
 
       {tab === "talepler" && <TaleplerTab bookings={bookings} setBookings={setBookings} loading={loading} />}
-      {tab === "ilanlar" && <IlanlarimTab ilanlar={ilanlar} setIlanlar={setIlanlar} loading={loading} />}
-      {tab === "gecmis" && <GecmisTab bookings={bookings} loading={loading} />}
-      {tab === "finans" && <FinansTab dashboard={dashboard} />}
-      {tab === "abonelik" && <AbonelikTab />}
-      {tab === "kyc" && <KycTab />}
+      {tab === "ilanlar"  && <IlanlarimTab ilanlar={ilanlar} setIlanlar={setIlanlar} loading={loading} />}
+      {tab === "gecmis"   && <GecmisTab bookings={bookings} loading={loading} />}
       {tab === "yeni-ilan" && <div className="mt-4"><IlanVerForm onSuccess={() => { setTab("ilanlar"); refreshData(); }} /></div>}
     </div>
   );

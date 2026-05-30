@@ -7,6 +7,7 @@
 export const API = {
   auth: {
     login:    "/api/auth/token",
+    google:   "/api/auth/google",
     register: "/api/auth/signup",
     logout:   "/api/auth/logout",
     me:       "/api/auth/user",
@@ -19,8 +20,16 @@ export const API = {
     list:   "/api/ilanlar",
     my:     "/api/ilanlar/my",
     detail: (id: string) => `/api/ilanlar/${id}`,
+    buy:    (id: string) => `/api/ilanlar/${id}/satin-al`,
+    contact:(id: string) => `/api/ilanlar/${id}/iletisim`,
     status: (id: string) => `/api/ilanlar/${id}/status`,
     photos: (id: string) => `/api/ilanlar/${id}/photos`,
+  },
+
+  purchases: {
+    mine: "/api/satin-aldiklarim",
+    credits: "/api/ilan-alma-hakki",
+    creditPackages: "/api/ilan-alma-hakki/paketler",
   },
 
   bookings: {
@@ -70,6 +79,11 @@ export const API = {
     seoPage:    (pageKey: string) => `/api/site_settings/seo/${pageKey}`,
   },
 
+  storage: {
+    assetByName: (folder: string, name: string) =>
+      `/api/storage/assets/${encodeURIComponent(folder)}/${encodeURIComponent(name)}`,
+  },
+
   contacts: {
     create: "/api/contacts",
   },
@@ -80,12 +94,6 @@ export const API = {
     bySlug: (slug: string) => `/api/custom-pages/by-slug/${slug}`,
   },
 
-  carrierBank: {
-    get:     "/api/carrier-bank",
-    upsert:  "/api/carrier-bank",
-    delete:  "/api/carrier-bank",
-  },
-
   subscription: {
     plans:    "/api/subscription/plans",
     plan:     (id: string) => `/api/subscription/plans/${id}`,
@@ -93,16 +101,6 @@ export const API = {
     purchase: "/api/subscription/purchase",
     cancel:   "/api/subscription/cancel",
     history:  "/api/subscription/history",
-  },
-
-  withdrawal: {
-    create: "/api/withdrawal",
-    my:     "/api/withdrawal/my",
-  },
-
-  admin: {
-    withdrawals:        "/api/admin/withdrawals",
-    processWithdrawal:  (id: string) => `/api/admin/withdrawals/${id}/process`,
   },
 
   support: {

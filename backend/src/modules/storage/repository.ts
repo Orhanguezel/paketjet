@@ -81,6 +81,15 @@ export async function repoGetByBucketPath(bucket: string, path: string) {
   return rows[0] ?? null;
 }
 
+export async function repoGetByFolderName(folder: string, name: string) {
+  const rows = await db
+    .select()
+    .from(storageAssets)
+    .where(and(eq(storageAssets.folder, folder), eq(storageAssets.name, name)))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
 /** Insert */
 export async function repoInsert(values: StorageInsertInput) {
   await db.insert(storageAssets).values(values);

@@ -101,7 +101,7 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
         url: '/admin/carriers',
         icon: Users,
       },
-      { key: 'carrier_kyc', url: '/admin/kyc', icon: ShieldCheck },
+
       { key: 'disputes', url: '/admin/disputes', icon: MessageSquare },
       { key: 'carrier_agreements', url: '/admin/carrier-agreements', icon: Handshake },
       { key: 'commission_settings', url: '/admin/commission-settings', icon: Percent },
@@ -165,7 +165,7 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   categories: 'Kategoriler',
   users: 'Kullanıcılar',
   carriers: 'Taşıyıcılar',
-  carrier_kyc: 'KYC Doğrulama',
+
   disputes: 'Anlaşmazlıklar',
   wallets: 'Cüzdanlar',
   reports: 'Raporlar',

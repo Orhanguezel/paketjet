@@ -3,16 +3,16 @@ import { ensureLeadingSlash } from '@/integrations/shared/network';
 
 export const SITE_SETTINGS_INLINE_SEO_PAGES = [
   { key: 'home', path: '/' },
-  { key: 'urunler', path: '/urunler' },
-  { key: 'hizmetler', path: '/hizmetler' },
-  { key: 'haberler', path: '/haberler' },
+  { key: 'listings', path: '/ilanlar' },
+  { key: 'listing_detail', path: '/ilanlar/[id]' },
+  { key: 'ilan_ver', path: '/ilan-ver' },
   { key: 'blog', path: '/blog' },
   { key: 'hakkimizda', path: '/hakkimizda' },
-  { key: 'iletisim', path: '/iletisim' },
-  { key: 'teklif', path: '/teklif' },
-  { key: 'kataloglar', path: '/kataloglar' },
-  { key: 'legal_privacy', path: '/legal/privacy' },
-  { key: 'legal_terms', path: '/legal/terms' },
+  { key: 'contact', path: '/iletisim' },
+  { key: 'faq', path: '/destek' },
+  { key: 'legal_privacy', path: '/gizlilik-politikasi' },
+  { key: 'legal_terms', path: '/kullanim-kosullari' },
+  { key: 'kvkk', path: '/kvkk' },
 ] as const;
 
 export const SITE_SETTINGS_INLINE_SEO_DEFAULT_EXPANDED_KEYS = ['home'] as const;

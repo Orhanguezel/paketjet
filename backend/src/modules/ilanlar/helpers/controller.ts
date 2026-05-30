@@ -8,7 +8,7 @@ type CreateIlanInput = z.infer<typeof createIlanSchema>;
 type UpdateIlanInput = z.infer<typeof updateIlanSchema>;
 type IlanPatch = Parameters<typeof repoUpdateIlan>[1];
 
-export function createIlanInsertPayload(body: CreateIlanInput) {
+export function createIlanInsertPayload(body: CreateIlanInput, meta?: { ip?: string | null }) {
   return {
     from_city: body.from_city,
     to_city: body.to_city,
@@ -16,8 +16,8 @@ export function createIlanInsertPayload(body: CreateIlanInput) {
     to_district: body.to_district ?? null,
     departure_date: new Date(body.departure_date),
     arrival_date: body.arrival_date ? new Date(body.arrival_date) : null,
-    total_capacity_kg: String(body.total_capacity_kg),
-    price_per_kg: String(body.price_per_kg),
+    total_capacity_kg: String(body.total_capacity_kg ?? 0),
+    price_per_kg: String(body.price_per_kg ?? 0),
     currency: body.currency,
     is_negotiable: body.is_negotiable ?? 0,
     vehicle_type: body.vehicle_type ?? "car",
@@ -25,6 +25,15 @@ export function createIlanInsertPayload(body: CreateIlanInput) {
     description: body.description ?? null,
     contact_phone: body.contact_phone,
     contact_email: body.contact_email ?? null,
+    contact_name: body.contact_name ?? null,
+    contact_address: body.contact_address ?? null,
+    // Ürün değeri (decimal → String, CLAUDE.md kuralı)
+    estimated_value: String(body.estimated_value),
+    estimated_value_currency: body.estimated_value_currency ?? "TRY",
+    // İçerik onayı kaydı (HMK delil): tarih + IP
+    content_declared: 1,
+    content_declared_at: new Date(),
+    content_declared_ip: meta?.ip ?? null,
     status: "pending_approval" as const,
   };
 }

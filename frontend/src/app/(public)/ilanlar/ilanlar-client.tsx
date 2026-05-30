@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import IlanCard from "@/components/IlanCard";
 import CityAutocomplete from "@/components/CityAutocomplete";
 import { listIlans } from "@/modules/ilan/ilan.service";
@@ -28,6 +29,7 @@ interface IlanlarClientProps {
   initialTotal: number;
   initialPage: number;
   initialFilters: ActiveFilters;
+  listingCreditPrice?: number | null;
 }
 
 export default function IlanlarClient({
@@ -35,6 +37,7 @@ export default function IlanlarClient({
   initialTotal,
   initialPage,
   initialFilters,
+  listingCreditPrice,
 }: IlanlarClientProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -209,14 +212,20 @@ export default function IlanlarClient({
             ))}
           </div>
         ) : ilanlar.length === 0 ? (
-          <div className="py-16 text-center text-muted">
-            <p className="text-lg font-semibold">Ilan bulunamadi</p>
-            <p className="mt-1 text-sm">Farkli filtreler deneyebilirsiniz.</p>
+          <div className="rounded-2xl border border-border-soft bg-surface px-6 py-12 text-center text-muted">
+            <p className="text-lg font-black text-foreground">İlan bulunamadı</p>
+            <p className="mt-1 text-sm">Farklı filtreler deneyebilir veya ücretsiz ilan açabilirsiniz.</p>
+            <Link
+              href="/ilan-ver"
+              className="mt-5 inline-flex items-center justify-center rounded-xl bg-cta px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-cta-dark"
+            >
+              Hızlı İlan Aç
+            </Link>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
             {ilanlar.map((ilan) => (
-              <IlanCard key={ilan.id} ilan={ilan} />
+              <IlanCard key={ilan.id} ilan={ilan} listingCreditPrice={listingCreditPrice} />
             ))}
           </div>
         )}

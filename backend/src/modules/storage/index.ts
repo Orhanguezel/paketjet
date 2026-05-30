@@ -5,6 +5,10 @@ export { registerStorage } from './router';
 export { registerStorageAdmin } from './admin.routes';
 
 export {
+  publicAssetByName,
+} from './asset.controller';
+
+export {
   publicServe,
   uploadToBucket,
   signPut,

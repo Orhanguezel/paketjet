@@ -20,7 +20,6 @@ export function CustomerDashboardOverview() {
   const stats = [
     { label: "Aktif Gönderi", value: loading ? "—" : (dashboard?.active_bookings ?? 0) },
     { label: "Toplam Gönderi", value: loading ? "—" : (dashboard?.total_bookings ?? 0) },
-    { label: "Cüzdan Bakiyesi", value: loading ? "—" : `₺${dashboard?.balance ?? "0.00"}` },
   ];
 
   const displayName = user?.full_name ?? "Üye";
@@ -37,7 +36,7 @@ export function CustomerDashboardOverview() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {stats.map((s) => (
           <div key={s.label} className="bg-surface rounded-2xl border border-border-soft p-5 transition-all hover:border-brand/30">
             <p className="text-3xl font-black text-foreground">{s.value}</p>

@@ -5,3 +5,6 @@ export { Badge } from "./Badge";
 export { Skeleton, SkeletonCard } from "./Skeleton";
 export { PanelShell, PanelCard } from "./PanelShell";
 export { ThemeToggle } from "./ThemeToggle";
+export { default as Icon } from "./Icon";
+export { default as NavBadge } from "./NavBadge";
+export { default as StatCard } from "./StatCard";

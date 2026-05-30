@@ -44,13 +44,25 @@ export const ilanlar = mysqlTable(
     title: varchar("title", { length: 255 }),
     description: text("description"),
 
-    // İletişim
+    // İletişim (lead-reveal: yalnızca satın alma sonrası açılır)
     contact_phone: varchar("contact_phone", { length: 50 }).notNull(),
     contact_email: varchar("contact_email", { length: 255 }),
+    contact_name: varchar("contact_name", { length: 160 }),
+    contact_address: text("contact_address"),
 
-    // Durum
+    // Ürün değeri (ihtilaf tavanı — validation'da zorunlu, DB'de geçiş için nullable)
+    estimated_value: decimal("estimated_value", { precision: 12, scale: 2 }),
+    estimated_value_currency: varchar("estimated_value_currency", { length: 10 }).notNull().default("TRY"),
+
+    // İçerik onayı (yasaklı madde beyanı — HMK delil)
+    content_declared: tinyint("content_declared").notNull().default(0),
+    content_declared_at: datetime("content_declared_at", { fsp: 3 }),
+    content_declared_ip: varchar("content_declared_ip", { length: 64 }),
+
+    // Durum: active | sold | paused | expired | removed
     status: varchar("status", { length: 50 }).notNull().default("active"),
-    // active | paused | completed | cancelled
+    sold_at: datetime("sold_at", { fsp: 3 }),
+    sold_to_user_id: char("sold_to_user_id", { length: 36 }),
 
     created_at: datetime("created_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`),
     updated_at: datetime("updated_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`).$onUpdateFn(() => new Date()),

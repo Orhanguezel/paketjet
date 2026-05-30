@@ -32,17 +32,31 @@ CREATE TABLE IF NOT EXISTS ilanlar (
   title                 VARCHAR(255)    DEFAULT NULL,
   description           TEXT            DEFAULT NULL,
 
-  -- İletişim
+  -- İletişim (lead-reveal: yalnızca satın alma sonrası açılır)
   contact_phone         VARCHAR(50)     NOT NULL,
   contact_email         VARCHAR(255)    DEFAULT NULL,
+  contact_name          VARCHAR(160)    DEFAULT NULL,
+  contact_address       TEXT            DEFAULT NULL,
 
-  -- Durum: active | paused | completed | cancelled
+  -- Ürün değeri (ihtilaf tavanı — validation'da zorunlu, DB'de geçiş için nullable)
+  estimated_value          DECIMAL(12,2) DEFAULT NULL,
+  estimated_value_currency VARCHAR(10)   NOT NULL DEFAULT 'TRY',
+
+  -- İçerik onayı (yasaklı madde beyanı — HMK delil)
+  content_declared      TINYINT(1)      NOT NULL DEFAULT 0,
+  content_declared_at   DATETIME(3)     DEFAULT NULL,
+  content_declared_ip   VARCHAR(64)     DEFAULT NULL,
+
+  -- Durum: active | sold | paused | expired | removed
   status                VARCHAR(50)     NOT NULL DEFAULT 'active',
+  sold_at               DATETIME(3)     DEFAULT NULL,
+  sold_to_user_id       CHAR(36)        DEFAULT NULL,
 
   created_at            DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at            DATETIME(3)     NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
 
   PRIMARY KEY (id),
+  KEY ilanlar_sold_to_idx       (sold_to_user_id),
   KEY ilanlar_slug_idx          (slug),
   KEY ilanlar_user_id_idx      (user_id),
   KEY ilanlar_status_idx       (status),

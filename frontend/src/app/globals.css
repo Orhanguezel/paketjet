@@ -14,11 +14,21 @@
    Örnek: bg-brand, text-foreground, border-border vb.
 ───────────────────────────────────────────────────────── */
 @theme {
-  /* Brand — Turuncu (Primary CTA) */
-  --color-brand:        hsl(27 96% 53%);   /* #F97316 */
-  --color-brand-dark:   hsl(22 92% 44%);   /* #D4610B — hover */
-  --color-brand-light:  hsl(27 96% 94%);   /* #FEE8D6 — tint */
-  --color-brand-xlight: hsl(27 96% 97%);   /* #FFF4ED — zebra */
+  /* Brand — Mor (Primary) */
+  --color-brand:        hsl(var(--col-brand));
+  --color-brand-dark:   hsl(var(--col-brand-dark));
+  --color-brand-light:  hsl(var(--col-brand-light));
+  --color-brand-xlight: hsl(var(--col-brand-xlight));
+
+  /* Blue — Panel idle / soft emphasis */
+  --color-blue:         hsl(var(--col-blue));
+  --color-blue-soft:    hsl(var(--col-blue-soft));
+  --color-blue-xsoft:   hsl(var(--col-blue-xsoft));
+
+  /* CTA — Eski turuncu brand, kritik aksiyonlar */
+  --color-cta:          hsl(var(--col-cta));
+  --color-cta-dark:     hsl(var(--col-cta-dark));
+  --color-cta-light:    hsl(var(--col-cta-light));
 
   /* Navy — Lacivert */
   --color-navy:         hsl(215 68% 16%);  /* #0F2340 — footer, dark header */
@@ -31,8 +41,8 @@
   --color-accent-light: hsl(270 52% 94%);  /* #F0E6F7 — tint */
 
   /* Semantic */
-  --color-success:      hsl(270 52% 36%);  /* Mor — Satın Al (logodaki jet rengi) */
-  --color-success-bg:   hsl(270 52% 94%);  /* #F0E6F7 */
+  --color-success:      hsl(var(--col-success));
+  --color-success-bg:   hsl(var(--col-success-bg));
   --color-warning:      hsl(38 92% 50%);   /* #F59E0B */
   --color-danger:       hsl(0 84% 60%);    /* #EF4444 */
   --color-danger-bg:    hsl(0 84% 95%);    /* #FEE2E2 */
@@ -47,6 +57,14 @@
   --color-surface:      hsl(0 0% 100%);    /* #FFFFFF — kart, form yüzeyi */
   --color-background:   hsl(210 17% 98%);  /* #F8FAFC — sayfa bg */
   --color-bg-alt:       hsl(210 17% 95%);  /* #EEF2F7 — alt section bg */
+
+  /* Panel */
+  --color-panel-bg-from: hsl(var(--col-panel-bg-from));
+  --color-panel-bg-to: hsl(var(--col-panel-bg-to));
+  --color-panel-accent: hsl(var(--col-panel-accent));
+  --color-panel-idle: hsl(var(--col-panel-idle));
+  --color-panel-ink: hsl(var(--col-panel-ink));
+  --color-panel-surface: hsl(var(--col-panel-surface));
 
   /* ── Font stacks ── */
   --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
@@ -87,10 +105,16 @@
   color-scheme: light;
 
   /* Açık tema raw token'ları — @theme ile senkron */
-  --col-brand:         27 96% 53%;
-  --col-brand-dark:    22 92% 44%;
-  --col-brand-light:   27 96% 94%;
-  --col-brand-xlight:  27 96% 97%;
+  --col-brand:         255 90% 66%;
+  --col-brand-dark:    255 74% 56%;
+  --col-brand-light:   255 90% 95%;
+  --col-brand-xlight:  255 90% 97%;
+  --col-blue:          214 90% 60%;
+  --col-blue-soft:     214 80% 92%;
+  --col-blue-xsoft:    214 100% 96%;
+  --col-cta:           27 96% 53%;
+  --col-cta-dark:      22 92% 44%;
+  --col-cta-light:     27 96% 94%;
   --col-foreground:    215 28%  9%;
   --col-muted:         215 16% 47%;
   --col-faint:         215 14% 66%;
@@ -102,22 +126,34 @@
   --col-navy:          215 68% 16%;
   --col-navy-mid:      215 52% 26%;
   --col-navy-soft:     215 38% 36%;
-  --col-success:       270 52% 36%;
-  --col-success-bg:    270 52% 94%;
+  --col-success:       142 64% 40%;
+  --col-success-bg:    142 50% 94%;
   --col-danger:          0 84% 60%;
   --col-danger-bg:       0 84% 95%;
   --col-warning:        38 92% 50%;
   --col-info:          199 89% 48%;
+  --col-panel-bg-from: 214 100% 97%;
+  --col-panel-bg-to:   216 72% 90%;
+  --col-panel-accent:  255 90% 66%;
+  --col-panel-idle:    214 80% 92%;
+  --col-panel-ink:     215 68% 16%;
+  --col-panel-surface:   0  0% 100%;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
 
   /* Koyu tema raw token'ları */
-  --col-brand:         27 96% 53%;   /* turuncu aynı kalır */
-  --col-brand-dark:    27 96% 63%;   /* dark'ta biraz açılır */
-  --col-brand-light:   27 60% 15%;
-  --col-brand-xlight:  27 50% 12%;
+  --col-brand:         255 90% 72%;
+  --col-brand-dark:    255 90% 80%;
+  --col-brand-light:   255 40% 18%;
+  --col-brand-xlight:  255 35% 14%;
+  --col-blue:          214 90% 66%;
+  --col-blue-soft:     214 40% 18%;
+  --col-blue-xsoft:    214 35% 12%;
+  --col-cta:           27 96% 53%;
+  --col-cta-dark:      27 96% 63%;
+  --col-cta-light:     27 60% 15%;
   --col-foreground:    215  5% 93%;
   --col-muted:         215 10% 60%;
   --col-faint:         215 10% 40%;
@@ -129,12 +165,18 @@
   --col-navy:          215 68%  6%;
   --col-navy-mid:      215 52%  8%;
   --col-navy-soft:     215 38% 12%;
-  --col-success:       270 52% 50%;
-  --col-success-bg:    270 40% 12%;
+  --col-success:       142 60% 50%;
+  --col-success-bg:    142 40% 12%;
   --col-danger:          0 80% 65%;
   --col-danger-bg:       0 40% 12%;
   --col-warning:        38 80% 55%;
   --col-info:          199 70% 55%;
+  --col-panel-bg-from: 215 35%  9%;
+  --col-panel-bg-to:   215 40%  6%;
+  --col-panel-accent:  255 90% 72%;
+  --col-panel-idle:    214 40% 18%;
+  --col-panel-ink:     215  5% 93%;
+  --col-panel-surface: 215 30% 11%;
 
   /* Tailwind --color-* override'ları — bg-*, text-*, border-* utility'lerini dark'ta doğru çalıştırır */
   --color-foreground:   hsl(215 5% 93%);
@@ -145,11 +187,18 @@
   --color-surface:      hsl(215 30% 11%);
   --color-background:   hsl(215 35% 7%);
   --color-bg-alt:       hsl(215 30% 10%);
-  --color-brand-dark:   hsl(27 96% 63%);
-  --color-brand-light:  hsl(27 60% 15%);
-  --color-brand-xlight: hsl(27 50% 12%);
-  --color-success:      hsl(270 52% 50%);
-  --color-success-bg:   hsl(270 40% 12%);
+  --color-brand:        hsl(var(--col-brand));
+  --color-brand-dark:   hsl(var(--col-brand-dark));
+  --color-brand-light:  hsl(var(--col-brand-light));
+  --color-brand-xlight: hsl(var(--col-brand-xlight));
+  --color-blue:         hsl(var(--col-blue));
+  --color-blue-soft:    hsl(var(--col-blue-soft));
+  --color-blue-xsoft:   hsl(var(--col-blue-xsoft));
+  --color-cta:          hsl(var(--col-cta));
+  --color-cta-dark:     hsl(var(--col-cta-dark));
+  --color-cta-light:    hsl(var(--col-cta-light));
+  --color-success:      hsl(var(--col-success));
+  --color-success-bg:   hsl(var(--col-success-bg));
   --color-accent:       hsl(270 52% 50%);
   --color-accent-dark:  hsl(270 52% 42%);
   --color-danger:       hsl(0 80% 65%);
@@ -159,6 +208,12 @@
   --color-navy:         hsl(215 68%  6%);
   --color-navy-mid:     hsl(215 52%  8%);
   --color-navy-soft:    hsl(215 38% 12%);
+  --color-panel-bg-from: hsl(var(--col-panel-bg-from));
+  --color-panel-bg-to: hsl(var(--col-panel-bg-to));
+  --color-panel-accent: hsl(var(--col-panel-accent));
+  --color-panel-idle: hsl(var(--col-panel-idle));
+  --color-panel-ink: hsl(var(--col-panel-ink));
+  --color-panel-surface: hsl(var(--col-panel-surface));
 }
 
 /* ─────────────────────────────────────────────────────────
@@ -258,6 +313,10 @@
   position: relative;
   background-color: var(--color-navy);
   color: white;
+}
+
+@utility bg-panel-gradient {
+  background: linear-gradient(160deg, hsl(var(--col-panel-bg-from)), hsl(var(--col-panel-bg-to)));
 }
 
 @utility surface-dark-shell {

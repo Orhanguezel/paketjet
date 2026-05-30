@@ -215,9 +215,9 @@
     "localBaseUrl": "Local Base URL",
     "localBaseUrlPlaceholder": "/uploads veya https://cdn.site.com/uploads",
     "cdnPublicBase": "CDN Public Base",
-    "cdnPublicBasePlaceholder": "https://cdn.guezelwebdesign.com",
+    "cdnPublicBasePlaceholder": "https://cdn.paketjet.com",
     "publicApiBase": "Public API Base",
-    "publicApiBasePlaceholder": "https://api.guezelwebdesign.com",
+    "publicApiBasePlaceholder": "https://api.paketjet.com",
     "cloudName": "Cloudinary Cloud Name",
     "cloudNamePlaceholder": "cloud-name",
     "apiKey": "Cloudinary API Key",
@@ -510,16 +510,16 @@
     },
     "pageLabels": {
       "home": "Anasayfa",
-      "urunler": "İlanlar",
-      "hizmetler": "Hizmetler",
-      "haberler": "Haberler",
+      "listings": "İlanlar",
+      "listing_detail": "İlan Detayı",
+      "ilan_ver": "İlan Ver",
       "blog": "Blog",
       "hakkimizda": "Hakkımızda",
-      "iletisim": "İletişim",
-      "teklif": "Teklif",
-      "kataloglar": "Kataloglar",
+      "contact": "İletişim",
+      "faq": "Destek / SSS",
       "legal_privacy": "Gizlilik Politikası",
-      "legal_terms": "Kullanım Koşulları"
+      "legal_terms": "Kullanım Koşulları",
+      "kvkk": "KVKK"
     }
   },
   "structured": {
@@ -529,7 +529,7 @@
     "siteName": "Site Name",
     "titleDefault": "Title Default",
     "titleTemplate": "Title Template",
-    "titleTemplatePlaceholder": "%s | guezelwebdesign",
+    "titleTemplatePlaceholder": "%s | PaketJet",
     "description": "Description",
     "ogType": "OpenGraph Type",
     "ogImages": "OpenGraph Images (1 per line)",
@@ -537,7 +537,7 @@
     "twitterCard": "Twitter Card",
     "twitterCardRecommended": "Çoğu site için önerilen: {card}",
     "twitterSite": "Twitter Site",
-    "twitterSitePlaceholder": "@guezelwebdesign",
+    "twitterSitePlaceholder": "@paketjet",
     "twitterCreator": "Twitter Creator",
     "twitterCreatorPlaceholder": "@creator",
     "robots": "Robots",
@@ -650,7 +650,7 @@
         "videoPosterHelp": "Video yüklenirken gösterilecek kapak görseli."
       },
       "placeholders": {
-        "ctaUrlPlaceholder": "/projeler"
+        "ctaUrlPlaceholder": "/ilan-ver"
       }
     },
     "seo": {
@@ -664,9 +664,9 @@
         "ogImage": "OG Image URL"
       },
       "placeholders": {
-        "siteTitle": "PaketJet | Güvenli Taşıma ve Teslimat",
-        "siteDescription": "PaketJet ile taşıma, rezervasyon ve lojistik süreçlerini hızlıca yönetin.",
-        "keywords": "lojistik, taşıma, rezervasyon, kurye, paket",
+        "siteTitle": "PaketJet | P2P Kargo Pazaryeri",
+        "siteDescription": "PaketJet ile taşıma ilanlarını keşfedin, hızlı ilan açın ve güvenilir taşıyıcılarla iletişime geçin.",
+        "keywords": "paketjet, p2p kargo, taşıma ilanı, kargo gönder, ilan aç",
         "ogImage": "/logo/png/paketjet_logo_512.png"
       },
       "options": {
@@ -716,18 +716,20 @@
       "placeholders": {
         "title": "Sayfa başlığı",
         "description": "Sayfa açıklaması (max 155 karakter)",
-        "ogImage": "/logo/png/bereket_logo_512.png"
+        "ogImage": "/logo/png/paketjet_logo_512.png"
       },
       "pages": {
         "home": "Anasayfa",
-        "projects": "Projeler",
-        "services": "Hizmetler",
-        "news": "Haberler",
+        "listings": "İlanlar",
+        "listingDetail": "İlan Detayı",
+        "listingCreate": "İlan Ver",
+        "blog": "Blog",
         "about": "Hakkımızda",
         "contact": "İletişim",
-        "offer": "Teklif",
+        "faq": "Destek / SSS",
         "privacy": "Gizlilik Politikası",
-        "terms": "Kullanım Koşulları"
+        "terms": "Kullanım Koşulları",
+        "kvkk": "KVKK"
       }
     },
     "backgrounds": {
@@ -867,10 +869,10 @@
     "password": "Şifre",
     "passwordPlaceholder": "••••••••",
     "fromEmail": "Gönderen E-posta",
-    "fromEmailPlaceholder": "no-reply@guezelwebdesign.com",
+    "fromEmailPlaceholder": "info@paketjet.net",
     "fromEmailHelp": "Uygulamadaki e-postalar bu adresten gönderilir.",
     "fromName": "Gönderen İsim",
-    "fromNamePlaceholder": "guezelwebdesign",
+    "fromNamePlaceholder": "PaketJet",
     "testEmail": "Test mail alıcısı",
     "testEmailPlaceholder": "ornek@ornek.com",
     "testEmailHelp": "Dolu ise test maili buraya gider. Boşsa önce gönderen e-posta, o da yoksa giriş yapan kullanıcının e-postası kullanılır.",

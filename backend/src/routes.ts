@@ -29,12 +29,11 @@ import { registerTheme, registerThemeAdmin } from '@/modules/theme';
 import { registerTelegram, registerTelegramAdmin } from '@/modules/telegram';
 import { registerSubscription, registerSubscriptionAdmin } from '@/modules/subscription';
 import { registerCarriersAdmin } from '@/modules/carriers';
-import { registerCarrierBank } from '@/modules/carrier-bank';
-import { registerWithdrawal, registerWithdrawalAdmin } from '@/modules/withdrawal';
+// KYC/payout kaldirildi (2026-05-30): carrier-bank, withdrawal, carrier-kyc modulleri silindi.
 import { registerCarrierAgreements, registerCarrierAgreementsAdmin } from '@/modules/carrier-agreements';
-import { registerCarrierKyc, registerCarrierKycAdmin } from '@/modules/carrier-kyc';
 import { registerBookingMessages } from '@/modules/booking-messages';
 import { registerDisputes, registerDisputesAdmin } from '@/modules/disputes';
+import { registerPurchases } from '@/modules/purchases';
 
 import { registerEmailTemplatesAdmin } from '@/modules/emailTemplates/admin.routes';
 import { registerReportsAdmin } from '@/modules/reports';
@@ -61,12 +60,10 @@ const PUBLIC_ROUTE_REGISTRARS = [
   registerTheme,
   registerTelegram,
   registerSubscription,
-  registerCarrierBank,
-  registerWithdrawal,
   registerCarrierAgreements,
-  registerCarrierKyc,
   registerBookingMessages,
   registerDisputes,
+  registerPurchases,
 ] as const;
 
 const ADMIN_ROUTE_REGISTRARS = [
@@ -89,9 +86,7 @@ const ADMIN_ROUTE_REGISTRARS = [
   registerReportsAdmin,
   registerSubscriptionAdmin,
   registerCarriersAdmin,
-  registerWithdrawalAdmin,
   registerCarrierAgreementsAdmin,
-  registerCarrierKycAdmin,
   registerDisputesAdmin,
 ] as const;
 

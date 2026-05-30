@@ -118,8 +118,8 @@ export const initiateDeposit: RouteHandler = async (req, reply) => {
         user_name: `${firstName} ${lastName}`,
         user_address: "Türkiye",
         user_phone: user.phone || "05550000000",
-        merchant_ok_url: `${frontendUrl}/panel/cuzdan/odeme-sonuc?status=success&amount=${encodeURIComponent(amountStr)}`,
-        merchant_fail_url: `${frontendUrl}/panel/cuzdan/odeme-sonuc?status=fail`,
+        merchant_ok_url: `${frontendUrl}/panel/ilan-alma-hakki/odeme-sonuc?status=success&amount=${encodeURIComponent(amountStr)}`,
+        merchant_fail_url: `${frontendUrl}/panel/ilan-alma-hakki/odeme-sonuc?status=fail`,
         merchant_notify_url: `${env.PUBLIC_URL}/api/wallet/deposit/paytr-callback`,
         currency: "TL",
       });
@@ -203,8 +203,8 @@ export const initiateDeposit: RouteHandler = async (req, reply) => {
       token: iyzicoRes.token,
       conversationId,
       amount,
-      successUrl: `${frontendUrl}/panel/cuzdan/odeme-sonuc?status=success&amount=${encodeURIComponent(amountStr)}`,
-      failUrl: `${frontendUrl}/panel/cuzdan/odeme-sonuc?status=fail`,
+      successUrl: `${frontendUrl}/panel/ilan-alma-hakki/odeme-sonuc?status=success&amount=${encodeURIComponent(amountStr)}`,
+      failUrl: `${frontendUrl}/panel/ilan-alma-hakki/odeme-sonuc?status=fail`,
     });
   } catch (e) {
     return handleRouteError(reply, req, e, "deposit_initiate_error");
@@ -221,7 +221,7 @@ export const initiateDeposit: RouteHandler = async (req, reply) => {
  */
 export const iyzicoCallback: RouteHandler = async (req, reply) => {
   const frontendBase = env.FRONTEND_URL;
-  const successBase = `${frontendBase}/panel/cuzdan/odeme-sonuc`;
+  const successBase = `${frontendBase}/panel/ilan-alma-hakki/odeme-sonuc`;
 
   try {
     const body = req.body as Record<string, string>;

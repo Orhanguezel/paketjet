@@ -12,10 +12,20 @@ export const createIlanSchema = z.object({
   departure_date: z.string().datetime({ offset: true }).or(z.string().min(1)),
   arrival_date: z.string().datetime({ offset: true }).or(z.string().min(1)).optional().nullish(),
 
-  total_capacity_kg: z.coerce.number().positive().max(50000),
-  price_per_kg: z.coerce.number().positive().max(99999),
+  // Yeni model: kapasite/kg satışı yok — opsiyonel (DB NOT NULL için 0 default)
+  total_capacity_kg: z.coerce.number().min(0).max(50000).optional().default(0),
+  price_per_kg: z.coerce.number().min(0).max(99999).optional().default(0),
   currency: z.string().length(3).optional().default("TRY"),
   is_negotiable: z.coerce.number().int().min(0).max(1).optional().default(0),
+
+  // Ürün değeri — ZORUNLU (ihtilaf tavanı)
+  estimated_value: z.coerce.number().positive().max(99999999),
+  estimated_value_currency: z.string().length(3).optional().default("TRY"),
+
+  // İçerik onayı — ZORUNLU (yasaklı madde beyanı pop-up'ı; HMK delil)
+  content_declared: z
+    .preprocess((v) => v === true || v === 1 || v === "true" || v === "1", z.boolean())
+    .refine((v) => v === true, { message: "content_declaration_required" }),
 
   vehicle_type: z.enum(vehicleTypes).optional().default("car"),
   title: z.string().max(255).optional().nullish(),
@@ -23,6 +33,8 @@ export const createIlanSchema = z.object({
 
   contact_phone: z.string().min(1).max(50),
   contact_email: z.string().email().optional().nullish(),
+  contact_name: z.string().max(160).optional().nullish(),
+  contact_address: z.string().optional().nullish(),
 });
 
 export const updateIlanSchema = createIlanSchema.partial();

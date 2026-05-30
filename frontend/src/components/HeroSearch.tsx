@@ -167,6 +167,16 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
         <p className="hero-subtitle max-w-2xl text-lg md:text-xl text-white/90 leading-relaxed drop-shadow-md">
           Tüm kargo gereksinimlerinizi tek platformda karşılayın. Gönderi takip ve teslim yönetimi burada.
         </p>
+        <div className="flex flex-col items-center gap-3 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => router.push("/ilan-ver")}
+            className="inline-flex min-h-12 items-center justify-center rounded-full bg-cta px-7 text-sm font-black text-white shadow-xl shadow-cta/25 transition-colors hover:bg-cta-dark"
+          >
+            Hızlı İlan Aç
+          </button>
+          <p className="text-sm font-black text-white/85">İlan açmak ücretsizdir.</p>
+        </div>
 
         {/* Search Card */}
         <div className="w-full max-w-5xl bg-surface rounded-2xl shadow-2xl border border-border-soft px-4 py-4 md:px-5 md:py-5 mt-2 overflow-visible">
@@ -266,9 +276,9 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
                 </p>
                 <button
                   onClick={() => router.push("/ilan-ver")}
-                  className="w-full max-w-sm inline-flex items-center justify-center h-13 px-8 bg-success text-white text-base font-bold rounded-xl hover:brightness-110 transition"
+                  className="w-full max-w-sm inline-flex items-center justify-center h-13 px-8 bg-cta text-white text-base font-bold rounded-xl hover:bg-cta-dark transition"
                 >
-                  Hızlı İlan Aç →
+                  Ücretsiz Hızlı İlan Aç →
                 </button>
               </div>
             )}

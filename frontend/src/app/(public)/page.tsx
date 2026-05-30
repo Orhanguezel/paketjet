@@ -9,6 +9,7 @@ import { ROUTES } from "@/config/routes";
 import { getPageMetadata } from "@/lib/seo";
 import { apiGet } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
+import { getListingCreditPrice } from "@/modules/pricing/pricing.service";
 import RouteMapAnimation from "@/components/RouteMapAnimation";
 import { WebSiteSchema, ServiceSchema, HowToSchema, BreadcrumbSchema } from "@/components/JsonLd";
 
@@ -84,6 +85,7 @@ export default async function HomePage() {
     listIlans({ limit: 4 }).then((r) => r.data ?? []).catch(() => [] as Ilan[]),
     fetchHeroConfig(),
   ]);
+  const listingCreditPrice = await getListingCreditPrice().catch(() => null);
 
   return (
     <>
@@ -181,9 +183,18 @@ export default async function HomePage() {
             </div>
             <div className="flex flex-col gap-2.5">
               {featured.length > 0 ? (
-                featured.map((ilan) => <IlanCard key={ilan.id} ilan={ilan} />)
+                featured.map((ilan) => <IlanCard key={ilan.id} ilan={ilan} listingCreditPrice={listingCreditPrice} />)
               ) : (
-                <p className="text-sm text-muted text-center py-8">Henüz aktif ilan bulunmuyor.</p>
+                <div className="rounded-2xl border border-border-soft bg-surface px-6 py-8 text-center">
+                  <p className="text-lg font-black text-foreground">Henüz aktif ilan bulunmuyor.</p>
+                  <p className="mt-1 text-sm text-muted">İlk ilanı ücretsiz açarak listede görünür olun.</p>
+                  <Link
+                    href="/ilan-ver"
+                    className="mt-5 inline-flex items-center justify-center rounded-xl bg-cta px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-cta-dark"
+                  >
+                    Hızlı İlan Aç
+                  </Link>
+                </div>
               )}
             </div>
           </div>

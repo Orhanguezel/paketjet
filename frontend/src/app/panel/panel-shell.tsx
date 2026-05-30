@@ -3,35 +3,48 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { Icon, NavBadge } from "@/components/ui";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import { logout as apiLogout } from "@/modules/auth/auth.service";
 import { useNotificationStore } from "@/modules/notification/notification.store";
 import { cn } from "@/lib/utils";
 
-const NAV = [
-  { href: "/panel/musteri",     label: "Gönderilerim",  icon: "📦", roles: ["customer", "admin"] },
-  { href: "/panel/tasiyici",    label: "İlanlarım",     icon: "🚚", roles: ["carrier", "admin"] },
-  { href: "/panel/abonelik",    label: "Abonelik",      icon: "💎", roles: ["carrier", "admin"] },
-  { href: "/panel/cuzdan",      label: "Cüzdan",        icon: "💳" },
-  { href: "/panel/bildirimler", label: "Bildirimler",   icon: "🔔" },
-  { href: "/panel/profil",      label: "Profil",        icon: "👤" },
-  { href: "/panel/tasima-kurallari", label: "Taşıma Kuralları", icon: "📋" },
+type PanelNavItem = {
+  href: string;
+  label: string;
+  icon: string;
+  exact?: boolean;
+  badge?: boolean;
+};
+
+const NAV: PanelNavItem[] = [
+  { href: "/panel", label: "Özet", icon: "dashboard", exact: true },
+  { href: "/panel/ilanlarim", label: "İlanlarım", icon: "ilanlarim" },
+  { href: "/panel/satin-aldiklarim", label: "Satın Aldıklarım", icon: "satin-aldiklarim" },
+  { href: "/panel/ilan-alma-hakki", label: "İlan Alma Hakkı", icon: "ilan-alma-hakki" },
+  { href: "/panel/bildirimler", label: "Bildirimler", icon: "bildirimler", badge: true },
+  { href: "/panel/profil", label: "Profil", icon: "profil" },
+  { href: "/panel/tasima-kurallari", label: "Taşıma Kuralları", icon: "tasima-kurallari" },
 ];
 
 export default function PanelShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const { unreadCount, reset } = useNotificationStore();
+  const { unreadCount, fetchUnreadCount, reset } = useNotificationStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace("/giris?next=" + pathname);
-    }
+    if (!isAuthenticated) router.replace("/giris?next=" + pathname);
   }, [isAuthenticated, router, pathname]);
 
+  useEffect(() => {
+    if (isAuthenticated) void fetchUnreadCount();
+  }, [fetchUnreadCount, isAuthenticated]);
+
   async function handleLogout() {
-    try { await apiLogout(); } catch {}
+    try {
+      await apiLogout();
+    } catch {}
     logout();
     reset();
     router.push("/giris");
@@ -39,89 +52,92 @@ export default function PanelShell({ children }: { children: React.ReactNode }) 
 
   if (!isAuthenticated) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <p className="text-muted font-medium animate-pulse text-sm">Yönlendiriliyorsunuz...</p>
+      <div className="flex flex-1 items-center justify-center">
+        <p className="animate-pulse text-sm font-bold text-muted">Yönlendiriliyorsunuz...</p>
       </div>
     );
   }
 
-  const role = user?.role ?? "customer";
-  const filteredNav = NAV.filter((item) => !item.roles || item.roles.includes(role));
+  const displayName = user?.full_name ?? "PaketJet Üyesi";
 
   return (
-    <div className="flex-1 flex flex-col md:flex-row max-w-5xl mx-auto w-full px-4 gap-6 py-12">
-      {/* Sidebar */}
-      <nav className="hidden md:flex flex-col gap-1 w-52 shrink-0">
-        <div className="mb-6 px-4 py-5 bg-navy rounded-2xl shadow-sm border border-navy/20">
-          <p className="text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-1">Erişim Alanı</p>
-          <p className="text-sm font-black text-white tracking-tight">
-            {user?.full_name ?? (role === "carrier" ? "Taşıyıcı" : "Üye")}
-          </p>
-        </div>
-        {filteredNav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all",
-              pathname.startsWith(item.href)
-                ? "bg-brand text-white shadow-md shadow-brand/20"
-                : "text-muted hover:bg-bg-alt hover:text-foreground"
-            )}
-          >
-            <span className="text-lg">{item.icon}</span>
-            <span className="flex-1">{item.label}</span>
-            {item.href === "/panel/bildirimler" && unreadCount > 0 && (
-              <span className={cn(
-                "min-w-5 h-5 px-1.5 text-[10px] font-bold rounded-full flex items-center justify-center",
-                pathname.startsWith(item.href) ? "bg-white text-brand" : "bg-brand text-white"
-              )}>
-                {unreadCount > 99 ? "99+" : unreadCount}
+    <div className="flex-1 bg-panel-gradient">
+      <div className="mx-auto flex min-h-[calc(100vh-1px)] w-full max-w-6xl flex-col gap-6 px-4 py-6 md:flex-row md:py-8">
+        <aside className="hidden w-72 shrink-0 md:block">
+          <nav className="sticky top-6 rounded-[2rem] bg-panel-surface/86 p-4 shadow-xl shadow-navy/10 ring-1 ring-white/70 backdrop-blur">
+            <Link href="/panel" className="mb-6 flex items-center gap-3 px-2 pt-1">
+              <span className="grid size-14 place-items-center rounded-2xl bg-blue-soft">
+                <Icon folder="logo" name="logo-512x512-transparent" size={46} alt="PaketJet" />
               </span>
-            )}
-          </Link>
-        ))}
+              <span className="text-2xl font-black tracking-normal text-panel-ink">paketjet</span>
+            </Link>
 
-        <button
-          onClick={handleLogout}
-          className="mt-6 flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-danger hover:bg-red-50 transition-all border border-transparent hover:border-red-100"
-        >
-          <span className="text-lg">🚪</span>
-          <span>Çıkış Yap</span>
-        </button>
-      </nav>
+            <div className="mb-4 rounded-2xl bg-blue-xsoft px-4 py-3">
+              <p className="truncate text-sm font-black text-panel-ink">{displayName}</p>
+              <p className="text-xs font-bold text-panel-ink/55">Panel</p>
+            </div>
 
-      {/* Mobile bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface border-t border-border-soft flex pb-safe shadow-lg">
-        {filteredNav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={cn(
-              "flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-extrabold transition-colors relative uppercase tracking-tighter",
-              pathname.startsWith(item.href) ? "text-brand" : "text-muted"
-            )}
-          >
-            <span className="text-xl">{item.icon}</span>
-            <span>{item.label}</span>
-            {item.href === "/panel/bildirimler" && unreadCount > 0 && (
-              <span className="absolute top-2 right-[calc(50%-18px)] min-w-4 h-4 px-1 bg-brand text-white text-[8px] font-black rounded-full flex items-center justify-center border border-white">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </Link>
-        ))}
-        <button
-          onClick={handleLogout}
-          className="flex-1 flex flex-col items-center gap-1 py-3 text-[10px] font-extrabold text-muted uppercase tracking-tighter"
-        >
-          <span className="text-xl">🚪</span>
-          <span>Çıkış</span>
-        </button>
-      </nav>
+            <div className="flex flex-col gap-2">
+              {NAV.map((item) => {
+                const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+                return (
+                  <NavBadge
+                    key={item.href}
+                    href={item.href}
+                    icon={item.icon}
+                    label={item.label}
+                    active={active}
+                    badgeCount={item.badge ? unreadCount : undefined}
+                  />
+                );
+              })}
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="mt-2 flex min-h-14 items-center gap-3 rounded-full bg-blue-soft px-3 py-2 text-sm font-black text-panel-ink transition-all hover:bg-blue-xsoft hover:text-danger"
+              >
+                <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/65">
+                  <Icon name="cikis-yap" size={30} alt="" />
+                </span>
+                <span>Çıkış Yap</span>
+              </button>
+            </div>
+          </nav>
+        </aside>
 
-      {/* Content */}
-      <main className="flex-1 min-w-0 pb-24 md:pb-0">{children}</main>
+        <nav className="md:hidden">
+          <div className="mb-3 flex items-center justify-between rounded-3xl bg-panel-surface/90 px-4 py-3 shadow-sm ring-1 ring-white/70">
+            <Link href="/panel" className="flex items-center gap-2">
+              <Icon folder="logo" name="logo-512x512-transparent" size={38} alt="PaketJet" />
+              <span className="text-xl font-black text-panel-ink">paketjet</span>
+            </Link>
+            <button type="button" onClick={handleLogout} className="grid size-10 place-items-center rounded-full bg-blue-soft">
+              <Icon name="cikis-yap" size={28} alt="Çıkış Yap" />
+            </button>
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {NAV.map((item) => {
+              const active = item.exact ? pathname === item.href : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex min-w-18 flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] font-black",
+                    active ? "bg-panel-accent text-white" : "bg-blue-soft text-panel-ink"
+                  )}
+                >
+                  <Icon name={item.icon} size={30} alt="" />
+                  <span className="line-clamp-2 text-center leading-tight">{item.label}</span>
+                  {item.badge && unreadCount > 0 && <span className="rounded-full bg-white px-1 text-[9px] text-brand">{unreadCount}</span>}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+
+        <main className="min-w-0 flex-1 pb-8">{children}</main>
+      </div>
     </div>
   );
 }

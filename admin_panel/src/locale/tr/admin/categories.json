@@ -18,6 +18,7 @@
     "onlyFeatured": "Sadece öne çıkan"
   },
   "modules": {
+    "ilanlar": "İlanlar",
     "product": "İlanlar",
     "services": "Hizmetler",
     "news": "Duyurular",

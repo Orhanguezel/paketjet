@@ -3,6 +3,7 @@
 
 export {
   mapIlanRow,
+  stripIlanContact,
   buildIlanListWhere,
   buildCreateIlanInsert,
   getUserIlanOrder,

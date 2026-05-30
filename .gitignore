@@ -14,4 +14,6 @@ coverage/
 .bun/
 prime-frontend-nextjs/
 technical-seo-skill/
+docs/
 localhost_3000-*.json
+_backups/

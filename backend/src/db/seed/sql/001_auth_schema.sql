@@ -23,6 +23,9 @@ CREATE TABLE IF NOT EXISTS users (
   created_at        DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at        DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   last_sign_in_at   DATETIME(3)    DEFAULT NULL,
+  -- KVKK açık rıza (2026-05-30): üyelikte ikinci checkbox, boş gelir, kullanıcı işaretler
+  kvkk_explicit_consent TINYINT(1) NOT NULL DEFAULT 0,
+  kvkk_consent_at   DATETIME(3)    DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY users_email_unique (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

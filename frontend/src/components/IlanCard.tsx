@@ -4,6 +4,7 @@ import { maskName } from "@/lib/utils";
 
 interface IlanCardProps {
   ilan: Ilan;
+  listingCreditPrice?: number | null;
 }
 
 const VEHICLE_LABELS: Record<string, string> = {
@@ -28,13 +29,19 @@ function LetterAvatar({ name }: { name: string }) {
   );
 }
 
-export default function IlanCard({ ilan }: IlanCardProps) {
+export default function IlanCard({ ilan, listingCreditPrice }: IlanCardProps) {
   const carrierFullName = ilan.carrier_name?.trim() || "Taşıyıcı";
   const carrierName = maskName(carrierFullName);
   const departureDate = new Date(ilan.departure_date);
   const dateLabel = departureDate.toLocaleDateString("tr-TR", { day: "numeric", month: "short" });
   const timeLabel = departureDate.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
   const vehicleLabel = VEHICLE_LABELS[ilan.vehicle_type] ?? ilan.vehicle_type;
+  const contactCta = listingCreditPrice === null || listingCreditPrice === undefined
+    ? "İletişimi Gör"
+    : `İletişimi Gör — ₺${Number(listingCreditPrice).toLocaleString("tr-TR")}`;
+  const estimatedValue = ilan.estimated_value
+    ? `Değer: ₺${Number(ilan.estimated_value).toLocaleString("tr-TR")}`
+    : "Değer beyanı var";
 
   return (
     <Link
@@ -56,19 +63,18 @@ export default function IlanCard({ ilan }: IlanCardProps) {
         <p className="text-xs text-muted mt-0.5">{dateLabel} · Saat {timeLabel}</p>
       </div>
 
-      {/* Capacity badge */}
       <div className="hidden sm:flex flex-col items-end gap-1 shrink-0">
         <span className="text-xs text-muted bg-bg-alt px-2.5 py-1 rounded-full">
-          {ilan.available_capacity_kg} kg müsait
+          {estimatedValue}
         </span>
         <span className="text-xs font-bold text-brand">
-          {ilan.price_per_kg} ₺/kg
+          {ilan.status === "sold" ? "Satıldı" : "Aktif ilan"}
         </span>
       </div>
 
       {/* CTA */}
-      <span className="px-5 py-2.5 text-sm font-bold text-white bg-success group-hover:brightness-95 rounded-lg transition-colors shrink-0">
-        Satın Al
+      <span className="px-5 py-2.5 text-sm font-bold text-white bg-cta group-hover:bg-cta-dark rounded-lg transition-colors shrink-0">
+        {contactCta}
       </span>
     </Link>
   );

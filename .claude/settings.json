@@ -1,5 +1,29 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(dig +short paketjet.com)",
+      "Bash(dig +short www.paketjet.com)",
+      "Bash(dig +short api.paketjet.com)",
+      "Bash(curl -sI -m 5 http://paketjet.com)",
+      "Bash(scp guezelwebdesign:/var/www/paketjet/backend/.env /tmp/paketjet-env/backend.env)",
+      "Bash(scp guezelwebdesign:/var/www/paketjet/frontend/.env.local /tmp/paketjet-env/frontend.env.local)",
+      "Bash(scp guezelwebdesign:/var/www/paketjet/admin_panel/.env /tmp/paketjet-env/admin_panel.env)",
+      "Bash(scp /tmp/paketjet-nginx-paketjet.com.conf vps-paketjet:/tmp/)",
+      "Bash(scp /tmp/paketjet-nginx-panel.paketjet.com.conf vps-paketjet:/tmp/)",
+      "Bash(scp /tmp/paketjet-ecosystem.cjs vps-paketjet:/var/www/paketjet/ecosystem.cjs)",
+      "Bash(curl -sI -m 10 https://paketjet.com/)",
+      "Bash(curl -sf -m 10 https://paketjet.com/api/health)",
+      "Bash(curl -sI -m 10 https://panel.paketjet.com/)",
+      "Bash(curl -sI -m 10 https://www.paketjet.com/)",
+      "Bash(curl -sI -m 10 http://paketjet.com/)",
+      "Bash(curl -sI -m 10 http://panel.paketjet.com/)",
+      "Bash(code --version)",
+      "Bash(dpkg -l)",
+      "Bash(snap list *)",
+      "Bash(flatpak list *)",
+      "Read(//etc/apt/sources.list.d/**)",
+      "Bash(sudo apt install --only-upgrade -y code)"
+    ],
     "defaultMode": "bypassPermissions"
   }
 }

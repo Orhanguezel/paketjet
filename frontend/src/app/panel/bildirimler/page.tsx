@@ -6,13 +6,8 @@ import { getNotifications, markRead, markAllRead } from "@/modules/notification/
 import type { Notification } from "@/modules/notification/notification.type";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
-import { useAuthStore } from "@/modules/auth/auth.store";
-import { CarrierDashboardOverview } from "@/modules/dashboard/components/CarrierDashboardHeader";
-import { CustomerDashboardOverview } from "@/modules/dashboard/components/CustomerDashboardHeader";
 
 export default function BildirimlerPage() {
-  const { user } = useAuthStore();
-  const isCarrier = user?.role === "carrier";
   const { unreadCount, fetchUnreadCount, reset } = useNotificationStore();
   const [items, setItems] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +45,6 @@ export default function BildirimlerPage() {
 
   return (
     <div>
-      {isCarrier ? <CarrierDashboardOverview /> : <CustomerDashboardOverview />}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-extrabold text-foreground">Bildirimler</h1>
         {unreadCount > 0 && (

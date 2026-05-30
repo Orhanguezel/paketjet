@@ -25,7 +25,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ilan) return { title: "İlan Detayı" };
 
   const title = `${ilan.from_city} → ${ilan.to_city} Kargo | PaketJet`;
-  const description = `${ilan.available_capacity_kg} kg müsait kapasite, ₺${ilan.price_per_kg}/kg — ${ilan.from_city}'dan ${ilan.to_city}'a güvenli P2P kargo taşımacılığı`;
+  const value = ilan.estimated_value ? `Beyan edilen değer: ₺${Number(ilan.estimated_value).toLocaleString("tr-TR")}. ` : "";
+  const description = `${value}${ilan.from_city}'dan ${ilan.to_city}'a gönderi ilanı. İletişim bilgilerine PaketJet üzerinden erişin.`;
 
   return {
     title,
@@ -46,7 +47,7 @@ export default async function IlanDetailPage({ params }: Props) {
           <OfferSchema
             title={`${ilan.from_city} → ${ilan.to_city} Kargo`}
             description={ilan.description}
-            price={parseFloat(ilan.price_per_kg)}
+            price={0}
             currency={ilan.currency ?? "TRY"}
             fromCity={ilan.from_city}
             toCity={ilan.to_city}

@@ -97,6 +97,13 @@ export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: 
         {/* Actions */}
         <div className="flex items-center gap-2">
           <ThemeToggle className={overlay ? "text-white/70 hover:text-white hover:bg-white/10" : ""} />
+          <Link
+            href="/ilan-ver"
+            title="Ucretsiz hizli ilan ac"
+            className="inline-flex items-center justify-center rounded-lg bg-cta px-3 py-2.5 text-xs font-black text-white shadow-sm shadow-cta/20 transition-colors hover:bg-cta-dark sm:px-4 sm:text-sm"
+          >
+            Hızlı İlan Aç
+          </Link>
 
           {isAuthenticated ? (
             <>

@@ -100,7 +100,7 @@ export function toStructuredObjectSeed<T extends object>(value: unknown, seed: T
 }
 
 export const SITE_SETTINGS_COMPANY_PROFILE_EMPTY = {
-  company_name: 'guezelwebdesign',
+  company_name: 'PaketJet',
   slogan: '',
   about: '',
 } as const;
@@ -136,14 +136,16 @@ export const SITE_SETTINGS_AVAILABLE_LANGUAGES = [
 
 export const SITE_SETTINGS_SEO_PAGE_CONFIG = [
   { key: 'home', labelKey: 'home', path: '/' },
-  { key: 'projeler', labelKey: 'projects', path: '/projeler' },
-  { key: 'hizmetler', labelKey: 'services', path: '/hizmetler' },
-  { key: 'haberler', labelKey: 'news', path: '/haberler' },
+  { key: 'listings', labelKey: 'listings', path: '/ilanlar' },
+  { key: 'listing_detail', labelKey: 'listingDetail', path: '/ilanlar/[id]' },
+  { key: 'ilan_ver', labelKey: 'listingCreate', path: '/ilan-ver' },
+  { key: 'blog', labelKey: 'blog', path: '/blog' },
   { key: 'hakkimizda', labelKey: 'about', path: '/hakkimizda' },
-  { key: 'iletisim', labelKey: 'contact', path: '/iletisim' },
-  { key: 'teklif', labelKey: 'offer', path: '/teklif' },
-  { key: 'legal_privacy', labelKey: 'privacy', path: '/legal/privacy' },
-  { key: 'legal_terms', labelKey: 'terms', path: '/legal/terms' },
+  { key: 'contact', labelKey: 'contact', path: '/iletisim' },
+  { key: 'faq', labelKey: 'faq', path: '/destek' },
+  { key: 'legal_privacy', labelKey: 'privacy', path: '/gizlilik-politikasi' },
+  { key: 'legal_terms', labelKey: 'terms', path: '/kullanim-kosullari' },
+  { key: 'kvkk', labelKey: 'kvkk', path: '/kvkk' },
 ] as const;
 
 export const SITE_SETTINGS_HERO_EMPTY = {

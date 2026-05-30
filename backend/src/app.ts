@@ -75,7 +75,7 @@ export async function createApp() {
   });
 
   await app.register(rateLimit, {
-    max: 100,
+    max: env.NODE_ENV === 'production' ? 100 : 2000,
     timeWindow: '1 minute',
   });
 

@@ -263,10 +263,7 @@ export const adminListWallets = (p: AdminListParams = {}) => apiGet<AdminWallet[
 export const adminAdjustWallet = (userId: string, amount: number, description: string) => apiPost(A("/wallets/adjust"), { user_id: userId, amount, description });
 export const adminListWalletTx = (walletId: string, p: AdminListParams = {}) => apiGet<WalletTransaction[]>(A(`/wallets/${walletId}/transactions?${toQS(p)}`));
 
-import type { WithdrawalRequest, WithdrawalListResponse } from "../withdrawal/withdrawal.type";
-export const adminListWithdrawals = (p: AdminListParams = {}) => apiGet<WithdrawalListResponse>(A(`/withdrawals?${toQS(p)}`));
-export const adminProcessWithdrawal = (id: string, status: "completed" | "rejected", notes?: string) =>
-  apiPut(A(`/withdrawals/${id}/process`), { status, admin_notes: notes });
+
 
 // Email Templates
 export interface EmailTemplate { id: string; slug: string; subject: string; body_html: string; locale: string; created_at: string; }
