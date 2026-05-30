@@ -94,7 +94,6 @@ const emptyNav: AdminNavCopy = {
     carrier_agreements: '',
     commission_settings: '',
     payment_settings: '',
-    carrier_kyc: '',
     disputes: '',
   },
 };
@@ -132,7 +131,6 @@ export function normalizeAdminUiCopy(raw: unknown): AdminUiCopy {
     carrier_agreements: uiText(itemsRaw.carrier_agreements),
     commission_settings: uiText(itemsRaw.commission_settings),
     payment_settings: uiText(itemsRaw.payment_settings),
-    carrier_kyc: uiText(itemsRaw.carrier_kyc),
     disputes: uiText(itemsRaw.disputes),
   };
 

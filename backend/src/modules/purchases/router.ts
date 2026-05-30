@@ -1,8 +1,10 @@
 // src/modules/purchases/router.ts
 import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
-import { authSecurity, okResponseSchema } from "@/modules/_shared";
+import { authSecurity, fromZodSchema, okResponseSchema } from "@/modules/_shared";
 import { getIlanIletisim, getMyCredits, listCreditPackages, listSatinAldiklarim, satinAlIlan } from "./controller";
+import { creditPackageIyzicoCallback, creditPackagePaytrCallback, purchaseCreditPackage } from "./payment.controller";
+import { purchaseCreditPackageSchema } from "./validation";
 
 const idParams = { type: "object", properties: { id: { type: "string" } }, required: ["id"] } as const;
 const ok = { response: { 200: okResponseSchema } };
@@ -24,4 +26,10 @@ export async function registerPurchases(app: FastifyInstance) {
     schema: { tags: ["purchases"], summary: "İlan Alma Hakkı bakiyesi + hareketler", ...authOk },
   }, getMyCredits);
   app.get("/ilan-alma-hakki/paketler", { schema: { tags: ["purchases"], summary: "İlan Alma Hakkı paketleri", ...ok } }, listCreditPackages);
+  app.post("/ilan-alma-hakki/satin-al", {
+    preHandler: [requireAuth],
+    schema: { tags: ["purchases"], summary: "İlan Alma Hakkı satın al", security: authSecurity, body: fromZodSchema(purchaseCreditPackageSchema, "PurchaseCreditPackageBody"), ...ok },
+  }, purchaseCreditPackage);
+  app.post("/ilan-alma-hakki/satin-al/callback", creditPackageIyzicoCallback);
+  app.post("/ilan-alma-hakki/satin-al/paytr-callback", creditPackagePaytrCallback);
 }

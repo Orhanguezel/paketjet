@@ -57,16 +57,16 @@ PaketJet bir **ilan (lead / iletişim erişimi) satış pazar yeridir.** Kargo t
 
 ### 1.2 Gizlilik / Maskeleme
 - [x] **Backend whitelist (Claude):** Public `GET /api/ilanlar` + `/api/ilanlar/:id` artık `contact_phone/email/name/address` döndürmüyor (`stripIlanContact`, cevapta `contact_locked:true`). Cache de temiz. Canlı doğrulandı. ✅
-- [ ] Satın alınmış ilan için ayrı endpoint: `GET /api/ilanlar/:id/iletisim` (yalnızca satın alan + auth + hak kontrolü) — Codex.
-- [ ] Frontend: maskeli görünüm + "İletişimi Gör — 50 TL" CTA (reveal sonrası göster).
+- [x] Satın alınmış ilan için ayrı endpoint: `GET /api/ilanlar/:id/iletisim` (yalnızca satın alan + auth + hak kontrolü) — Codex.
+- [x] Frontend: maskeli görünüm + "İletişimi Gör — 50 TL" CTA (reveal sonrası göster).
 
 ### 1.3 Satın Alma = İletişim Açma
 - [ ] "Rezervasyon/booking" akışını **"İlan Satın Alma (iletişim açma)"** akışına dönüştür.
-- [ ] Satın alma → `purchase` kaydı (kim, hangi ilan, ne zaman, ödenen 50 TL / kullanılan 1 hak).
-- [ ] Satın aldıktan sonra ilan içeriği (iletişim) **kalıcı olarak** o taşıyıcıya açık (tekrar ödeme istemez).
+- [x] Satın alma → `purchase` kaydı (kim, hangi ilan, ne zaman, ödenen 50 TL / kullanılan 1 hak).
+- [x] Satın aldıktan sonra ilan içeriği (iletişim) **kalıcı olarak** o taşıyıcıya açık (tekrar ödeme istemez).
 - [ ] **KARAR: Tek taşıyıcı (ilk alan).** İlan ilk satın alınınca **kapanır / "dolu" (sold) işaretlenir** — başka taşıyıcı satın alamaz, listede pasifleşir.
-  - [ ] İlan durumuna `sold/closed` state ekle; satın alındığında atomik olarak kilitle (race condition: iki taşıyıcı aynı anda almasın — DB transaction + unique kısıt).
-  - [ ] Listede satılan ilanlar gösterilmez (veya "Satıldı" rozetiyle pasif).
+  - [x] İlan durumuna `sold/closed` state ekle; satın alındığında atomik olarak kilitle (race condition: iki taşıyıcı aynı anda almasın — DB transaction + unique kısıt).
+  - [x] Listede satılan ilanlar gösterilmez (veya "Satıldı" rozetiyle pasif).
 
 ---
 
@@ -124,7 +124,7 @@ PaketJet bir **ilan (lead / iletişim erişimi) satış pazar yeridir.** Kargo t
 
 - [x] **Backend (Claude):** `estimated_value` create validation'da zorunlu (Zod→Fastify), DB'ye kaydediliyor. Test edildi.
 - [x] İlan açma formuna **"Ürünün Tahmini Değeri (TL)"** alanı — **zorunlu** (Frontend — Codex).
-- [ ] Bu değer ilan detayında (satın alındıktan sonra) ve satın alma kaydında görünür → kayıp/hasarda **tavan tutar** olarak referans.
+- [x] Bu değer ilan detayında (satın alındıktan sonra) ve satın alma kaydında görünür → kayıp/hasarda **tavan tutar** olarak referans.
 - [ ] Anlaşmazlık (dispute) modülünü yeni modele göre yeniden çerçevele: PaketJet'in tuttuğu para üzerinden değil, **beyan edilen ürün değeri** üzerinden taraflar arası süreç.
 - [ ] Anlaşmazlığı baştan önleme: değer beyanı + içerik onayı + sözleşme + maskeleme zaten bu amaca hizmet ediyor — admin tarafında ihtilaf kaydı/raporu tutulsun.
 

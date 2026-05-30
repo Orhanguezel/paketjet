@@ -89,7 +89,30 @@ export const creditLedger = mysqlTable(
   ]
 );
 
+/** credit_package_purchases — hak paketi ödeme kayıtları */
+export const creditPackagePurchases = mysqlTable(
+  "credit_package_purchases",
+  {
+    id: char("id", { length: 36 }).primaryKey().notNull(),
+    user_id: char("user_id", { length: 36 }).notNull(),
+    package_key: varchar("package_key", { length: 80 }).notNull(),
+    credits: int("credits").notNull(),
+    price: decimal("price", { precision: 12, scale: 2 }).notNull(),
+    provider: varchar("provider", { length: 20 }).notNull(),
+    payment_ref: varchar("payment_ref", { length: 255 }).notNull(),
+    status: varchar("status", { length: 20 }).notNull().default("pending"),
+    created_at: datetime("created_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`),
+    updated_at: datetime("updated_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`).$onUpdateFn(() => new Date()),
+  },
+  (t) => [
+    uniqueIndex("uniq_credit_package_payment_ref").on(t.payment_ref),
+    index("credit_package_purchases_user_idx").on(t.user_id),
+    foreignKey({ columns: [t.user_id], foreignColumns: [users.id], name: "fk_credit_pkg_user" }).onDelete("cascade").onUpdate("cascade"),
+  ]
+);
+
 export type IlanPurchase = typeof ilanPurchases.$inferSelect;
 export type NewIlanPurchase = typeof ilanPurchases.$inferInsert;
 export type UserCredit = typeof userCredits.$inferSelect;
 export type CreditLedger = typeof creditLedger.$inferSelect;
+export type CreditPackagePurchase = typeof creditPackagePurchases.$inferSelect;
