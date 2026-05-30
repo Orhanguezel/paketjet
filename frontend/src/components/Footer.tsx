@@ -49,7 +49,9 @@ export default function Footer({
           <div className="md:col-span-1 space-y-4">
             <Link href={ROUTES.home} aria-label="PaketJet ana sayfa">
               {logoUrl ? (
-                <img src={logoUrl} alt={logoAlt ?? "PaketJet"} className="h-12 w-auto max-w-36 object-contain brightness-0 invert" />
+                <span className="inline-block bg-white/95 px-3 py-1.5 rounded-lg shadow-sm backdrop-blur-sm transition-all hover:bg-white">
+                  <img src={logoUrl} alt={logoAlt ?? "PaketJet"} className="h-9 w-auto max-w-32 object-contain" />
+                </span>
               ) : (
                 <span className="text-white font-extrabold text-xl">PaketJet</span>
               )}
