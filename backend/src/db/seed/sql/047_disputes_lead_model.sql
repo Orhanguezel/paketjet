@@ -104,3 +104,21 @@ SET @q = IF(@idx_check = 0,
 PREPARE stmt FROM @q;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
+
+-- purchase_id -> ilan_purchases FK'si (ilan_purchases 041'de olustugu icin burada,
+-- disputes tablosundan sonra ve guarded olarak eklenir).
+SET @fk_check = (
+  SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'disputes'
+    AND CONSTRAINT_NAME = 'fk_dispute_purchase' AND CONSTRAINT_TYPE = 'FOREIGN KEY'
+);
+SET @has_ilanpur = (
+  SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'ilan_purchases'
+);
+SET @q = IF(@fk_check = 0 AND @has_ilanpur = 1,
+  'ALTER TABLE disputes ADD CONSTRAINT fk_dispute_purchase FOREIGN KEY (purchase_id) REFERENCES ilan_purchases(id) ON DELETE SET NULL ON UPDATE CASCADE',
+  'SELECT 1');
+PREPARE stmt FROM @q;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;

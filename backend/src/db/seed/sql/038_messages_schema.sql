@@ -44,7 +44,8 @@ CREATE TABLE IF NOT EXISTS disputes (
   KEY idx_dispute_ilan (ilan_id),
   CONSTRAINT fk_dispute_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_dispute_ilan FOREIGN KEY (ilan_id) REFERENCES ilanlar(id) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT fk_dispute_purchase FOREIGN KEY (purchase_id) REFERENCES ilan_purchases(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  -- NOT: fk_dispute_purchase FK'si 047_disputes_lead_model.sql icinde eklenir
+  -- (ilan_purchases tablosu 041'de olusur; burada ileri-referans FK sira hatasina yol acar).
   CONSTRAINT fk_dispute_opener FOREIGN KEY (opened_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT fk_dispute_opened_against FOREIGN KEY (opened_against) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT fk_dispute_resolver FOREIGN KEY (resolved_by) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
