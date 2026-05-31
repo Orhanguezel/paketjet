@@ -3,6 +3,10 @@ import { noIndexMetadata } from "@/lib/seo";
 import { getSiteSettingValue } from "@/lib/site-settings";
 import UyeOlClient from "./uye-ol-client";
 
+// Auth gorseli (auth_register_image) admin panelinden degisebilir; build-time bake
+// yerine her istekte taze cekilir. Boylece backend/build sirasi sorunlarindan etkilenmez.
+export const dynamic = "force-dynamic";
+
 const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
 type SiteLogo = { url?: string; src?: string; logo_url?: string };
 
