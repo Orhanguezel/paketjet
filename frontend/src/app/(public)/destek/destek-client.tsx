@@ -24,7 +24,7 @@ export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
     try {
       await createSupportTicket(form);
       setForm(INITIAL_FORM);
-      setDone("Destek talebiniz alindi. Ekibimiz kisa sure icinde size donus yapacak.");
+      setDone("Destek talebiniz alındı. Ekibimiz kısa süre içinde size dönüş yapacak.");
     } finally {
       setSaving(false);
     }
@@ -35,9 +35,9 @@ export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Destek Merkezi</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight">Sik sorulan sorular ve destek talebi</h1>
+          <h1 className="mt-3 text-4xl font-black tracking-tight">Sıkça Sorulan Sorular ve Destek Talebi</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            SSS icerigi server tarafinda render edilir. Boylece arama motorlari ve AI crawlerlar sorulari dogrudan okuyabilir.
+            SSS içeriği sunucu tarafında render edilir. Böylece arama motorları ve yapay zeka tarayıcıları soruları doğrudan okuyabilir.
           </p>
         </div>
       </section>
@@ -53,23 +53,23 @@ export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
         </div>
 
         <form onSubmit={handleSubmit} className="rounded-3xl border border-border-soft bg-surface p-6 shadow-sm">
-          <h2 className="text-xl font-extrabold">Destek Talebi Olustur</h2>
+          <h2 className="text-xl font-extrabold">Destek Talebi Oluştur</h2>
           <div className="mt-5 grid gap-4">
             <input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} required placeholder="Ad Soyad" className="rounded-xl border border-border bg-background px-4 py-3" />
             <input value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} required type="email" placeholder="E-posta" className="rounded-xl border border-border bg-background px-4 py-3" />
             <select value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value as SupportTicketCreateInput["category"] })} className="rounded-xl border border-border bg-background px-4 py-3">
               <option value="genel">Genel</option>
               <option value="kargo">Kargo</option>
-              <option value="odeme">Odeme</option>
+              <option value="odeme">Ödeme</option>
               <option value="hesap">Hesap</option>
               <option value="teknik">Teknik</option>
             </select>
             <input value={form.subject} onChange={(event) => setForm({ ...form, subject: event.target.value })} required placeholder="Konu" className="rounded-xl border border-border bg-background px-4 py-3" />
-            <textarea value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} required rows={6} placeholder="Sorununuzu veya talebinizi yazin" className="rounded-xl border border-border bg-background px-4 py-3" />
+            <textarea value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} required rows={6} placeholder="Sorununuzu veya talebinizi yazın" className="rounded-xl border border-border bg-background px-4 py-3" />
           </div>
           {done ? <p className="mt-4 text-sm text-brand">{done}</p> : null}
           <button disabled={saving} className="mt-6 w-full rounded-xl bg-brand px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark disabled:opacity-60">
-            {saving ? "Gonderiliyor..." : "Talebi Gonder"}
+            {saving ? "Gönderiliyor..." : "Talebi Gönder"}
           </button>
         </form>
       </section>

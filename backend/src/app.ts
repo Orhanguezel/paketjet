@@ -24,6 +24,9 @@ export async function createApp() {
     (await import('fastify')) as unknown as { default: typeof import('fastify').default };
 
   const app = buildFastify({
+    // Nginx arkasinda calisir; gercek istemci IP'si X-Forwarded-For'dan alinir.
+    // Olmadan req.ip = 127.0.0.1 olur ve rate-limit tum kullanicilari tek bucket'ta birlestirir.
+    trustProxy: true,
     logger: {
       level: env.NODE_ENV === 'production' ? 'info' : 'debug',
       transport: env.NODE_ENV !== 'production'
@@ -75,7 +78,7 @@ export async function createApp() {
   });
 
   await app.register(rateLimit, {
-    max: env.NODE_ENV === 'production' ? 100 : 2000,
+    max: env.NODE_ENV === 'production' ? 200 : 2000,
     timeWindow: '1 minute',
   });
 
