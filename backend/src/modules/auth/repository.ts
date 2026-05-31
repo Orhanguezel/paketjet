@@ -39,6 +39,10 @@ export async function repoCreateUser(data: {
   full_name?: string;
   phone?: string;
   rules_accepted_at?: Date;
+  rules_accepted_version?: string;
+  kvkk_explicit_consent?: number;
+  kvkk_consent_at?: Date;
+  kvkk_consent_version?: string;
 }) {
   await db.insert(users).values({
     id: data.id,
@@ -49,6 +53,10 @@ export async function repoCreateUser(data: {
     is_active: 1,
     email_verified: 0,
     rules_accepted_at: data.rules_accepted_at,
+    rules_accepted_version: data.rules_accepted_version,
+    kvkk_explicit_consent: data.kvkk_explicit_consent ?? 0,
+    kvkk_consent_at: data.kvkk_consent_at,
+    kvkk_consent_version: data.kvkk_consent_version,
   });
 }
 

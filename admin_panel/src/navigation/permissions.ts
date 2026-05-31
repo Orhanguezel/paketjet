@@ -3,7 +3,7 @@ export type PanelRole = 'admin' | 'seller';
 export type AdminPermissionKey =
   | 'admin.dashboard'
   | 'admin.ilanlar'
-  | 'admin.bookings'
+  | 'admin.ilan_purchases'
   | 'admin.users'
   | 'admin.carriers'
   | 'admin.wallets'
@@ -16,15 +16,14 @@ export type AdminPermissionKey =
   | 'admin.audit'
   | 'admin.categories'
   | 'admin.reports'
-  | 'admin.carrier_agreements'
-  | 'admin.commission_settings'
+  | 'admin.pricing'
   | 'admin.payment_settings'
   | 'admin.disputes';
 
 export type AdminNavKey =
   | 'dashboard'
   | 'ilanlar'
-  | 'bookings'
+  | 'ilan_purchases'
   | 'users'
   | 'carriers'
   | 'wallets'
@@ -37,8 +36,7 @@ export type AdminNavKey =
   | 'audit'
   | 'categories'
   | 'reports'
-  | 'carrier_agreements'
-  | 'commission_settings'
+  | 'pricing'
   | 'payment_settings'
   | 'disputes';
 
@@ -47,7 +45,7 @@ const ADMIN_ONLY: PanelRole[] = ['admin'];
 const ADMIN_PERMISSION_ROLE_MAP: Record<AdminPermissionKey, PanelRole[]> = {
   'admin.dashboard': ADMIN_ONLY,
   'admin.ilanlar': ADMIN_ONLY,
-  'admin.bookings': ADMIN_ONLY,
+  'admin.ilan_purchases': ADMIN_ONLY,
   'admin.users': ADMIN_ONLY,
   'admin.carriers': ADMIN_ONLY,
   'admin.wallets': ADMIN_ONLY,
@@ -60,8 +58,7 @@ const ADMIN_PERMISSION_ROLE_MAP: Record<AdminPermissionKey, PanelRole[]> = {
   'admin.audit': ADMIN_ONLY,
   'admin.categories': ADMIN_ONLY,
   'admin.reports': ADMIN_ONLY,
-  'admin.carrier_agreements': ADMIN_ONLY,
-  'admin.commission_settings': ADMIN_ONLY,
+  'admin.pricing': ADMIN_ONLY,
   'admin.payment_settings': ADMIN_ONLY,
   'admin.disputes': ADMIN_ONLY,
 };
@@ -74,7 +71,7 @@ export function canAccessAdminPermission(role: PanelRole, key: AdminPermissionKe
 const ADMIN_NAV_PERMISSION_MAP: Partial<Record<AdminNavKey, AdminPermissionKey>> = {
   dashboard: 'admin.dashboard',
   ilanlar: 'admin.ilanlar',
-  bookings: 'admin.bookings',
+  ilan_purchases: 'admin.ilan_purchases',
   users: 'admin.users',
   carriers: 'admin.carriers',
   wallets: 'admin.wallets',
@@ -87,8 +84,7 @@ const ADMIN_NAV_PERMISSION_MAP: Partial<Record<AdminNavKey, AdminPermissionKey>>
   audit: 'admin.audit',
   categories: 'admin.categories',
   reports: 'admin.reports',
-  carrier_agreements: 'admin.carrier_agreements',
-  commission_settings: 'admin.commission_settings',
+  pricing: 'admin.pricing',
   payment_settings: 'admin.payment_settings',
 };
 
@@ -101,7 +97,7 @@ export function getAdminNavRoles(key: AdminNavKey): PanelRole[] {
 const ADMIN_PERMISSION_PATHS: Record<AdminPermissionKey, string[]> = {
   'admin.dashboard': ['/admin/dashboard'],
   'admin.ilanlar': ['/admin/ilanlar'],
-  'admin.bookings': ['/admin/bookings'],
+  'admin.ilan_purchases': ['/admin/ilan-purchases'],
   'admin.users': ['/admin/users'],
   'admin.carriers': ['/admin/carriers'],
   'admin.wallets': ['/admin/wallet'],
@@ -114,8 +110,7 @@ const ADMIN_PERMISSION_PATHS: Record<AdminPermissionKey, string[]> = {
   'admin.audit': ['/admin/audit'],
   'admin.categories': ['/admin/categories'],
   'admin.reports': ['/admin/reports'],
-  'admin.carrier_agreements': ['/admin/carrier-agreements'],
-  'admin.commission_settings': ['/admin/commission-settings'],
+  'admin.pricing': ['/admin/pricing'],
   'admin.payment_settings': ['/admin/payment-settings'],
   'admin.disputes': ['/admin/disputes'],
 };

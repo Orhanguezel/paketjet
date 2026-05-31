@@ -11,9 +11,11 @@ export const registerSchema = z.object({
   phone: z.string().min(10, "Geçerli bir telefon numarası girin").optional().or(z.literal("")),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
   confirmPassword: z.string(),
-  role: z.enum(["customer", "carrier"]).default("customer"),
-  rules_accepted: z.literal(true, { 
-    message: "Kuralları kabul etmeniz gerekiyor" 
+  rules_accepted: z.literal(true, {
+    message: "Kullanıcı Sözleşmesi'ni kabul etmeniz gerekiyor"
+  }),
+  kvkk_explicit_consent: z.literal(true, {
+    message: "KVKK açık rızanızı vermeniz gerekiyor"
   }),
 }).refine((d) => d.password === d.confirmPassword, {
   message: "Şifreler eşleşmiyor",

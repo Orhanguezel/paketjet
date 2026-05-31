@@ -5,6 +5,10 @@ export interface Wallet {
   id: string;
   user_id: string;
   balance: string;
+  credit_balance?: number;
+  remaining_rights?: number;
+  unit?: "hak";
+  model?: "listing_credit";
   total_earnings: string;
   total_withdrawn: string;
   currency: string;
@@ -16,6 +20,9 @@ export interface WalletTransaction {
   wallet_id: string;
   type: TransactionType;
   amount: string;
+  amount_rights?: number;
+  unit?: "hak";
+  purpose_label?: string;
   purpose: TransactionPurpose;
   description?: string | null;
   reference_id?: string | null;

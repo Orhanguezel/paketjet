@@ -18,14 +18,10 @@ export const createIlanSchema = z.object({
   currency: z.string().length(3).optional().default("TRY"),
   is_negotiable: z.coerce.number().int().min(0).max(1).optional().default(0),
 
-  // Ürün değeri — ZORUNLU (ihtilaf tavanı)
-  estimated_value: z.coerce.number().positive().max(99999999),
-  estimated_value_currency: z.string().length(3).optional().default("TRY"),
-
-  // İçerik onayı — ZORUNLU (yasaklı madde beyanı pop-up'ı; HMK delil)
-  content_declared: z
-    .preprocess((v) => v === true || v === 1 || v === "true" || v === "1", z.boolean())
-    .refine((v) => v === true, { message: "content_declaration_required" }),
+  // NOT (2026-05-30 düzeltmesi): İlanı açan = TAŞIYICI (aracıyla paket taşıyan).
+  // Kargonun değerini ve içeriğini bilmez. Bu yüzden ilan oluştururken ARTIK alınmaz:
+  // - "Kargo bedeli" (estimated_value) -> satın alan müşteri bildirir (purchases)
+  // - "İçerik onayı" -> satın alan müşteri/kargo sahibi onaylar (purchases)
 
   vehicle_type: z.enum(vehicleTypes).optional().default("car"),
   title: z.string().max(255).optional().nullish(),
@@ -43,8 +39,6 @@ export const searchIlansSchema = z.object({
   from_city: z.string().optional(),
   to_city: z.string().optional(),
   date: z.string().optional(), // YYYY-MM-DD
-  min_kg: z.coerce.number().positive().optional(),
-  max_price_per_kg: z.coerce.number().positive().optional(),
   vehicle_type: z.enum(vehicleTypes).optional(),
   status: z.enum(ilanStatuses).optional().default("active"),
   page: z.coerce.number().int().positive().optional().default(1),

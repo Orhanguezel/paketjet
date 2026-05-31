@@ -2,7 +2,7 @@
 const nextConfig = {
   experimental: {},
   compiler: { removeConsole: process.env.NODE_ENV === 'production' },
-  output: 'standalone',
+  output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,
 
   // ✅ Image optimization config
   images: {

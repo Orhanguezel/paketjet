@@ -9,6 +9,12 @@ import {
   repoGetCreditPackages,
   repoListCreditLedger,
 } from "./repository";
+import { purchaseIlanSchema } from "./validation";
+
+function normalizeIp(req: FastifyRequest) {
+  const raw = (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim() ?? req.ip ?? "127.0.0.1";
+  return raw === "::1" || raw === "::ffff:127.0.0.1" ? "127.0.0.1" : raw;
+}
 
 const ERROR_STATUS: Record<string, number> = {
   not_found: 404,
@@ -22,7 +28,8 @@ export async function satinAlIlan(req: FastifyRequest, reply: FastifyReply) {
   try {
     const buyerId = getAuthUserId(req);
     const { id } = req.params as { id: string };
-    const result = await repoPurchaseIlan(id, buyerId);
+    const body = purchaseIlanSchema.parse(req.body);
+    const result = await repoPurchaseIlan(id, buyerId, body, normalizeIp(req));
     if (!result.ok) {
       return reply.code(ERROR_STATUS[result.code] ?? 400).send({ error: { message: result.code } });
     }

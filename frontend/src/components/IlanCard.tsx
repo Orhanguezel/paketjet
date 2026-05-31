@@ -39,9 +39,6 @@ export default function IlanCard({ ilan, listingCreditPrice }: IlanCardProps) {
   const contactCta = listingCreditPrice === null || listingCreditPrice === undefined
     ? "İletişimi Gör"
     : `İletişimi Gör — ₺${Number(listingCreditPrice).toLocaleString("tr-TR")}`;
-  const estimatedValue = ilan.estimated_value
-    ? `Değer: ₺${Number(ilan.estimated_value).toLocaleString("tr-TR")}`
-    : "Değer beyanı var";
 
   return (
     <Link
@@ -65,7 +62,7 @@ export default function IlanCard({ ilan, listingCreditPrice }: IlanCardProps) {
 
       <div className="hidden sm:flex flex-col items-end gap-1 shrink-0">
         <span className="text-xs text-muted bg-bg-alt px-2.5 py-1 rounded-full">
-          {estimatedValue}
+          {vehicleLabel}
         </span>
         <span className="text-xs font-bold text-brand">
           {ilan.status === "sold" ? "Satıldı" : "Aktif ilan"}

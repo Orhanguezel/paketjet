@@ -359,7 +359,7 @@ export default function AdminSeoPage() {
                           placeholder="Sayfa basligi"
                         />
                         <p className="text-xs text-faint mt-0.5">
-                          Degiskenler: {"{{from_city}}, {{to_city}}, {{price_per_kg}}"}
+                          Degiskenler: {"{{from_city}}, {{to_city}}"}
                         </p>
                       </div>
                       <div>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useListDisputesQuery, useResolveDisputeMutation } from '@/integrations/endpoints/admin/disputes-admin-endpoints';
-import { DISPUTE_STATUS_LABEL } from '@/integrations/shared/disputes';
+import { DISPUTE_ISSUE_LABEL, DISPUTE_STATUS_LABEL } from '@/integrations/shared/disputes';
 import type { DisputeStatus } from '@/integrations/shared/disputes';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -53,7 +53,9 @@ export default function AdminDisputesClient() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-bold tracking-tight">Anlaşmazlıklar</h1>
-        <p className="text-sm text-muted-foreground">Taşıyıcı-müşteri anlaşmazlıklarını yönetin.</p>
+        <p className="text-sm text-muted-foreground">
+          İlan erişimi sonrası ihtilafları beyan edilen ürün değeri tavanıyla takip edin.
+        </p>
       </div>
 
       <div className="flex gap-2">
@@ -84,7 +86,27 @@ export default function AdminDisputesClient() {
                     <span className="text-xs text-muted-foreground">{new Date(d.created_at).toLocaleDateString('tr-TR')}</span>
                   </div>
                   <p className="text-sm font-medium">{d.opener_name ?? 'Kullanıcı'} ({d.opener_email})</p>
-                  <p className="text-xs text-muted-foreground mt-0.5">Booking: {d.booking_id.slice(0, 8)}...</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {d.from_city && d.to_city ? `${d.from_city} → ${d.to_city}` : 'Rota bilgisi yok'}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    İlan: {d.ilan_id ? `${d.ilan_id.slice(0, 8)}...` : '—'}
+                    {' · '}
+                    Satın alma: {d.purchase_id ? `${d.purchase_id.slice(0, 8)}...` : '—'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-2 sm:grid-cols-2">
+                <div className="rounded-lg bg-muted/30 p-3">
+                  <p className="mb-1 text-xs font-medium text-muted-foreground">Konu</p>
+                  <p className="text-sm">{DISPUTE_ISSUE_LABEL[d.issue_type] ?? d.issue_type}</p>
+                </div>
+                <div className="rounded-lg bg-muted/30 p-3">
+                  <p className="mb-1 text-xs font-medium text-muted-foreground">Beyan edilen değer tavanı</p>
+                  <p className="text-sm">
+                    {d.declared_value ? `${d.declared_value} ${d.declared_value_currency}` : 'Kayıt yok'}
+                  </p>
                 </div>
               </div>
 

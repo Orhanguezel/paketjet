@@ -5,10 +5,13 @@ import { createCheckoutForm, retrieveCheckoutForm } from "../wallet/iyzico";
 import { createPayTRToken, encodePayTRBasket, verifyPayTRCallback } from "../wallet/paytr";
 import {
   repoCompleteCreditPackagePayment,
+  repoCompleteIlanPayment,
   repoCreateCreditPackagePayment,
+  repoCreateIlanPayment,
   repoFailCreditPackagePayment,
+  repoFailIlanPayment,
 } from "./payment.repository";
-import { purchaseCreditPackageSchema } from "./validation";
+import { initiateIlanPaymentSchema, purchaseCreditPackageSchema } from "./validation";
 
 function buyerParts(fullName?: string | null) {
   const parts = (fullName ?? "PaketJet Kullanıcı").trim().split(" ");
@@ -82,7 +85,7 @@ export async function creditPackageIyzicoCallback(req: FastifyRequest, reply: Fa
       return reply.redirect(`${successBase}?status=fail&reason=verification_failed`);
     }
     const completed = await repoCompleteCreditPackagePayment(body.conversationId);
-    if (completed.ok) await repoInvalidateDashboardCache([completed.purchase.user_id]);
+    if (completed.ok && completed.purchase) await repoInvalidateDashboardCache([completed.purchase.user_id]);
     return reply.redirect(`${successBase}?status=success`);
   } catch (e) {
     req.log.error(e, "credit_package_iyzico_callback");
@@ -96,13 +99,99 @@ export async function creditPackagePaytrCallback(req: FastifyRequest, reply: Fas
     if (!verifyPayTRCallback(body)) return reply.send("PAYTR: hash mismatch");
     if (body.status === "success") {
       const completed = await repoCompleteCreditPackagePayment(body.merchant_oid);
-      if (completed.ok) await repoInvalidateDashboardCache([completed.purchase.user_id]);
+      if (completed.ok && completed.purchase) await repoInvalidateDashboardCache([completed.purchase.user_id]);
     } else {
       await repoFailCreditPackagePayment(body.merchant_oid);
     }
     return reply.send("OK");
   } catch (e) {
     req.log.error(e, "credit_package_paytr_callback");
+    return reply.send("ERROR");
+  }
+}
+
+export async function initiateIlanPayment(req: FastifyRequest, reply: FastifyReply) {
+  try {
+    const userId = getAuthUserId(req);
+    const { id } = req.params as { id: string };
+    const body = initiateIlanPaymentSchema.parse(req.body);
+    const buyerIp = normalizeIp(req);
+    const result = await repoCreateIlanPayment(id, userId, body.provider, body, buyerIp);
+    if (!result.ok) return reply.code(result.code === "user_not_found" ? 404 : 400).send({ error: { message: result.code } });
+
+    const amountStr = result.price.toFixed(2);
+    const { firstName, lastName } = buyerParts(result.user.full_name);
+    if (body.provider === "paytr") {
+      const paytr = await createPayTRToken({
+        merchant_oid: result.payment.payment_ref,
+        email: result.user.email,
+        payment_amount: Math.round(result.price * 100),
+        user_ip: buyerIp,
+        user_basket: encodePayTRBasket([["İlan iletişim erişimi", amountStr, 1]]),
+        user_name: `${firstName} ${lastName}`,
+        user_address: "Türkiye",
+        user_phone: result.user.phone || "05550000000",
+        merchant_ok_url: `${env.FRONTEND_URL}/panel/ilan-alma-hakki/odeme-sonuc?status=success&amount=${encodeURIComponent(amountStr)}`,
+        merchant_fail_url: `${env.FRONTEND_URL}/panel/ilan-alma-hakki/odeme-sonuc?status=fail`,
+        merchant_notify_url: `${env.PUBLIC_URL}/api/ilanlar/satin-al/paytr-callback`,
+        currency: "TL",
+      });
+      return reply.send({ provider: "paytr", token: paytr.token, iframeUrl: paytr.iframe_url, conversationId: result.payment.payment_ref, amount: result.price });
+    }
+
+    const iyzico = await createCheckoutForm({
+      locale: "tr", conversationId: result.payment.payment_ref, price: amountStr, paidPrice: amountStr,
+      currency: "TRY", basketId: `ilan-${result.payment.id}`, paymentGroup: "PRODUCT",
+      callbackUrl: `${env.PUBLIC_URL}/api/ilanlar/satin-al/callback`, enabledInstallments: [1],
+      buyer: { id: userId, name: firstName, surname: lastName, email: result.user.email, identityNumber: "11111111111", registrationAddress: "Türkiye", city: "Istanbul", country: "Turkey", ip: buyerIp },
+      shippingAddress: { contactName: `${firstName} ${lastName}`, city: "Istanbul", country: "Turkey", address: "Türkiye" },
+      billingAddress: { contactName: `${firstName} ${lastName}`, city: "Istanbul", country: "Turkey", address: "Türkiye" },
+      basketItems: [{ id: result.payment.id, name: "İlan iletişim erişimi", category1: "Dijital", itemType: "VIRTUAL", price: amountStr }],
+    });
+
+    if (iyzico.status !== "success" || !iyzico.checkoutFormContent) {
+      await repoFailIlanPayment(result.payment.payment_ref);
+      return reply.code(502).send({ error: { message: "iyzico_init_failed", details: iyzico.errorMessage } });
+    }
+    return reply.send({ provider: "iyzico", checkoutFormContent: iyzico.checkoutFormContent, token: iyzico.token, conversationId: result.payment.payment_ref, amount: result.price });
+  } catch (e) {
+    return handleRouteError(reply, req, e, "ilan_tekil_odeme_baslat");
+  }
+}
+
+export async function ilanPaymentIyzicoCallback(req: FastifyRequest, reply: FastifyReply) {
+  const successBase = `${env.FRONTEND_URL}/panel/ilan-alma-hakki/odeme-sonuc`;
+  try {
+    const body = req.body as Record<string, string>;
+    if (!body?.token || !body?.conversationId) return reply.redirect(`${successBase}?status=fail&reason=no_token`);
+    const detail = await retrieveCheckoutForm(body.token, body.conversationId);
+    const paid = detail.status === "success" && detail.paymentStatus === "SUCCESS" && (detail.fraudStatus ?? 0) === 1;
+    if (!paid) {
+      await repoFailIlanPayment(body.conversationId);
+      return reply.redirect(`${successBase}?status=fail&reason=verification_failed`);
+    }
+    const completed = await repoCompleteIlanPayment(body.conversationId);
+    if (completed.ok && completed.payment) await repoInvalidateDashboardCache([completed.payment.buyer_id]);
+    return reply.redirect(`${successBase}?status=success`);
+  } catch (e) {
+    req.log.error(e, "ilan_payment_iyzico_callback");
+    return reply.redirect(`${successBase}?status=fail&reason=server_error`);
+  }
+}
+
+export async function ilanPaymentPaytrCallback(req: FastifyRequest, reply: FastifyReply) {
+  try {
+    const body = req.body as Record<string, string>;
+    if (!verifyPayTRCallback(body)) return reply.send("PAYTR: hash mismatch");
+    if (body.status === "success") {
+      const completed = await repoCompleteIlanPayment(body.merchant_oid);
+      if (completed.ok && completed.payment) await repoInvalidateDashboardCache([completed.payment.buyer_id]);
+    } else {
+      await repoFailIlanPayment(body.merchant_oid);
+    }
+    return reply.send("OK");
+  } catch (e) {
+    req.log.error(e, "ilan_payment_paytr_callback");
     return reply.send("ERROR");
   }
 }

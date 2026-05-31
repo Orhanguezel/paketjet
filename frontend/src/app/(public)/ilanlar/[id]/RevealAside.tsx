@@ -1,6 +1,10 @@
+"use client";
+
+import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
-import type { ContactSnapshot } from "@/modules/purchases/purchases.type";
+import { getSiteSettingValue } from "@/lib/site-settings";
+import type { ContactSnapshot, PurchaseDeclarationInput } from "@/modules/purchases/purchases.type";
 
 function formatPrice(value?: string | number | null) {
   if (value === undefined || value === null || value === "") return "-";
@@ -14,7 +18,12 @@ interface RevealAsideProps {
   isActive: boolean;
   listingPrice: number | null;
   revealing: boolean;
-  onReveal: () => void;
+  onPay: (declaration: PurchaseDeclarationInput) => void;
+  onReveal: (declaration: PurchaseDeclarationInput) => void;
+}
+
+interface ContentDeclarationSetting {
+  message?: string;
 }
 
 export function RevealAside({
@@ -24,8 +33,34 @@ export function RevealAside({
   isActive,
   listingPrice,
   revealing,
+  onPay,
   onReveal,
 }: RevealAsideProps) {
+  const valueInputId = useId();
+  const declarationInputId = useId();
+  const [estimatedValue, setEstimatedValue] = useState("");
+  const [contentDeclared, setContentDeclared] = useState(false);
+  const [declarationMessage, setDeclarationMessage] = useState("");
+  const estimatedValueNumber = Number(estimatedValue);
+  const canSubmit = useMemo(
+    () => Number.isFinite(estimatedValueNumber) && estimatedValueNumber > 0 && contentDeclared && declarationMessage.length > 0,
+    [estimatedValueNumber, contentDeclared, declarationMessage],
+  );
+
+  useEffect(() => {
+    getSiteSettingValue<ContentDeclarationSetting>("listing.content_declaration", "tr")
+      .then((setting) => setDeclarationMessage(setting?.message?.trim() ?? ""))
+      .catch(() => setDeclarationMessage(""));
+  }, []);
+
+  function declaration(): PurchaseDeclarationInput {
+    return {
+      estimated_value: estimatedValueNumber,
+      estimated_value_currency: "TRY",
+      content_declared: true,
+    };
+  }
+
   return (
     <aside className="rounded-2xl border border-border-soft bg-surface p-6 shadow-sm">
       <div className="rounded-xl bg-blue-soft/70 p-4">
@@ -46,16 +81,53 @@ export function RevealAside({
         </div>
       ) : (
         <div className="mt-5 flex flex-col gap-3">
+          <div className="grid gap-3 rounded-xl border border-border-soft bg-background p-4">
+            <label htmlFor={valueInputId} className="text-xs font-black uppercase tracking-normal text-panel-ink/65">
+              Ürünün tahmini değeri (TL)
+            </label>
+            <input
+              id={valueInputId}
+              type="number"
+              min="1"
+              step="1"
+              inputMode="decimal"
+              value={estimatedValue}
+              onChange={(event) => setEstimatedValue(event.target.value)}
+              placeholder="Örn. 2500"
+              className="h-11 rounded-lg border border-border-soft bg-surface px-3 text-sm font-bold text-panel-ink outline-none transition-colors focus:border-brand"
+            />
+            <label htmlFor={declarationInputId} className="flex items-start gap-3 text-xs font-bold leading-relaxed text-panel-ink/75">
+              <input
+                id={declarationInputId}
+                type="checkbox"
+                checked={contentDeclared}
+                disabled={!declarationMessage}
+                onChange={(event) => setContentDeclared(event.target.checked)}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
+              />
+              <span>{declarationMessage || "Beyan metni yükleniyor."}</span>
+            </label>
+          </div>
           {error && <p className="text-xs font-bold text-danger">{error}</p>}
           {error.includes("hakkınız yok") && (
-            <Link href={ROUTES.panel.ilanAlmaHakki} className="text-sm font-black text-brand hover:underline">
-              İlan alma hakkı paketlerini incele
-            </Link>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                disabled={revealing || !isActive || !canSubmit}
+                onClick={() => onPay(declaration())}
+                className="w-full rounded-lg bg-cta py-3 text-sm font-black text-white transition-colors hover:bg-cta-dark disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                Kartla Öde
+              </button>
+              <Link href={ROUTES.panel.ilanAlmaHakki} className="text-sm font-black text-brand hover:underline">
+                İlan alma hakkı paketlerini incele
+              </Link>
+            </div>
           )}
           <button
             type="button"
-            disabled={revealing || !isActive}
-            onClick={onReveal}
+            disabled={revealing || !isActive || !canSubmit}
+            onClick={() => onReveal(declaration())}
             className="w-full rounded-lg bg-cta py-3 text-sm font-black text-white transition-colors hover:bg-cta-dark disabled:cursor-not-allowed disabled:opacity-60"
           >
             {revealing ? "Açılıyor..." : isAuthenticated ? "İletişimi Gör" : "Giriş Yap & İletişimi Gör"}

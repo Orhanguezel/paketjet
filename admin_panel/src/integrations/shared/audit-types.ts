@@ -165,6 +165,41 @@ export function coerceAuditGeoStats(raw: unknown): AuditGeoStatsResponseDto {
   return { items: [] };
 }
 
+/* ---- Geo Cities (sehir kirilimi — Turkiye haritasi) ---- */
+
+export type AuditGeoCityRowDto = {
+  country: string;
+  city: string;
+  hits: number;
+  uniqueIps: number;
+};
+
+export type AuditGeoCitiesResponseDto = {
+  items: AuditGeoCityRowDto[];
+};
+
+function normalizeGeoCityRow(row: unknown): AuditGeoCityRowDto {
+  const r = (row ?? {}) as Record<string, unknown>;
+  return {
+    country: String(r.country ?? ''),
+    city: String(r.city ?? ''),
+    hits: Number(r.hits ?? r.count ?? 0),
+    uniqueIps: Number(r.uniqueIps ?? r.unique_ips ?? 0),
+  };
+}
+
+export function coerceAuditGeoCities(raw: unknown): AuditGeoCitiesResponseDto {
+  const r = raw as any;
+  const arr: unknown[] = Array.isArray(r)
+    ? r
+    : Array.isArray(r?.items)
+      ? r.items
+      : Array.isArray(r?.data)
+        ? r.data
+        : [];
+  return { items: arr.map(normalizeGeoCityRow) };
+}
+
 export function coerceAuditMetricsDaily(raw: unknown): AuditMetricsDailyResponseDto {
   const r = raw as any;
   if (!r) return { days: [] };

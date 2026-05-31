@@ -69,9 +69,7 @@ export default function IlanlarimTab({ ilanlar, setIlanlar, loading }: Props) {
                   {ILAN_STATUS_LABEL[ilan.status] ?? ilan.status}
                 </Badge>
               </div>
-              <p className="text-xs text-muted">
-                Tahmini değer: {ilan.estimated_value ? `₺${Number(ilan.estimated_value).toLocaleString("tr-TR")}` : "Belirtilmemiş"}
-              </p>
+              <p className="text-xs text-muted">Taşıma ilanı</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
               {ilan.status !== "pending_approval" && (

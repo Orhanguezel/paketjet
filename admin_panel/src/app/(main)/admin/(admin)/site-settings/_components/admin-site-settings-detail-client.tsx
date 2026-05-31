@@ -9,18 +9,13 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { RefreshCcw } from 'lucide-react';
+import { AdminLocaleSelect } from '@/components/common/admin-locale-select';
+import { useAdminLocales } from '@/components/common/use-admin-locales';
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 
 import type { SiteSetting, SettingValue } from '@/integrations/shared';
@@ -40,7 +35,6 @@ import {
   useUpdateSiteSettingAdminMutation,
   useDeleteSiteSettingAdminMutation,
 } from '@/integrations/hooks';
-import { useAdminLocales } from '@/app/(main)/admin/_components/common/use-admin-locales';
 import { useAdminTranslations } from '@/i18n';
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider';
 
@@ -106,18 +100,6 @@ import {
   BackgroundsStructuredForm,
   type BackgroundItem,
 } from '../tabs/structured/home-backgrounds-structured-form';
-
-import {
-  HomepageHeroStructuredForm,
-  homepageHeroObjToForm,
-  homepageHeroFormToObj,
-} from '../tabs/structured/homepage-hero-structured-form';
-
-import {
-  FooterLinksStructuredForm,
-  footerLinksObjToForm,
-  footerLinksFormToObj,
-} from '../tabs/structured/footer-links-structured-form';
 
 /* ----------------------------- structured renderers ----------------------------- */
 
@@ -446,50 +428,6 @@ const BusinessHoursStructuredRenderer: React.FC<StructuredRenderProps> = ({
   );
 };
 
-const HomepageHeroStructuredRenderer: React.FC<StructuredRenderProps> = ({
-  value,
-  setValue,
-  disabled,
-}) => {
-  const base = React.useMemo(() => {
-    const v = coerceSiteSettingsDetailValue(value) ?? {};
-    return typeof v === 'object' && v ? v : {};
-  }, [value]);
-
-  const [form, setForm] = React.useState(() => homepageHeroObjToForm(base));
-  React.useEffect(() => setForm(homepageHeroObjToForm(base)), [base]);
-
-  return (
-    <HomepageHeroStructuredForm
-      value={form}
-      onChange={(next) => { setForm(next); setValue(homepageHeroFormToObj(next)); }}
-      disabled={!!disabled}
-    />
-  );
-};
-
-const FooterLinksStructuredRenderer: React.FC<StructuredRenderProps> = ({
-  value,
-  setValue,
-  disabled,
-}) => {
-  const base = React.useMemo(() => {
-    const v = coerceSiteSettingsDetailValue(value);
-    return Array.isArray(v) ? v : [];
-  }, [value]);
-
-  const [form, setForm] = React.useState(() => footerLinksObjToForm(base));
-  React.useEffect(() => setForm(footerLinksObjToForm(base)), [base]);
-
-  return (
-    <FooterLinksStructuredForm
-      value={form}
-      onChange={(next) => { setForm(next); setValue(footerLinksFormToObj(next)); }}
-      disabled={!!disabled}
-    />
-  );
-};
-
 /* ----------------------------- component ----------------------------- */
 
 export default function SiteSettingsDetailClient({ id }: { id: string }) {
@@ -524,7 +462,7 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
   );
 
   const localeFromQuery = React.useMemo(() => {
-    const q = sp.get('locale');
+    const q = sp?.get('locale');
     return (q ?? '').trim();
   }, [sp]);
 
@@ -557,7 +495,7 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
     const cur = localeFromQuery === '*' ? '*' : toShortSiteSettingsLocale(localeFromQuery);
     if (cur === selectedLocale) return;
 
-    const qs = new URLSearchParams(Array.from(sp.entries()));
+    const qs = new URLSearchParams(Array.from(sp?.entries() ?? []));
     qs.set('locale', selectedLocale);
     router.replace(`/admin/site-settings/${encodeURIComponent(rawSettingKey)}?${qs.toString()}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -716,22 +654,17 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
             </Link>
           </Button>
 
-          <Select
-            value={selectedLocale || ''}
-            onValueChange={(v) => setSelectedLocale(v === '*' ? '*' : toShortSiteSettingsLocale(v))}
-            disabled={busy || !localeOptions.length}
-          >
-            <SelectTrigger className="w-32 sm:w-40">
-              <SelectValue placeholder={t('admin.siteSettings.detail.inline.selectLocale')} />
-            </SelectTrigger>
-            <SelectContent>
-              {localeOptions.map((o) => (
-                <SelectItem key={o.value} value={o.value}>
-                  {o.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="w-32 sm:w-40">
+            <AdminLocaleSelect
+              value={selectedLocale || ''}
+              onChange={(value: string) => setSelectedLocale(value === '*' ? '*' : toShortSiteSettingsLocale(value))}
+              options={localeOptions}
+              loading={isLocalesLoading || isLocalesFetching}
+              disabled={busy || !localeOptions.length}
+              label={t('admin.siteSettings.detail.localeLabel')}
+              allowEmpty={false}
+            />
+          </div>
 
           <Button
             type="button"
@@ -801,8 +734,6 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
               if (renderStructuredKey === 'company_profile') return React.createElement(CompanyStructuredRenderer as any, commonProps);
               if (renderStructuredKey === 'ui_header') return React.createElement(UiHeaderStructuredRenderer as any, commonProps);
               if (renderStructuredKey === 'businessHours') return React.createElement(BusinessHoursStructuredRenderer as any, commonProps);
-              if (renderStructuredKey === 'homepage_hero') return React.createElement(HomepageHeroStructuredRenderer as any, commonProps);
-              if (renderStructuredKey === 'footer_links') return React.createElement(FooterLinksStructuredRenderer as any, commonProps);
 
               return React.createElement(JsonStructuredRenderer as any, commonProps);
             }}

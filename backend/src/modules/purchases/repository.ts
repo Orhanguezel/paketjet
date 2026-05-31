@@ -9,6 +9,7 @@ import {
   userCredits,
   creditLedger,
   type ContactSnapshot,
+  type PurchaseDeclaration,
 } from "./schema";
 
 export type PurchaseResult =
@@ -26,7 +27,12 @@ export interface CreditPackageDto {
  * İlan satırı FOR UPDATE ile kilitlenir → iki taşıyıcı aynı anda alamaz (tek alıcı).
  * Hak (kontör) varsa düşülür; yoksa insufficient_credit (402 → frontend hak/kart akışı).
  */
-export async function repoPurchaseIlan(ilanId: string, buyerId: string): Promise<PurchaseResult> {
+export async function repoPurchaseIlan(
+  ilanId: string,
+  buyerId: string,
+  declaration: PurchaseDeclaration,
+  buyerIp: string,
+): Promise<PurchaseResult> {
   return db.transaction(async (tx) => {
     const [ilan] = await tx.select().from(ilanlar).where(eq(ilanlar.id, ilanId)).for("update");
     if (!ilan) return { ok: false, code: "not_found" };
@@ -53,7 +59,11 @@ export async function repoPurchaseIlan(ilanId: string, buyerId: string): Promise
     await tx.insert(ilanPurchases).values({
       id: purchaseId, ilan_id: ilanId, buyer_id: buyerId, seller_id: ilan.user_id,
       price_paid: "0.00", pay_method: "credit", credit_used: 1,
-      estimated_value_snapshot: ilan.estimated_value ?? null,
+      estimated_value_snapshot: declaration.estimated_value.toFixed(2),
+      estimated_value_currency: declaration.estimated_value_currency ?? "TRY",
+      content_declared: 1,
+      content_declared_at: new Date(),
+      content_declared_ip: buyerIp,
       contact_snapshot: contact, status: "completed",
     });
 

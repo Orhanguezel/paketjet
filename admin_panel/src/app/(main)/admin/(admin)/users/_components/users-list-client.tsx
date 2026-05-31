@@ -70,7 +70,7 @@ export default function UsersListClient() {
     return getAdminUserDisplayName(u, t('list.table.unknownUser'));
   }
 
-  const params = React.useMemo(() => pickAdminUsersQuery(sp), [sp]);
+  const params = React.useMemo(() => pickAdminUsersQuery(sp ?? new URLSearchParams()), [sp]);
   const usersQ = useListUsersAdminQuery(params);
 
   // UI state (controlled) – URL ile senkron

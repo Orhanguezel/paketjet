@@ -71,7 +71,7 @@ export default function AdminUsersPage() {
                   </Badge>
                   {!u.is_active && <Badge color="danger">Pasif</Badge>}
                 </div>
-                <p className="text-xs text-muted">{u.email} · ₺{u.wallet_balance}</p>
+                <p className="text-xs text-muted">{u.email} · {Number(u.wallet_balance).toLocaleString("tr-TR")} hak</p>
               </div>
               <Button
                 size="sm"

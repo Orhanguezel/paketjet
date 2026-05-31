@@ -5,13 +5,12 @@
 
 import {
   BarChart3,
-  BookOpen,
   Contact2,
   FolderTree,
-  Handshake,
   CreditCard,
   HardDrive,
   Percent,
+  ReceiptText,
   LayoutDashboard,
   Mail,
   MessageSquare,
@@ -87,7 +86,7 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
     key: 'listings',
     items: [
       { key: 'ilanlar', url: '/admin/ilanlar', icon: Truck },
-      { key: 'bookings', url: '/admin/bookings', icon: BookOpen },
+      { key: 'ilan_purchases', url: '/admin/ilan-purchases', icon: ReceiptText },
       { key: 'categories', url: '/admin/categories', icon: FolderTree },
     ],
   },
@@ -103,16 +102,10 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
       },
 
       { key: 'disputes', url: '/admin/disputes', icon: MessageSquare },
-      { key: 'carrier_agreements', url: '/admin/carrier-agreements', icon: Handshake },
-      { key: 'commission_settings', url: '/admin/commission-settings', icon: Percent },
+      { key: 'pricing', url: '/admin/pricing', icon: Percent },
       { key: 'payment_settings', url: '/admin/payment-settings', icon: CreditCard },
       { key: 'wallets', url: '/admin/wallet', icon: Wallet },
-      {
-        key: 'reports',
-        url: '/admin/dashboard/coming-soon?module=reports',
-        icon: BarChart3,
-        comingSoon: true,
-      },
+      { key: 'reports', url: '/admin/reports', icon: BarChart3 },
     ],
   },
   {
@@ -120,12 +113,7 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
     key: 'support',
     items: [
       { key: 'contacts', url: '/admin/contacts', icon: Contact2 },
-      {
-        key: 'email_templates',
-        url: '/admin/dashboard/coming-soon?module=email-templates',
-        icon: Mail,
-        comingSoon: true,
-      },
+      { key: 'email_templates', url: '/admin/email-templates', icon: Mail },
     ],
   },
   {
@@ -161,13 +149,13 @@ const FALLBACK_GROUP_LABELS: Record<AdminNavGroupKey, string> = {
 const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   dashboard: 'Dashboard',
   ilanlar: 'İlanlar',
-  bookings: 'Rezervasyonlar',
+  ilan_purchases: 'İlan Satın Almaları',
   categories: 'Kategoriler',
   users: 'Kullanıcılar',
   carriers: 'Taşıyıcılar',
 
   disputes: 'Anlaşmazlıklar',
-  wallets: 'Cüzdanlar',
+  wallets: 'Hak/Cüzdan Arşivi',
   reports: 'Raporlar',
   contacts: 'İletişim',
   email_templates: 'E-posta Şablonları',
@@ -176,8 +164,7 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   theme: 'Tema',
   storage: 'Depolama',
   audit: 'Denetim',
-  carrier_agreements: 'Taşıyıcı Anlaşmaları',
-  commission_settings: 'Komisyon & Abonelik',
+  pricing: 'Fiyat Ayarları',
   payment_settings: 'Ödeme Ayarları',
 };
 

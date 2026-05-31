@@ -8,11 +8,12 @@ import { ROUTES } from "@/config/routes";
 import { getIlan } from "@/modules/ilan/ilan.service";
 import type { Ilan } from "@/modules/ilan/ilan.type";
 import { getListingCreditPrice } from "@/modules/pricing/pricing.service";
-import { getIlanContact, purchaseIlan } from "@/modules/purchases/purchases.service";
-import type { ContactSnapshot } from "@/modules/purchases/purchases.type";
+import { getIlanContact, initiateIlanPayment, purchaseIlan } from "@/modules/purchases/purchases.service";
+import type { ContactSnapshot, PurchaseDeclarationInput } from "@/modules/purchases/purchases.type";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import { cn, maskName } from "@/lib/utils";
 import { RevealAside } from "./RevealAside";
+import PaymentModal from "@/components/PaymentModal";
 
 const RouteMap = dynamic(() => import("@/components/RouteMap").then((m) => m.RouteMap), {
   ssr: false,
@@ -33,11 +34,6 @@ function formatDate(iso: string) {
   });
 }
 
-function formatPrice(value?: string | number | null) {
-  if (value === undefined || value === null || value === "") return "-";
-  return `₺${Number(value).toLocaleString("tr-TR")}`;
-}
-
 export default function IlanDetailClient() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -48,6 +44,9 @@ export default function IlanDetailClient() {
   const [loading, setLoading] = useState(true);
   const [revealing, setRevealing] = useState(false);
   const [revealError, setRevealError] = useState("");
+  const [paymentContent, setPaymentContent] = useState("");
+  const [paymentIframeUrl, setPaymentIframeUrl] = useState("");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     Promise.all([getIlan(id), getListingCreditPrice()])
@@ -66,7 +65,7 @@ export default function IlanDetailClient() {
       .catch(() => {});
   }, [id, isAuthenticated]);
 
-  async function handleReveal() {
+  async function handleReveal(declaration: PurchaseDeclarationInput) {
     setRevealError("");
     if (!isAuthenticated) {
       router.push(`${ROUTES.auth.login}?next=/ilanlar/${id}`);
@@ -75,12 +74,12 @@ export default function IlanDetailClient() {
 
     setRevealing(true);
     try {
-      const result = await purchaseIlan(ilan?.id ?? id);
+      const result = await purchaseIlan(ilan?.id ?? id, declaration);
       setContact(result.contact);
     } catch (err) {
       const error = err as { status?: number; code?: string };
       if (error.status === 402 || error.code === "insufficient_credit") {
-        setRevealError("İlan alma hakkınız yok. Paket satın alarak iletişimi açabilirsiniz.");
+        setRevealError("İlan alma hakkınız yok. Kartla ödeme yaparak iletişimi açabilirsiniz.");
       } else if (error.code === "own_listing") {
         setRevealError("Kendi ilanınızın iletişimini satın alamazsınız.");
       } else if (error.code === "unavailable") {
@@ -88,6 +87,26 @@ export default function IlanDetailClient() {
       } else {
         setRevealError("İletişim açılamadı. Lütfen tekrar deneyin.");
       }
+    } finally {
+      setRevealing(false);
+    }
+  }
+
+  async function handlePay(declaration: PurchaseDeclarationInput) {
+    setRevealError("");
+    if (!isAuthenticated) {
+      router.push(`${ROUTES.auth.login}?next=/ilanlar/${id}`);
+      return;
+    }
+    setRevealing(true);
+    try {
+      const response = await initiateIlanPayment(ilan?.id ?? id, declaration, "paytr");
+      setPaymentIframeUrl(response.iframeUrl ?? "");
+      setPaymentContent(response.checkoutFormContent ?? "");
+      setShowPaymentModal(true);
+    } catch (err) {
+      const error = err as { code?: string };
+      setRevealError(error.code === "unavailable" ? "Bu ilan artık satın alınamıyor." : "Ödeme başlatılamadı. Lütfen tekrar deneyin.");
     } finally {
       setRevealing(false);
     }
@@ -105,7 +124,7 @@ export default function IlanDetailClient() {
 
   if (!ilan) return null;
 
-  const displayName = maskName(ilan.carrier_name ?? "Gönderici");
+  const displayName = maskName(ilan.carrier_name ?? "Taşıyıcı");
 
   return (
     <main className="min-h-screen bg-background">
@@ -153,10 +172,6 @@ export default function IlanDetailClient() {
                 <p className="mb-1 text-xs text-muted">Araç tipi</p>
                 <p className="text-sm font-semibold text-foreground">{VEHICLE_LABELS[ilan.vehicle_type] ?? ilan.vehicle_type}</p>
               </div>
-              <div className="rounded-xl bg-background p-4">
-                <p className="mb-1 text-xs text-muted">Beyan edilen değer</p>
-                <p className="text-sm font-semibold text-brand">{formatPrice(ilan.estimated_value)}</p>
-              </div>
             </div>
 
             <div className="mb-6">
@@ -169,7 +184,7 @@ export default function IlanDetailClient() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-foreground">{displayName}</p>
-                <p className="text-xs text-muted">Gönderici</p>
+                <p className="text-xs text-muted">Taşıyıcı</p>
               </div>
             </div>
 
@@ -188,10 +203,19 @@ export default function IlanDetailClient() {
             isActive={ilan.status === "active"}
             listingPrice={listingPrice}
             revealing={revealing}
+            onPay={handlePay}
             onReveal={handleReveal}
           />
         </div>
       </div>
+      <PaymentModal
+        show={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        checkoutFormContent={paymentContent}
+        iframeUrl={paymentIframeUrl}
+        title="İletişim Erişimi Ödemesi"
+        notice="Satın aldığınız hizmet, kargo taşıma hizmeti değil; ilan sahibinin iletişim bilgilerine anlık erişim hizmetidir."
+      />
     </main>
   );
 }

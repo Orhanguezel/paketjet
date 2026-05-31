@@ -3,13 +3,16 @@
 // PaketJet – Request Logger Plugin (Fastify onResponse)
 // =============================================================
 
+import fp from 'fastify-plugin';
 import type { FastifyPluginAsync } from 'fastify';
 import { writeRequestAuditLog, shouldSkipAuditLog } from './helpers';
 
 type RequestLoggerOpts = Record<never, never>;
 type ReplyWithElapsed = { elapsedTime?: unknown };
 
-export const requestLoggerPlugin: FastifyPluginAsync<RequestLoggerOpts> = async (app, _opts) => {
+// NOT: fp() ile sarmalanmazsa onResponse hook'u plugin kapsulune hapsolur ve
+// kardes route'lara (gercek isteklere) uygulanmaz -> audit tablolari hep bos kalir.
+const requestLoggerImpl: FastifyPluginAsync<RequestLoggerOpts> = async (app, _opts) => {
   app.addHook('onResponse', async (req, reply) => {
     try {
       if (shouldSkipAuditLog(req)) return;
@@ -29,3 +32,7 @@ export const requestLoggerPlugin: FastifyPluginAsync<RequestLoggerOpts> = async 
     }
   });
 };
+
+export const requestLoggerPlugin = fp(requestLoggerImpl, {
+  name: 'request-logger',
+});

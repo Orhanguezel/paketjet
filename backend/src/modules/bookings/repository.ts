@@ -139,10 +139,3 @@ export async function repoUpdatePaymentStatus(id: string, paymentStatus: string)
 export async function repoUpdatePaymentRef(id: string, paymentRef: string) {
   await db.update(bookings).set({ payment_ref: paymentRef }).where(eq(bookings.id, id));
 }
-
-export async function repoUpdateBookingCommission(id: string, commissionRate: number, commissionAmount: number) {
-  await db.update(bookings).set({
-    commission_rate: String(commissionRate),
-    commission_amount: String(commissionAmount),
-  }).where(eq(bookings.id, id));
-}

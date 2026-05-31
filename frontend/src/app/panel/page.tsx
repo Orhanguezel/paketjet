@@ -4,20 +4,16 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { StatCard } from "@/components/ui";
 import { useAuthStore } from "@/modules/auth/auth.store";
-import { getCarrierDashboard, getCustomerDashboard } from "@/modules/dashboard/dashboard.service";
 import { getMyIlans } from "@/modules/ilan/ilan.service";
-import { getMyBookings } from "@/modules/booking/booking.service";
-import { getMySubscription } from "@/modules/subscription/subscription.service";
+import { getMyCredits, getMyPurchases } from "@/modules/purchases/purchases.service";
 import { useNotificationStore } from "@/modules/notification/notification.store";
-import type { CarrierDashboard, CustomerDashboard } from "@/modules/dashboard/dashboard.service";
 import type { Ilan } from "@/modules/ilan/ilan.type";
 
 export default function PanelRoot() {
   const user = useAuthStore((s) => s.user);
   const { unreadCount, fetchUnreadCount } = useNotificationStore();
-  const [carrierDashboard, setCarrierDashboard] = useState<CarrierDashboard | null>(null);
-  const [customerDashboard, setCustomerDashboard] = useState<CustomerDashboard | null>(null);
   const [ilanlar, setIlanlar] = useState<Ilan[]>([]);
+  const [purchasedCount, setPurchasedCount] = useState(0);
   const [remainingRights, setRemainingRights] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -26,27 +22,17 @@ export default function PanelRoot() {
     setLoading(true);
 
     Promise.allSettled([
-      getCarrierDashboard(),
-      getCustomerDashboard(),
       getMyIlans(),
-      getMyBookings(),
-      getMySubscription(),
+      getMyPurchases(),
+      getMyCredits(),
       fetchUnreadCount(),
     ])
       .then((results) => {
         if (!alive) return;
-        const [carrierRes, customerRes, ilanRes, bookingRes, subscriptionRes] = results;
-        if (carrierRes.status === "fulfilled") setCarrierDashboard(carrierRes.value);
-        if (customerRes.status === "fulfilled") setCustomerDashboard(customerRes.value);
+        const [ilanRes, purchaseRes, creditRes] = results;
         if (ilanRes.status === "fulfilled") setIlanlar(ilanRes.value);
-        if (bookingRes.status === "fulfilled") {
-          setCustomerDashboard((prev) => prev ?? {
-            active_bookings: bookingRes.value.data.filter((b) => b.status === "confirmed").length,
-            total_bookings: bookingRes.value.data.length,
-            balance: "0.00",
-          });
-        }
-        if (subscriptionRes.status === "fulfilled") setRemainingRights(subscriptionRes.value.usage?.remaining ?? null);
+        if (purchaseRes.status === "fulfilled") setPurchasedCount(purchaseRes.value.data.length);
+        if (creditRes.status === "fulfilled") setRemainingRights(creditRes.value.balance);
       })
       .finally(() => {
         if (alive) setLoading(false);
@@ -63,9 +49,8 @@ export default function PanelRoot() {
     return fullName.split(/\s+/)[0] ?? fullName;
   }, [user?.full_name]);
 
-  const activeListings = carrierDashboard?.active_ilanlar ?? ilanlar.filter((ilan) => ilan.status === "active").length;
-  const soldListings = ilanlar.filter((ilan) => ilan.status === "completed").length;
-  const purchased = customerDashboard?.total_bookings ?? 0;
+  const activeListings = ilanlar.filter((ilan) => ilan.status === "active").length;
+  const soldListings = ilanlar.filter((ilan) => ilan.status === "sold" || ilan.status === "completed").length;
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-8">
@@ -85,7 +70,7 @@ export default function PanelRoot() {
         />
         <StatCard
           title="Satın Aldıklarım"
-          value={loading ? "—" : purchased}
+          value={loading ? "—" : purchasedCount}
           icon="satin-aldiklarim"
         />
         <StatCard
@@ -108,7 +93,7 @@ export default function PanelRoot() {
           >
             Hızlı İlan Aç
           </Link>
-          <p className="mt-3 text-sm font-black text-panel-ink/60">Kalan hakkınızdan ücretsiz düşer.</p>
+          <p className="mt-3 text-sm font-black text-panel-ink/60">İlan açmak ücretsizdir.</p>
         </div>
       </section>
     </div>

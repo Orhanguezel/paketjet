@@ -12,7 +12,6 @@ import {
   sendBookingInTransitMail,
   sendBookingDeliveredMail,
   sendBookingCancelledMail,
-  sendCarrierPaymentMail,
 } from "../mail/service";
 import { telegramNotify } from "../telegram";
 
@@ -72,16 +71,13 @@ export async function notifyBookingDelivered(b: BookingInfo) {
   void getEmail(b.customer_id).then((email) => {
     if (email) sendBookingDeliveredMail({ to: email, customer_name: b.customer_name ?? email.split("@")[0], from_city: fc, to_city: tc, kg_amount: b.kg_amount, total_price: b.total_price });
   }).catch(() => {});
-  void getEmail(b.carrier_id).then((email) => {
-    if (email) sendCarrierPaymentMail({ to: email, user_name: b.carrier_name ?? email.split("@")[0], amount: b.total_price, new_balance: "" });
-  }).catch(() => {});
 }
 
 export async function notifyBookingCancelled(b: BookingInfo, cancelledByUserId: string) {
   const otherId = b.customer_id === cancelledByUserId ? b.carrier_id : b.customer_id;
   await createUserNotification({ userId: otherId, title: "Rezervasyon iptal edildi", message: "Bir rezervasyon iptal edildi.", type: "booking_cancelled" });
   void getEmail(b.customer_id).then((email) => {
-    if (email) sendBookingCancelledMail({ to: email, customer_name: email.split("@")[0], from_city: b.from_city ?? "", to_city: b.to_city ?? "", kg_amount: b.kg_amount, total_price: b.total_price, refunded: b.payment_status === "paid" });
+    if (email) sendBookingCancelledMail({ to: email, customer_name: email.split("@")[0], from_city: b.from_city ?? "", to_city: b.to_city ?? "", kg_amount: b.kg_amount, total_price: b.total_price });
   }).catch(() => {});
   void telegramNotify({ event: "booking_cancelled", data: { customer_name: b.customer_name ?? "", from_city: b.from_city ?? "", to_city: b.to_city ?? "", created_at: new Date().toISOString() } });
 }

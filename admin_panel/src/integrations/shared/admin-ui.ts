@@ -78,7 +78,7 @@ const emptyNav: AdminNavCopy = {
   items: {
     dashboard:       '',
     ilanlar:         '',
-    bookings:        '',
+    ilan_purchases:  '',
     categories:      '',
     users:           '',
     carriers:        '',
@@ -91,8 +91,7 @@ const emptyNav: AdminNavCopy = {
     theme:           '',
     telegram:        '',
     audit:           '',
-    carrier_agreements: '',
-    commission_settings: '',
+    pricing: '',
     payment_settings: '',
     disputes: '',
   },
@@ -115,7 +114,7 @@ export function normalizeAdminUiCopy(raw: unknown): AdminUiCopy {
   const items: AdminNavCopy['items'] = {
     dashboard:       uiText(itemsRaw.dashboard),
     ilanlar:         uiText(itemsRaw.ilanlar),
-    bookings:        uiText(itemsRaw.bookings),
+    ilan_purchases:  uiText(itemsRaw.ilan_purchases),
     categories:      uiText(itemsRaw.categories),
     users:           uiText(itemsRaw.users),
     carriers:        uiText(itemsRaw.carriers),
@@ -128,8 +127,7 @@ export function normalizeAdminUiCopy(raw: unknown): AdminUiCopy {
     theme:           uiText(itemsRaw.theme),
     telegram:        uiText(itemsRaw.telegram),
     audit:           uiText(itemsRaw.audit),
-    carrier_agreements: uiText(itemsRaw.carrier_agreements),
-    commission_settings: uiText(itemsRaw.commission_settings),
+    pricing: uiText(itemsRaw.pricing),
     payment_settings: uiText(itemsRaw.payment_settings),
     disputes: uiText(itemsRaw.disputes),
   };

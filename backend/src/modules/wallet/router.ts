@@ -23,29 +23,29 @@ export async function registerWallet(app: FastifyInstance) {
 
   app.get(`${B}`, {
     ...auth,
-    schema: { tags: ['wallet'], summary: 'Kullanici cuzdani', security: authSecurity, response: { 200: okResponseSchema } },
+    schema: { tags: ['wallet'], summary: 'Kullanici ilan hakki bakiyesi', security: authSecurity, response: { 200: okResponseSchema } },
   }, controller.getMyWallet);
   app.get(`${B}/transactions`, {
     ...auth,
-    schema: { tags: ['wallet'], summary: 'Cuzdan hareketleri', security: authSecurity, querystring: walletTransactionsQuerySchema, response: { 200: okResponseSchema } },
+    schema: { tags: ['wallet'], summary: 'Ilan hakki hareketleri', security: authSecurity, querystring: walletTransactionsQuerySchema, response: { 200: okResponseSchema } },
   }, controller.listMyTransactions);
 
   // İyzico ödeme akışı
   app.post(`${B}/deposit/initiate`, {
     preHandler: [requireAuth],
     config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
-    schema: { tags: ['wallet'], summary: 'Iyzico odeme baslat', security: authSecurity, body: fromZodSchema(initiateDepositSchema, 'InitiateDepositBody'), response: { 200: okResponseSchema } },
+    schema: { tags: ['wallet'], summary: 'Ilan hakki odemesi baslat', security: authSecurity, body: fromZodSchema(initiateDepositSchema, 'InitiateDepositBody'), response: { 200: okResponseSchema } },
   }, controller.initiateDeposit);
   app.post(`${B}/deposit/callback`, {
     schema: { tags: ['wallet'], summary: 'Iyzico callback', body: callbackBodySchema, response: { 200: okResponseSchema } },
   }, controller.iyzicoCallback); // public — İyzico'dan gelir
   app.post(`${B}/deposit/paytr-callback`, controller.payTRDepositCallback);
 
-  // Dev-mode: doğrudan bakiye yükleme (sadece development ortamında)
+  // Dev-mode: doğrudan hak ekleme (sadece development ortamında)
   if (process.env.NODE_ENV === "development") {
     app.post(`${B}/deposit/dev`, {
       preHandler: [requireAuth],
-      schema: { tags: ['wallet'], summary: 'DEV: Direkt bakiye yukle (sadece development)', security: authSecurity, body: fromZodSchema(depositSchema, 'DevDepositBody'), response: { 200: okResponseSchema } },
+      schema: { tags: ['wallet'], summary: 'DEV: Direkt ilan hakki ekle (sadece development)', security: authSecurity, body: fromZodSchema(depositSchema, 'DevDepositBody'), response: { 200: okResponseSchema } },
     }, controller.depositWallet);
   }
 }

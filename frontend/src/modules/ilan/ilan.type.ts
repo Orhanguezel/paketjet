@@ -25,8 +25,6 @@ export interface Ilan {
   contact_name?: string | null;
   contact_address?: string | null;
   contact_locked?: boolean;
-  estimated_value?: string | null;
-  estimated_value_currency?: string | null;
   status: IlanStatus;
   carrier_name?: string | null;
   photos?: IlanPhoto[];
@@ -53,8 +51,6 @@ export interface IlanSearchFilters {
   from_city?: string;
   to_city?: string;
   date?: string;
-  min_kg?: number;
-  max_price_per_kg?: number;
   vehicle_type?: VehicleType;
   page?: number;
   limit?: number;
@@ -71,9 +67,6 @@ export interface CreateIlanInput {
   price_per_kg?: number;
   currency?: string;
   is_negotiable?: number;
-  estimated_value: number;
-  estimated_value_currency?: string;
-  content_declared: boolean;
   vehicle_type?: VehicleType;
   title?: string;
   description?: string;

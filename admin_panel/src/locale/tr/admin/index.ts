@@ -2,9 +2,8 @@ import audit from './audit.json';
 import auth from './auth.json';
 import availability from './availability.json';
 import bookings from './bookings.json';
-import carrierAgreements from './carrier-agreements.json';
 import carriers from './carriers.json';
-import commissionSettings from './commission-settings.json';
+import pricing from './pricing.json';
 import categories from './categories.json';
 import comingSoon from './coming-soon.json';
 import common from './common.json';
@@ -17,6 +16,7 @@ import ilanlar from './ilanlar.json';
 import mail from './mail.json';
 import notifications from './notifications.json';
 import paymentSettings from './payment-settings.json';
+import purchases from './purchases.json';
 import reports from './reports.json';
 import reviews from './reviews.json';
 import services from './services.json';
@@ -34,9 +34,8 @@ const adminMessages = {
   "auth": auth,
   "availability": availability,
   "bookings": bookings,
-  "carrier-agreements": carrierAgreements,
   "carriers": carriers,
-  "commission-settings": commissionSettings,
+  "pricing": pricing,
   "categories": categories,
   "comingSoon": comingSoon,
   "common": common,
@@ -49,6 +48,7 @@ const adminMessages = {
   "mail": mail,
   "notifications": notifications,
   "payment-settings": paymentSettings,
+  "purchases": purchases,
   "reports": reports,
   "reviews": reviews,
   "services": services,

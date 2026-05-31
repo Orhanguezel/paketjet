@@ -22,7 +22,6 @@ export {
   welcomeMailSchema,
   passwordChangedSchema,
   buildBookingRouteLabel,
-  buildCarrierPaymentSubject,
 } from './helpers';
 export type {
   WelcomeMailInput,
@@ -38,7 +37,6 @@ export {
   sendBookingInTransitMail,
   sendBookingDeliveredMail,
   sendBookingCancelledMail,
-  sendCarrierPaymentMail,
 } from './service';
 
 export {

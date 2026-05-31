@@ -63,8 +63,8 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 (UUID(), 'contact_phone_display',  '*', '"0312 000 00 00"'),
 (UUID(), 'contact_phone_tel',      '*', '"03120000000"'),
-(UUID(), 'contact_email',          '*', '"info@paketjet.com"'),
-(UUID(), 'contact_to_email',       '*', '"info@paketjet.com"'),
+(UUID(), 'contact_email',          '*', '"info@paketjet.net"'),
+(UUID(), 'contact_to_email',       '*', '"info@paketjet.net"'),
 (UUID(), 'contact_address',        '*', '"Türkiye"'),
 (UUID(), 'contact_whatsapp_link',  '*', '"https://wa.me/903120000000"');
 
@@ -89,9 +89,9 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 (UUID(), 'smtp_host',        '*', '"smtp.example.com"'),
 (UUID(), 'smtp_port',        '*', '587'),
-(UUID(), 'smtp_username',    '*', '"info@paketjet.com"'),
+(UUID(), 'smtp_username',    '*', '"info@paketjet.net"'),
 (UUID(), 'smtp_password',    '*', '"__SET_IN_ENV__"'),
-(UUID(), 'smtp_from_email',  '*', '"info@paketjet.com"'),
+(UUID(), 'smtp_from_email',  '*', '"info@paketjet.net"'),
 (UUID(), 'smtp_from_name',   '*', '"PaketJet"'),
 (UUID(), 'smtp_ssl',         '*', 'false');
 

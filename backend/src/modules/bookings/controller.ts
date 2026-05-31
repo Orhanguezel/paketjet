@@ -18,15 +18,13 @@ import {
   repoCreateBooking,
   repoUpdateBookingStatus,
   repoUpdatePaymentStatus,
-  repoUpdateBookingCommission,
 } from "./repository";
 import {
   createBookingSchema,
   updateBookingStatusSchema,
   cancelBookingSchema,
 } from "./validation";
-import { deductForBooking, creditCarrier, refundToCustomer } from "../wallet/service";
-import { getCommissionRateForCarrier, calculateCarrierPayout } from "../wallet/commission";
+import { deductForBooking } from "../wallet/service";
 import { repoGetFirstRowByFallback } from "../siteSettings/repository";
 import {
   notifyBookingCreated,
@@ -216,13 +214,8 @@ export const confirmDelivery: RouteHandler = async (req, reply) => {
       return reply.code(400).send({ error: { message: "not_awaiting_confirmation" } });
     }
 
-    // Teslimi onayla + ödeme aktarımı
+    // Legacy booking delivery closes without carrier payout in the lead model.
     await repoUpdateBookingStatus(id, "delivered", {});
-    const totalPrice = parseFloat(booking.total_price);
-    const { rate } = await getCommissionRateForCarrier(booking.carrier_id);
-    const { carrierPayout, commissionAmount } = calculateCarrierPayout(totalPrice, rate);
-    await creditCarrier(booking.carrier_id, carrierPayout, id);
-    await repoUpdateBookingCommission(id, rate, commissionAmount);
 
     const updated = await repoGetBookingById(id);
     return reply.send(updated);
@@ -250,11 +243,6 @@ export const cancelBooking: RouteHandler = async (req, reply) => {
 
     await repoUpdateBookingStatus(id, "cancelled", { cancelled_at: new Date() });
     await repoRestoreCapacity(booking.ilan_id, parseFloat(booking.kg_amount));
-
-    if (booking.payment_status === "paid") {
-      await refundToCustomer(booking.customer_id, parseFloat(booking.total_price), id);
-      await repoUpdatePaymentStatus(id, "refunded");
-    }
 
     void notifyBookingCancelled(booking, userId);
 

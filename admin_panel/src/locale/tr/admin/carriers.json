@@ -17,7 +17,7 @@
   },
   "list": {
     "title": "Taşıyıcı Listesi",
-    "description": "Taşıyıcıların hesap, ilan, rezervasyon, cüzdan ve puan özetini incele.",
+    "description": "Taşıyıcıların hesap, ilan, rezervasyon, ilan hakkı ve puan özetini incele.",
     "loading": "Taşıyıcılar yükleniyor...",
     "empty": "Taşıyıcı bulunamadı.",
     "detailButton": "Detay"
@@ -29,7 +29,7 @@
     "ilanlar": "İlanlar",
     "bookings": "Rezervasyonlar",
     "rating": "Puan",
-    "wallet": "Cüzdan",
+    "wallet": "İlan Hakkı",
     "createdAt": "Kayıt",
     "lastLogin": "Son Giriş",
     "detail": "Detay"
@@ -68,19 +68,19 @@
       "phone": "Telefon",
       "createdAt": "Kayıt Tarihi",
       "lastLogin": "Son Giriş",
-      "walletStatus": "Cüzdan Durumu"
+      "walletStatus": "Hak Durumu"
     },
     "metrics": {
       "ilanCount": "İlan Sayısı",
       "bookingCount": "Rezervasyon Sayısı",
       "rating": "Puan Ortalaması",
-      "walletBalance": "Cüzdan Bakiyesi",
+      "walletBalance": "Kalan Hak",
       "totalTransactions": "İşlem"
     },
     "wallet": {
-      "title": "Cüzdan Özeti",
-      "description": "Bakiye, kazanç ve çekim toplamlarını takip et.",
-      "balance": "Bakiye",
+      "title": "İlan Hakkı Özeti",
+      "description": "Kalan hak ve kullanım toplamlarını takip et.",
+      "balance": "Kalan Hak",
       "status": "Durum",
       "totalEarnings": "Toplam Kazanç",
       "totalWithdrawn": "Toplam Çekim"

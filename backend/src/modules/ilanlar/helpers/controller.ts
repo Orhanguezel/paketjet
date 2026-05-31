@@ -8,7 +8,7 @@ type CreateIlanInput = z.infer<typeof createIlanSchema>;
 type UpdateIlanInput = z.infer<typeof updateIlanSchema>;
 type IlanPatch = Parameters<typeof repoUpdateIlan>[1];
 
-export function createIlanInsertPayload(body: CreateIlanInput, meta?: { ip?: string | null }) {
+export function createIlanInsertPayload(body: CreateIlanInput) {
   return {
     from_city: body.from_city,
     to_city: body.to_city,
@@ -27,13 +27,7 @@ export function createIlanInsertPayload(body: CreateIlanInput, meta?: { ip?: str
     contact_email: body.contact_email ?? null,
     contact_name: body.contact_name ?? null,
     contact_address: body.contact_address ?? null,
-    // Ürün değeri (decimal → String, CLAUDE.md kuralı)
-    estimated_value: String(body.estimated_value),
-    estimated_value_currency: body.estimated_value_currency ?? "TRY",
-    // İçerik onayı kaydı (HMK delil): tarih + IP
-    content_declared: 1,
-    content_declared_at: new Date(),
-    content_declared_ip: meta?.ip ?? null,
+    // Kargo bedeli + içerik onayı ilanda tutulmaz; satın alan müşteri bildirir (purchases).
     status: "pending_approval" as const,
   };
 }

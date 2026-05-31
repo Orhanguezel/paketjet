@@ -23,11 +23,19 @@ interface PaymentModalProps {
   checkoutFormContent?: string;
   iframeUrl?: string; // PayTR
   title?: string;
+  notice?: string;
 }
 
 const CONTAINER_ID = "payment-checkout-form";
 
-export default function PaymentModal({ show, onClose, checkoutFormContent, iframeUrl, title = "Güvenli Ödeme" }: PaymentModalProps) {
+export default function PaymentModal({
+  show,
+  onClose,
+  checkoutFormContent,
+  iframeUrl,
+  title = "Güvenli Ödeme",
+  notice,
+}: PaymentModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -54,6 +62,11 @@ export default function PaymentModal({ show, onClose, checkoutFormContent, ifram
         </button>
         <div className="p-6 pt-10">
           <p className="text-sm font-semibold text-gray-800 mb-4 text-center">{title}</p>
+          {notice && (
+            <p className="mb-4 rounded-xl border border-cta/25 bg-cta/10 p-3 text-xs font-bold leading-relaxed text-gray-800">
+              {notice}
+            </p>
+          )}
           {iframeUrl ? (
             <iframe
               src={iframeUrl}

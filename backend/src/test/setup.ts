@@ -34,6 +34,7 @@ export async function registerUser(
       full_name: data.full_name ?? "Test User",
       phone: "05551234567",
       rules_accepted: true,
+      kvkk_explicit_consent: true,
       ...(data.role === "carrier" ? { options: { data: { role: "carrier" } } } : {}),
     },
   });

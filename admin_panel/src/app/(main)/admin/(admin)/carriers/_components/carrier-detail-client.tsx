@@ -17,7 +17,6 @@ import {
   getErrorMessage,
   getAdminCarrierDisplayName,
   getAdminCarrierStatusKey,
-  getAdminCarrierWalletStatusKey,
 } from '@/integrations/shared';
 import {
   useGetCarrierAdminQuery,
@@ -144,12 +143,6 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
             <div className="text-xs text-muted-foreground">{t('detail.profile.lastLogin')}</div>
             <div className="font-medium">{formatAdminCarrierDate(carrier.last_sign_in_at)}</div>
           </div>
-          <div className="space-y-1">
-            <div className="text-xs text-muted-foreground">{t('detail.profile.walletStatus')}</div>
-            <div className="font-medium">
-              {t(`walletStatus.${getAdminCarrierWalletStatusKey(carrier.stats.wallet_status)}`)}
-            </div>
-          </div>
         </CardContent>
       </Card>
 
@@ -168,18 +161,6 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">{t('detail.metrics.bookingCount')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold">{carrier.stats.booking_count}</div>
-            <div className="text-xs text-muted-foreground">
-              {carrier.stats.delivered_booking_count} {t('stats.delivered')}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
             <CardTitle className="text-sm">{t('detail.metrics.rating')}</CardTitle>
           </CardHeader>
           <CardContent>
@@ -190,55 +171,9 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">{t('detail.metrics.walletBalance')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-semibold">
-              {formatAdminCarrierMoney(carrier.stats.wallet_balance)}
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {t('detail.metrics.totalTransactions')}: {carrier.stats.total_transaction_count}
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t('detail.wallet.title')}</CardTitle>
-            <CardDescription>{t('detail.wallet.description')}</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">{t('detail.wallet.balance')}</div>
-              <div className="font-medium">
-                {formatAdminCarrierMoney(carrier.stats.wallet_balance)}
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">{t('detail.wallet.status')}</div>
-              <div className="font-medium">
-                {t(`walletStatus.${getAdminCarrierWalletStatusKey(carrier.stats.wallet_status)}`)}
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">{t('detail.wallet.totalEarnings')}</div>
-              <div className="font-medium">
-                {formatAdminCarrierMoney(carrier.stats.wallet_total_earnings)}
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs text-muted-foreground">{t('detail.wallet.totalWithdrawn')}</div>
-              <div className="font-medium">
-                {formatAdminCarrierMoney(carrier.stats.wallet_total_withdrawn)}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
+      <div className="grid gap-4">
         <Card>
           <CardHeader>
             <CardTitle className="text-base">{t('detail.recentRatings.title')}</CardTitle>
@@ -299,47 +234,6 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
                     <TableCell>{item.status}</TableCell>
                     <TableCell>{item.available_capacity_kg}</TableCell>
                     <TableCell>{formatAdminCarrierMoney(item.price_per_kg, item.currency)}</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t('detail.recentBookings.title')}</CardTitle>
-          <CardDescription>{t('detail.recentBookings.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>{t('detail.recentBookings.id')}</TableHead>
-                <TableHead>{t('detail.recentBookings.status')}</TableHead>
-                <TableHead>{t('detail.recentBookings.paymentStatus')}</TableHead>
-                <TableHead>{t('detail.recentBookings.kg')}</TableHead>
-                <TableHead>{t('detail.recentBookings.total')}</TableHead>
-                <TableHead>{t('detail.recentBookings.createdAt')}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {carrier.recent_bookings.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-sm text-muted-foreground">
-                    {t('detail.recentBookings.empty')}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                carrier.recent_bookings.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-mono text-xs">{item.id.slice(0, 8)}</TableCell>
-                    <TableCell>{item.status}</TableCell>
-                    <TableCell>{item.payment_status}</TableCell>
-                    <TableCell>{item.kg_amount}</TableCell>
-                    <TableCell>{formatAdminCarrierMoney(item.total_price, item.currency)}</TableCell>
-                    <TableCell>{formatAdminCarrierDate(item.created_at)}</TableCell>
                   </TableRow>
                 ))
               )}

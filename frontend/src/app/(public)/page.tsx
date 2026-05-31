@@ -118,7 +118,7 @@ export default async function HomePage() {
         </div>
 
         {/* Nasıl Çalışır */}
-        <section className="bg-bg-alt py-16">
+        <section className="how-it-works-section bg-bg-alt py-16">
           <div className="max-w-5xl mx-auto px-6">
             <div className="text-center mb-10">
               <h2 className="how-it-works-heading text-2xl font-extrabold text-foreground tracking-tight">Nasıl Çalışır?</h2>
@@ -126,8 +126,8 @@ export default async function HomePage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {HOW_IT_WORKS.map((item) => (
-                <div key={item.step} className="relative bg-surface rounded-2xl border border-border shadow-sm overflow-hidden">
-                  <div className="relative aspect-video bg-navy/5">
+                <div key={item.step} className="how-it-works-card relative bg-surface rounded-2xl border border-border shadow-sm overflow-hidden">
+                  <div className="how-it-works-visual relative aspect-video bg-navy/5">
                     {"visual" in item && item.visual === "map" ? (
                       <RouteMapAnimation />
                     ) : "video" in item && item.video ? (
@@ -143,7 +143,7 @@ export default async function HomePage() {
                     ) : null}
                   </div>
                   <div className="relative p-6">
-                    <span className="text-5xl font-black text-brand/10 absolute top-4 right-5 leading-none select-none">
+                    <span className="how-it-works-step-bg text-5xl font-black text-brand/10 absolute top-4 right-5 leading-none select-none">
                       {item.step}
                     </span>
                     <div className="w-9 h-9 rounded-xl bg-brand flex items-center justify-center mb-4">
@@ -200,12 +200,12 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* CTA — Taşıyıcı mısın? */}
+        {/* CTA — Gönderin mi var? */}
         <section className="bg-navy py-16">
           <div className="max-w-3xl mx-auto px-4 text-center">
-            <h2 className="text-3xl font-black text-white tracking-tight mb-3">Taşıyıcı mısın?</h2>
+            <h2 className="text-3xl font-black text-white tracking-tight mb-3">Gönderin mi var?</h2>
             <p className="text-white/70 text-base mb-8">
-              Boş araç kapasiteni ilan aç, müşteriler seni bulsun. Ekstra gelir kazan.
+              Güzergahını ve gönderi detaylarını ücretsiz ilan açarak paylaş. Taşıyıcılar sana ulaşsın.
             </p>
             <Link
               href="/ilan-ver"

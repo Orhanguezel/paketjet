@@ -1,7 +1,7 @@
 {
   "header": {
-    "title": "Rezervasyonlar",
-    "description": "Tüm kargo rezervasyonlarını görüntüleyin ve yönetin."
+    "title": "Rezervasyon Arşivi",
+    "description": "Eski rezervasyon kayıtlarını görüntüleyin ve gerektiğinde durumlarını yönetin."
   },
   "filters": {
     "searchPlaceholder": "Müşteri, şehir veya ID ara...",
@@ -35,10 +35,10 @@
     "payment": "Ödeme",
     "date": "Tarih",
     "action": "İşlem",
-    "empty": "Rezervasyon bulunamadı."
+    "empty": "Rezervasyon kaydı bulunamadı."
   },
   "pagination": {
-    "summary": "{total} rezervasyon — Sayfa {page} / {totalPages}",
+    "summary": "{total} kayıt — Sayfa {page} / {totalPages}",
     "previous": "Önceki",
     "next": "Sonraki"
   },

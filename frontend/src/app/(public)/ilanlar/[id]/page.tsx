@@ -25,8 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ilan) return { title: "İlan Detayı" };
 
   const title = `${ilan.from_city} → ${ilan.to_city} Kargo | PaketJet`;
-  const value = ilan.estimated_value ? `Beyan edilen değer: ₺${Number(ilan.estimated_value).toLocaleString("tr-TR")}. ` : "";
-  const description = `${value}${ilan.from_city}'dan ${ilan.to_city}'a gönderi ilanı. İletişim bilgilerine PaketJet üzerinden erişin.`;
+  const description = `${ilan.from_city}'dan ${ilan.to_city}'a taşıma ilanı. İletişim bilgilerine PaketJet üzerinden erişin.`;
 
   return {
     title,

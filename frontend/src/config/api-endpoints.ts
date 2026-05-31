@@ -21,6 +21,7 @@ export const API = {
     my:     "/api/ilanlar/my",
     detail: (id: string) => `/api/ilanlar/${id}`,
     buy:    (id: string) => `/api/ilanlar/${id}/satin-al`,
+    pay:    (id: string) => `/api/ilanlar/${id}/satin-al/odeme`,
     contact:(id: string) => `/api/ilanlar/${id}/iletisim`,
     status: (id: string) => `/api/ilanlar/${id}/status`,
     photos: (id: string) => `/api/ilanlar/${id}/photos`,
@@ -30,6 +31,7 @@ export const API = {
     mine: "/api/satin-aldiklarim",
     credits: "/api/ilan-alma-hakki",
     creditPackages: "/api/ilan-alma-hakki/paketler",
+    buyCredits: "/api/ilan-alma-hakki/satin-al",
   },
 
   bookings: {

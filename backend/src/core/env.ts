@@ -89,7 +89,6 @@ export const env = {
   IYZICO_API_KEY:          process.env.IYZICO_API_KEY          || "",
   IYZICO_SECRET_KEY:       process.env.IYZICO_SECRET_KEY       || "",
   IYZICO_BASE_URL:         process.env.IYZICO_BASE_URL         || "https://sandbox-api.iyzipay.com",
-  IYZICO_SUB_MERCHANT_KEY: process.env.IYZICO_SUB_MERCHANT_KEY || "",
   IYZICO_TEST_MODE:       parseEnvBool(process.env.IYZICO_TEST_MODE, true),
 
   // PayTR

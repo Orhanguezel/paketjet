@@ -54,8 +54,6 @@ export async function repoListIlans(filters: {
   from_city?: string;
   to_city?: string;
   date?: string;
-  min_kg?: number;
-  max_price_per_kg?: number;
   vehicle_type?: string;
   status?: string;
   page: number;

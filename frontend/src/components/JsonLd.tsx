@@ -27,9 +27,9 @@ export function OrganizationSchema() {
         url: SITE_URL,
         logo: `${SITE_URL}/uploads/media/logo/logo-512x512.png`,
         description:
-          "Türkiye'nin P2P kargo pazaryeri. Taşıyıcılar güzergah ilanı açar, müşteriler kargo alanı satın alır.",
+          "Türkiye'nin P2P kargo pazaryeri. Göndericiler ücretsiz ilan açar, taşıyıcılar ilan sahibinin iletişim bilgilerine erişir.",
         foundingDate: "2024",
-        email: "info@paketjet.com",
+        email: "info@paketjet.net",
         areaServed: { "@type": "Country", name: "Turkey" },
         sameAs: [
           "https://www.instagram.com/paketjet",
@@ -73,7 +73,7 @@ export function ServiceSchema() {
         "@type": "Service",
         name: "PaketJet P2P Kargo Hizmeti",
         description:
-          "Şehirler arası taşıma kapasitesini dijital olarak erişilebilir hale getiren P2P kargo pazaryeri. Taşıyıcılar güzergah ilanı açar, müşteriler uygun ilanı bulup kargo alanı satın alır.",
+          "Şehirler arası gönderi taleplerini taşıyıcılarla buluşturan P2P kargo pazaryeri. Göndericiler ücretsiz ilan açar, taşıyıcılar iletişim erişimi satın alır.",
         provider: { "@type": "Organization", name: "PaketJet", url: SITE_URL },
         serviceType: "P2P Kargo Pazaryeri",
         areaServed: { "@type": "Country", name: "Turkey" },

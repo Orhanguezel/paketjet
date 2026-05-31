@@ -88,7 +88,7 @@ export const createIlan: RouteHandler = async (req, reply) => {
     const body = createIlanSchema.parse(req.body ?? {});
 
     // KYC kaldirildi (2026-05-30): kimseye payout yok -> dogrulama gereksiz.
-    // Ilan acmak ucretsiz; yasal onaylar (sozlesme/KVKK/icerik beyani) UI'da alinir.
+    // Ilan acmak ucretsiz; kargo bedeli/icerik beyani satin alma akışında alınır.
 
     // Ilan limit kontrolu
     const [sub, { quota: freeQuota }, monthlyCount] = await Promise.all([
@@ -101,7 +101,7 @@ export const createIlan: RouteHandler = async (req, reply) => {
       return reply.code(403).send({ error: { message: "ilan_limit_reached" } });
     }
 
-    const ilan = await repoCreateIlan(userId, createIlanInsertPayload(body, { ip: req.ip }));
+    const ilan = await repoCreateIlan(userId, createIlanInsertPayload(body));
     return reply.code(201).send(ilan);
   } catch (e) {
     return handleRouteError(reply, req, e, "ilan_create_failed");

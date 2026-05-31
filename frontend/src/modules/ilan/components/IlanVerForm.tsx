@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { ROUTES } from "@/config/routes";
 import { TURKEY_CITIES } from "@/data/turkey-cities";
 import { useAuthStore } from "@/modules/auth/auth.store";
-import { getSiteSettingValue } from "@/lib/site-settings";
 
 const STEPS = ["Güzergah", "Gönderi & Tarih", "İletişim", "Önizleme"];
 
@@ -25,12 +24,6 @@ const VEHICLE_OPTIONS: { value: VehicleType; label: string }[] = [
 ];
 
 type FormData = Partial<CreateIlanInput>;
-type ContentDeclarationCopy = {
-  title: string;
-  message: string;
-  acceptLabel: string;
-  cancelLabel: string;
-};
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
@@ -52,8 +45,6 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
   const [form, setForm] = useState<FormData>({ currency: "TRY", is_negotiable: 0, vehicle_type: "car" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [contentDeclaration, setContentDeclaration] = useState<ContentDeclarationCopy | null>(null);
-  const [showContentDeclaration, setShowContentDeclaration] = useState(false);
 
   // KYC kaldırıldı (2026-05-30): ilan açmak serbest, doğrulama yok.
 
@@ -67,10 +58,6 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
       }));
     }
   }, [user]);
-
-  useEffect(() => {
-    getSiteSettingValue<ContentDeclarationCopy>("listing.content_declaration").then(setContentDeclaration);
-  }, []);
 
   function update(patch: Partial<FormData>) {
     setForm((prev) => ({ ...prev, ...patch }));
@@ -91,7 +78,7 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
     setSubmitting(true);
     setError("");
     try {
-      await createIlan({ ...form, content_declared: true } as CreateIlanInput);
+      await createIlan(form as CreateIlanInput);
       setSuccess(true);
       setSubmitting(false);
     } catch (e) {
@@ -113,14 +100,6 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
     }
   }
 
-  function requestPublish() {
-    if (!contentDeclaration) {
-      setError("İçerik beyanı yüklenemedi. Lütfen tekrar deneyin.");
-      return;
-    }
-    setShowContentDeclaration(true);
-  }
-
   if (success) {
     return (
       <div className="max-w-xl">
@@ -135,7 +114,7 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
             İlanınız admin onayı bekliyor. Onaylandıktan sonra otomatik olarak yayına alınacaktır.
           </p>
           <div className="flex gap-3 justify-center">
-            <Button onClick={() => onSuccess ? onSuccess() : router.push("/panel/tasiyici?tab=ilanlar")}>
+            <Button onClick={() => onSuccess ? onSuccess() : router.push(ROUTES.panel.ilanlarim)}>
               İlanlarıma Git
             </Button>
           </div>
@@ -217,15 +196,6 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
         {step === 1 && (
           <div className="flex flex-col gap-4">
             <Input
-              label="Tahmini Ürün Değeri (₺) *"
-              type="number"
-              min="1"
-              step="1"
-              value={form.estimated_value ?? ""}
-              onChange={(e) => update({ estimated_value: parseFloat(e.target.value), estimated_value_currency: "TRY" })}
-              placeholder="1000"
-            />
-            <Input
               label="Kalkış Tarihi & Saati *"
               type="datetime-local"
               value={form.departure_date ?? ""}
@@ -287,8 +257,7 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
             <div className="grid grid-cols-2 gap-3">
               {[
                 ["Güzergah", `${form.from_city} → ${form.to_city}`],
-                ["Araç",     VEHICLE_OPTIONS.find((v) => v.value === form.vehicle_type)?.label ?? form.vehicle_type],
-                ["Ürün Değeri", form.estimated_value ? `₺${form.estimated_value}` : "—"],
+                ["Araç", VEHICLE_OPTIONS.find((v) => v.value === form.vehicle_type)?.label ?? form.vehicle_type],
                 ["Kalkış",   form.departure_date ? new Date(form.departure_date).toLocaleString("tr-TR") : "—"],
                 ["Telefon",  form.contact_phone],
               ].map(([label, value]) => (
@@ -333,41 +302,18 @@ export default function IlanVerForm({ onSuccess }: { onSuccess?: () => void } = 
             onClick={next}
             disabled={
               (step === 0 && (!form.from_city || !form.to_city)) ||
-              (step === 1 && (!form.estimated_value || !form.departure_date)) ||
+              (step === 1 && !form.departure_date) ||
               (step === 2 && !form.contact_phone)
             }
           >
             İleri →
           </Button>
         ) : (
-          <Button onClick={requestPublish} loading={submitting}>
+          <Button onClick={submit} loading={submitting}>
             İlanı Yayınla
           </Button>
         )}
       </div>
-
-      {showContentDeclaration && contentDeclaration && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-          <div className="w-full max-w-md rounded-2xl border border-border-soft bg-surface p-6 shadow-xl">
-            <h3 className="text-lg font-extrabold text-foreground">{contentDeclaration.title}</h3>
-            <p className="mt-3 text-sm leading-relaxed text-muted">{contentDeclaration.message}</p>
-            <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
-              <Button variant="ghost" onClick={() => setShowContentDeclaration(false)} disabled={submitting}>
-                {contentDeclaration.cancelLabel}
-              </Button>
-              <Button
-                onClick={() => {
-                  setShowContentDeclaration(false);
-                  void submit();
-                }}
-                loading={submitting}
-              >
-                {contentDeclaration.acceptLabel}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

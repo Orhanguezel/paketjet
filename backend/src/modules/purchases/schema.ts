@@ -24,6 +24,12 @@ export interface ContactSnapshot {
   address?: string | null;
 }
 
+export interface PurchaseDeclaration {
+  estimated_value: number;
+  estimated_value_currency?: string;
+  content_declared: true;
+}
+
 /** ilan_purchases — lead-reveal satın alma (UNIQUE(ilan_id) → tek alıcı) */
 export const ilanPurchases = mysqlTable(
   "ilan_purchases",
@@ -39,6 +45,10 @@ export const ilanPurchases = mysqlTable(
     payment_ref: varchar("payment_ref", { length: 255 }),
 
     estimated_value_snapshot: decimal("estimated_value_snapshot", { precision: 12, scale: 2 }),
+    estimated_value_currency: varchar("estimated_value_currency", { length: 10 }).notNull().default("TRY"),
+    content_declared: tinyint("content_declared").notNull().default(0),
+    content_declared_at: datetime("content_declared_at", { fsp: 3 }),
+    content_declared_ip: varchar("content_declared_ip", { length: 64 }),
     contact_snapshot: json("contact_snapshot").$type<ContactSnapshot | null>().default(null),
 
     status: varchar("status", { length: 20 }).notNull().default("completed"), // completed | refunded
@@ -111,8 +121,37 @@ export const creditPackagePurchases = mysqlTable(
   ]
 );
 
+/** ilan_purchase_payments — tekil iletişim erişimi ödeme kayıtları */
+export const ilanPurchasePayments = mysqlTable(
+  "ilan_purchase_payments",
+  {
+    id: char("id", { length: 36 }).primaryKey().notNull(),
+    ilan_id: char("ilan_id", { length: 36 }).notNull(),
+    buyer_id: char("buyer_id", { length: 36 }).notNull(),
+    price: decimal("price", { precision: 12, scale: 2 }).notNull(),
+    provider: varchar("provider", { length: 20 }).notNull(),
+    payment_ref: varchar("payment_ref", { length: 255 }).notNull(),
+    estimated_value_snapshot: decimal("estimated_value_snapshot", { precision: 12, scale: 2 }),
+    estimated_value_currency: varchar("estimated_value_currency", { length: 10 }).notNull().default("TRY"),
+    content_declared: tinyint("content_declared").notNull().default(0),
+    content_declared_at: datetime("content_declared_at", { fsp: 3 }),
+    content_declared_ip: varchar("content_declared_ip", { length: 64 }),
+    status: varchar("status", { length: 20 }).notNull().default("pending"),
+    created_at: datetime("created_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`),
+    updated_at: datetime("updated_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`).$onUpdateFn(() => new Date()),
+  },
+  (t) => [
+    uniqueIndex("uniq_ilan_payment_ref").on(t.payment_ref),
+    index("ilan_purchase_payments_ilan_idx").on(t.ilan_id),
+    index("ilan_purchase_payments_buyer_idx").on(t.buyer_id),
+    foreignKey({ columns: [t.ilan_id], foreignColumns: [ilanlar.id], name: "fk_ilanpay_ilan" }).onDelete("restrict").onUpdate("cascade"),
+    foreignKey({ columns: [t.buyer_id], foreignColumns: [users.id], name: "fk_ilanpay_buyer" }).onDelete("restrict").onUpdate("cascade"),
+  ]
+);
+
 export type IlanPurchase = typeof ilanPurchases.$inferSelect;
 export type NewIlanPurchase = typeof ilanPurchases.$inferInsert;
 export type UserCredit = typeof userCredits.$inferSelect;
 export type CreditLedger = typeof creditLedger.$inferSelect;
 export type CreditPackagePurchase = typeof creditPackagePurchases.$inferSelect;
+export type IlanPurchasePayment = typeof ilanPurchasePayments.$inferSelect;

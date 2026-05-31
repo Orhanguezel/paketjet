@@ -40,6 +40,7 @@ import {
   parseAdminEmailAllowlist,
   ACCESS_MAX_AGE,
 } from './helpers';
+import { getSignupLegalConsentVersions } from './legal-consent';
 
 const adminEmails = parseAdminEmailAllowlist();
 
@@ -55,13 +56,26 @@ export async function signup(req: FastifyRequest, reply: FastifyReply) {
     const phone = (parsed.data.phone ?? (typeof meta['phone'] === 'string' ? meta['phone'] : undefined)) || undefined;
     const requestedRole = meta['role'] === 'carrier' ? 'carrier' : 'customer';
     const rulesAccepted = parsed.data.rules_accepted === true;
+    const kvkkConsentAt = parsed.data.kvkk_explicit_consent === true ? new Date() : undefined;
+    const consentVersions = await getSignupLegalConsentVersions();
 
     const exists = await repoGetUserByEmail(email);
     if (exists) return reply.status(409).send({ error: { message: 'user_exists' } });
 
     const id = randomUUID();
     const password_hash = await argonHash(password);
-    await repoCreateUser({ id, email, password_hash, full_name, phone, rules_accepted_at: rulesAccepted ? new Date() : undefined });
+    await repoCreateUser({
+      id,
+      email,
+      password_hash,
+      full_name,
+      phone,
+      rules_accepted_at: rulesAccepted ? new Date() : undefined,
+      rules_accepted_version: consentVersions.rules_accepted_version,
+      kvkk_explicit_consent: kvkkConsentAt ? 1 : 0,
+      kvkk_consent_at: kvkkConsentAt,
+      kvkk_consent_version: consentVersions.kvkk_consent_version,
+    });
 
     const isAdmin = adminEmails.has(email.toLowerCase());
     const assignedRole: Role = isAdmin ? 'admin' : requestedRole;

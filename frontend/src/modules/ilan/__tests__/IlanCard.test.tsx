@@ -28,8 +28,8 @@ describe("IlanCard", () => {
 
     expect(screen.getByText(/istanbul/i)).toBeInTheDocument();
     expect(screen.getByText(/ankara/i)).toBeInTheDocument();
-    expect(screen.getByText(/48 kg müsait/i)).toBeInTheDocument();
-    expect(screen.getByText(/35 ₺\/kg/i)).toBeInTheDocument();
+    expect(screen.getByText(/Minivan/i)).toBeInTheDocument();
+    expect(screen.getByText(/İletişimi Gör/i)).toBeInTheDocument();
   });
 
   it('"Detay" linki yerine kart linki dogru URL\'ye gider', () => {

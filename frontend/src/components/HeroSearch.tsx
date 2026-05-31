@@ -8,8 +8,6 @@ import CityAutocomplete from "@/components/CityAutocomplete";
 const TABS = ["Kargo Gönder", "Paket Takip", "Hızlı İlan Aç"] as const;
 type Tab = (typeof TABS)[number];
 
-const WEIGHT_OPTIONS = ["1-5 kg", "5-10 kg", "10-20 kg", "20-50 kg", "50+ kg"];
-
 const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
 
 type HeroConfig = {
@@ -200,7 +198,7 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
           {/* Form — mobilde tıkla-aç, masaüstünde her zaman açık */}
           <div className={`transition-all duration-300 md:overflow-visible ${mobileOpen ? "max-h-125 opacity-100 overflow-visible" : "max-h-0 opacity-0 overflow-hidden md:max-h-125 md:opacity-100"}`}>
             {activeTab === "Kargo Gönder" && (
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-13 md:items-end">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-11 md:items-end">
                 {/* Nereden */}
                 <div className="md:col-span-3">
                   <p className="mb-1.5 text-sm font-semibold text-muted text-left">Nereden</p>
@@ -235,17 +233,6 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
                   </div>
                 </div>
 
-                {/* Ağırlık */}
-                <div className="md:col-span-2">
-                  <label htmlFor="hero-agirlik" className="mb-1.5 text-sm font-semibold text-muted text-left block">Ağırlık</label>
-                  <div className="h-11 flex items-center gap-2 border border-border rounded-lg px-3 bg-background focus-within:ring-2 focus-within:ring-brand/30 transition">
-                    <Image src="/assets/icons/box_open.png" alt="" width={16} height={16} className="h-4 w-4 shrink-0 brightness-0 opacity-70" aria-hidden />
-                    <select id="hero-agirlik" aria-label="Ağırlık seçin" className="text-sm outline-none text-foreground bg-background pr-1 w-full">
-                      {WEIGHT_OPTIONS.map((w) => (<option key={w} className="bg-surface text-foreground">{w}</option>))}
-                    </select>
-                  </div>
-                </div>
-
                 {/* Ara */}
                 <button
                   onClick={handleSearch}
@@ -272,7 +259,7 @@ export default function HeroSearch({ heroConfig }: { heroConfig?: HeroConfig }) 
             {activeTab === "Hızlı İlan Aç" && (
               <div className="flex flex-col items-center gap-4 py-4">
                 <p className="text-sm text-muted text-center max-w-md">
-                  Taşıyıcı olarak güzergahını ve müsait kapasiteni hemen paylaş. Müşteriler seni bulsun.
+                  Gönderini ücretsiz ilan açarak paylaş. Taşıyıcılar iletişim bilgilerine erişmek için ilan alma hakkı kullanır.
                 </p>
                 <button
                   onClick={() => router.push("/ilan-ver")}

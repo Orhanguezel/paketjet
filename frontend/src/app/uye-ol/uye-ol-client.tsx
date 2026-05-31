@@ -8,8 +8,7 @@ import { useAuthStore } from "@/modules/auth/auth.store";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/lib/utils";
 
-type FormState = RegisterFormData;
-type FormErrors = Partial<Record<keyof FormState, string>>;
+type FormErrors = Partial<Record<string, string>>;
 
 const inputCls = (err?: string) =>
   cn(
@@ -18,8 +17,9 @@ const inputCls = (err?: string) =>
     err ? "border-red-400" : "border-border"
   );
 
-interface FullFormState extends Omit<RegisterFormData, "rules_accepted"> {
+interface FullFormState extends Omit<RegisterFormData, "rules_accepted" | "kvkk_explicit_consent"> {
   rules_accepted: boolean;
+  kvkk_explicit_consent: boolean;
 }
 
 export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUrl?: string | null }) {
@@ -27,7 +27,8 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
   const setUser = useAuthStore((s) => s.setUser);
 
   const [form, setForm] = useState<FullFormState>({
-    full_name: "", email: "", phone: "", password: "", confirmPassword: "", role: "customer", rules_accepted: false,
+    full_name: "", email: "", phone: "", password: "", confirmPassword: "",
+    rules_accepted: false, kvkk_explicit_consent: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [serverError, setServerError] = useState("");
@@ -39,6 +40,11 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
     setErrors((p) => ({ ...p, [name]: undefined }));
   }
 
+  function handleCheckbox(name: "rules_accepted" | "kvkk_explicit_consent", checked: boolean) {
+    setForm((p) => ({ ...p, [name]: checked }));
+    setErrors((p) => ({ ...p, [name]: undefined }));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setServerError("");
@@ -46,7 +52,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
     if (!result.success) {
       const fieldErrors: FormErrors = {};
       for (const issue of result.error.issues) {
-        const key = issue.path[0] as keyof FormState;
+        const key = issue.path[0] as string;
         if (!fieldErrors[key]) fieldErrors[key] = issue.message;
       }
       setErrors(fieldErrors);
@@ -55,9 +61,9 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
     setLoading(true);
     try {
       const { confirmPassword: _, ...payload } = result.data;
-      const res = await register(payload);
+      const res = await register(payload as Parameters<typeof register>[0]);
       setUser(res.user);
-      router.push(ROUTES.home);
+      router.push(ROUTES.panel.root);
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       setServerError(
@@ -83,7 +89,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
         <div className="relative z-10 flex flex-col justify-between px-12 py-10 w-full">
           <Link href={ROUTES.home}>
             {logoUrl ? (
-              <img src={logoUrl} alt="PaketJet" className="h-16 w-auto max-w-44 object-contain " />
+              <img src={logoUrl} alt="PaketJet" className="h-16 w-auto max-w-44 object-contain" />
             ) : (
               <span className="text-2xl font-extrabold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
             )}
@@ -95,14 +101,14 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
               kargo ağı
             </h1>
             <p className="text-white/70 text-sm leading-relaxed mb-8">
-              Taşıyıcılarla direkt bağlantı kur.
-              Daha şeffaf, daha esnek, daha izlenebilir.
+              İlan aç, taşıyıcılarla direkt bağlantı kur.<br />
+              Ücretsiz · Hızlı · Güvenli.
             </p>
             <ul className="space-y-3">
               {[
-                "Canlı ilan listeleri",
+                "Ücretsiz ilan aç",
                 "Türkiye geneli 81 şehir",
-                "Anlık kargo takibi",
+                "İletişim bilgileriniz korunur",
                 "Güvenli destek akışı",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-white/90">
@@ -137,22 +143,6 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
                 Giriş yap
               </Link>
             </p>
-
-            <div className="flex rounded-xl border border-border overflow-hidden mb-6">
-              {(["customer", "carrier"] as const).map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setForm((p) => ({ ...p, role: r }))}
-                  className={cn(
-                    "flex-1 py-3 text-sm font-semibold transition",
-                    form.role === r ? "bg-brand text-white" : "bg-bg-alt text-muted hover:bg-border-soft"
-                  )}
-                >
-                  {r === "customer" ? "Gönderi Sahibi" : "Taşıyıcı"}
-                </button>
-              ))}
-            </div>
 
             <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               {serverError && (
@@ -192,24 +182,45 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5 mt-2">
+              {/* Checkbox 1 — Sözleşme (zorunlu) */}
+              <div className="flex items-start gap-2.5 mt-2 p-3 rounded-xl bg-bg-alt border border-border">
                 <input
                   type="checkbox"
                   id="rules_accepted"
                   name="rules_accepted"
-                  checked={!!form.rules_accepted}
-                  onChange={(e) => {
-                    setForm((p) => ({ ...p, rules_accepted: e.target.checked }));
-                    setErrors((p) => ({ ...p, rules_accepted: undefined }));
-                  }}
-                  className="mt-1 w-4 h-4 rounded border-border text-brand focus:ring-brand cursor-pointer"
+                  checked={form.rules_accepted}
+                  onChange={(e) => handleCheckbox("rules_accepted", e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-border text-brand focus:ring-brand cursor-pointer shrink-0"
                 />
                 <label htmlFor="rules_accepted" className="text-xs text-muted leading-relaxed cursor-pointer select-none">
-                  <Link href={ROUTES.static.tasimaKurallari} target="_blank" className="text-brand font-bold hover:underline">Taşıma Kuralları</Link>
+                  <Link href={ROUTES.static.kullanim} target="_blank" className="text-brand font-bold hover:underline">Kullanıcı Sözleşmesi</Link>
+                  {", "}
+                  <Link href={ROUTES.static.gizlilik} target="_blank" className="text-brand font-bold hover:underline">Gizlilik Politikası</Link>
                   {" ve "}
-                  <Link href={ROUTES.static.kullanim} target="_blank" className="text-brand font-bold hover:underline">Kullanım Koşulları</Link>
-                  {"\u2019nı okudum ve kabul ediyorum."}
-                  {errors.rules_accepted && <p className="mt-1 text-xs text-danger font-bold">{errors.rules_accepted}</p>}
+                  <Link href={ROUTES.static.tasimaKurallari} target="_blank" className="text-brand font-bold hover:underline">Taşıma Kuralları</Link>
+                  {"'nı okudum ve kabul ediyorum."}{" "}
+                  <span className="text-danger font-bold">*</span>
+                  {errors.rules_accepted && <span className="block mt-1 text-danger font-bold">{errors.rules_accepted}</span>}
+                </label>
+              </div>
+
+              {/* Checkbox 2 — KVKK Açık Rıza (zorunlu, başta işaretsiz) */}
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-bg-alt border border-border">
+                <input
+                  type="checkbox"
+                  id="kvkk_explicit_consent"
+                  name="kvkk_explicit_consent"
+                  checked={form.kvkk_explicit_consent}
+                  onChange={(e) => handleCheckbox("kvkk_explicit_consent", e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-border text-brand focus:ring-brand cursor-pointer shrink-0"
+                />
+                <label htmlFor="kvkk_explicit_consent" className="text-xs text-muted leading-relaxed cursor-pointer select-none">
+                  <Link href={ROUTES.static.kvkk} target="_blank" className="text-brand font-bold hover:underline">KVKK Aydınlatma Metni</Link>
+                  {" kapsamında; iletişim ve adres bilgilerimin, ilan bedelini ödeyen üçüncü kişi taşıyıcılarla paylaşılmasına "}
+                  <span className="font-bold text-foreground">AÇIK RIZA</span>
+                  {" veriyorum."}{" "}
+                  <span className="text-danger font-bold">*</span>
+                  {errors.kvkk_explicit_consent && <span className="block mt-1 text-danger font-bold">{errors.kvkk_explicit_consent}</span>}
                 </label>
               </div>
 

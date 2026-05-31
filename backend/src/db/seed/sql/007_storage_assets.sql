@@ -151,7 +151,7 @@ VALUES
 ('00009400-0000-4000-8000-000000000103','favicon-32x32.png','default','media/logo/favicon-32x32.png','media/logo','image/png',2361,'/uploads/media/logo/favicon-32x32.png','local','media/logo/favicon-32x32.png','image','png'),
 ('00009400-0000-4000-8000-000000000104','favicon.ico','default','media/logo/favicon.ico','media/logo','image/x-icon',899,'/uploads/media/logo/favicon.ico','local','media/logo/favicon.ico','image','ico'),
 ('00009400-0000-4000-8000-000000000105','logo-512x512.png','default','media/logo/logo-512x512.png','media/logo','image/png',200323,'/uploads/media/logo/logo-512x512.png','local','media/logo/logo-512x512.png','image','png'),
-('00009400-0000-4000-8000-000000000106','logo-transparent.png','default','media/logo/logo-transparent.png','media/logo','image/png',533021,'/uploads/media/logo/logo-transparent.png','local','media/logo/logo-transparent.png','image','png'),
+('00009400-0000-4000-8000-000000000106','logo-transparent.png','default','media/logo/logo-transparent.png','media/logo','image/png',274203,'/uploads/media/logo/logo-transparent.png','local','media/logo/logo-transparent.png','image','png'),
 -- ── WALLET ─────────────────────────────────────────────────────────────────
 ('00009400-0000-4000-8000-000000000099','wallet1.png','default','media/wallet/wallet1.png','media/wallet','image/png',1582,'/uploads/media/wallet/wallet1.png','local','media/wallet/wallet1.png','image','png'),
 ('00009400-0000-4000-8000-000000000100','Shopier.png','default','media/wallet/Shopier.png','media/wallet','image/png',25010,'/uploads/media/wallet/Shopier.png','local','media/wallet/Shopier.png','image','png');

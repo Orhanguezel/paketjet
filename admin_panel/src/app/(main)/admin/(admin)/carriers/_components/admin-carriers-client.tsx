@@ -36,7 +36,6 @@ import {
   formatAdminCarrierRating,
   getAdminCarrierDisplayName,
   getAdminCarrierStatusKey,
-  getAdminCarrierWalletStatusKey,
   type AdminCarriersActiveFilter,
   type AdminCarriersFilters,
 } from '@/integrations/shared';
@@ -156,9 +155,7 @@ export default function AdminCarriersClient() {
                 <TableHead>{t('columns.phone')}</TableHead>
                 <TableHead>{t('columns.status')}</TableHead>
                 <TableHead>{t('columns.ilanlar')}</TableHead>
-                <TableHead>{t('columns.bookings')}</TableHead>
                 <TableHead>{t('columns.rating')}</TableHead>
-                <TableHead>{t('columns.wallet')}</TableHead>
                 <TableHead>{t('columns.createdAt')}</TableHead>
                 <TableHead>{t('columns.lastLogin')}</TableHead>
                 <TableHead>{t('columns.detail')}</TableHead>
@@ -167,7 +164,7 @@ export default function AdminCarriersClient() {
             <TableBody>
               {rows.length === 0 && listQ.isFetching && (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center text-sm text-muted-foreground">
                     {t('list.loading')}
                   </TableCell>
                 </TableRow>
@@ -175,7 +172,7 @@ export default function AdminCarriersClient() {
 
               {rows.length === 0 && !listQ.isFetching && (
                 <TableRow>
-                  <TableCell colSpan={10} className="text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={8} className="text-center text-sm text-muted-foreground">
                     {t('list.empty')}
                   </TableCell>
                 </TableRow>
@@ -210,24 +207,8 @@ export default function AdminCarriersClient() {
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1 text-sm">
-                      <div>{item.booking_count}</div>
-                      <div className="text-muted-foreground">
-                        {item.delivered_booking_count} {t('stats.delivered')}
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1 text-sm">
                       <div>{formatAdminCarrierRating(item.rating_avg)}</div>
                       <div className="text-muted-foreground">{item.rating_count}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="space-y-1 text-sm">
-                      <div>{item.wallet_balance}</div>
-                      <div className="text-muted-foreground">
-                        {t(`walletStatus.${getAdminCarrierWalletStatusKey(item.wallet_status)}`)}
-                      </div>
                     </div>
                   </TableCell>
                   <TableCell>{formatAdminCarrierDate(item.created_at)}</TableCell>

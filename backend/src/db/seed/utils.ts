@@ -8,14 +8,50 @@ export function cleanSql(input: string): string {
     .replace(/\/\*[\s\S]*?\*\//g, '');
 }
 
-// ; ile biten cümleleri ayrıştır (stringlerin içinde ; varsa bu basit split bozulabilir
-// fakat tipik schema/seed dosyalarında sorun çıkmaz)
 export function splitStatements(sql: string): string[] {
-  return sql
-    .split(/;\s*(?:\r?\n|$)/g)
-    .map(s => s.trim())
-    .filter(Boolean)
-    .map(s => s.endsWith(';') ? s : s + ';');
+  const statements: string[] = [];
+  let current = '';
+  let quote: "'" | '"' | '`' | null = null;
+
+  for (let i = 0; i < sql.length; i += 1) {
+    const ch = sql[i];
+    const next = sql[i + 1];
+    current += ch;
+
+    if (quote) {
+      if (ch === '\\') {
+        if (next) {
+          current += next;
+          i += 1;
+        }
+        continue;
+      }
+      if (ch === quote) {
+        if (quote === "'" && next === "'") {
+          current += next;
+          i += 1;
+          continue;
+        }
+        quote = null;
+      }
+      continue;
+    }
+
+    if (ch === "'" || ch === '"' || ch === '`') {
+      quote = ch;
+      continue;
+    }
+
+    if (ch === ';') {
+      const statement = current.trim();
+      if (statement) statements.push(statement);
+      current = '';
+    }
+  }
+
+  const tail = current.trim();
+  if (tail) statements.push(tail.endsWith(';') ? tail : `${tail};`);
+  return statements;
 }
 
 export function logStep(msg: string) {

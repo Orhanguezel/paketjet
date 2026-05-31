@@ -28,7 +28,8 @@ export interface RegisterInput {
   password: string;
   full_name: string;
   phone?: string;
-  role?: "carrier" | "customer";
+  rules_accepted: true;
+  kvkk_explicit_consent: true;
 }
 
 export interface AuthResponse {

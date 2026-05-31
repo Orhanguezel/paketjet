@@ -108,6 +108,12 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
     if (!localData) return;
     try {
       await updateSetting({ key: fullKey, locale: '*', value: localData as any }).unwrap();
+      await Promise.all([
+        updateSetting({ key: `${settingPrefix || ''}site_logo_light`, locale: '*', value: localData.logo_url as any }).unwrap(),
+        updateSetting({ key: `${settingPrefix || ''}site_logo_dark`, locale: '*', value: localData.logo_dark_url as any }).unwrap(),
+        updateSetting({ key: `${settingPrefix || ''}site_favicon`, locale: '*', value: localData.favicon_url as any }).unwrap(),
+        updateSetting({ key: `${settingPrefix || ''}site_apple_touch_icon`, locale: '*', value: localData.apple_touch_icon_url as any }).unwrap(),
+      ]);
       // Also update legacy 'logo' key for backward compat
       const legacyKey = `${settingPrefix || ''}logo`;
       await updateSetting({
@@ -178,6 +184,25 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
         </CardHeader>
 
         <CardContent>
+          <div className="mb-4 grid gap-3 rounded-lg border bg-muted/20 p-3 md:grid-cols-2">
+            <div className="rounded-md border bg-white p-4">
+              <p className="mb-2 text-xs font-semibold text-slate-600">Light tema önizleme</p>
+              {current.logo_url ? (
+                <img src={current.logo_url} alt={current.logo_alt || logoAlt} className="h-16 w-auto max-w-48 object-contain" />
+              ) : (
+                <span className="text-xs text-muted-foreground">{t('admin.siteSettings.brandMedia.inline.noImage')}</span>
+              )}
+            </div>
+            <div className="rounded-md border border-slate-800 bg-slate-950 p-4">
+              <p className="mb-2 text-xs font-semibold text-slate-300">Dark tema önizleme</p>
+              {current.logo_dark_url || current.logo_url ? (
+                <img src={current.logo_dark_url || current.logo_url} alt={current.logo_alt || logoAlt} className="h-16 w-auto max-w-48 object-contain" />
+              ) : (
+                <span className="text-xs text-slate-400">{t('admin.siteSettings.brandMedia.inline.noImage')}</span>
+              )}
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {SITE_SETTINGS_BRAND_MEDIA_ITEMS.map((m) => {
               const value = current[m.field];
@@ -200,7 +225,7 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
                   </div>
 
                   {value ? (
-                    <div className="relative aspect-square w-full max-w-30 mx-auto overflow-hidden rounded border bg-muted/20">
+                    <div className="relative aspect-[4/3] w-full max-w-36 mx-auto overflow-hidden rounded border bg-[linear-gradient(45deg,#e5e7eb_25%,transparent_25%),linear-gradient(-45deg,#e5e7eb_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#e5e7eb_75%),linear-gradient(-45deg,transparent_75%,#e5e7eb_75%)] bg-[length:16px_16px] bg-[position:0_0,0_8px,8px_-8px,-8px_0]">
                       <img
                         src={value}
                         alt={label}
@@ -211,7 +236,7 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
                       />
                     </div>
                   ) : (
-                    <div className="flex aspect-square w-full max-w-30 mx-auto items-center justify-center rounded border bg-muted/20">
+                    <div className="flex aspect-[4/3] w-full max-w-36 mx-auto items-center justify-center rounded border bg-muted/20">
                       <span className="text-[10px] text-muted-foreground">{t('admin.siteSettings.brandMedia.inline.noImage')}</span>
                     </div>
                   )}
@@ -225,7 +250,7 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
                     onChange={(url) => updateField(m.field, url)}
                     disabled={busy}
                     openLibraryHref="/admin/storage"
-                    previewAspect="1x1"
+                    previewAspect={m.aspect}
                     previewObjectFit="contain"
                   />
 

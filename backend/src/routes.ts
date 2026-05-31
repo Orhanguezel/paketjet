@@ -33,7 +33,7 @@ import { registerCarriersAdmin } from '@/modules/carriers';
 import { registerCarrierAgreements, registerCarrierAgreementsAdmin } from '@/modules/carrier-agreements';
 import { registerBookingMessages } from '@/modules/booking-messages';
 import { registerDisputes, registerDisputesAdmin } from '@/modules/disputes';
-import { registerPurchases } from '@/modules/purchases';
+import { registerPurchases, registerPurchasesAdmin } from '@/modules/purchases';
 
 import { registerEmailTemplatesAdmin } from '@/modules/emailTemplates/admin.routes';
 import { registerReportsAdmin } from '@/modules/reports';
@@ -88,6 +88,7 @@ const ADMIN_ROUTE_REGISTRARS = [
   registerCarriersAdmin,
   registerCarrierAgreementsAdmin,
   registerDisputesAdmin,
+  registerPurchasesAdmin,
 ] as const;
 
 // ── Public route kayıtları ───────────────────────────────────────────────────

@@ -30,10 +30,19 @@ async function fetchGlobalSeo() {
 
 async function fetchIcons() {
   try {
-    const res = await fetch(`${API_URL}/api/site_settings/seo_app_icons`, { next: { revalidate: 300 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data?.value ?? null;
+    const [iconsRes, faviconRes, appleRes] = await Promise.all([
+      fetch(`${API_URL}/api/site_settings/seo_app_icons`, { next: { revalidate: 300 } }),
+      fetch(`${API_URL}/api/site_settings/site_favicon?locale=*`, { next: { revalidate: 300 } }),
+      fetch(`${API_URL}/api/site_settings/site_apple_touch_icon?locale=*`, { next: { revalidate: 300 } }),
+    ]);
+    const icons = iconsRes.ok ? ((await iconsRes.json())?.value ?? {}) : {};
+    const favicon = faviconRes.ok ? ((await faviconRes.json())?.value ?? null) : null;
+    const appleTouchIcon = appleRes.ok ? ((await appleRes.json())?.value ?? null) : null;
+    return {
+      ...icons,
+      favicon: typeof favicon === "string" && favicon ? favicon : icons?.favicon,
+      appleTouchIcon: typeof appleTouchIcon === "string" && appleTouchIcon ? appleTouchIcon : icons?.appleTouchIcon,
+    };
   } catch { return null; }
 }
 

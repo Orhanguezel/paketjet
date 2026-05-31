@@ -16,7 +16,6 @@ export const getTransactions = (page = 1, filters?: { type?: string; purpose?: s
 export const initiateDeposit = (amount: number, provider: "iyzico" | "paytr" = "paytr") =>
   apiPost<DepositInitiateResponse>(API.wallet.depositInitiate, { amount, provider });
 
-/** DEV: Doğrudan bakiye yükle (sadece development) */
+/** DEV: Doğrudan ilan hakkı ekle (sadece development) */
 export const devDeposit = (amount: number, description?: string) =>
   apiPost<Wallet>("/api/wallet/deposit/dev", { amount, description });
-

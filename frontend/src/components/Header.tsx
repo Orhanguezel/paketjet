@@ -15,6 +15,7 @@ type NavLink = { title: string; path: string };
 interface HeaderProps {
   overlay?: boolean;
   logoUrl?: string;
+  logoDarkUrl?: string;
   logoAlt?: string;
   navLinks?: NavLink[] | null;
 }
@@ -25,7 +26,7 @@ const DEFAULT_NAV: NavLink[] = [
   { title: "Destek", path: "/destek" },
 ];
 
-export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: HeaderProps) {
+export default function Header({ overlay = false, logoUrl, logoDarkUrl, logoAlt, navLinks }: HeaderProps) {
   const router = useRouter();
   const { user, isAuthenticated, logout: authLogout } = useAuthStore();
   const { unreadCount, fetchUnreadCount, reset } = useNotificationStore();
@@ -68,11 +69,21 @@ export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: 
           className="inline-flex items-center p-0"
         >
           {logoUrl ? (
-            <img
-              src={logoUrl}
-              alt={logoAlt ?? "PaketJet"}
-              className="h-20 w-auto max-w-52 object-contain dark:brightness-0 dark:invert"
-            />
+            <span className="relative inline-grid h-14 min-w-22 place-items-center">
+              <img
+                src={logoUrl}
+                alt={logoAlt ?? "PaketJet"}
+                className="site-logo-img site-logo-img--light max-h-14 w-auto max-w-36 object-contain"
+              />
+              {logoDarkUrl ? (
+                <img
+                  src={logoDarkUrl}
+                  alt=""
+                  aria-hidden="true"
+                  className="site-logo-img site-logo-img--dark site-logo-img--on-dark max-h-14 w-auto max-w-36 object-contain"
+                />
+              ) : null}
+            </span>
           ) : (
             <Image
               src="/assets/logo/logo.jpeg"
@@ -80,7 +91,7 @@ export default function Header({ overlay = false, logoUrl, logoAlt, navLinks }: 
               width={120}
               height={120}
               priority={overlay}
-              className="h-20 w-20 object-contain dark:brightness-0 dark:invert"
+              className="h-14 w-14 object-contain"
             />
           )}
         </Link>

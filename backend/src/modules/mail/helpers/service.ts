@@ -11,7 +11,7 @@ export function buildMailTransportSignature(cfg: SmtpSettings): string {
 }
 
 export function buildMailFromAddress(smtpCfg: SmtpSettings): string {
-  const fromEmail = smtpCfg.fromEmail || smtpCfg.username || "no-reply@paketjet.com";
+  const fromEmail = smtpCfg.fromEmail || smtpCfg.username || "info@paketjet.net";
   return smtpCfg.fromName ? `${smtpCfg.fromName} <${fromEmail}>` : fromEmail;
 }
 
@@ -62,10 +62,6 @@ export type PasswordChangedMailInput = z.infer<typeof passwordChangedSchema>;
 
 export function buildBookingRouteLabel(input: Pick<BookingMailInput, "from_city" | "to_city">) {
   return `${escapeMailHtml(input.from_city)} → ${escapeMailHtml(input.to_city)}`;
-}
-
-export function buildCarrierPaymentSubject(input: WalletMailInput) {
-  return `Odeme Aktarildi — ${formatMailPrice(input.amount)}`;
 }
 
 export { SITE_NAME };

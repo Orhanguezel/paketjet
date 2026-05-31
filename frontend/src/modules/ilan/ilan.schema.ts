@@ -4,9 +4,6 @@ export const ilanSearchSchema = z.object({
   nereden:  z.string().min(2, "En az 2 karakter giriniz"),
   nereye:   z.string().min(2, "En az 2 karakter giriniz"),
   tarih:    z.string().optional(),
-  kg_aralik: z
-    .enum(["1-5", "5-10", "10-20", "20-50", "50+"])
-    .optional(),
 });
 
 export const ilanCreateSchema = z.object({
@@ -16,10 +13,7 @@ export const ilanCreateSchema = z.object({
   saat:     z
     .string()
     .regex(/^\d{2}:\d{2}$/, "Saat formatı: SS:DD"),
-  kg_min:   z.number().min(0).max(10000),
-  kg_max:   z.number().min(0).max(10000),
-  boyut_cm: z.number().min(1).max(999),
-  fiyat:    z.number().min(0).optional(),
+  tahmini_deger: z.number().min(1),
   aciklama: z.string().max(500).optional(),
 });
 

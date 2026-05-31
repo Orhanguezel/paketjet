@@ -4,14 +4,19 @@ import { useEffect, useState } from "react";
 import { Icon } from "@/components/ui";
 import { getCreditPackages, getListingCreditPrice } from "@/modules/pricing/pricing.service";
 import type { CreditPackage } from "@/modules/pricing/pricing.type";
-import { getMyCredits } from "@/modules/purchases/purchases.service";
+import { getMyCredits, purchaseCreditPackage } from "@/modules/purchases/purchases.service";
 import type { MyCreditsResponse } from "@/modules/purchases/purchases.type";
+import PaymentModal from "@/components/PaymentModal";
 
 export default function IlanAlmaHakkiPage() {
   const [credits, setCredits] = useState<MyCreditsResponse | null>(null);
   const [listingPrice, setListingPrice] = useState<number | null>(null);
   const [packages, setPackages] = useState<CreditPackage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [buyingKey, setBuyingKey] = useState<string | null>(null);
+  const [paymentContent, setPaymentContent] = useState("");
+  const [paymentIframeUrl, setPaymentIframeUrl] = useState("");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     Promise.all([getMyCredits(), getListingCreditPrice(), getCreditPackages()])
@@ -25,6 +30,20 @@ export default function IlanAlmaHakkiPage() {
   }, []);
 
   const formatPrice = (value: number | string) => `₺${Number(value).toLocaleString("tr-TR")}`;
+
+  async function handleBuy(packageKey: string) {
+    setBuyingKey(packageKey);
+    try {
+      const response = await purchaseCreditPackage(packageKey, "paytr");
+      setPaymentIframeUrl(response.iframeUrl ?? "");
+      setPaymentContent(response.checkoutFormContent ?? "");
+      setShowPaymentModal(true);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setBuyingKey(null);
+    }
+  }
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6">
@@ -58,6 +77,14 @@ export default function IlanAlmaHakkiPage() {
               </div>
               <p className="text-xl font-black text-brand">{formatPrice(pack.price)}</p>
             </div>
+            <button
+              type="button"
+              onClick={() => handleBuy(pack.key)}
+              disabled={buyingKey === pack.key}
+              className="mt-5 w-full rounded-lg bg-cta py-3 text-sm font-black text-white transition-colors hover:bg-cta-dark disabled:opacity-60"
+            >
+              {buyingKey === pack.key ? "Hazırlanıyor..." : "Satın Al"}
+            </button>
           </article>
         ))}
       </section>
@@ -89,6 +116,15 @@ export default function IlanAlmaHakkiPage() {
           )}
         </div>
       </section>
+
+      <PaymentModal
+        show={showPaymentModal}
+        onClose={() => setShowPaymentModal(false)}
+        checkoutFormContent={paymentContent}
+        iframeUrl={paymentIframeUrl}
+        title="İlan Alma Hakkı Ödemesi"
+        notice="Satın aldığınız haklar, ilan sahibinin iletişim bilgilerine erişmek için kullanılır; kargo taşıma hizmeti değildir."
+      />
     </div>
   );
 }

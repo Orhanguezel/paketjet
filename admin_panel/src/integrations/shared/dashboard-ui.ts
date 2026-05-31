@@ -3,7 +3,6 @@ import { getAdminNavUrl } from '@/navigation/sidebar/sidebar-items';
 
 export type DashboardModuleKey =
   | 'ilanlar'
-  | 'bookings'
   | 'carriers'
   | 'contacts'
   | 'users'
@@ -18,7 +17,6 @@ export type DashboardModule = {
 
 export const ADMIN_DASHBOARD_ROUTE_MAP: Record<string, string> = {
   ilanlar: getAdminNavUrl('ilanlar'),
-  bookings: getAdminNavUrl('bookings'),
   categories: getAdminNavUrl('categories'),
   contacts: getAdminNavUrl('contacts'),
   users: getAdminNavUrl('users'),
@@ -35,7 +33,6 @@ export const ADMIN_DASHBOARD_ROUTE_MAP: Record<string, string> = {
 
 export const ADMIN_DASHBOARD_SUMMARY_PERMISSION_MAP: Partial<Record<string, AdminPermissionKey>> = {
   ilanlar: 'admin.ilanlar',
-  bookings: 'admin.bookings',
   contacts: 'admin.contacts',
   carriers: 'admin.carriers',
   wallets: 'admin.wallets',
@@ -43,7 +40,6 @@ export const ADMIN_DASHBOARD_SUMMARY_PERMISSION_MAP: Partial<Record<string, Admi
 
 export const ADMIN_DASHBOARD_MODULES: DashboardModule[] = [
   { key: 'ilanlar', href: getAdminNavUrl('ilanlar'), permission: 'admin.ilanlar' },
-  { key: 'bookings', href: getAdminNavUrl('bookings'), permission: 'admin.bookings' },
   { key: 'carriers', href: getAdminNavUrl('carriers'), permission: 'admin.carriers' },
   { key: 'contacts', href: getAdminNavUrl('contacts'), permission: 'admin.contacts' },
   { key: 'users', href: getAdminNavUrl('users') },

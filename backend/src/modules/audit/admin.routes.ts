@@ -12,6 +12,7 @@ import {
   listAuditAuthEventsAdmin,
   getAuditMetricsDailyAdmin,
   getAuditGeoStatsAdmin,
+  getAuditGeoCitiesAdmin,
   clearAuditLogsAdmin,
 } from './admin.controller';
 
@@ -42,6 +43,7 @@ export async function registerAuditAdmin(app: FastifyInstance) {
   app.get(`${B}/auth-events`, listAuditAuthEventsAdmin);
   app.get(`${B}/metrics/daily`, getAuditMetricsDailyAdmin);
   app.get(`${B}/geo-stats`, getAuditGeoStatsAdmin);
+  app.get(`${B}/geo-cities`, getAuditGeoCitiesAdmin);
   app.delete(`${B}/clear`, clearAuditLogsAdmin);
 
   // ---- Analytics endpoints ----

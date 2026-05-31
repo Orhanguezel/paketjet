@@ -19,8 +19,8 @@ export type SiteSettingsBrandMediaItem = {
 };
 
 export const SITE_SETTINGS_BRAND_MEDIA_ITEMS: SiteSettingsBrandMediaItem[] = [
-  { field: 'logo_url', labelKey: 'logo_url', aspect: '1x1', fit: 'contain', folder: 'logo' },
-  { field: 'logo_dark_url', labelKey: 'logo_dark_url', aspect: '1x1', fit: 'contain', folder: 'logo' },
+  { field: 'logo_url', labelKey: 'logo_url', aspect: '4x3', fit: 'contain', folder: 'logo' },
+  { field: 'logo_dark_url', labelKey: 'logo_dark_url', aspect: '4x3', fit: 'contain', folder: 'logo' },
   { field: 'favicon_url', labelKey: 'favicon_url', aspect: '1x1', fit: 'contain', folder: 'logo' },
   { field: 'apple_touch_icon_url', labelKey: 'apple_touch_icon_url', aspect: '1x1', fit: 'contain', folder: 'logo' },
 ];

@@ -37,9 +37,6 @@ export default function IlanDuzenlePage() {
           vehicle_type:       ilan.vehicle_type,
           departure_date:     ilan.departure_date?.slice(0, 16) ?? "",
           arrival_date:       ilan.arrival_date?.slice(0, 16) ?? "",
-          total_capacity_kg:  parseFloat(ilan.total_capacity_kg),
-          price_per_kg:       parseFloat(ilan.price_per_kg),
-          is_negotiable:      ilan.is_negotiable,
           title:              ilan.title ?? "",
           description:        ilan.description ?? "",
           contact_phone:      ilan.contact_phone,
@@ -60,7 +57,7 @@ export default function IlanDuzenlePage() {
     setError("");
     try {
       await updateIlan(id, form);
-      router.push("/panel/tasiyici");
+      router.push("/panel/ilanlarim");
     } catch {
       setError("Kaydedilemedi. Lütfen tekrar deneyin.");
     } finally {
@@ -145,30 +142,10 @@ export default function IlanDuzenlePage() {
           </div>
         </div>
 
-        {/* Kapasite & Tarih */}
+        {/* Tarih */}
         <div className="bg-surface rounded-xl border border-border-soft p-5">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Kapasite & Tarih</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">Tarih</h2>
           <div className="flex flex-col gap-3">
-            <div className="grid grid-cols-2 gap-3">
-              <Input
-                label="Toplam Kapasite (kg) *"
-                type="number"
-                min="0.1"
-                step="0.1"
-                value={form.total_capacity_kg ?? ""}
-                onChange={(e) => update({ total_capacity_kg: parseFloat(e.target.value) })}
-                required
-              />
-              <Input
-                label="Fiyat (₺/kg) *"
-                type="number"
-                min="0.1"
-                step="0.01"
-                value={form.price_per_kg ?? ""}
-                onChange={(e) => update({ price_per_kg: parseFloat(e.target.value) })}
-                required
-              />
-            </div>
             <Input
               label="Kalkış Tarihi & Saati *"
               type="datetime-local"
@@ -182,15 +159,6 @@ export default function IlanDuzenlePage() {
               value={form.arrival_date ?? ""}
               onChange={(e) => update({ arrival_date: e.target.value })}
             />
-            <label className="flex items-center gap-2.5 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.is_negotiable === 1}
-                onChange={(e) => update({ is_negotiable: e.target.checked ? 1 : 0 })}
-                className="w-4 h-4 rounded accent-brand"
-              />
-              <span className="text-sm text-foreground">Fiyat pazarlıklı</span>
-            </label>
           </div>
         </div>
 

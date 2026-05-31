@@ -65,7 +65,7 @@ export default function TaleplerTab({ bookings, setBookings, loading }: Props) {
   }
 
   async function handleDeliver(id: string) {
-    if (!confirm("Kargoyu teslim ettiğinizi onaylıyor musunuz? Müşteri teslim onayından sonra ödeme aktarılacak.")) return;
+    if (!confirm("Kargoyu teslim ettiğinizi onaylıyor musunuz? Bu işlem yalnızca rezervasyon arşivini günceller.")) return;
     setActionId(id);
     try {
       const updated = await updateBookingStatus(id, "delivered");

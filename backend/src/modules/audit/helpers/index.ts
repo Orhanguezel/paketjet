@@ -25,6 +25,7 @@ export {
   repoListAuditAuthEvents,
   repoGetAuditMetricsDaily,
   repoGetAuditGeoStats,
+  repoGetAuditGeoCities,
   repoClearAuditLogs,
   repoExportRequestLogs,
   repoExportAuthEvents,

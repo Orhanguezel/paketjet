@@ -55,13 +55,13 @@ VALUES (
 
 <h2>7. İptal ve İade</h2>
 <ul>
-  <li>Taşıma başlamadan önce iptal edilebilir (tam iade).</li>
-  <li>Taşıma başladıktan sonra iptal durumunda kısmi iade uygulanır.</li>
-  <li>Teslim edildikten sonra iade talepleri 24 saat içinde yapılmalıdır.</li>
+  <li>PaketJet üzerinden satın alınan hizmet, kargo taşıma hizmeti değil iletişim bilgilerine erişim hizmetidir.</li>
+  <li>İlan sahibinin iletişim bilgileri açıldıktan sonra erişim hizmeti tamamlanmış sayılır.</li>
+  <li>Taşıma bedeli taraflar arasında ayrıca kararlaştırılır; PaketJet taşıma parasını tahsil etmez veya iade etmez.</li>
 </ul>
 
-<h2>8. Platform Komisyonu</h2>
-<p>PaketJet, başarılı her teslimat için taşıyıcıdan platform komisyonu keser. Komisyon oranı admin panelinden belirlenir ve taşıyıcıya aktarılan tutar komisyon düşüldükten sonraki miktardır.</p>',
+<h2>8. Platform Ücreti</h2>
+<p>PaketJet, ilan sahibinin iletişim bilgilerine erişim için ilan alma hakkı veya tekil erişim ücreti alır. Taşıyıcıya ödeme aktarımı, komisyon kesintisi veya platform içi taşıma bedeli akışı yoktur.</p>',
   'PaketJet platformunda taşıma işlemleri için geçerli kurallar, yasaklı eşyalar, paketleme gereksinimleri ve sorumluluklar.',
   'Taşıma Kuralları | PaketJet',
   'PaketJet platformunda taşıma kuralları, yasaklı eşyalar, paketleme ve teslimat kuralları hakkında bilgi.'

@@ -8,8 +8,9 @@ export const signupBody = z.object({
   full_name: z.string().trim().min(2).max(100).optional(),
   phone: z.string().trim().min(6).max(50).optional(),
   rules_accepted: z.literal(true, { errorMap: () => ({ message: 'rules_accepted_required' }) }),
+  kvkk_explicit_consent: z.literal(true, { errorMap: () => ({ message: 'kvkk_consent_required' }) }),
 
-  // Supabase benzeri payload uyumu:
+  // Supabase benzeri payload uyumu (backward compat):
   options: z
     .object({
       emailRedirectTo: z.string().url().optional(),

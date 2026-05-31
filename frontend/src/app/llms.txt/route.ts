@@ -5,13 +5,13 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
 export async function GET() {
   const content = `# PaketJet - P2P Kargo Pazaryeri
 
-PaketJet, Türkiye'nin ilk ve tek P2P (kişiden kişiye) kargo pazaryeridir. Taşıyıcılar güzergah ilanı açar, müşteriler kargo alanı satın alır (BlaBlaCar modeli, kargo için).
+PaketJet, Türkiye'nin P2P (kişiden kişiye) kargo pazaryeridir. Göndericiler ücretsiz ilan açar; taşıyıcılar ilan sahibinin iletişim bilgilerine erişmek için ilan alma hakkı kullanır.
 
 ## Temel Özellikler
 - 81 ilde aktif kargo ağı
 - Güvenli P2P lojistik modeli
-- Taşıyıcı puanlama sistemi
-- Şehirler arası uygun fiyatlı teslimat
+- Maskeli iletişim ve ilan alma hakkı modeli
+- Şehirler arası gönderi-talep eşleşmesi
 
 ## SEO & GEO Bilgileri
 - Web: ${SITE_URL}

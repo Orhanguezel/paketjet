@@ -4,7 +4,7 @@ import { getPageMetadata } from "@/lib/seo";
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("ilan_ver", {
     title: "İlan Ver",
-    description: "Tasiyici olarak ilan ver. Guzergah, kapasite ve fiyat bilgilerini gir, musteri bulsun.",
+    description: "Gönderini ücretsiz ilan olarak yayınla. Güzergah, tarih, iletişim ve değer beyanını gir.",
   });
 }
 

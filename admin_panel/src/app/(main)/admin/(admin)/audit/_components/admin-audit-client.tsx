@@ -50,6 +50,7 @@ import {
 
 import { AuditDailyChart } from './audit-daily-chart';
 import { AuditGeoMap } from './audit-geo-map';
+import { AuditTurkeyMap } from './audit-turkey-map';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 
 import type {
@@ -82,6 +83,7 @@ import {
   useListAuditAuthEventsAdminQuery,
   useGetAuditMetricsDailyAdminQuery,
   useGetAuditGeoStatsAdminQuery,
+  useGetAuditGeoCitiesAdminQuery,
   useClearAuditLogsAdminMutation,
 } from '@/integrations/hooks';
 
@@ -92,30 +94,32 @@ export default function AdminAuditClient() {
   const sp = useSearchParams();
   const t = useAdminT('admin.audit');
 
-  const tab = normalizeAdminAuditTab(sp.get('tab'));
+  const getParam = React.useCallback((key: string) => sp?.get(key) ?? null, [sp]);
 
-  const q = sp.get('q') ?? '';
-  const method = sp.get('method') ?? '';
-  const status = sp.get('status') ?? '';
-  const from = sp.get('from') ?? '';
-  const to = sp.get('to') ?? '';
-  const onlyAdmin = normalizeAdminAuditBoolLike(sp.get('only_admin'));
+  const tab = normalizeAdminAuditTab(getParam('tab'));
 
-  const reqUserId = sp.get('req_user_id') ?? '';
-  const reqIp = sp.get('req_ip') ?? '';
-  const sort = (sp.get('sort') ?? 'created_at') as AdminAuditSortKey;
-  const orderDir = (sp.get('orderDir') ?? 'desc') as 'asc' | 'desc';
+  const q = getParam('q') ?? '';
+  const method = getParam('method') ?? '';
+  const status = getParam('status') ?? '';
+  const from = getParam('from') ?? '';
+  const to = getParam('to') ?? '';
+  const onlyAdmin = normalizeAdminAuditBoolLike(getParam('only_admin'));
 
-  const event = sp.get('event') ?? '';
-  const email = sp.get('email') ?? '';
-  const user_id = sp.get('user_id') ?? '';
-  const ip = sp.get('ip') ?? '';
+  const reqUserId = getParam('req_user_id') ?? '';
+  const reqIp = getParam('req_ip') ?? '';
+  const sort = (getParam('sort') ?? 'created_at') as AdminAuditSortKey;
+  const orderDir = (getParam('orderDir') ?? 'desc') as 'asc' | 'desc';
 
-  const days = String(toNonNegativeInt(sp.get('days'), 14) || 14);
-  const path_prefix = sp.get('path_prefix') ?? '';
+  const event = getParam('event') ?? '';
+  const email = getParam('email') ?? '';
+  const user_id = getParam('user_id') ?? '';
+  const ip = getParam('ip') ?? '';
 
-  const limit = toNonNegativeInt(sp.get('limit'), 50) || 50;
-  const offset = toNonNegativeInt(sp.get('offset'), 0);
+  const days = String(toNonNegativeInt(getParam('days'), 14) || 14);
+  const path_prefix = getParam('path_prefix') ?? '';
+
+  const limit = toNonNegativeInt(getParam('limit'), 50) || 50;
+  const offset = toNonNegativeInt(getParam('offset'), 0);
 
   // local state for request filters
   const [qText, setQText] = React.useState(q);
@@ -389,6 +393,11 @@ export default function AdminAuditClient() {
     { skip: tab !== 'map', refetchOnFocus: true } as any,
   ) as any;
 
+  const geoCitiesQ = useGetAuditGeoCitiesAdminQuery(
+    tab === 'map' ? (geoParams as any) : (undefined as any),
+    { skip: tab !== 'map', refetchOnFocus: true } as any,
+  ) as any;
+
   const reqData = (reqQ.data as AuditListResponse<AuditRequestLogDto> | undefined) ?? {
     items: [],
     total: 0,
@@ -399,11 +408,19 @@ export default function AdminAuditClient() {
   };
   const metricsData = (metricsQ.data as AuditMetricsDailyResponseDto | undefined) ?? { days: [] };
   const geoData = (geoQ.data as AuditGeoStatsResponseDto | undefined) ?? { items: [] };
+  const geoCitiesData = (geoCitiesQ.data?.items ?? []) as Array<{
+    country: string;
+    city: string;
+    hits: number;
+    uniqueIps: number;
+  }>;
+  const geoCitiesTR = geoCitiesData.filter((r) => r.country === 'TR');
 
   const reqLoading = reqQ.isLoading || reqQ.isFetching;
   const authLoading = authQ.isLoading || authQ.isFetching;
   const metricsLoading = metricsQ.isLoading || metricsQ.isFetching;
-  const geoLoading = geoQ.isLoading || geoQ.isFetching;
+  const geoLoading =
+    geoQ.isLoading || geoQ.isFetching || geoCitiesQ.isLoading || geoCitiesQ.isFetching;
 
   const reqTotal = reqData.total ?? 0;
   const authTotal = authData.total ?? 0;
@@ -421,7 +438,10 @@ export default function AdminAuditClient() {
       if (tab === 'requests') await reqQ.refetch();
       if (tab === 'auth') await authQ.refetch();
       if (tab === 'metrics') await metricsQ.refetch();
-      if (tab === 'map') await geoQ.refetch();
+      if (tab === 'map') {
+        await geoQ.refetch();
+        await geoCitiesQ.refetch();
+      }
       toast.success(t('refreshed'));
     } catch (err) {
       toast.error(getErrorMessage(err, t('error')));
@@ -929,6 +949,34 @@ export default function AdminAuditClient() {
 
         {/* ==================== MAP TAB ==================== */}
         <TabsContent value="map" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Globe className="h-4 w-4" /> {t('map.turkeyTitle')}
+                  </CardTitle>
+                  <CardDescription>
+                    {t('map.turkeyDescription', { days: String(geoParams.days) })}
+                  </CardDescription>
+                </div>
+                {geoLoading && (
+                  <Badge variant="outline" className="flex items-center gap-2">
+                    <Loader2 className="h-3 w-3 animate-spin" /> {t('common.loading')}
+                  </Badge>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent>
+              {geoCitiesQ.error && (
+                <div className="mb-3 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                  {getErrorMessage(geoCitiesQ.error, t('error'))}
+                </div>
+              )}
+              <AuditTurkeyMap cities={geoCitiesTR} loading={geoLoading} />
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <div className="flex flex-wrap items-center justify-between gap-2">

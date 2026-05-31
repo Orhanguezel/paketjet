@@ -1,35 +1,24 @@
-// src/modules/purchases/router.ts
 import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
 import { authSecurity, fromZodSchema, okResponseSchema } from "@/modules/_shared";
 import { getIlanIletisim, getMyCredits, listCreditPackages, listSatinAldiklarim, satinAlIlan } from "./controller";
-import { creditPackageIyzicoCallback, creditPackagePaytrCallback, purchaseCreditPackage } from "./payment.controller";
-import { purchaseCreditPackageSchema } from "./validation";
+import { creditPackageIyzicoCallback, creditPackagePaytrCallback, ilanPaymentIyzicoCallback, ilanPaymentPaytrCallback, initiateIlanPayment, purchaseCreditPackage } from "./payment.controller";
+import { initiateIlanPaymentSchema, purchaseCreditPackageSchema, purchaseIlanSchema } from "./validation";
 
 const idParams = { type: "object", properties: { id: { type: "string" } }, required: ["id"] } as const;
 const ok = { response: { 200: okResponseSchema } };
 const authOk = { security: authSecurity, ...ok };
 
 export async function registerPurchases(app: FastifyInstance) {
-  app.post("/ilanlar/:id/satin-al", {
-    preHandler: [requireAuth],
-    config: { rateLimit: { max: 20, timeWindow: "1 minute" } },
-    schema: { tags: ["purchases"], summary: "İlan satın al (iletişim aç)", security: authSecurity, params: idParams, response: { 201: okResponseSchema } },
-  }, satinAlIlan);
-  app.get("/ilanlar/:id/iletisim", {
-    preHandler: [requireAuth],
-    schema: { tags: ["purchases"], summary: "Satın alınan ilanın iletişimi", params: idParams, ...authOk },
-  }, getIlanIletisim);
+  app.post("/ilanlar/:id/satin-al", { preHandler: [requireAuth], config: { rateLimit: { max: 20, timeWindow: "1 minute" } }, schema: { tags: ["purchases"], summary: "İlan satın al (iletişim aç)", security: authSecurity, params: idParams, body: fromZodSchema(purchaseIlanSchema, "PurchaseIlanBody"), response: { 201: okResponseSchema } } }, satinAlIlan);
+  app.post("/ilanlar/:id/satin-al/odeme", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "İlan iletişim ödemesi başlat", security: authSecurity, params: idParams, body: fromZodSchema(initiateIlanPaymentSchema, "InitiateIlanPaymentBody"), ...ok } }, initiateIlanPayment);
+  app.get("/ilanlar/:id/iletisim", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "Satın alınan ilanın iletişimi", params: idParams, ...authOk } }, getIlanIletisim);
   app.get("/satin-aldiklarim", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "Satın aldıklarım", ...authOk } }, listSatinAldiklarim);
-  app.get("/ilan-alma-hakki", {
-    preHandler: [requireAuth],
-    schema: { tags: ["purchases"], summary: "İlan Alma Hakkı bakiyesi + hareketler", ...authOk },
-  }, getMyCredits);
+  app.get("/ilan-alma-hakki", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "İlan Alma Hakkı bakiyesi + hareketler", ...authOk } }, getMyCredits);
   app.get("/ilan-alma-hakki/paketler", { schema: { tags: ["purchases"], summary: "İlan Alma Hakkı paketleri", ...ok } }, listCreditPackages);
-  app.post("/ilan-alma-hakki/satin-al", {
-    preHandler: [requireAuth],
-    schema: { tags: ["purchases"], summary: "İlan Alma Hakkı satın al", security: authSecurity, body: fromZodSchema(purchaseCreditPackageSchema, "PurchaseCreditPackageBody"), ...ok },
-  }, purchaseCreditPackage);
+  app.post("/ilan-alma-hakki/satin-al", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "İlan Alma Hakkı satın al", security: authSecurity, body: fromZodSchema(purchaseCreditPackageSchema, "PurchaseCreditPackageBody"), ...ok } }, purchaseCreditPackage);
   app.post("/ilan-alma-hakki/satin-al/callback", creditPackageIyzicoCallback);
   app.post("/ilan-alma-hakki/satin-al/paytr-callback", creditPackagePaytrCallback);
+  app.post("/ilanlar/satin-al/callback", ilanPaymentIyzicoCallback);
+  app.post("/ilanlar/satin-al/paytr-callback", ilanPaymentPaytrCallback);
 }

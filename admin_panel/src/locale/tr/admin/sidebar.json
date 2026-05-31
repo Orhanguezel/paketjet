@@ -79,11 +79,11 @@
   "items": {
     "dashboard": "Dashboard",
     "ilanlar": "İlanlar",
-    "bookings": "Rezervasyonlar",
+    "ilan_purchases": "İlan Satın Almaları",
     "categories": "Kategoriler",
     "users": "Kullanıcılar",
     "carriers": "Taşıyıcılar",
-    "wallets": "Cüzdanlar",
+    "wallets": "İlan Hakkı Arşivi",
     "reports": "Raporlar",
     "contacts": "İletişim",
     "email_templates": "E-posta Şablonları",
@@ -93,8 +93,7 @@
     "telegram": "Telegram",
     "audit": "Denetim",
     "disputes": "Anlaşmazlıklar",
-    "carrier_agreements": "Taşıyıcı Anlaşmaları",
-    "commission_settings": "Komisyon & Abonelik",
+    "pricing": "Fiyat Ayarları",
     "payment_settings": "Ödeme Ayarları"
   }
 }

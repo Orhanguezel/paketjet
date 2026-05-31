@@ -109,7 +109,7 @@ export default function IlanlarimPage() {
         ) : ilanlar.length === 0 ? (
           <div className="py-16 text-center text-muted">
             <p className="text-lg font-semibold">Henüz ilanınız bulunmuyor</p>
-            <p className="mt-1 text-sm">Ücretsiz ilan açarak kargonuz için uygun taşıyıcıyı bulabilirsiniz.</p>
+            <p className="mt-1 text-sm">Ücretsiz ilan açarak güzergahınızı paylaşabilirsiniz.</p>
             <Link
               href="/ilan-ver"
               className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-cta px-6 text-sm font-black text-white hover:bg-cta-dark transition-colors"
@@ -135,11 +135,6 @@ export default function IlanlarimPage() {
                   </div>
                   <div className="flex flex-col gap-1 text-xs font-bold text-panel-ink/60">
                     <p>Paket Tarihi: {formatDate(ilan.departure_date)}</p>
-                    {ilan.estimated_value && (
-                      <p className="text-brand">
-                        Tahmini Değer: ₺{Number(ilan.estimated_value).toLocaleString("tr-TR")}
-                      </p>
-                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">

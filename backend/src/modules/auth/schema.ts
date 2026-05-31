@@ -35,17 +35,11 @@ export const users = mysqlTable(
       .notNull()
       .default(sql`CURRENT_TIMESTAMP(3)`)
       .$onUpdateFn(() => new Date()),
-    // KYC alanları
-    tc_identity: varchar("tc_identity", { length: 11 }),
-    tax_number: varchar("tax_number", { length: 20 }),
-    tax_office: varchar("tax_office", { length: 100 }),
-    legal_company_title: varchar("legal_company_title", { length: 255 }),
-    kyc_status: varchar("kyc_status", { length: 30 }).notNull().default("not_submitted"),
-    kyc_submitted_at: datetime("kyc_submitted_at", { fsp: 3 }),
-    kyc_approved_at: datetime("kyc_approved_at", { fsp: 3 }),
-    iyzico_sub_merchant_key: varchar("iyzico_sub_merchant_key", { length: 100 }),
-    iyzico_sub_merchant_type: varchar("iyzico_sub_merchant_type", { length: 30 }),
     cancellation_count: int("cancellation_count").notNull().default(0),
+    kvkk_explicit_consent: int("kvkk_explicit_consent").notNull().default(0),
+    kvkk_consent_at: datetime("kvkk_consent_at", { fsp: 3 }),
+    kvkk_consent_version: varchar("kvkk_consent_version", { length: 120 }),
+    rules_accepted_version: varchar("rules_accepted_version", { length: 120 }),
     rules_accepted_at: datetime("rules_accepted_at", { fsp: 3 }),
     last_sign_in_at: datetime("last_sign_in_at", { fsp: 3 }),
   },

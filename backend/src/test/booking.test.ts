@@ -1,6 +1,7 @@
 // test/booking.test.ts — Booking akis testleri
 import { describe, it, expect, afterAll } from "bun:test";
 import { getTestApp, closeTestApp, registerUser, randomEmail, authHeaders } from "./setup";
+import { repoUpdateIlanStatus } from "@/modules/ilanlar/repository";
 
 type InjectLikeApp = Awaited<ReturnType<typeof getTestApp>>;
 type SubscriptionPlan = { id: string; slug: string; price: string };
@@ -63,6 +64,7 @@ async function setupBookingScenario(app: InjectLikeApp) {
     },
   });
   const ilan = JSON.parse(ilanRes.body) as IlanCreateBody;
+  if (ilan.id) await repoUpdateIlanStatus(ilan.id, "active");
 
   // 5. Musteri kayit + deposit
   const customerEmail = randomEmail();
@@ -103,7 +105,7 @@ describe("Booking — Olusturma", () => {
       method: "POST",
       url: "/api/bookings",
       headers: authHeaders(ctx.customerToken),
-      payload: { ilan_id: ctx.ilanId, kg_amount: 5, customer_notes: "Test kargo" },
+      payload: { ilan_id: ctx.ilanId, kg_amount: 5, customer_notes: "Test kargo", payment_method: "transfer" },
     });
     expect(res.statusCode).toBeOneOf([200, 201]);
     const booking = JSON.parse(res.body);
@@ -120,7 +122,7 @@ describe("Booking — Olusturma", () => {
       method: "POST",
       url: "/api/bookings",
       headers: authHeaders(ctx.carrierToken),
-      payload: { ilan_id: ctx.ilanId, kg_amount: 5 },
+      payload: { ilan_id: ctx.ilanId, kg_amount: 5, payment_method: "transfer" },
     });
     expect(res.statusCode).toBe(400);
     const body = JSON.parse(res.body);
@@ -132,7 +134,7 @@ describe("Booking — Olusturma", () => {
     const res = await app.inject({
       method: "POST",
       url: "/api/bookings",
-      payload: { ilan_id: "00000000-0000-0000-0000-000000000000", kg_amount: 5 },
+      payload: { ilan_id: "00000000-0000-0000-0000-000000000000", kg_amount: 5, payment_method: "transfer" },
     });
     expect(res.statusCode).toBe(401);
   });
@@ -169,10 +171,10 @@ describe("Booking — Durum Akisi", () => {
       method: "POST",
       url: "/api/bookings",
       headers: authHeaders(ctx.customerToken),
-      payload: { ilan_id: ctx.ilanId, kg_amount: 5 },
+      payload: { ilan_id: ctx.ilanId, kg_amount: 5, payment_method: "transfer" },
     });
 
-    if (createRes.statusCode !== 200) return;
+    if (![200, 201].includes(createRes.statusCode)) return;
     const booking = JSON.parse(createRes.body);
     const bookingId = booking.id;
 
@@ -193,6 +195,13 @@ describe("Booking — Durum Akisi", () => {
     });
     expect(transitRes.statusCode).toBe(200);
 
+    const beforeWalletRes = await app.inject({
+      method: "GET",
+      url: "/api/wallet",
+      headers: authHeaders(ctx.carrierToken),
+    });
+    const balanceBeforeDelivery = parseFloat(JSON.parse(beforeWalletRes.body).balance);
+
     // 4. Carrier teslim eder: in_transit -> delivered
     const deliverRes = await app.inject({
       method: "PATCH",
@@ -202,17 +211,17 @@ describe("Booking — Durum Akisi", () => {
     });
     expect(deliverRes.statusCode).toBe(200);
 
-    // 5. Carrier cuzdaninda kazanc olduunu kontrol et
+    // 5. Lead modelinde teslim sonrası taşıyıcı cüzdanına payout yapılmaz.
     const walletRes = await app.inject({
       method: "GET",
       url: "/api/wallet",
       headers: authHeaders(ctx.carrierToken),
     });
     const wallet = JSON.parse(walletRes.body);
-    expect(parseFloat(wallet.balance)).toBeGreaterThan(0);
+    expect(parseFloat(wallet.balance)).toBe(balanceBeforeDelivery);
   });
 
-  it("iptal + iade akisi: pending -> cancelled + refund", async () => {
+  it("iptal akisi: pending -> cancelled, iade yok", async () => {
     const app = await getTestApp();
     const ctx = await setupBookingScenario(app);
     if (!ctx.ilanCreated || !ctx.ilanId) return;
@@ -222,9 +231,9 @@ describe("Booking — Durum Akisi", () => {
       method: "POST",
       url: "/api/bookings",
       headers: authHeaders(ctx.customerToken),
-      payload: { ilan_id: ctx.ilanId, kg_amount: 5 },
+      payload: { ilan_id: ctx.ilanId, kg_amount: 5, payment_method: "transfer" },
     });
-    if (createRes.statusCode !== 200) return;
+    if (![200, 201].includes(createRes.statusCode)) return;
     const booking = JSON.parse(createRes.body);
 
     // Musteri bakiyesini al (odeme sonrasi)
@@ -243,13 +252,13 @@ describe("Booking — Durum Akisi", () => {
     });
     expect(cancelRes.statusCode).toBe(200);
 
-    // Iade sonrasi bakiye artmis olmali
+    // PaketJet taşıma parasını tutmadığı için iptal cüzdan iadesi üretmez.
     const afterRes = await app.inject({
       method: "GET",
       url: "/api/wallet",
       headers: authHeaders(ctx.customerToken),
     });
     const balanceAfter = parseFloat(JSON.parse(afterRes.body).balance);
-    expect(balanceAfter).toBeGreaterThan(balanceBefore);
+    expect(balanceAfter).toBe(balanceBefore);
   });
 });

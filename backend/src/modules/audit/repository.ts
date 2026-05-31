@@ -308,6 +308,60 @@ export async function repoGetAuditGeoStats(
 }
 
 /* -------------------------------------------------------------
+ * Geo Cities: group by country + city (sehir kirilimi)
+ * ------------------------------------------------------------- */
+export type AuditGeoCityRow = {
+  country: string;
+  city: string;
+  hits: number;
+  unique_ips: number;
+};
+
+export async function repoGetAuditGeoCities(
+  q: AuditGeoStatsQuery,
+): Promise<AuditGeoCityRow[]> {
+  const days = Math.max(1, Math.min(90, Number(q.days ?? 30)));
+  const startExpr = sql`DATE_SUB(UTC_DATE(), INTERVAL ${days - 1} DAY)`;
+
+  const useAuth = q.source === 'auth';
+  const table = useAuth ? auditAuthEvents : auditRequestLogs;
+
+  const conds: (SQL | undefined)[] = [];
+  conds.push(sql`DATE(${table.created_at}) >= ${startExpr}`);
+  conds.push(sql`${table.city} IS NOT NULL AND ${table.city} != ''`);
+
+  if (!useAuth && typeof q.only_admin !== 'undefined' && isTruthyBoolLike(q.only_admin)) {
+    conds.push(eq(auditRequestLogs.is_admin, 1));
+  }
+
+  if (typeof q.exclude_localhost !== 'undefined' && isTruthyBoolLike(q.exclude_localhost)) {
+    conds.push(excludeLocalhostCond(table));
+  }
+
+  const whereCond = and(...(conds.filter(Boolean) as SQL[]));
+
+  const rows = await db
+    .select({
+      country: table.country,
+      city: table.city,
+      hits: sql<number>`COUNT(*)`,
+      unique_ips: sql<number>`COUNT(DISTINCT ${table.ip})`,
+    })
+    .from(table)
+    .where(whereCond)
+    .groupBy(table.country, table.city)
+    .orderBy(sql`COUNT(*) DESC`)
+    .limit(500);
+
+  return rows.map((r) => ({
+    country: String(r.country ?? ''),
+    city: String(r.city ?? ''),
+    hits: Number(r.hits ?? 0),
+    unique_ips: Number(r.unique_ips ?? 0),
+  }));
+}
+
+/* -------------------------------------------------------------
  * CLEAR – Tum audit loglarini sil
  * ------------------------------------------------------------- */
 export type ClearAuditTarget = 'requests' | 'auth' | 'all';

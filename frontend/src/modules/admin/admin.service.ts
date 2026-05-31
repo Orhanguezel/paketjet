@@ -1,4 +1,4 @@
-import { apiGet, apiPost, apiPut, apiPatch, apiDelete } from "@/lib/api-client";
+import { apiGet, apiPost, apiPatch, apiDelete } from "@/lib/api-client";
 
 const A = (path: string) => `/api/admin${path}`;
 
@@ -22,12 +22,6 @@ export const adminUpdateBookingStatus = (id: string, status: string) =>
   apiPatch(A(`/bookings/${id}/status`), { status });
 export const adminConfirmTransferPayment = (id: string) =>
   apiPatch(A(`/bookings/${id}/confirm-payment`), {});
-
-// Commission
-export interface CommissionConfig { rate: number; type: string; }
-export const adminGetCommissionRate = () => apiGet<CommissionConfig>(A("/bookings/commission"));
-export const adminSetCommissionRate = (rate: number, type = "percentage") =>
-  apiPut(A("/bookings/commission"), { rate, type });
 
 // Carriers
 export const adminListCarriers = (p: AdminListParams = {}) =>

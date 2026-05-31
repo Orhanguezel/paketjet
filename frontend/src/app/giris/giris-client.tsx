@@ -45,8 +45,7 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
 
   function afterAuth(user: { role?: string }) {
     setUser(user as Parameters<typeof setUser>[0]);
-    const defaultPanel = user.role === "carrier" ? ROUTES.panel.tasiyici : ROUTES.panel.musteri;
-    router.push(nextParam ?? defaultPanel);
+    router.push(nextParam ?? ROUTES.panel.root);
   }
 
   // Google Identity Services butonu (yalnızca NEXT_PUBLIC_GOOGLE_CLIENT_ID tanımlıysa)
@@ -104,9 +103,7 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
     try {
       const res = await login(result.data);
       setUser(res.user);
-      const role = res.user.role;
-      const defaultPanel = role === "carrier" ? ROUTES.panel.tasiyici : ROUTES.panel.musteri;
-      router.push(nextParam ?? defaultPanel);
+      router.push(nextParam ?? ROUTES.panel.root);
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       setServerError(

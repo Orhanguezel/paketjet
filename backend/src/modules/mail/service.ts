@@ -4,7 +4,6 @@ import type { Transporter } from "nodemailer";
 import {
   SITE_NAME,
   buildBookingRouteLabel,
-  buildCarrierPaymentSubject,
   buildMailFromAddress,
   buildMailTransportSignature,
   createMailTransportConfig,
@@ -178,21 +177,6 @@ export async function sendBookingCancelledMail(input: BookingMailInput & { refun
     <p>${SITE_NAME} Ekibi</p>
   `);
   const text = `Merhaba ${d.customer_name},\n\n${d.from_city} → ${d.to_city} rezervasyonunuz iptal edildi.${d.refunded ? ` ${formatMailPrice(d.total_price)} iade edildi.` : ""}\n\n${SITE_NAME} Ekibi`;
-  return sendMailRaw({ to: d.to, subject, html, text });
-}
-
-// ── Carrier Payment (tasiyici) ─────────────────────────────────────────────
-export async function sendCarrierPaymentMail(input: WalletMailInput) {
-  const d = input;
-  const subject = buildCarrierPaymentSubject(d);
-  const html = wrapMailBody(`
-    <h2 style="font-size:18px;color:#16A34A;">Odemeniz Aktarildi</h2>
-    <p>Merhaba <strong>${escapeMailHtml(d.user_name)}</strong>,</p>
-    <p>Teslim edilen kargo icin <strong>${formatMailPrice(d.amount)}</strong> cuzdaniniza aktarildi.</p>
-    <p>Yeni bakiyeniz: <strong>${formatMailPrice(d.new_balance)}</strong></p>
-    <p>${SITE_NAME} Ekibi</p>
-  `);
-  const text = `Merhaba ${d.user_name},\n\n${formatMailPrice(d.amount)} cuzdaniniza aktarildi.\nYeni bakiye: ${formatMailPrice(d.new_balance)}\n\n${SITE_NAME} Ekibi`;
   return sendMailRaw({ to: d.to, subject, html, text });
 }
 

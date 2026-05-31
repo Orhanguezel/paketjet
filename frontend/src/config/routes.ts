@@ -25,7 +25,7 @@ export const ROUTES = {
   panel: {
     root:          "/panel",
     musteri:       "/panel/musteri",
-    odemeSonuc:    "/panel/musteri/odeme-sonuc",
+    odemeSonuc:    "/panel/ilan-alma-hakki/odeme-sonuc",
     tasiyici:      "/panel/tasiyici",
     ilanlarim:     "/panel/ilanlarim",
     satinAldiklarim: "/panel/satin-aldiklarim",

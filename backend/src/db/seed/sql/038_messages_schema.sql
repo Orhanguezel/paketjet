@@ -23,8 +23,14 @@ CREATE TABLE IF NOT EXISTS booking_messages (
 
 CREATE TABLE IF NOT EXISTS disputes (
   id CHAR(36) NOT NULL PRIMARY KEY,
-  booking_id CHAR(36) NOT NULL,
+  booking_id CHAR(36) DEFAULT NULL,
+  ilan_id CHAR(36) DEFAULT NULL,
+  purchase_id CHAR(36) DEFAULT NULL,
   opened_by CHAR(36) NOT NULL,
+  opened_against CHAR(36) DEFAULT NULL,
+  issue_type VARCHAR(40) NOT NULL DEFAULT 'other',
+  declared_value DECIMAL(12,2) DEFAULT NULL,
+  declared_value_currency VARCHAR(10) NOT NULL DEFAULT 'TRY',
   reason TEXT NOT NULL,
   status ENUM('open','under_review','resolved','closed') NOT NULL DEFAULT 'open',
   resolution TEXT DEFAULT NULL,
@@ -33,8 +39,13 @@ CREATE TABLE IF NOT EXISTS disputes (
   created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
   UNIQUE KEY uq_dispute_booking (booking_id),
+  UNIQUE KEY uq_dispute_purchase (purchase_id),
   KEY idx_dispute_status (status),
+  KEY idx_dispute_ilan (ilan_id),
   CONSTRAINT fk_dispute_booking FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_dispute_ilan FOREIGN KEY (ilan_id) REFERENCES ilanlar(id) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT fk_dispute_purchase FOREIGN KEY (purchase_id) REFERENCES ilan_purchases(id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT fk_dispute_opener FOREIGN KEY (opened_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT fk_dispute_opened_against FOREIGN KEY (opened_against) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT fk_dispute_resolver FOREIGN KEY (resolved_by) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

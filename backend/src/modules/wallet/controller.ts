@@ -13,8 +13,37 @@ import { createPayTRToken, encodePayTRBasket, verifyPayTRCallback } from "./payt
 import { sendDepositSuccessMail } from "../mail/service";
 import { getOrCreateWallet, parseWalletPaging } from './helpers';
 
-function getSubMerchantKey(): string {
-  return env.IYZICO_SUB_MERCHANT_KEY;
+function rightsCount(value: string | number) {
+  return Number(value);
+}
+
+function serializeRightsWallet(wallet: Awaited<ReturnType<typeof getOrCreateWallet>>) {
+  return {
+    ...wallet,
+    credit_balance: rightsCount(wallet.balance),
+    remaining_rights: rightsCount(wallet.balance),
+    unit: "hak",
+    model: "listing_credit",
+  };
+}
+
+function transactionPurposeLabel(purpose: string) {
+  const labels: Record<string, string> = {
+    deposit: "Hak satın alma",
+    booking_payment: "Hak kullanımı",
+    booking_refund: "Hak iadesi",
+    admin_grant: "Admin hak tanımı",
+  };
+  return labels[purpose] ?? purpose;
+}
+
+function serializeRightsTransaction(tx: typeof walletTransactions.$inferSelect) {
+  return {
+    ...tx,
+    amount_rights: rightsCount(tx.amount),
+    unit: "hak",
+    purpose_label: transactionPurposeLabel(tx.purpose),
+  };
 }
 
 /** GET /wallet — get current user's wallet info */
@@ -22,7 +51,7 @@ export const getMyWallet: RouteHandler = async (req, reply) => {
   try {
     const userId = getAuthUserId(req);
     const wallet = await getOrCreateWallet(userId);
-    return reply.send(wallet);
+    return reply.send(serializeRightsWallet(wallet));
   } catch (e) {
     return handleRouteError(reply, req, e, "wallet_get_error");
   }
@@ -54,7 +83,12 @@ export const listMyTransactions: RouteHandler = async (req, reply) => {
       db.select({ total: sql<number>`COUNT(*)` }).from(walletTransactions).where(where),
     ]);
 
-    return reply.send({ data: rows, page: pageNum, limit: limitNum, total: Number(countRow?.total ?? 0) });
+    return reply.send({
+      data: rows.map(serializeRightsTransaction),
+      page: pageNum,
+      limit: limitNum,
+      total: Number(countRow?.total ?? 0),
+    });
   } catch (e) {
     return handleRouteError(reply, req, e, "wallet_transactions_error");
   }
@@ -94,7 +128,7 @@ export const initiateDeposit: RouteHandler = async (req, reply) => {
       type: "credit",
       amount: amountStr,
       purpose: "deposit",
-      description: `₺${amountStr} bakiye yükleme (İyzico)`,
+      description: `${amountStr} hak satın alma (İyzico)`,
       payment_status: "pending",
       transaction_ref: conversationId,
     });
@@ -106,7 +140,7 @@ export const initiateDeposit: RouteHandler = async (req, reply) => {
     if (provider === "paytr") {
       const kurusAmount = Math.round(amount * 100);
       const basket = encodePayTRBasket([
-        ["PaketJet Bakiye Yükleme", amount.toFixed(2), 1]
+        ["PaketJet İlan Hakkı", amount.toFixed(2), 1]
       ]);
 
       const paytrRes = await createPayTRToken({
@@ -170,7 +204,7 @@ export const initiateDeposit: RouteHandler = async (req, reply) => {
       basketItems: [
         {
           id: txId,
-          name: "PaketJet Bakiye Yükleme",
+          name: "PaketJet İlan Hakkı",
           category1: "Dijital",
           itemType: "VIRTUAL" as const,
           price: amountStr,
@@ -279,7 +313,7 @@ export const iyzicoCallback: RouteHandler = async (req, reply) => {
       return reply.redirect(`${successBase}?status=fail&reason=verification_failed`);
     }
 
-    // Bakiye ekle
+    // Hak ekle
     const amount = parseFloat(pendingTx.amount);
     await db.transaction(async (tx) => {
       await tx.update(wallets)
@@ -294,7 +328,7 @@ export const iyzicoCallback: RouteHandler = async (req, reply) => {
 
     req.log.info({ userId: pendingTx.user_id, amount }, "iyzico_callback: deposit completed");
 
-    // Deposit başarı maili gönder
+    // Hak satın alma başarı maili gönder
     const [depositUser] = await db.select().from(users).where(eq(users.id, pendingTx.user_id)).limit(1);
     const [updatedWallet] = await db.select().from(wallets).where(eq(wallets.id, pendingTx.wallet_id)).limit(1);
     if (depositUser) {
@@ -372,9 +406,9 @@ export const payTRDepositCallback: RouteHandler = async (req, reply) => {
   }
 };
 
-// ── Manuel deposit (admin/test) ───────────────────────────────────────────────
+// ── Manuel hak ekleme (admin/test) ───────────────────────────────────────────
 
-/** POST /wallet/deposit — bakiye yükle */
+/** POST /wallet/deposit — hak ekle */
 export const depositWallet: RouteHandler = async (req, reply) => {
   try {
     const userId = getAuthUserId(req);
@@ -394,7 +428,7 @@ export const depositWallet: RouteHandler = async (req, reply) => {
         type: "credit",
         amount: amount.toFixed(2),
         purpose: "deposit",
-        description: description ?? `₺${amount} bakiye yükleme`,
+        description: description ?? `${amount} hak ekleme`,
         payment_status: "completed",
       });
     });
@@ -413,7 +447,7 @@ export const depositWallet: RouteHandler = async (req, reply) => {
       }).catch((err) => req.log.error(err, "deposit_success_mail_failed"));
     }
 
-    return reply.send(updated);
+    return reply.send(updated ? serializeRightsWallet(updated) : updated);
   } catch (e) {
     return handleRouteError(reply, req, e, "wallet_deposit_error");
   }

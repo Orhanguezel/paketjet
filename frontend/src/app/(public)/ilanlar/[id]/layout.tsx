@@ -27,7 +27,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     vars: {
       from_city: ilan.from_city ?? "",
       to_city: ilan.to_city ?? "",
-      estimated_value: ilan.estimated_value ?? "",
     },
   });
 }

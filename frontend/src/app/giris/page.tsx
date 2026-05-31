@@ -4,6 +4,7 @@ import { getSiteSettingValue } from "@/lib/site-settings";
 import GirisClient from "./giris-client";
 
 const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
+type SiteLogo = { url?: string; src?: string; logo_url?: string };
 
 export function generateMetadata(): Metadata {
   return noIndexMetadata("Giriş Yap", "PaketJet hesabınıza giriş yaparak ilan, rezervasyon ve destek süreçlerine erişin.");
@@ -12,8 +13,8 @@ export function generateMetadata(): Metadata {
 export default async function GirisPage() {
   const [bgImage, logo] = await Promise.all([
     getSiteSettingValue<string>("auth_login_image", "*"),
-    getSiteSettingValue<{ url?: string }>("site_logo", "*"),
+    getSiteSettingValue<SiteLogo>("site_logo", "*"),
   ]);
   const toUrl = (p?: string) => p ? (p.startsWith("http") ? p : `${API_ORIGIN}${p}`) : null;
-  return <GirisClient bgImageUrl={toUrl(bgImage ?? undefined)} logoUrl={toUrl(logo?.url)} />;
+  return <GirisClient bgImageUrl={toUrl(bgImage ?? undefined)} logoUrl={toUrl(logo?.url || logo?.src || logo?.logo_url)} />;
 }

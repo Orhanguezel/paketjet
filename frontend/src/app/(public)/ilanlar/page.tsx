@@ -12,7 +12,6 @@ type SearchParams = Promise<{
   to?: string;
   date?: string;
   vehicle?: VehicleType;
-  min_kg?: string;
   page?: string;
 }>;
 
@@ -38,7 +37,6 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
     to_city: resolved.to ?? "",
     date: resolved.date ?? "",
     vehicle_type: (resolved.vehicle ?? "") as VehicleType | "",
-    min_kg: resolved.min_kg ?? "",
   };
   const page = normalizePage(resolved.page);
 
@@ -48,7 +46,6 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
       to_city: filters.to_city || undefined,
       date: filters.date || undefined,
       vehicle_type: filters.vehicle_type || undefined,
-      min_kg: filters.min_kg ? Number(filters.min_kg) : undefined,
       page,
       limit: 20,
     }).catch(() => ({ data: [], total: 0, page, limit: 20 })),

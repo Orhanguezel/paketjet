@@ -21,7 +21,6 @@ type ActiveFilters = {
   to_city: string;
   date: string;
   vehicle_type: VehicleType | "";
-  min_kg: string;
 };
 
 interface IlanlarClientProps {
@@ -51,7 +50,6 @@ export default function IlanlarClient({
   const [toCity, setToCity] = useState(initialFilters.to_city);
   const [date, setDate] = useState(initialFilters.date);
   const [vehicleType, setVehicleType] = useState<VehicleType | "">(initialFilters.vehicle_type);
-  const [minKg, setMinKg] = useState(initialFilters.min_kg);
   const [activeFilters, setActiveFilters] = useState<ActiveFilters>(initialFilters);
 
   const fetchIlans = useCallback(async (filters: ActiveFilters, nextPage: number) => {
@@ -62,7 +60,6 @@ export default function IlanlarClient({
         to_city: filters.to_city || undefined,
         date: filters.date || undefined,
         vehicle_type: filters.vehicle_type || undefined,
-        min_kg: filters.min_kg ? Number(filters.min_kg) : undefined,
         page: nextPage,
         limit: 20,
       });
@@ -82,7 +79,6 @@ export default function IlanlarClient({
       to_city: searchParams.get("to") ?? "",
       date: searchParams.get("date") ?? "",
       vehicle_type: (searchParams.get("vehicle") as VehicleType | "") ?? "",
-      min_kg: searchParams.get("min_kg") ?? "",
     };
     const urlPage = Number(searchParams.get("page") ?? "1");
     const normalizedPage = Number.isFinite(urlPage) && urlPage > 0 ? urlPage : 1;
@@ -95,7 +91,6 @@ export default function IlanlarClient({
     setToCity(filtersFromUrl.to_city);
     setDate(filtersFromUrl.date);
     setVehicleType(filtersFromUrl.vehicle_type);
-    setMinKg(filtersFromUrl.min_kg);
     setActiveFilters(filtersFromUrl);
     setPage(normalizedPage);
     fetchIlans(filtersFromUrl, normalizedPage);
@@ -112,14 +107,12 @@ export default function IlanlarClient({
       to_city: toCity.trim(),
       date,
       vehicle_type: vehicleType,
-      min_kg: minKg,
     };
     const params = new URLSearchParams();
     if (filters.from_city) params.set("from", filters.from_city);
     if (filters.to_city) params.set("to", filters.to_city);
     if (filters.date) params.set("date", filters.date);
     if (filters.vehicle_type) params.set("vehicle", filters.vehicle_type);
-    if (filters.min_kg) params.set("min_kg", filters.min_kg);
     router.replace(params.toString() ? `/ilanlar?${params}` : "/ilanlar", { scroll: false });
   }
 
@@ -128,7 +121,6 @@ export default function IlanlarClient({
     setToCity("");
     setDate("");
     setVehicleType("");
-    setMinKg("");
     router.replace("/ilanlar", { scroll: false });
   }
 
@@ -181,16 +173,6 @@ export default function IlanlarClient({
               </option>
             ))}
           </select>
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground">
-            <input
-              type="number"
-              value={minKg}
-              onChange={(event) => setMinKg(event.target.value)}
-              placeholder="Min kg"
-              min="0"
-              className="w-20 bg-transparent outline-none placeholder:text-faint"
-            />
-          </div>
           <button type="submit" className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark">
             Filtrele
           </button>

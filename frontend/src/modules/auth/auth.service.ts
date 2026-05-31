@@ -11,11 +11,7 @@ export function login(data: LoginInput): Promise<AuthResponse> {
 }
 
 export function register(data: RegisterInput): Promise<AuthResponse> {
-  const { role, ...rest } = data;
-  return apiPost<AuthResponse>(API.auth.register, {
-    ...rest,
-    options: { data: { role: role === "carrier" ? "carrier" : undefined } },
-  });
+  return apiPost<AuthResponse>(API.auth.register, data);
 }
 
 export function googleLogin(id_token: string): Promise<AuthResponse> {

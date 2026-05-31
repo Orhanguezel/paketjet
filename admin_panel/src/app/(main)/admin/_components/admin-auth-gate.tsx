@@ -25,6 +25,7 @@ export default function AdminAuthGate({ children }: { children: React.ReactNode 
   React.useEffect(() => {
     if (q.isFetching) return;
     if (q.isUninitialized) return;
+    const currentPath = pathname ?? '/admin';
 
     const data = q.data as AuthStatusResponse | undefined;
     const me = normalizeMeFromStatus(data);
@@ -34,8 +35,8 @@ export default function AdminAuthGate({ children }: { children: React.ReactNode 
       return;
     }
 
-    if (me.isAdmin === true && canAccessAdminPath('admin', pathname)) return;
-    if (me.role === 'seller' && canAccessAdminPath('seller', pathname)) return;
+    if (me.isAdmin === true && canAccessAdminPath('admin', currentPath)) return;
+    if (me.role === 'seller' && canAccessAdminPath('seller', currentPath)) return;
 
     router.replace('/auth/login');
   }, [q.isFetching, q.isUninitialized, q.data, router, pathname]);
@@ -47,10 +48,11 @@ export default function AdminAuthGate({ children }: { children: React.ReactNode 
 
   // If unauthorized, effect will redirect; avoid flashing UI
   const me = normalizeMeFromStatus(q.data as AuthStatusResponse | undefined);
+  const currentPath = pathname ?? '/admin';
   const allowed =
     !!me &&
-    ((me.isAdmin === true && canAccessAdminPath('admin', pathname)) ||
-      (me.role === 'seller' && canAccessAdminPath('seller', pathname)));
+    ((me.isAdmin === true && canAccessAdminPath('admin', currentPath)) ||
+      (me.role === 'seller' && canAccessAdminPath('seller', currentPath)));
   if (!allowed) return null;
 
   return <>{children}</>;

@@ -99,7 +99,9 @@ export default function AdminIlanlarPage() {
                     {STATUS_LABEL[String(r.status)] ?? String(r.status)}
                   </Badge>
                 </div>
-                <p className="text-xs text-muted">{String(r.carrier_name ?? r.carrier_email ?? "—")} · {String(r.available_capacity_kg)} kg · ₺{String(r.price_per_kg)}/kg</p>
+                <p className="text-xs text-muted">
+                  {String(r.carrier_name ?? r.carrier_email ?? "—")}
+                </p>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <Button size="sm" variant="secondary" loading={actionId === String(r.id)} onClick={() => toggleStatus(String(r.id), String(r.status))}>

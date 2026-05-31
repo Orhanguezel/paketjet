@@ -10,7 +10,7 @@ interface Props {
 }
 
 const METHODS: { value: PaymentMethod; label: string; desc: string; icon: string }[] = [
-  { value: "wallet", label: "Cüzdan", desc: "Bakiyeden ödeme", icon: "💳" },
+  { value: "wallet", label: "İlan Hakkı", desc: "Kalan haktan ödeme", icon: "🎟️" },
   { value: "card", label: "Kredi Kartı (İyzico)", desc: "İyzico güvenli ödeme", icon: "🇮" },
   { value: "paytr", label: "Kredi Kartı (PayTR)", desc: "PayTR güvenli ödeme", icon: "🇵" },
   { value: "transfer", label: "Havale / EFT", desc: "Banka havalesi", icon: "🏦" },
@@ -40,7 +40,7 @@ export default function PaymentMethodSelector({ selected, onChange, walletBalanc
             <p className="font-semibold text-foreground">{m.label}</p>
             <p className="text-xs text-muted">
               {m.value === "wallet" && walletBalance !== undefined
-                ? `Bakiye: ₺${walletBalance}${insufficient ? " (yetersiz)" : ""}`
+                ? `Kalan hak: ${Number(walletBalance).toLocaleString("tr-TR")}${insufficient ? " (yetersiz)" : ""}`
                 : m.desc}
             </p>
           </div>

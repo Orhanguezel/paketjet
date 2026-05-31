@@ -197,18 +197,20 @@ const NavItemCollapsed = ({
 export function NavMain({ items, showQuickCreate = false }: NavMainProps) {
   const path = usePathname();
   const searchParams = useSearchParams();
+  const currentPath = path ?? '/admin';
+  const currentSearchParams = searchParams ?? new URLSearchParams();
   const { state, isMobile } = useSidebar();
   const t = useAdminT();
 
   const isItemActive = (url: string, subItems?: NavMainItem['subItems']) => {
     if (subItems?.length) {
-      return subItems.some((sub) => isPathActive(path, searchParams, sub.url));
+      return subItems.some((sub) => isPathActive(currentPath, currentSearchParams, sub.url));
     }
-    return isPathActive(path, searchParams, url);
+    return isPathActive(currentPath, currentSearchParams, url);
   };
 
   const isSubmenuOpen = (subItems?: NavMainItem['subItems']) => {
-    return subItems?.some((sub) => isPathActive(path, searchParams, sub.url)) ?? false;
+    return subItems?.some((sub) => isPathActive(currentPath, currentSearchParams, sub.url)) ?? false;
   };
 
   return (

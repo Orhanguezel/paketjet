@@ -11,6 +11,12 @@ export interface PurchaseIlanResponse {
   credit_balance: number;
 }
 
+export interface PurchaseDeclarationInput {
+  estimated_value: number;
+  estimated_value_currency?: "TRY";
+  content_declared: true;
+}
+
 export interface MyPurchase {
   id: string;
   ilan_id: string;
@@ -41,3 +47,13 @@ export interface MyCreditsResponse {
   ledger: CreditLedgerItem[];
 }
 
+export interface CreditPackagePaymentResponse {
+  provider: "iyzico" | "paytr";
+  checkoutFormContent?: string;
+  iframeUrl?: string;
+  token?: string;
+  conversationId: string;
+  amount: number;
+}
+
+export type IlanPaymentResponse = CreditPackagePaymentResponse;

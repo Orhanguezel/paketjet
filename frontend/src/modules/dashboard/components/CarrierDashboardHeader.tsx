@@ -39,7 +39,7 @@ export function CarrierDashboardOverview() {
     <div className="mb-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-extrabold text-foreground">Taşıyıcı Paneli</h1>
-        <Link href="/panel/tasiyici?tab=yeni-ilan" className="inline-flex px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors">
+        <Link href="/ilan-ver" className="inline-flex px-4 py-2 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors">
           + Yeni İlan
         </Link>
       </div>

@@ -56,11 +56,11 @@ export default function AdminWalletPage() {
 
   return (
     <div>
-      <AdminPageHeader title="Cuzdan Yonetimi" subtitle={`${wallets.length} cuzdan`} />
+      <AdminPageHeader title="İlan Hakkı Arşivi" subtitle={`${wallets.length} kayıt`} />
 
       <div className="flex gap-6">
         <div className="flex-1 min-w-0">
-          {loading ? <AdminListSkeleton /> : wallets.length === 0 ? <AdminEmptyState message="Cuzdan bulunamadi." /> : (
+          {loading ? <AdminListSkeleton /> : wallets.length === 0 ? <AdminEmptyState message="İlan hakkı kaydı bulunamadı." /> : (
             <div className="flex flex-col gap-2">
               {wallets.map((w) => (
                 <button
@@ -76,8 +76,8 @@ export default function AdminWalletPage() {
                       <p className="text-xs text-muted">{w.user_email}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-foreground">₺{w.balance}</p>
-                      <p className="text-xs text-muted">Toplam: ₺{w.total_earnings}</p>
+                      <p className="font-bold text-foreground">{Number(w.balance).toLocaleString("tr-TR")} hak</p>
+                      <p className="text-xs text-muted">Toplam: {Number(w.total_earnings).toLocaleString("tr-TR")} hak</p>
                     </div>
                   </div>
                 </button>
@@ -95,30 +95,30 @@ export default function AdminWalletPage() {
             </div>
             <div className="flex gap-4 mb-4">
               <div className="bg-bg-alt rounded-lg p-3 flex-1 text-center">
-                <p className="text-xs text-muted">Bakiye</p>
-                <p className="font-bold text-foreground">₺{selected.balance}</p>
+                <p className="text-xs text-muted">Kalan Hak</p>
+                <p className="font-bold text-foreground">{Number(selected.balance).toLocaleString("tr-TR")} hak</p>
               </div>
               <div className="bg-bg-alt rounded-lg p-3 flex-1 text-center">
-                <p className="text-xs text-muted">Toplam Kazanc</p>
-                <p className="font-bold text-foreground">₺{selected.total_earnings}</p>
+                <p className="text-xs text-muted">Toplam Hak</p>
+                <p className="font-bold text-foreground">{Number(selected.total_earnings).toLocaleString("tr-TR")} hak</p>
               </div>
             </div>
 
             <Button size="sm" variant="secondary" onClick={() => setAdjustOpen(!adjustOpen)} className="mb-4 w-full">
-              Bakiye Ayarla
+              İlan Hakkı Ayarla
             </Button>
 
             {adjustOpen && (
               <div className="bg-bg-alt rounded-lg p-3 mb-4 flex flex-col gap-2">
                 <input type="number" step="0.01" value={adjustAmount} onChange={(e) => setAdjustAmount(e.target.value)}
-                  placeholder="Miktar (negatif = dusur)" className="px-3 py-1.5 text-sm bg-surface border border-border-soft rounded-lg text-foreground" />
+                  placeholder="Hak adedi" className="px-3 py-1.5 text-sm bg-surface border border-border-soft rounded-lg text-foreground" />
                 <input type="text" value={adjustDesc} onChange={(e) => setAdjustDesc(e.target.value)}
                   placeholder="Aciklama" className="px-3 py-1.5 text-sm bg-surface border border-border-soft rounded-lg text-foreground" />
                 <Button size="sm" loading={adjusting} onClick={handleAdjust}>Uygula</Button>
               </div>
             )}
 
-            <h3 className="font-semibold text-sm text-foreground mb-2">Son Islemler</h3>
+            <h3 className="font-semibold text-sm text-foreground mb-2">Son İşlemler</h3>
             {txLoading ? <AdminListSkeleton count={3} lines={1} /> : txList.length === 0 ? (
               <p className="text-xs text-muted">Islem yok.</p>
             ) : (
@@ -134,7 +134,7 @@ export default function AdminWalletPage() {
                     </div>
                     <div className="text-right shrink-0">
                       <p className={`text-sm font-semibold ${tx.type === "credit" ? "text-success" : "text-danger"}`}>
-                        {tx.type === "credit" ? "+" : "-"}₺{tx.amount}
+                        {tx.type === "credit" ? "+" : "-"}{Number(tx.amount).toLocaleString("tr-TR")} hak
                       </p>
                       <p className="text-xs text-faint">{formatDate(tx.created_at)}</p>
                     </div>

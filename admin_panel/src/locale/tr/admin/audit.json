@@ -59,7 +59,9 @@
   },
   "map": {
     "title": "Coğrafi Dağılım",
-    "description": "Son {days} günün konuma göre istek dağılımı."
+    "description": "Son {days} günün konuma göre istek dağılımı.",
+    "turkeyTitle": "Türkiye İl Dağılımı",
+    "turkeyDescription": "Son {days} günde ziyaretçilerin geldiği iller (Türkiye trafiği)."
   },
   "common": {
     "from": "Başlangıç",

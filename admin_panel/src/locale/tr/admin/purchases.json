@@ -1,0 +1,21 @@
+{
+  "header": {
+    "title": "İlan Satın Almaları",
+    "description": "İletişim erişimi satın alma kayıtlarını ve reveal snapshotlarını görüntüleyin."
+  },
+  "table": {
+    "route": "İlan",
+    "buyer": "Satın Alan",
+    "seller": "İlan Sahibi",
+    "price": "Ödeme",
+    "value": "Beyan Değeri",
+    "contact": "Açılan İletişim",
+    "date": "Tarih",
+    "empty": "Henüz satın alma kaydı yok."
+  },
+  "pagination": {
+    "summary": "{total} kayıt · Sayfa {page}/{totalPages}",
+    "previous": "Önceki",
+    "next": "Sonraki"
+  }
+}

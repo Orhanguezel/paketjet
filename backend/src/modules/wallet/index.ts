@@ -22,8 +22,6 @@ export {
 
 export {
   deductForBooking,
-  creditCarrier,
-  refundToCustomer,
 } from './service';
 
 export {

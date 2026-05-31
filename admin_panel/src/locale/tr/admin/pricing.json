@@ -1,0 +1,23 @@
+{
+  "title": "Fiyat Ayarları",
+  "description": "İlan satın alma fiyatı ve İlan Alma Hakkı (kontör) paket fiyatlarını yönetin.",
+  "pricing": {
+    "title": "İlan Hakkı Fiyatları",
+    "description": "Tekil ilan hakkı ve kontör paket fiyatlarını veritabanından yönetin.",
+    "priceLabel": "Tekil ilan hakkı fiyatı",
+    "pricePlaceholder": "Ör: 50",
+    "priceHelp": "Frontend bu değeri site_settings üzerinden okur.",
+    "packagesTitle": "Kontör Paketleri",
+    "packagesDescription": "Her paket için anahtar, ilan hakkı adedi ve fiyat girin.",
+    "addPackage": "Paket Ekle",
+    "removePackage": "Sil",
+    "packageKeyPlaceholder": "starter",
+    "creditsPlaceholder": "Adet",
+    "packagePricePlaceholder": "Fiyat",
+    "saveButton": "Kaydet",
+    "saved": "İlan hakkı fiyatları güncellendi.",
+    "loadError": "Fiyat ayarları yüklenemedi.",
+    "saveError": "Fiyat ayarları kaydedilemedi.",
+    "invalidPrice": "Geçerli bir fiyat girin."
+  }
+}

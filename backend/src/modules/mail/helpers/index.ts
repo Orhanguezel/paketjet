@@ -18,7 +18,6 @@ export {
   welcomeMailSchema,
   passwordChangedSchema,
   buildBookingRouteLabel,
-  buildCarrierPaymentSubject,
 } from "./service";
 export type {
   WelcomeMailInput,
