@@ -47,12 +47,13 @@ export function extractSiteSettingsBrandMediaData(
   const source = typeof row.value === 'string' ? tryParseJsonVal(row.value) : row.value ?? raw;
   const input = source && typeof source === 'object' ? (source as UnknownRow) : {};
 
+  // Frontend formatini ({url, urlDark, alt}) de tolere et — site_logo bu sekilde saklaniyor.
   return {
-    logo_url: toStr(input.logo_url),
-    logo_alt: trimStr(input.logo_alt) || logoAlt,
-    logo_dark_url: toStr(input.logo_dark_url),
-    favicon_url: toStr(input.favicon_url),
-    apple_touch_icon_url: toStr(input.apple_touch_icon_url),
+    logo_url: toStr(input.logo_url ?? input.url ?? input.src),
+    logo_alt: trimStr(input.logo_alt ?? input.alt) || logoAlt,
+    logo_dark_url: toStr(input.logo_dark_url ?? input.urlDark ?? input.url_dark),
+    favicon_url: toStr(input.favicon_url ?? input.favicon),
+    apple_touch_icon_url: toStr(input.apple_touch_icon_url ?? input.apple_touch_icon ?? input.appleTouchIcon),
   };
 }
 

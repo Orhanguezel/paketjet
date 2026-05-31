@@ -50,7 +50,9 @@ type AdminBrandMediaData = {
 export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPrefix }) => {
   const adminLocale = usePreferencesStore((s) => s.adminLocale);
   const t = useAdminTranslations(adminLocale || undefined);
-  const fullKey = `${settingPrefix || ''}site_logo`;
+  // Frontend prefixsiz site_logo / site_logo_light / site_logo_dark okur; admin de bunlari
+  // duzenlemeli ki degisiklik frontend'e yansisin (settingPrefix bu marka logolarinda kullanilmaz).
+  const fullKey = 'site_logo';
   const logoAlt = t('admin.siteSettings.brandMedia.inline.logoAlt');
 
   const { data, isLoading, isFetching, refetch } = useGetSiteSettingAdminByKeyQuery(
@@ -109,13 +111,13 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
     try {
       await updateSetting({ key: fullKey, locale: '*', value: localData as any }).unwrap();
       await Promise.all([
-        updateSetting({ key: `${settingPrefix || ''}site_logo_light`, locale: '*', value: localData.logo_url as any }).unwrap(),
-        updateSetting({ key: `${settingPrefix || ''}site_logo_dark`, locale: '*', value: localData.logo_dark_url as any }).unwrap(),
-        updateSetting({ key: `${settingPrefix || ''}site_favicon`, locale: '*', value: localData.favicon_url as any }).unwrap(),
-        updateSetting({ key: `${settingPrefix || ''}site_apple_touch_icon`, locale: '*', value: localData.apple_touch_icon_url as any }).unwrap(),
+        updateSetting({ key: 'site_logo_light', locale: '*', value: localData.logo_url as any }).unwrap(),
+        updateSetting({ key: 'site_logo_dark', locale: '*', value: localData.logo_dark_url as any }).unwrap(),
+        updateSetting({ key: 'site_favicon', locale: '*', value: localData.favicon_url as any }).unwrap(),
+        updateSetting({ key: 'site_apple_touch_icon', locale: '*', value: localData.apple_touch_icon_url as any }).unwrap(),
       ]);
       // Also update legacy 'logo' key for backward compat
-      const legacyKey = `${settingPrefix || ''}logo`;
+      const legacyKey = 'logo';
       await updateSetting({
         key: legacyKey,
         locale: '*',
