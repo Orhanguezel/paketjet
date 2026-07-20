@@ -1,5 +1,22 @@
 # CLAUDE.md — PaketJet
 
+## 🔴 ONCE BUNU OKU — DEPLOY BEKLEYEN 404 DUZELTMESI (2026-07-20)
+
+**Canli sitede acik bir SEO hatasi var ve duzeltmesi lokalde commit'li bekliyor.
+Push EDILMEDI, deploy EDILMEDI.**
+
+- Site eksik sayfalar icin 404 yerine **HTTP 200** donuyor
+  (`/blog/uydurma-999`, `/rota/uydurma-999`, `/ilanlar/99999999` → hepsi 200).
+- Sebep `loading.tsx`: Suspense siniri streaming'i baslatip basliklari 200 olarak
+  flush ediyor, sonradan cagrilan `notFound()` status'u degistiremiyor.
+- Kok `app/loading.tsx` ve `(public)/loading.tsx` kaldirildi; panel/admin
+  loading'leri bilerek korundu.
+- **Build dogrulanmadi** — bu makinede `frontend/node_modules` kurulu degil.
+
+**Bu projede is yapmaya baslamadan once [DEPLOY-BEKLEYEN-UYARI.md](DEPLOY-BEKLEYEN-UYARI.md)
+dosyasini oku** — deploy adimlari, dogrulama komutlari ve geri alma orada.
+Deploy tamamlanip dogrulandiktan sonra bu bolum ve o dosya silinir.
+
 ## Proje Özeti
 
 PaketJet, P2P kargo pazaryeridir. Taşıyıcılar güzergah/kapasite ilanı açar, müşteriler kargo alanı satın alır (BlaBlaCar modeli, kargo için).

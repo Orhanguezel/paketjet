@@ -44,12 +44,26 @@ export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
 
       <section className="mx-auto grid max-w-6xl gap-8 px-6 py-12 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="space-y-4">
-          {faqs.map((faq) => (
-            <details key={faq.id} className="rounded-2xl border border-border-soft bg-surface p-5">
-              <summary className="cursor-pointer list-none text-base font-bold text-foreground">{faq.question}</summary>
-              <p className="mt-3 text-sm leading-7 text-muted">{faq.answer}</p>
-            </details>
-          ))}
+          {faqs.length > 0 ? (
+            faqs.map((faq) => (
+              <details key={faq.id} className="rounded-2xl border border-border-soft bg-surface p-5">
+                <summary className="cursor-pointer list-none text-base font-bold text-foreground">{faq.question}</summary>
+                <p className="mt-3 text-sm leading-7 text-muted">{faq.answer}</p>
+              </details>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center text-center p-8 rounded-3xl border border-border-soft bg-surface/50">
+              <img
+                src="/uploads/media/images/support-placeholder.webp"
+                alt="Destek"
+                className="w-full max-w-[340px] object-contain rounded-2xl"
+              />
+              <h3 className="mt-6 text-lg font-bold text-foreground">Yardım Etmeye Hazırız!</h3>
+              <p className="mt-2 text-sm text-muted max-w-md">
+                Aradığınız sorunun cevabını bulamadıysanız veya doğrudan bizimle iletişime geçmek isterseniz, yandaki formu doldurarak bize destek talebi gönderebilirsiniz.
+              </p>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="rounded-3xl border border-border-soft bg-surface p-6 shadow-sm">
