@@ -29,3 +29,9 @@ Konsept ve son Chromium ekranları `view_image` ile karşılaştırıldı. Mevcu
 | Boşluk/duyarlılık | Boş kartlar kısaltıldı; tablette kartlar sıkışmadan alt alta, telefonda dekoratif panel gizli |
 
 Görsel referansın ana düzeni ve hiyerarşisi uygulandı; yukarıdaki marka/veri/erişilebilirlik uyarlamaları bilinçlidir. Ekranlardaki hesap bilgileri yalnız izole test verisidir. Canlı kullanıcı hesabına girilmedi veya test ilanı eklenmedi.
+
+## Canlı yayın
+
+`fb7c06c` sürümü 9 Eylül 2026 12:07:31 UTC tarihinde yayınlandı. Üç uygulama sunucuda yeniden derlendi ve yeni sürümde online. Canlı giriş ekranı 1440/768/390 px, şifre göster/gizle, logo, taşma ve sayfa hatası kontrollerinden geçti. Özel Hesabım akışları gerçek API ve izole test hesabıyla yerelde doğrulandı; canlı müşteri hesabına girilmedi.
+
+Konsept ve [canlı giriş görünümü](output/account-design/login-live.png) tekrar görsel olarak karşılaştırıldı; bilinen marka/veri uyarlamaları yukarıda kayıtlı. Yayın öncesi/sonrası veri sayıları ve cüzdan toplamı aynı. Önceki Şirince → İzmir alternatif araması canlı API'de yeniden doğrulandı. [Yayın ve test kanıtı](output/account-design/verification.json).

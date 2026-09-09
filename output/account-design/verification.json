@@ -1,0 +1,165 @@
+{
+  "release": "fb7c06c856d0ca83e6da416546afb49eb95f19bf",
+  "publishedAt": "2026-09-09T12:07:31Z",
+  "frontendTestsPassed": 26,
+  "productionBuilds": [
+    "backend",
+    "frontend",
+    "admin_panel"
+  ],
+  "privateAccountTestEnvironment": "isolated local database; no production account login",
+  "localBrowser": {
+    "report": [
+      {
+        "view": "login",
+        "width": 1440,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "login",
+        "width": 768,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "login",
+        "width": 390,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "account",
+        "width": 1440,
+        "actualLogin": true,
+        "realListingRows": true,
+        "overflow": false
+      },
+      {
+        "view": "account",
+        "width": 768,
+        "actualLogin": true,
+        "realListingRows": true,
+        "overflow": false
+      },
+      {
+        "view": "account",
+        "width": 390,
+        "actualLogin": true,
+        "realListingRows": true,
+        "overflow": false
+      }
+    ],
+    "errors": []
+  },
+  "liveBrowser": {
+    "report": [
+      {
+        "view": "login",
+        "width": 1440,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "login",
+        "width": 768,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "login",
+        "width": 390,
+        "passwordToggle": true,
+        "overflow": false
+      }
+    ],
+    "errors": []
+  },
+  "health": {
+    "at": "2026-09-09T12:07:31.964Z",
+    "checks": [
+      {
+        "url": "https://paketjet.com",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 1291,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/api/health",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 21,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/blog/renewal-missing-check",
+        "status": 404,
+        "expected": 404,
+        "bodyOK": true,
+        "ms": 116,
+        "ok": true
+      },
+      {
+        "url": "https://panel.paketjet.com/auth/login",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 133,
+        "ok": true
+      },
+      {
+        "name": "disk",
+        "diskUsedPercent": 20,
+        "ok": true
+      }
+    ]
+  },
+  "processes": [
+    {
+      "name": "paketjet-backend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/fb7c06c856d0/backend"
+    },
+    {
+      "name": "paketjet-frontend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/fb7c06c856d0/frontend"
+    },
+    {
+      "name": "paketjet-admin",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/fb7c06c856d0/admin_panel"
+    }
+  ],
+  "inventoryBefore": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  },
+  "inventoryAfter": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  }
+}

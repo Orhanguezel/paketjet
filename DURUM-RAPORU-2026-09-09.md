@@ -1,5 +1,7 @@
 # PaketJet detaylı durum raporu — 9 Eylül 2026
 
+> **9 Eylül giriş ve Hesabım yenilemesi:** `fb7c06c`, 12:07:31 UTC yayında. Rota animasyonlu giriş, alan içi şifre düğmesi, kompakt hesap özeti ve tarih/durum içeren ilan satırları eklendi. 26 frontend testi, oturumlu yerel akışlar ve canlı girişin 1440/768/390 px kontrolleri başarılı. [Tasarım ve doğrulama](GIRIS-VE-HESABIM.md).
+
 > **9 Eylül il alternatifleri:** `0a2f704`, 11:26:09 UTC yayında. Tam adreste sonuç yoksa aynı ildeki ilanlar açıklamalı alternatif olarak gösteriliyor; tarih, araç ve rota yönü korunuyor. Canlı Şirince aramasında 3 İzmir alternatifi doğrulandı. [Kapsam](ADRES-VE-HARITA.md), [test ve yayın kanıtı](output/nearby-search/verification.json).
 
 > **9 Eylül adres ve harita güncellemesi:** `d0e2838`, 10:24:29 UTC yayında. Tüm mevcut adres girişleri ortak köy/mahalle/açık adres önerileri ve haritaya taşındı; koordinatlar ilanla kaydediliyor, serbest giriş ve eski şehir ilanları destekleniyor. 93 backend + 16 frontend testi, üç üretim derlemesi ve canlı mobil/masaüstü kontrolleri başarılı. [Kapsam ve doğrulama](ADRES-VE-HARITA.md).
