@@ -1,0 +1,124 @@
+{
+  "release": "e17ce0952697c5bd8cfb6def843fa2fa03d9ca50",
+  "publishedAt": "2026-09-09T12:26:21Z",
+  "frontendTests": 26,
+  "productionBuilds": [
+    "backend",
+    "frontend",
+    "admin_panel"
+  ],
+  "health": {
+    "at": "2026-09-09T12:26:21.499Z",
+    "checks": [
+      {
+        "url": "https://paketjet.com",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 260,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/api/health",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 19,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/blog/renewal-missing-check",
+        "status": 404,
+        "expected": 404,
+        "bodyOK": true,
+        "ms": 14,
+        "ok": true
+      },
+      {
+        "url": "https://panel.paketjet.com/auth/login",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 23,
+        "ok": true
+      },
+      {
+        "name": "disk",
+        "diskUsedPercent": 22,
+        "ok": true
+      }
+    ]
+  },
+  "http": {
+    "protectedAccountRedirect": true,
+    "newMemberStylesServed": true
+  },
+  "processes": [
+    {
+      "name": "paketjet-backend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/e17ce0952697/backend"
+    },
+    {
+      "name": "paketjet-frontend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/e17ce0952697/frontend"
+    },
+    {
+      "name": "paketjet-admin",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/e17ce0952697/admin_panel"
+    }
+  ],
+  "inventoryBefore": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  },
+  "inventoryAfter": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  },
+  "liveLoginBrowser": {
+    "report": [
+      {
+        "view": "login",
+        "width": 1440,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "login",
+        "width": 768,
+        "passwordToggle": true,
+        "overflow": false
+      },
+      {
+        "view": "login",
+        "width": 390,
+        "passwordToggle": true,
+        "overflow": false
+      }
+    ],
+    "errors": []
+  }
+}

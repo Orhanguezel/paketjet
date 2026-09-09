@@ -1,5 +1,7 @@
 # PaketJet detaylı durum raporu — 9 Eylül 2026
 
+> **9 Eylül Hesabım ikinci düzeni:** `e17ce09`, 12:26:21 UTC yayında. Koyu yan menü ve büyük sayaç kartları kaldırıldı; ana site üst menüsü, kişisel karşılama ve yatay hesap sekmeleri kullanılıyor. 26 test, oturumlu yerel mobil/tablet/masaüstü akışları ve canlı sağlık/giriş kontrolleri başarılı. [Güncel hesap tasarımı](HESABIM-SITE-DUZENI.md).
+
 > **9 Eylül giriş ve Hesabım yenilemesi:** `fb7c06c`, 12:07:31 UTC yayında. Rota animasyonlu giriş, alan içi şifre düğmesi, kompakt hesap özeti ve tarih/durum içeren ilan satırları eklendi. 26 frontend testi, oturumlu yerel akışlar ve canlı girişin 1440/768/390 px kontrolleri başarılı. [Tasarım ve doğrulama](GIRIS-VE-HESABIM.md).
 
 > **9 Eylül il alternatifleri:** `0a2f704`, 11:26:09 UTC yayında. Tam adreste sonuç yoksa aynı ildeki ilanlar açıklamalı alternatif olarak gösteriliyor; tarih, araç ve rota yönü korunuyor. Canlı Şirince aramasında 3 İzmir alternatifi doğrulandı. [Kapsam](ADRES-VE-HARITA.md), [test ve yayın kanıtı](output/nearby-search/verification.json).

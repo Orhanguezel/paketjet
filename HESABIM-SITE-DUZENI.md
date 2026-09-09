@@ -27,3 +27,7 @@ Konsept ile son uygulama ekranları `view_image` üzerinden değerlendirildi. Br
 | Mobil | Sekmeler kendi alanında kaydırılır; özet üç kompakt sütun, içerik tek sütun |
 
 Bilinçli uyarlamalar: konseptin uydurduğu logo/alt manzara yerine gerçek marka ve mevcut Türkiye rota görseli kullanıldı; alt alanda sade destek bağlantıları var. Giriş tasarımı ve parola davranışı değiştirilmedi.
+
+## Canlı yayın
+
+`e17ce09` sürümü 9 Eylül 2026 12:26:21 UTC tarihinde yayına alındı. Üç uygulama yeni sürümde online; sağlık kontrolleri başarılı. Hesap sayfasının oturumsuz giriş yönlendirmesi ve yeni hesap CSS dosyasının canlı sunumu doğrulandı. Giriş ekranı 1440/768/390 px boyutlarında tekrar kontrol edildi; şifre düğmesi çalışıyor, taşma/sayfa hatası yok. Özel Hesabım etkileşimleri izole hesapla yerelde doğrulandı; canlı kullanıcı hesabına girilmedi. Veri sayıları ve cüzdan toplamı yayın öncesiyle aynı. [Yayın kanıtı](output/member-design/release.json).
