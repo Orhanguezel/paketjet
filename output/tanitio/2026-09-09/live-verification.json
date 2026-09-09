@@ -1,0 +1,189 @@
+{
+  "checkedAt": "2026-09-09T16:03:01.851Z",
+  "checks": [
+    {
+      "path": "/tenants/",
+      "status": 200
+    },
+    {
+      "path": "/tenants/paketjet",
+      "status": 200
+    },
+    {
+      "path": "/tenants/paketjet/scope",
+      "status": 200,
+      "data": {
+        "explicit": {
+          "ads": {
+            "meta": false,
+            "google": false
+          },
+          "email": false,
+          "social": [
+            "facebook",
+            "instagram"
+          ],
+          "website": true,
+          "revision": 1,
+          "analytics": {
+            "ga4": true,
+            "gsc": true,
+            "gtm": true
+          },
+          "contentSource": false,
+          "merchantCenter": false
+        },
+        "derived": {
+          "revision": 1,
+          "website": true,
+          "contentSource": false,
+          "social": [
+            "facebook",
+            "instagram"
+          ],
+          "ads": {
+            "google": false,
+            "meta": false
+          },
+          "analytics": {
+            "ga4": false,
+            "gsc": false,
+            "gtm": false
+          },
+          "merchantCenter": false,
+          "email": false
+        },
+        "resolved": {
+          "revision": 1,
+          "website": true,
+          "contentSource": false,
+          "social": [
+            "facebook",
+            "instagram"
+          ],
+          "ads": {
+            "google": false,
+            "meta": false
+          },
+          "analytics": {
+            "ga4": true,
+            "gsc": true,
+            "gtm": true
+          },
+          "merchantCenter": false,
+          "email": false
+        }
+      }
+    },
+    {
+      "path": "/marketing/strategy?tenantKey=paketjet",
+      "status": 200
+    },
+    {
+      "path": "/marketing/connection-status?tenantKey=paketjet",
+      "status": 200,
+      "data": {
+        "tenantKey": "paketjet",
+        "items": [
+          {
+            "platform": "website",
+            "label": "Web Sitesi",
+            "status": "ok",
+            "connectionState": "connected",
+            "configured": true,
+            "detail": "https://paketjet.com",
+            "settingsPath": "/settings",
+            "lastSuccessAt": null,
+            "lastErrorAt": null,
+            "lastError": null,
+            "externalUrl": "https://paketjet.com"
+          },
+          {
+            "platform": "google_ads",
+            "label": "Google Ads",
+            "status": "missing",
+            "connectionState": "config_missing",
+            "configured": false,
+            "detail": "Musteri ID tanimli degil",
+            "settingsPath": "/settings",
+            "lastSuccessAt": null,
+            "lastErrorAt": null,
+            "lastError": null
+          },
+          {
+            "platform": "ga4",
+            "label": "GA4",
+            "status": "missing",
+            "connectionState": "config_missing",
+            "configured": false,
+            "detail": "GA4 property ID tanimli degil",
+            "settingsPath": "/settings",
+            "lastSuccessAt": null,
+            "lastErrorAt": null,
+            "lastError": null
+          },
+          {
+            "platform": "gsc",
+            "label": "Search Console",
+            "status": "missing",
+            "connectionState": "config_missing",
+            "configured": false,
+            "detail": "Site URL tanimli degil",
+            "settingsPath": "/settings",
+            "lastSuccessAt": null,
+            "lastErrorAt": null,
+            "lastError": null
+          },
+          {
+            "platform": "gtm",
+            "label": "Tag Manager",
+            "status": "missing",
+            "connectionState": "config_missing",
+            "configured": false,
+            "detail": "GTM container ID tanimli degil",
+            "settingsPath": "/settings",
+            "lastSuccessAt": null,
+            "lastErrorAt": null,
+            "lastError": null
+          },
+          {
+            "platform": "meta",
+            "label": "Meta Ads",
+            "status": "missing",
+            "connectionState": "config_missing",
+            "configured": false,
+            "detail": "Meta reklam hesabi ve token tanimli degil",
+            "settingsPath": "/settings?tab=meta",
+            "lastSuccessAt": null,
+            "lastErrorAt": null,
+            "lastError": null
+          }
+        ],
+        "summary": {
+          "total": 6,
+          "connected": 1
+        }
+      }
+    },
+    {
+      "path": "/uploads/media/logo/logo-512x512.png",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "path": "/opengraph-image",
+      "status": 200,
+      "contentType": "image/png"
+    },
+    {
+      "path": "/llms.txt",
+      "status": 200,
+      "contentType": "text/plain; charset=utf-8"
+    },
+    {
+      "path": "/sitemap.xml",
+      "status": 200,
+      "contentType": "application/xml"
+    }
+  ]
+}

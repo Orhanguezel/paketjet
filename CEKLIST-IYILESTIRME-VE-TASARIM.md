@@ -471,3 +471,17 @@ Bu faz uygulanırken yayın kapsamı açık olmalı; plan talebi tek başına de
 Açık maddeler: F02-13 gerçek kart matrisi; F03-06 eski ödeme makbuzları; F03-07 eski bakiye kaynağı; F13-04 mail teslimi; F13-05 Maps/sağlayıcı ortamı; F13-06 harici alarm teslimi; F14-05 zamanı gelmemiş24 saat/7 gün sonuçları. Hiçbiri kanıtsız tamamlandı olarak işaretlenmedi.
 
 Ürün, yalnız güzel ekranlar veya yeşil build ile bitmiş sayılmaz. Güncel ilan bulma, doğru fiyat/beyanla erişim satın alma, kalıcı iletişime dönüş, ücretsiz ilan verme/moderasyon ve yönetim operasyonu birlikte çalışmalı. Bu sonuç masaüstü/mobilde, doğru yetkilendirmeyle ve mutabık veriyle kanıtlanmalıdır.
+
+## 5. Tanitio bağlantısı — 9 Eylül 2026 ek kapsamı
+
+Bu bölüm önceki 145 maddelik kapanış sayımından ayrıdır. Rapor: [TANITIO-TENANT-DURUM-2026-09-09.md](TANITIO-TENANT-DURUM-2026-09-09.md).
+
+- [x] PJ-T00 Canlı `paketjet` tenantı, yönetici üyeliği, marka/strateji/hafıza ve modül kurulumu; API ve tekrar çalıştırma testi başarılı.
+- [ ] PJ-T01 Tanitio içerik kaynağı adaptörü; yalnız yayımlanmış ve paylaşılabilir içerik, kimlik doğrulama ve canlı aktarım testi.
+- [ ] PJ-T02 Gerçek GA4/GTM/GSC kimlikleri ve yetkili hesap bağlantıları; canlı veri sorgusu.
+- [ ] PJ-T03 Resmî sosyal hesap sahipliği ve OAuth izinleri.
+- [ ] PJ-T04 Onayla çalışan arama/ilan/iletişim dönüşüm ölçümü; DebugView ve tek olay doğrulaması.
+- [ ] PJ-T05 www DNS ve HTTPS kanonik yönlendirme.
+- [ ] PJ-T06 Doğrulanmış işletmeci bilgileri ve birbirinden farklı hukuk metinleri.
+- [ ] PJ-T07 Doğrulanmış sosyal URL’leri footer ve Organization sameAs alanlarına ekle.
+- [ ] PJ-T08 Gerçek GSC/GA4 referans raporu ve dönüşüm kanıtı.

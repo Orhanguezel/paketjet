@@ -1,0 +1,35 @@
+{
+  "source": "paketjet-onboarding-2026-09-09",
+  "apply": true,
+  "inserted": 0,
+  "project": [
+    {
+      "project_key": "paketjet",
+      "name": "PaketJet",
+      "website_url": "https://paketjet.com",
+      "is_active": 1,
+      "ga4_property_id": null,
+      "gtm_container_id": null,
+      "content_source_url": null
+    }
+  ],
+  "counts": {
+    "tenant_user_roles": 1,
+    "tenant_subscriptions": 1,
+    "tenant_modules": 4,
+    "tenant_settings": 14,
+    "tenant_ai_facts": 6,
+    "hashtag_groups": 1
+  },
+  "pending": [
+    "PJ-T01",
+    "PJ-T02",
+    "PJ-T03",
+    "PJ-T04",
+    "PJ-T05",
+    "PJ-T06",
+    "PJ-T07",
+    "PJ-T08"
+  ],
+  "publicationEnabled": false
+}
