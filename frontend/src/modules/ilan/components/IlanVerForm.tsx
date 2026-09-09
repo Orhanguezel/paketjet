@@ -1,29 +1,183 @@
-'use client';
-import { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { createIlan, getOwnedIlan, updateIlan } from '@/modules/ilan/ilan.service';
-import type { CreateIlanInput } from '@/modules/ilan/ilan.type';
-import { Input } from '@/components/ui/Input';
-import {AddressAutocomplete} from '@paketjet/locations';
-import { useAuthStore } from '@/modules/auth/auth.store';
-import { parseApiDate } from '@/lib/date';
-const field='mt-2 h-12 w-full rounded-lg border border-border bg-surface px-3 text-base';
-const initial:CreateIlanInput={from_city:'',to_city:'',departure_date:'',vehicle_type:'car',contact_phone:'',title:'',description:'',contact_name:'',contact_email:''};
-function localTime(iso:string){const date=parseApiDate(iso);return new Date(date.getTime()+3*3600000).toISOString().slice(0,16);}
-export default function IlanVerForm({onSuccess,editId}:{onSuccess?:()=>void;editId?:string}={}) {
-  const {user}=useAuthStore();
-  const [form,setForm]=useState<CreateIlanInput>(initial),[departure,setDeparture]=useState(''),[arrival,setArrival]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[success,setSuccess]=useState(false),[loading,setLoading]=useState(!!editId);
-  const submitLock=useRef(false);
-  useEffect(()=>{if(editId){getOwnedIlan(editId).then(i=>{if(['sold','removed'].includes(i.status))throw new Error('Kapalı ilan düzenlenemez.');setForm({from_location:i.from_location,to_location:i.to_location,from_city:i.from_city,to_city:i.to_city,from_district:i.from_district??'',to_district:i.to_district??'',departure_date:i.departure_date,vehicle_type:i.vehicle_type,title:i.title??'',description:i.description??'',contact_phone:i.contact_phone??'',contact_email:i.contact_email??'',contact_name:i.contact_name??'',contact_address:i.contact_address??''});setDeparture(localTime(i.departure_date));if(i.arrival_date)setArrival(localTime(i.arrival_date));}).catch(()=>setError('İlan yüklenemedi veya düzenlemeye kapalı.')).finally(()=>setLoading(false));}else setForm(f=>({...f,contact_phone:user?.phone??'',contact_email:user?.email??'',contact_name:user?.full_name??''}));},[editId,user]);
-  function update<K extends keyof CreateIlanInput>(key:K,value:CreateIlanInput[K]){setForm(f=>({...f,[key]:value}));}
-  async function submit(e:React.FormEvent){e.preventDefault();if(submitLock.current)return;setError('');const date=new Date(`${departure}:00+03:00`);if(Number.isNaN(date.getTime())||date.getTime()<=Date.now()){setError('Hareket tarihi gelecekte olmalı. Saatler Türkiye saatidir.');return;}const end=arrival?new Date(`${arrival}:00+03:00`):null;if(end&&(Number.isNaN(end.getTime())||end<date)){setError('Varış zamanı hareketten önce olamaz.');return;}submitLock.current=true;setBusy(true);try{const data={...form,departure_date:date.toISOString(),arrival_date:end?.toISOString(),contact_email:form.contact_email||undefined};if(editId)await updateIlan(editId,data);else await createIlan(data);setSuccess(true);}catch(e){setError((e as {code?:string}).code==='payment_pending'?'Bu ilan için ödeme bekleniyor. Düzenleme şu anda yapılamıyor.':'İlan kaydedilemedi. Alanları kontrol edip yeniden deneyin.');}finally{setBusy(false);submitLock.current=false;}}
-  if(loading)return <p role="status">İlan yükleniyor…</p>;
-  if(success)return <section role="status" className="rounded-lg border border-border p-8"><h2 className="text-2xl font-semibold">İlanın incelemeye gönderildi</h2><p className="mt-4 leading-7 text-muted">Onaylandıktan sonra yayımlanacak. Durumunu İlanlarım ekranından takip edebilirsin.</p>{onSuccess?<button className="mt-6 min-h-12 text-brand" onClick={onSuccess}>İlanlarıma git</button>:<Link href="/panel/ilanlarim" className="mt-6 inline-flex min-h-12 items-center text-brand">İlanlarıma git</Link>}</section>;
-  return <form onSubmit={submit} className="space-y-5">{error&&<div role="alert" className="rounded-lg border border-danger p-4 text-danger">{error}</div>}
-    <fieldset className="rounded-lg border border-border bg-surface p-5 sm:p-6"><legend className="px-2 text-xl font-semibold">Rota ve tarih</legend><div className="grid gap-5 sm:grid-cols-2">{(['from','to'] as const).map(prefix=><AddressAutocomplete key={prefix} label={prefix==='from'?'Nereden':'Nereye'} required value={form[`${prefix}_location`]?.label??form[`${prefix}_city`]} location={form[`${prefix}_location`]} onChange={(value,place)=>setForm(f=>({...f,[`${prefix}_city`]:place?.city||value.slice(0,128),[`${prefix}_district`]:place?.district||'',[`${prefix}_location`]:place??(value?{label:value}:null)}))}/>)}<Input label="Hareket tarihi ve saati" type="datetime-local" required value={departure} onChange={e=>setDeparture(e.target.value)} hint="Türkiye saati (UTC+3)"/><Input label="Varış tarihi ve saati (isteğe bağlı)" type="datetime-local" value={arrival} onChange={e=>setArrival(e.target.value)}/></div></fieldset>
-    <fieldset className="rounded-lg border border-border bg-surface p-5 sm:p-6"><legend className="px-2 text-xl font-semibold">Araç ve açıklama</legend><div className="space-y-5"><label className="block text-sm font-medium">Araç tipi<select value={form.vehicle_type} onChange={e=>update('vehicle_type',e.target.value as CreateIlanInput['vehicle_type'])} className={field}><option value="car">Otomobil</option><option value="van">Kamyonet</option><option value="truck">Kamyon</option><option value="motorcycle">Motosiklet</option><option value="other">Diğer</option></select></label><Input label="İlan başlığı" maxLength={255} value={form.title} onChange={e=>update('title',e.target.value)} placeholder="Kısa ve net bir başlık yazın"/><label className="block text-sm font-medium">Açıklama<textarea rows={4} maxLength={4000} value={form.description} onChange={e=>update('description',e.target.value)} className="mt-2 w-full rounded-lg border border-border bg-surface p-3 text-base" placeholder="Aracınız ve güzergâhınızla ilgili ayrıntıları yazın."/></label><p className="text-sm text-muted">Telefon ve e-posta bilgilerini açıklamaya yazma; aşağıdaki özel iletişim alanını kullan.</p></div></fieldset>
-    <fieldset className="rounded-lg border border-border bg-surface p-5 sm:p-6"><legend className="px-2 text-xl font-semibold">Özel iletişim</legend><div className="space-y-5"><Input label="Ad soyad" required maxLength={160} autoComplete="name" value={form.contact_name} onChange={e=>update('contact_name',e.target.value)}/><div className="grid gap-5 sm:grid-cols-2"><Input label="Telefon" required type="tel" pattern="\+?[0-9 ()\-]{10,25}" autoComplete="tel" value={form.contact_phone} onChange={e=>update('contact_phone',e.target.value)}/><Input label="E-posta" type="email" autoComplete="email" value={form.contact_email} onChange={e=>update('contact_email',e.target.value)}/></div><AddressAutocomplete label="İletişim adresi (isteğe bağlı)" value={form.contact_address??''} onChange={value=>update('contact_address',value)}/><p className="text-sm leading-6 text-muted">Bu bilgiler yalnız ilanını satın alan kişiye açılır.</p></div></fieldset>
-    <details className="rounded-lg border border-border p-5"><summary className="font-medium">Önizlemeyi göster</summary><p className="mt-4 font-semibold">{form.from_location?.label||form.from_city||'Kalkış'} → {form.to_location?.label||form.to_city||'Varış'}</p><p className="mt-2 text-muted">{form.title}</p><p className="mt-2 whitespace-pre-wrap break-words text-sm text-muted">{form.description}</p></details>
-    <button disabled={busy} className="min-h-12 w-full rounded-lg bg-action px-5 font-semibold text-white disabled:opacity-60">{busy?'Gönderiliyor…':'İncelemeye gönder'}</button><p className="text-center text-sm text-muted">İlanın onaylandıktan sonra yayımlanır.</p>
-  </form>;
+"use client";
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { createIlan, getOwnedIlan, updateIlan } from "@/modules/ilan/ilan.service";
+import type { CreateIlanInput } from "@/modules/ilan/ilan.type";
+import { useAuthStore } from "@/modules/auth/auth.store";
+import { ROUTES } from "@/config/routes";
+import { initialListing, localListingTime, listingPayload, validateListingStep } from "../ilan-wizard";
+import { RouteFields, DetailFields, ContactFields } from "./wizard/ListingFields";
+import ListingResult from "./wizard/ListingResult";
+import ListingSteps from "./wizard/ListingSteps";
+import { ListingSummary, ListingReview } from "./wizard/ListingSummary";
+const headings = ["Yolculuğun nereden nereye?", "Aracını ve yolculuğunu anlat", "Sana nasıl ulaşılabilir?", "İlanına son bir kez göz at"];
+const descriptions = [
+  "İl, ilçe, köy veya açık adres yazabilirsin.",
+  "Taşımayı düşündüğün paketler için aracını ve uygun alanı anlat.",
+  "Bilgilerin hazırsa kontrol et; gerekirse bu ilana özel düzenle.",
+  "Bilgilerini kontrol et. Hazır olduğunda incelemeye gönder.",
+];
+export default function IlanVerForm({ onSuccess, editId }: { onSuccess?: () => void; editId?: string } = {}) {
+  const [form, setForm] = useState<CreateIlanInput>(() => ({
+    ...initialListing,
+    contact_phone: useAuthStore.getState().user?.phone ?? "",
+    contact_email: useAuthStore.getState().user?.email ?? "",
+    contact_name: useAuthStore.getState().user?.full_name ?? "",
+  }));
+  const [departure, setDeparture] = useState(""),
+    [arrival, setArrival] = useState(""),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(""),
+    [success, setSuccess] = useState(false),
+    [loading, setLoading] = useState(!!editId),
+    [loadFailed, setLoadFailed] = useState(false),
+    [step, setStep] = useState(0);
+  const submitLock = useRef(false),
+    heading = useRef<HTMLHeadingElement>(null),
+    moved = useRef(false),
+    formRef = useRef<HTMLFormElement>(null);
+  useEffect(() => {
+    if (!editId) return;
+    let alive = true;
+    getOwnedIlan(editId)
+      .then((i) => {
+        if (!alive) return;
+        if (["sold", "removed"].includes(i.status)) throw new Error("closed");
+        setForm({
+          from_location: i.from_location,
+          to_location: i.to_location,
+          from_city: i.from_city,
+          to_city: i.to_city,
+          from_district: i.from_district ?? "",
+          to_district: i.to_district ?? "",
+          departure_date: i.departure_date,
+          vehicle_type: i.vehicle_type,
+          title: i.title ?? "",
+          description: i.description ?? "",
+          contact_phone: i.contact_phone ?? "",
+          contact_email: i.contact_email ?? "",
+          contact_name: i.contact_name ?? "",
+          contact_address: i.contact_address ?? "",
+        });
+        setDeparture(localListingTime(i.departure_date));
+        setArrival(i.arrival_date ? localListingTime(i.arrival_date) : "");
+      })
+      .catch(() => {
+        if (alive) {
+          setError("İlan yüklenemedi veya düzenlemeye kapalı.");
+          setLoadFailed(true);
+        }
+      })
+      .finally(() => {
+        if (alive) setLoading(false);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [editId]);
+  useEffect(() => {
+    if (moved.current) heading.current?.focus();
+  }, [step, success]);
+  function go(next: number) {
+    if (busy) return;
+    setError("");
+    moved.current = true;
+    setStep(next);
+  }
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (submitLock.current) return;
+    setError("");
+    if (step < 3) {
+      const message = validateListingStep(step, form, departure, arrival);
+      if (message) {
+        setError(message);
+        return;
+      }
+      if (!formRef.current?.reportValidity()) return;
+      go(step + 1);
+      return;
+    }
+    for (let index = 0; index < 3; index++) {
+      const message = validateListingStep(index, form, departure, arrival);
+      if (message) {
+        go(index);
+        setError(message);
+        return;
+      }
+    }
+    submitLock.current = true;
+    setBusy(true);
+    try {
+      const data = listingPayload(form, departure, arrival);
+      if (editId) await updateIlan(editId, data);
+      else await createIlan(data);
+      setSuccess(true);
+    } catch (e) {
+      setError(
+        (e as { code?: string }).code === "payment_pending"
+          ? "Bu ilan için ödeme bekleniyor. Düzenleme şu anda yapılamıyor."
+          : "İlan kaydedilemedi. Bilgilerin korundu; yeniden deneyebilirsin.",
+      );
+    } finally {
+      setBusy(false);
+      submitLock.current = false;
+    }
+  }
+  if (loading) return <p role="status">İlan yükleniyor…</p>;
+  if (loadFailed)
+    return (
+      <div role="alert" className="listing-panel">
+        <p>{error}</p>
+        <Link href={ROUTES.panel.ilanlarim} className="mt-5 inline-flex text-brand">
+          İlanlarıma dön
+        </Link>
+      </div>
+    );
+  if (success) return <ListingResult headingRef={heading} onSuccess={onSuccess}/>;
+  return (
+    <div className="listing-wizard">
+      <ListingSteps step={step} busy={busy} onStep={go}/>
+      <div className="listing-workspace">
+        <form ref={formRef} onSubmit={submit} noValidate className="listing-panel" aria-busy={busy}>
+          <fieldset disabled={busy} className="min-w-0">
+            <div className="listing-step-content" key={step}>
+              <h2 ref={heading} tabIndex={-1}>
+                {headings[step]}
+              </h2>
+              <p className="listing-step-description">{descriptions[step]}</p>
+              {error && (
+                <p role="alert" className="mb-6 rounded-lg border border-danger/30 bg-danger-bg p-4 text-sm text-danger">
+                  {error}
+                </p>
+              )}
+              {step === 0 && (
+                <RouteFields form={form} setForm={setForm} departure={departure} arrival={arrival} setDeparture={setDeparture} setArrival={setArrival} />
+              )}{" "}
+              {step === 1 && <DetailFields form={form} setForm={setForm} />} {step === 2 && <ContactFields form={form} setForm={setForm} />}{" "}
+              {step === 3 && <ListingReview form={form} departure={departure} arrival={arrival} onEdit={go} />}
+            </div>
+            <div className="listing-controls">
+              <div>
+                {step > 0 ? (
+                  <button type="button" onClick={() => go(step - 1)} className="listing-back">
+                    <ArrowLeft size={18} />
+                    Geri
+                  </button>
+                ) : (
+                  <span className="text-sm text-muted">1 / 4</span>
+                )}
+              </div>
+              <button type="submit" className="listing-next" disabled={busy}>
+                {busy ? "Gönderiliyor…" : step === 3 ? "İncelemeye gönder" : "Devam et"}
+                {!busy && <ArrowRight size={18} />}
+              </button>
+            </div>
+          </fieldset>
+        </form>
+        <ListingSummary form={form} departure={departure} />
+      </div>
+    </div>
+  );
 }

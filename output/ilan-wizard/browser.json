@@ -1,0 +1,11 @@
+{
+  "report": {
+    "routeValidationAndVillageMap": true,
+    "backRetainsDataAndContactValidation": true,
+    "reviewEditAndResponsive": true,
+    "darkTheme": true,
+    "realCreatePendingApprovalAndCoordinates": true,
+    "editClearsOptionalArrival": true
+  },
+  "errors": []
+}

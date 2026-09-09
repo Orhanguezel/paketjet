@@ -70,7 +70,7 @@ export interface CreateIlanInput {
   from_district?: string;
   to_district?: string;
   departure_date: string;
-  arrival_date?: string;
+  arrival_date?: string | null;
   total_capacity_kg?: number;
   price_per_kg?: number;
   currency?: string;
@@ -79,7 +79,7 @@ export interface CreateIlanInput {
   title?: string;
   description?: string;
   contact_phone: string;
-  contact_email?: string;
+  contact_email?: string | null;
   contact_name?: string;
   contact_address?: string;
 }

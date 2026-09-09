@@ -28,16 +28,5 @@ export default function IlanVerClient() {
   }
   if (!user) return null;
 
-  return (
-    <section className="bg-surface">
-      <div className="site-container py-10">
-        <div className="flex flex-col items-center">
-          <div className="w-full max-w-3xl">
-            <h1 className="text-3xl font-extrabold text-foreground mb-8">Ücretsiz ilan ver</h1>
-            <IlanVerForm />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <section className="listing-page"><div className="site-container"><h1>Ücretsiz ilan ver</h1><p className="listing-page-intro">Güzergâhını paylaş, yeni bağlantılara yer aç.</p><IlanVerForm /></div></section>;
 }
