@@ -1,0 +1,15 @@
+{
+  "report": {
+    "desktopColumns": true,
+    "uploadAndReload": true,
+    "replaceSameFile": true,
+    "invalidAndOversizePreservePhoto": true,
+    "identityPersisted": true,
+    "reloginPhoto": true,
+    "responsive": true,
+    "darkTheme": true,
+    "removePersists": true,
+    "passwordChangeAndRelogin": true
+  },
+  "errors": []
+}

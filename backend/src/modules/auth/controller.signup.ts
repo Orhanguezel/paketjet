@@ -1,3 +1,4 @@
+import {repoGetProfileById} from '../profiles/repository';
 import { requireAuth } from '@/common/middleware/auth';
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { randomUUID } from 'crypto';
@@ -158,7 +159,8 @@ export async function me(req: FastifyRequest, reply: FastifyReply) {
     const user = await repoGetUserById(p.sub);
     if(!user)return reply.code(401).send({error:{message:'invalid_user'}});
     const role = await getPrimaryRole(user.id);
-    return reply.send({user:{id:user.id,email:user.email,role,full_name:user.full_name,phone:user.phone,email_verified:user.email_verified,is_active:user.is_active}});
+    const profile=await repoGetProfileById(user.id);
+    return reply.send({user:{id:user.id,email:user.email,role,full_name:profile?.full_name??user.full_name,phone:profile?.phone??user.phone,avatar_url:profile?.avatar_url??null,email_verified:user.email_verified,is_active:user.is_active}});
   } catch (error) {
     return handleRouteError(reply, req, error, "auth_request_failed");
   }

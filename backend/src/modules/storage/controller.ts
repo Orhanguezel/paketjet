@@ -84,6 +84,7 @@ export async function uploadToBucket(req: FastifyRequest, reply: FastifyReply) {
     if (!mp) return reply.code(400).send({ message: "file_required" });
 
     const buf = await mp.toBuffer();
+    if (bucket === "avatars" && (!/^image\/(png|jpeg|webp|gif)$/.test(mp.mimetype) || buf.length > 5 * 1024 * 1024)) return reply.code(400).send({error:{message:"invalid_avatar_file"}});
     const desiredRaw = (query.path ?? mp.filename ?? "file").trim();
     const desired = normalizePath(bucket, desiredRaw);
     const cleanName = desired.split("/").pop()!.replace(/[^\w.\-]+/g, "_");

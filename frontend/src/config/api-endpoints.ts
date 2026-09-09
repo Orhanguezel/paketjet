@@ -85,6 +85,7 @@ export const API = {
   },
 
   storage: {
+    avatarUpload: "/api/storage/avatars/upload",
     assetByName: (folder: string, name: string) =>
       `/api/storage/assets/${encodeURIComponent(folder)}/${encodeURIComponent(name)}`,
   },

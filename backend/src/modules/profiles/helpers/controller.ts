@@ -8,7 +8,7 @@ export function parseProfileBody(body: unknown) {
   }
 
   const record = body as Record<string, unknown>;
-  return record.profile ?? {};
+  return record.profile ?? record;
 }
 
 export function buildProfilePatch(input: ProfileUpsertInput): Partial<ProfileInsert> {

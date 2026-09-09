@@ -131,6 +131,7 @@ function GirisForm({ logoUrl }: { logoUrl?: string | null }) {
     <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Tekrar hoş geldin</h1>
     <p className="mt-3 mb-8 text-muted">Hesabına giriş yap.</p>
     <form method="post" onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+      {searchParams.get("passwordChanged")==="1"&&<p role="status" className="rounded-xl bg-brand-bg px-4 py-3 text-sm text-brand">Şifren değiştirildi. Yeni şifrenle giriş yapabilirsin.</p>}
       {serverError && <div role="alert" className="rounded-xl border border-danger/20 bg-danger-bg px-4 py-3 text-sm text-danger">{serverError}</div>}
       <div><label htmlFor="login-email" className="mb-2 block text-sm font-medium">E-posta</label>
         <input disabled={!ready||loading} aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} id="login-email" type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="E-posta adresin" className={inputCls(errors.email)}/>
