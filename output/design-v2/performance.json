@@ -1,0 +1,30 @@
+{
+  "at": "2026-09-09T08:56:31.325Z",
+  "method": "Chrome desktop headless,390x844,cache disabled,150ms latency,1.6Mbps download,8s observation; LCP/CLS lab only. INP requires field interactions.",
+  "results": [
+    {
+      "lcp": 828,
+      "cls": 0.002658613297009363,
+      "resources": 23,
+      "transfer": 599207,
+      "videoElements": 1,
+      "loadedVideos": 0
+    },
+    {
+      "lcp": 784,
+      "cls": 0.0018002456813811286,
+      "resources": 23,
+      "transfer": 596619,
+      "videoElements": 1,
+      "loadedVideos": 0
+    },
+    {
+      "lcp": 780,
+      "cls": 0.0026587314078662964,
+      "resources": 23,
+      "transfer": 469226,
+      "videoElements": 1,
+      "loadedVideos": 0
+    }
+  ]
+}

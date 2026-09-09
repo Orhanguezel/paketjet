@@ -1,0 +1,65 @@
+{
+  "rows": [
+    {
+      "route": "/ilanlar",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/ilanlar",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/giris",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/giris",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/iletisim",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/iletisim",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/hakkimizda",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/hakkimizda",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/destek",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "route": "/destek",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    }
+  ],
+  "errors": []
+}

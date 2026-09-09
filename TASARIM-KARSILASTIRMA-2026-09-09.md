@@ -1,5 +1,7 @@
 # Tasarım uygulama ve karşılaştırma kaydı
 
+> **9 Eylül tasarım ikinci tur:** Kullanıcının fazla beyaz/sade bulduğu görünüm lavanta–açık mavi yüzeyler, güçlü lacivert başlıklar, hareketli rota ve mevcut marka videosuyla yenilendi. Güncel görsel kararlar ve testler [tasarım ikinci tur kaydında](output/design-v2/DESIGN.md). Son uygulama kodu `6115399`; canlı yayın kanıtı `output/design-v2/release.json`. Önceki beyaz ağırlıklı ekranlar ilk turun tarihsel kanıtıdır.
+
 Referanslar `output/imagegen/` altında; uygulama ekranları `output/verification/2026-09-09/` altında. Yapay görseller ürün ekranı veya canlı veri kanıtı değildir. Marka logosu korunur; beyaz yüzey, lacivert metin/sidebar, mor işlem rengi, ölçülü kenarlık ve boşluk uygulanır.
 
 | Aile | Referans | Uygulama ve bilinçli fark |

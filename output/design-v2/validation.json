@@ -7,8 +7,21 @@
   "typecheck": {
     "passed": true
   },
-  "lint_tail": "CP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element\n\n✖ 29 problems (13 errors, 16 warnings)\n\nerror: script \"lint\" exited with code 1\n",
+  "lint_tail": "g  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element\n\n✖ 16 problems (0 errors, 16 warnings)\n\n",
   "build_tail": "                                5m      1y\n├ ○ /sifre-sifirla                         4.4 kB         205 kB          5m      1y\n├ ○ /sifremi-unuttum                      4.06 kB         204 kB          5m      1y\n├ ƒ /sitemap.xml                            443 B         190 kB\n├ ○ /tasima-kurallari                       444 B         190 kB          5m      1y\n├ ƒ /ui-preview                           5.92 kB         210 kB\n└ ƒ /uye-ol                               5.95 kB         230 kB\n+ First Load JS shared by all              190 kB\n  ├ chunks/4bd1b696-c50f16783f5af41c.js   54.4 kB\n  ├ chunks/5857-73c2ac3e0b62fb60.js        132 kB\n  └ other shared chunks (total)           3.55 kB\n\n\nƒ Middleware                              43.1 kB\n\n○  (Static)   prerendered as static content\n●  (SSG)      prerendered as static HTML (uses generateStaticParams)\nƒ  (Dynamic)  server-rendered on demand\n\n",
   "browser_checks": 34,
-  "scope": "frontend public design; no database or payment changes"
+  "scope": "frontend public design; no database or payment changes",
+  "lint_command": "bun run lint (temporary development build moved outside the repository)",
+  "lint_errors": 0,
+  "lint_warnings": 16,
+  "production_builds": {
+    "backend": true,
+    "frontend": true,
+    "admin": true,
+    "code_commit": "6115399"
+  },
+  "live_browser_checks": 34,
+  "live_shared_page_checks": 10,
+  "live_code": "6115399",
+  "performance_median_lcp_ms": 784
 }

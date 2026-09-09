@@ -1,5 +1,7 @@
 # PaketJet — Teknik düzeltme ve tasarım yenileme ana çeklisti
 
+> **9 Eylül tasarım ikinci tur:** Kullanıcının fazla beyaz/sade bulduğu görünüm lavanta–açık mavi yüzeyler, güçlü lacivert başlıklar, hareketli rota ve mevcut marka videosuyla yenilendi. Güncel görsel kararlar ve testler [tasarım ikinci tur kaydında](output/design-v2/DESIGN.md). Son uygulama kodu `6115399`; canlı yayın kanıtı `output/design-v2/release.json`. Önceki beyaz ağırlıklı ekranlar ilk turun tarihsel kanıtıdır.
+
 **Tarih:** 9 Eylül 2026. **Durum:** Otonom uygulama ve yayın tamamlandı; dış bağımlılıklar gerekçeleriyle açık. **Kapsam:** 15 faz, 145 görev, 88 kaynak sayfası.
 
 Kaynaklar: [güncel durum raporu](DURUM-RAPORU-2026-09-09.md), [tasarım yönergesi](TASARIM-YONERGESI-2026-09-09.md), [88 sayfalık kaynak envanteri](SAYFA-ENVANTERI-2026-09-09.csv), [son canlı tarayıcı kanıtları](output/verification/2026-09-09/live-browser.json).

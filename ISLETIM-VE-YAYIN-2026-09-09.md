@@ -1,5 +1,7 @@
 # PaketJet işletim ve yayın kaydı
 
+> **Son tasarım yayını:**9 Eylül2026 08:55:42 UTC, kod `6115399754a9ddc78114969553cd69347d9ffce0`, aktif dizin `/var/www/paketjet-releases/6115399754a9`. Üç PM2 süreci bu dizinden çalışır; `/var/www/paketjet-current` burayı gösterir. Önceki tasarıma dönüş ecosystem kaydı `/var/backups/paketjet/renewal-20260909/design-v2-rollback.json` (`e9317bb`). Aşağıdaki ilk yayın saatleri ve kayıtları tarihsel olarak korunur. Kanıt: `output/design-v2/release.json`.
+
 Bu sürüm kullanıcı talimatıyla yetkili yenilemedir. Aktif çalışma dizini `/var/www/paketjet-current` → `/var/www/paketjet-releases/e9317bb5cb81`; eski kaynak ve upload arşivi `/var/www/paketjet`; SSH `vps-paketjet`. Kamu sitesi paketjet.com, yönetim paneli panel.paketjet.com. Backend 8070, web 3070, admin 3071. PM2 süreçleri Node/Next çalıştırır; MySQL ve Nginx sistem servisleridir. Docker/Nginx dosyaları değiştirilmez.
 
 ## Yedek ve yükseltme

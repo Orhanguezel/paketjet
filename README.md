@@ -32,3 +32,5 @@ Kod düzeni ve sınırlar [AGENTS.md](AGENTS.md) içindedir. `project.portfolio.
 - [Yedek, migration, yayın ve geri dönüş](ISLETIM-VE-YAYIN-2026-09-09.md)
 
 Etkin kart sağlayıcısı doğrulanmış gerçek anahtarlarla açılana kadar `PAYMENT_PROVIDER=disabled` kullanılır. Eski TL cüzdanları arşivdir; kendiliğinden satın alma hakkına veya gelire dönüştürülmez. Eski ödeme callback'leri mutabakat için korunur.
+
+- [Tasarım ikinci tur: renk, hareket ve canlı doğrulama](output/design-v2/DESIGN.md)

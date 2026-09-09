@@ -27,3 +27,11 @@ Kullanılan gerçek animasyon: /uploads/media/hero/arkaplan.mp4 (mevcut, yaklaş
 - Yerleşik tarayıcı aracı bulunmadığından Playwright Chromium kullanıldı.13 frontend testi ve34 tarayıcı kontrolü geçti. Üretim build başarılı; lint0 hata. Kanıtverification.json ve validation.json.
 
 Bu turda bilinçli marka/video/metin farkları dışında konseptin yerleşim, renk ve hareket yönü uygulandı. Görsel sadakat, işlev testinden ayrıca kontrol edildi. Kullanıcının görsel beğenisi için tasarımın gerçek canlı sürümü esas alınır.
+
+## Canlı kapanış
+
+6115399754a9ddc78114969553cd69347d9ffce0 kodu9 Eylül2026 08:55:42 UTC'de yayınlandı. Üç PM2 süreci doğru sürüm dizininde online, restart0; health ve üç sunucu build başarılı. Canlı34 etkileşim/matris kontrolü ve ilan/giriş/iletişim/hakkımızda/destek sayfalarında10 ortak yüzey kontrolü geçti.
+
+Canlı mobil laboratuvar üç koşu LCP828/784/780ms (ortanca784ms), CLS yaklaşık0,00266; ilk açılışta video yüklemesi0. Ölçüm390×844,150ms gecikme,1,6Mbps, cache kapalı; saha metriği/INP değildir. Tasarım hareketi ilk açılış videosu yükü oluşturmuyor.
+
+Konseptin gerçek1505×1045 ve1073×1466 boyutlarında canlı tarayıcı görüntüsü alındı; ayrıca390/1440 genişlikte tam sayfa açık/koyu tema ekranları kontrol edildi. İlk ekran native karşılaştırmada metin, kolon oranı, arama formu, palet, görsel çerçevesi ve boşluklar incelendi. Bölüm yükseklikleri gerçek metin ve mevcut video en-boy oranına göre uyarlanır; birebir raster kopyası iddiası yok. Konseptteki sahte marka/ek sloganlar yerine gerçek marka korunur. Kayda geçirilmiş bu farklarla tasarım yönüne sadakat ayrıca görsel olarak doğrulandı; son turda taşma, kesik düğme veya okunamayan tarih alanı kalmadı.

@@ -86,3 +86,9 @@ Bu bölüm yayın öncesi kapıdır. Commit/PM2/canlı veri ve yayın sonrası �
 - Gerçek cron03:00 UTC otomatik health/bakım çalışması kanıtlandı. Günlük/haftalık yedek, logrotate, disk eşiği kurulu.10 Eylül02:43 UTC /16 Eylül02:43 UTC takipleri zamanlandı, sonuçları henüz yok.
 - Kalan7 madde ve somut bağımlılıkları güncel durum raporu ile ana çeklistte. Ödeme disabled; eksik sağlayıcı/mail/Maps/alarm yapılandırması sahte başarıyla gizlenmedi.
 - Başlangıç kullanıcı değişiklikleri `.gitignore`, iki tsbuildinfo ve `project.portfolio.json` korundu, commit kapsamına alınmadı. Tarihsel untracked listeler silinmedi. Sunucudaki geçici denetim betikleri özel işletim arşivine taşındı. Canlı worktree'deki uploads symlink'i kalıcı medya arşividir.
+
+## Tasarım ikinci tur — kullanıcı görsel düzeltmesi
+
+Kullanıcı ilk yenilemeyi fazla beyaz/steril buldu; eski animasyonları geliştirerek kullanma yönü verdi. Ana sayfa ve ortak kamu sitesi tasarımı lavanta/açık mavi yüzeyler, güçlü lacivert başlıklar, geniş arama formu, hareketli rota ve mevcut marka videosuyla yenilendi. Logo korundu. Ödeme/DB davranışı değiştirilmedi.
+
+`6115399` commit/push; üç sunucu build, yedek ve idempotent migration kapısı geçti.9 Eylül08:55:42 UTC'de canlıya alındı. Son test/ekran/performans ve PM2 kanıtları `output/design-v2/` altında. Ana138/145 kapanış sayısı ve yedi dış bağımlılık değişmedi; bu tur kullanıcı yönüne göre görsel revizyondur.
