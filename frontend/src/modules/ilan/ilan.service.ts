@@ -15,6 +15,8 @@ export function listIlans(filters?: IlanSearchFilters): Promise<IlanListResponse
   const params = new URLSearchParams();
   if (filters?.from_city) params.set("from_city", filters.from_city);
   if (filters?.to_city) params.set("to_city", filters.to_city);
+  if (filters?.from_province) params.set("from_province", filters.from_province);
+  if (filters?.to_province) params.set("to_province", filters.to_province);
   if (filters?.date) params.set("date", filters.date);
   if (filters?.vehicle_type) params.set("vehicle_type", filters.vehicle_type);
   if (filters?.page) params.set("page", String(filters.page));

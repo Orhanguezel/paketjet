@@ -54,6 +54,8 @@ export interface IlanListResponse {
 export interface IlanSearchFilters {
   from_city?: string;
   to_city?: string;
+  from_province?: string;
+  to_province?: string;
   date?: string;
   vehicle_type?: VehicleType;
   page?: number;

@@ -46,3 +46,13 @@ Uygulama sürümü `d0e28385e7cbfc94a940eccca80484cd8e5bddd1`, 10:24:29 UTC tari
 - [x] Yayın öncesi/sonrası kayıt sayıları ve cüzdan toplamı aynı. Canlı test kullanıcısı veya ilanı oluşturulmadı; yazma akışları izole test veritabanında doğrulandı.
 
 Sanitize edilmiş yayın kanıtları: [adres doğrulaması](output/locations/verification.json). Tarayıcı ekranları yerel `/tmp/paketjet-address/` dizininde tutuldu.
+
+
+## Sonuç bulunamadığında il alternatifleri
+
+- Önce tam adres ve tüm filtrelerle normal arama yapılır. Toplam sonuç sıfırsa, adresin açıkça içerdiği Türkiye iliyle ikinci arama yapılır.
+- Kalkış/varış yönü, tarih, araç tipi ve sayfalama korunur. Bilinmeyen karşı uç filtresi kaldırılmaz; il bilgisi olmayan serbest adres için tahmin yapılmaz.
+- Alternatifler “Aynı ildeki alternatifler” başlığı ve hangi uçta hangi ilin kullanıldığıyla ayrılır. Orijinal arama alanları/URL korunur. Kilometre yakınlığı veya en yakın sıralaması iddiası yoktur.
+- Backend `from_province` / `to_province` eşitlik filtresi kullanır; başka illerdeki benzer mahalle/cadde adları sonuçlara karışmaz. Aktiflik, tarih ve özel iletişim gizliliği mevcut public sorguda korunur.
+- 22 frontend testi geçti. Backend turunda 93 test geçti, bir gizlilik testi eşzamanlı derleme sırasında 5 saniye sınırını aştı; tek başına tekrarında 3,1 saniyede geçti (94 testin tamamı doğrulandı). Backend/site üretim derlemeleri başarılı.
+- Yerel Chromium 1440/390 px: il alternatifleri, orijinal adresin korunması, normal şehir sonuçları, tarih/araç kısıtı ve bilinmeyen adres durumu geçti; sayfa hatası/taşma yok.

@@ -44,6 +44,8 @@ export const createIlanSchema = ilanFields.superRefine(validateDates);
 export const updateIlanSchema = ilanFields.partial().superRefine(validateDates);
 
 export const searchIlansSchema = z.object({
+  from_province: z.string().trim().min(1).max(128).optional(),
+  to_province: z.string().trim().min(1).max(128).optional(),
   from_city: z.string().max(400).optional(),
   to_city: z.string().max(400).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => Number.isFinite(new Date(value).getTime()), "Geçerli tarih girin").optional(),

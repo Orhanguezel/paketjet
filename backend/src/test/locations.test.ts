@@ -26,3 +26,17 @@ it('province suggestion still finds older city-only examples and validates short
  const list=await repoListIlans({from_city:'İzmir, Türkiye',page:1,limit:100});expect(list.data.some(i=>i.from_city==='İzmir'&&!i.from_location)).toBe(true);
  const app=await getTestApp();expect((await app.inject({method:'GET',url:'/api/locations/search?q=ab'})).statusCode).toBe(400);
 });
+it('province alternatives exclude similarly named districts and preserve date, vehicle and destination',async()=>{
+ const app=await getTestApp(),{token}=await registerUser(app,{email:randomEmail(),password:'Test1234!',role:'carrier'});
+ const departure=new Date(Date.now()+86400000*20).toISOString();
+ async function create(from_city:string,from_district:string){
+  const response=await app.inject({method:'POST',url:'/api/ilanlar',headers:authHeaders(token!),payload:{from_city,from_district,to_city:'Ankara',departure_date:departure,vehicle_type:'van',contact_phone:'05551234567'}});
+  expect(response.statusCode).toBe(201);const row=response.json();await repoUpdateIlan(row.id,{status:'active'},true);return row.id;
+ }
+ const matching=await create('Van','İpekyolu'),unrelated=await create('Nevşehir','Van');
+ const query=new URLSearchParams({from_province:'Van',to_province:'Ankara',date:departure.slice(0,10),vehicle_type:'van',limit:'100'});
+ const response=await app.inject({method:'GET',url:'/api/ilanlar?'+query});expect(response.statusCode).toBe(200);
+ const rows=response.json().data;expect(rows.some((r:{id:string})=>r.id===matching)).toBe(true);expect(rows.some((r:{id:string})=>r.id===unrelated)).toBe(false);
+ query.set('vehicle_type','truck');const wrongVehicle=await app.inject({method:'GET',url:'/api/ilanlar?'+query});expect(wrongVehicle.json().data.some((r:{id:string})=>r.id===matching)).toBe(false);
+ query.set('vehicle_type','van');query.set('to_province','İzmir');const wrongDestination=await app.inject({method:'GET',url:'/api/ilanlar?'+query});expect(wrongDestination.json().data.some((r:{id:string})=>r.id===matching)).toBe(false);
+});

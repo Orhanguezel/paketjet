@@ -1,5 +1,5 @@
 import {locationValueSchema} from '../../locations/validation';
-import {locationFilter} from '../location-filter';
+import {locationFilter,provinceFilter} from '../location-filter';
 // src/modules/ilanlar/helpers/repository.ts
 import { and, desc, eq, gte, lte, type SQL } from "drizzle-orm";
 import { ilanlar, type NewIlan } from "../schema";
@@ -47,6 +47,8 @@ export function stripIlanContact<T extends Record<string, unknown>>(ilan: T) {
 export function buildIlanListWhere(filters: {
   from_city?: string;
   to_city?: string;
+  from_province?: string;
+  to_province?: string;
   date?: string;
   vehicle_type?: string;
   status?: string;
@@ -55,6 +57,8 @@ export function buildIlanListWhere(filters: {
 
   if (filters.from_city) conditions.push(locationFilter('from',filters.from_city));
   if (filters.to_city) conditions.push(locationFilter('to',filters.to_city));
+  if (filters.from_province) conditions.push(provinceFilter('from',filters.from_province));
+  if (filters.to_province) conditions.push(provinceFilter('to',filters.to_province));
   if (filters.date) {
     const start = new Date(`${filters.date}T00:00:00+03:00`);
     const end = new Date(start.getTime() + 86400000 - 1);

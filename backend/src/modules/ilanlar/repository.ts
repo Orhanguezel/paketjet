@@ -55,6 +55,8 @@ export async function repoGetIlanById(id: string) {
 export async function repoListIlans(filters: {
   from_city?: string;
   to_city?: string;
+  from_province?: string;
+  to_province?: string;
   date?: string;
   vehicle_type?: string;
   status?: string;

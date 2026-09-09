@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { listIlans } from "@/modules/ilan/ilan.service";
+import { searchIlansWithAlternatives } from "@/modules/ilan/ilan-search.service";
 import type { VehicleType } from "@/modules/ilan/ilan.type";
 import { getPageMetadata } from "@/lib/seo";
 import IlanlarClient from "./ilanlar-client";
@@ -41,14 +41,14 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
   const page = normalizePage(resolved.page);
 
   const [result, listingCreditPrice] = await Promise.all([
-    listIlans({
+    searchIlansWithAlternatives({
       from_city: filters.from_city || undefined,
       to_city: filters.to_city || undefined,
       date: filters.date || undefined,
       vehicle_type: filters.vehicle_type || undefined,
       page,
       limit: 20,
-    }).then(r=>({...r,error:false})).catch(() => ({ data: [], total: 0, page, limit: 20, error:true })),
+    }).then(r=>({...r,error:false})).catch(() => ({ data: [], total: 0, page, limit: 20, alternativeScope:null, error:true })),
     getListingCreditPrice().catch(() => null),
   ]);
 
@@ -57,6 +57,7 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
       <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "İlanlar" }]} />
       <IlanlarClient
         initialError={result.error}
+        alternativeScope={result.alternativeScope}
         initialIlans={result.data}
         initialTotal={result.total}
         initialPage={page}
