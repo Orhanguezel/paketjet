@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS payment_events (
+ id CHAR(36) PRIMARY KEY,
+ payment_ref VARCHAR(255) NOT NULL,
+ actor_id VARCHAR(64) NOT NULL,
+ event VARCHAR(48) NOT NULL,
+ note TEXT NULL,
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+ INDEX payment_events_ref(payment_ref)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS credit_adjustments (
+ id CHAR(36) PRIMARY KEY,
+ user_id CHAR(36) NOT NULL,
+ actor_id CHAR(36) NOT NULL,
+ reason TEXT NOT NULL,
+ created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

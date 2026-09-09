@@ -1,10 +1,10 @@
-export {
-  type CategoryCreatePayload,
-  type CategoryDto,
-  type CategoryListQueryParams,
-  type CategoryPublicListQueryParams,
-  type CategoryReorderItem,
-  type CategoryReorderPayload,
-  type CategorySetImagePayload,
-  type CategoryUpdatePayload,
+export type {
+  CategoryCreatePayload,
+  CategoryDto,
+  CategoryListQueryParams,
+  CategoryPublicListQueryParams,
+  CategoryReorderItem,
+  CategoryReorderPayload,
+  CategorySetImagePayload,
+  CategoryUpdatePayload,
 } from '@/integrations/shared/category-types';

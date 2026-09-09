@@ -1,0 +1,160 @@
+import { db } from '@/db/client';
+import { randomUUID } from 'crypto';
+import { eq, sql } from 'drizzle-orm';
+import { hash as argonHash } from 'argon2';
+import { users, refresh_tokens } from './schema';
+import { userRoles } from '@/modules/userRoles';
+import { profiles } from '@/modules/profiles';
+import { notifications, type NotificationInsert } from '@/modules/notifications';
+import { getPrimaryRole, type RoleName } from '@/modules/userRoles';
+import {
+  buildAdminUserRoleRows,
+  buildAdminUsersWhere,
+  buildRefreshExpiryDate,
+  createRefreshTokenRaw,
+  parseRefreshTokenJti,
+  REFRESH_MAX_AGE,
+  resolveAdminUsersSort,
+  sha256,
+} from './helpers';
+import {type UserRow} from './repository.shared';
+export async function repoGetUserByEmail(email: string) {
+  const [row] = await db.select().from(users).where(eq(users.email, email)).limit(1);
+  return row ?? null;
+}
+export async function repoGetUserById(id: string) {
+  const [row] = await db.select().from(users).where(eq(users.id, id)).limit(1);
+  return row ?? null;
+}
+export async function repoCreateUser(data: {
+  id: string;
+  email: string;
+  password_hash: string;
+  full_name?: string;
+  phone?: string;
+  rules_accepted_at?: Date;
+  rules_accepted_version?: string;
+  kvkk_explicit_consent?: number;
+  kvkk_consent_at?: Date;
+  kvkk_consent_version?: string;
+}) {
+  await db.insert(users).values({
+    id: data.id,
+    email: data.email,
+    password_hash: data.password_hash,
+    full_name: data.full_name,
+    phone: data.phone,
+    is_active: 1,
+    email_verified: 0,
+    rules_accepted_at: data.rules_accepted_at,
+    rules_accepted_version: data.rules_accepted_version,
+    kvkk_explicit_consent: data.kvkk_explicit_consent ?? 0,
+    kvkk_consent_at: data.kvkk_consent_at,
+    kvkk_consent_version: data.kvkk_consent_version,
+  });
+}
+export async function repoUpdateUserEmail(userId: string, email: string) {
+  await db.update(users).set({ email, updated_at: new Date() }).where(eq(users.id, userId));
+}
+export async function repoUpdateUserPassword(userId: string, password: string) {
+  const password_hash = await argonHash(password);
+  await db.update(users).set({ password_hash, auth_version: sql`${users.auth_version}+1`, reset_token:null, reset_token_expires:null, updated_at: new Date() }).where(eq(users.id, userId));
+}
+export async function repoUpdateLastSignIn(userId: string) {
+  await db.update(users).set({ last_sign_in_at: new Date(), updated_at: new Date() }).where(eq(users.id, userId));
+}
+export async function repoAssignRole(userId: string, role: RoleName) {
+  await db.insert(userRoles).values({ id: randomUUID(), user_id: userId, role });
+}
+export async function repoEnsureProfileRow(
+  userId: string,
+  defaults?: { full_name?: string | null; phone?: string | null },
+) {
+  const [existing] = await db.select({ id: profiles.id }).from(profiles).where(eq(profiles.id, userId)).limit(1);
+  if (!existing) {
+    await db.insert(profiles).values({
+      id: userId,
+      full_name: defaults?.full_name ?? null,
+      phone: defaults?.phone ?? null,
+    });
+  } else if (defaults && (defaults.full_name || defaults.phone)) {
+    await db
+      .update(profiles)
+      .set({
+        ...(defaults.full_name ? { full_name: defaults.full_name } : {}),
+        ...(defaults.phone ? { phone: defaults.phone } : {}),
+        updated_at: new Date(),
+      })
+      .where(eq(profiles.id, userId));
+  }
+}
+export async function repoCreateRefreshToken(userId: string, tokenRaw: string) {
+  const jti = parseRefreshTokenJti(tokenRaw);
+  await db.insert(refresh_tokens).values({
+    id: jti,
+    user_id: userId,
+    token_hash: sha256(tokenRaw),
+    expires_at: buildRefreshExpiryDate(),
+  });
+}
+export async function repoGetRefreshToken(jti: string) {
+  const [row] = await db.select().from(refresh_tokens).where(eq(refresh_tokens.id, jti)).limit(1);
+  return row ?? null;
+}
+export async function repoRevokeRefreshToken(jti: string) {
+  await db.update(refresh_tokens).set({ revoked_at: new Date() }).where(eq(refresh_tokens.id, jti));
+}
+export async function repoRevokeAllUserRefreshTokens(userId: string) {
+  await db.update(refresh_tokens).set({ revoked_at: new Date() }).where(eq(refresh_tokens.user_id, userId));
+}
+export async function repoRotateRefreshToken(oldRaw: string, userId: string): Promise<string> {
+  const oldJti = parseRefreshTokenJti(oldRaw);
+  await db.update(refresh_tokens).set({ revoked_at: new Date() }).where(eq(refresh_tokens.id, oldJti));
+
+  const { jti: newJti, raw: newRaw } = createRefreshTokenRaw();
+  await db.insert(refresh_tokens).values({
+    id: newJti,
+    user_id: userId,
+    token_hash: sha256(newRaw),
+    expires_at: buildRefreshExpiryDate(),
+  });
+  await db.update(refresh_tokens).set({ replaced_by: newJti }).where(eq(refresh_tokens.id, oldJti));
+  return newRaw;
+}
+export async function repoCreatePasswordChangedNotification(userId: string, message?: string) {
+  const notif: NotificationInsert = {
+    id: randomUUID(),
+    user_id: userId,
+    title: 'Şifreniz güncellendi',
+    message: message ?? 'Hesap şifreniz başarıyla değiştirildi. Bu işlemi siz yapmadıysanız lütfen en kısa sürede bizimle iletişime geçin.',
+    type: 'password_changed',
+    is_read: false,
+    created_at: new Date(),
+  };
+  await db.insert(notifications).values(notif);
+}
+export async function repoAdminListUsers(params: {
+  q?: string;
+  is_active?: boolean;
+  role?: string;
+  sort?: string;
+  order?: string;
+  limit: number;
+  offset: number;
+}) {
+  const where = buildAdminUsersWhere(params);
+  const rows = await db
+    .select()
+    .from(users)
+    .where(where)
+    .orderBy(resolveAdminUsersSort(params.sort, params.order))
+    .limit(params.limit)
+    .offset(params.offset);
+
+  const withRole = await Promise.all(rows.map(async (u) => ({ ...u, role: await getPrimaryRole(u.id) })));
+  return buildAdminUserRoleRows(withRole, params.role);
+}
+export async function repoAdminUpdateUser(id: string, patch: Partial<UserRow>) {
+  await db.update(users).set({ ...patch, updated_at: new Date() }).where(eq(users.id, id));
+  return repoGetUserById(id);
+}

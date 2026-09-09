@@ -33,7 +33,7 @@ export default function NavBadge({ icon, label, href, active, badgeCount, onClic
         <span
           className={cn(
             "grid min-w-6 place-items-center rounded-full px-1.5 py-0.5 text-[10px] font-black",
-            active ? "bg-white text-brand" : "bg-brand text-white"
+            active ? "bg-white text-brand" : "bg-action text-white"
           )}
         >
           {badgeCount > 99 ? "99+" : badgeCount}

@@ -1,3 +1,5 @@
+import { requireAuth } from "@/common/middleware/auth";
+import { requireAdmin } from "@/common/middleware/roles";
 // src/modules/storage/router.ts
 import type { FastifyInstance } from "fastify";
 import { publicAssetByName } from "./asset.controller";
@@ -10,7 +12,7 @@ export async function registerStorage(app: FastifyInstance) {
   // global API rate-limit'ine dahil edilmez.
   app.get(`${B}/assets/:folder/:name`, { config: { rateLimit: false } }, publicAssetByName);
   app.get(`${B}/:bucket/*`, { config: { rateLimit: false } }, publicServe);
-  app.post(`${B}/:bucket/upload`, uploadToBucket);
-  app.post(`${B}/uploads/sign-put`, signPut);
-  app.post(`${B}/uploads/sign-multipart`, signMultipart);
+  app.post(`${B}/:bucket/upload`, { preHandler: [requireAuth] }, uploadToBucket);
+  app.post(`${B}/uploads/sign-put`, { preHandler: [requireAuth, requireAdmin] }, signPut);
+  app.post(`${B}/uploads/sign-multipart`, { preHandler: [requireAuth, requireAdmin] }, signMultipart);
 }

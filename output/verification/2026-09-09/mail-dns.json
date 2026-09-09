@@ -1,0 +1,37 @@
+{
+  "at": "2026-09-09T02:06:19.935Z",
+  "domains": {
+    "paketjet.com": {
+      "mx": "ENODATA",
+      "txt": "ENODATA",
+      "dmarc": [
+        [
+          "v=DMARC1; p=quarantine; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net;"
+        ]
+      ]
+    },
+    "paketjet.net": {
+      "mx": [
+        {
+          "exchange": "smtp.secureserver.net",
+          "priority": 0
+        },
+        {
+          "exchange": "mailstore1.secureserver.net",
+          "priority": 10
+        }
+      ],
+      "txt": [
+        [
+          "v=spf1 include:secureserver.net -all"
+        ]
+      ],
+      "dmarc": [
+        [
+          "v=DMARC1; p=quarantine; adkim=r; aspf=r; rua=mailto:dmarc_rua@onsecureserver.net;"
+        ]
+      ]
+    }
+  },
+  "dkim": "selector_not_available"
+}

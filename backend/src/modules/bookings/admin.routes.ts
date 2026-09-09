@@ -1,3 +1,4 @@
+import {retiredOperation} from '../purchases/legacy.controller';
 // =============================================================
 // FILE: src/modules/bookings/admin.routes.ts
 // =============================================================
@@ -8,6 +9,6 @@ const B = '/bookings';
 export async function registerBookingsAdmin(app: FastifyInstance) {
   app.get(`${B}`, adminListBookings);
   app.get(`${B}/:id`, adminGetBooking);
-  app.patch(`${B}/:id/status`, adminUpdateBookingStatus);
-  app.patch(`${B}/:id/confirm-payment`, adminConfirmTransferPayment);
+  app.patch(`${B}/:id/status`, retiredOperation);
+  app.patch(`${B}/:id/confirm-payment`, retiredOperation);
 }

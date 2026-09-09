@@ -8,7 +8,7 @@
 // - Locale select disabled on global tabs
 // =============================================================
 
-import * as React from 'react';
+import type * as React from 'react';
 import { Search, RefreshCcw } from 'lucide-react';
 import { useAdminTranslations } from '@/i18n';
 import { usePreferencesStore } from '@/stores/preferences/preferences-provider';

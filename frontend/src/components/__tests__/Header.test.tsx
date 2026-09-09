@@ -29,7 +29,7 @@ describe("Header", () => {
     });
   });
 
-  it('auth olmadan "Giris Yap" ve "Uye Ol" gorunur', () => {
+  it('auth olmadan "Giris Yap" ve "Ücretsiz ilan ver" gorunur', () => {
     vi.mocked(useAuthStore).mockReturnValue({
       isAuthenticated: false,
       logout: vi.fn(),
@@ -38,7 +38,7 @@ describe("Header", () => {
     render(<Header />);
 
     expect(screen.getByRole("link", { name: /giriş yap/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /üye ol/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Ücretsiz İlan Ver" })).toBeInTheDocument();
   });
 
   it('auth ile "Panel" ve "Cikis" gorunur', () => {
@@ -49,7 +49,7 @@ describe("Header", () => {
 
     render(<Header />);
 
-    expect(screen.getByRole("link", { name: /panel/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /hesabım/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /çıkış/i })).toBeInTheDocument();
   });
 });

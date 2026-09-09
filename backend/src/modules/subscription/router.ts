@@ -1,3 +1,4 @@
+import { retiredOperation } from "../purchases/legacy.controller";
 // src/modules/subscription/router.ts
 import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
@@ -13,6 +14,6 @@ export async function registerSubscription(app: FastifyInstance) {
   // Auth required
   app.get(`${B}/my`, { preHandler: [requireAuth] }, getMySubscription);
   app.get(`${B}/history`, { preHandler: [requireAuth] }, listMyHistory);
-  app.post(`${B}/purchase`, { preHandler: [requireAuth] }, purchasePlan);
+  app.post(`${B}/purchase`, { preHandler: [requireAuth] }, retiredOperation);
   app.post(`${B}/cancel`, { preHandler: [requireAuth] }, cancelSubscription);
 }

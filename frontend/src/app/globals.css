@@ -14,6 +14,7 @@
    Örnek: bg-brand, text-foreground, border-border vb.
 ───────────────────────────────────────────────────────── */
 @theme {
+  --color-action: hsl(256 67% 49%);
   /* Brand — Mor (Primary) */
   --color-brand:        hsl(var(--col-brand));
   --color-brand-dark:   hsl(var(--col-brand-dark));
@@ -391,3 +392,14 @@
 [data-theme="dark"] .how-it-works-step-bg {
   color: hsl(258 86% 72% / 0.22);
 }
+
+/* September 2026 shared interface tokens */
+:root:not([data-theme="dark"]) { --col-brand: 256 67% 49%; --col-brand-dark: 256 67% 40%; --col-cta: 256 67% 49%; --col-cta-dark: 256 67% 40%; --col-cta-light: 256 70% 96%; --col-border-soft: 218 25% 88%; --col-foreground: 228 65% 12%; --col-panel-ink: 228 65% 12%; --col-panel-surface: 0 0% 100%; }
+.site-container { width: min(100% - 3rem, 70rem); margin-inline:auto; }
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button:not(:disabled), summary { cursor:pointer; }
+button:disabled { cursor:not-allowed; }
+input, select, textarea { max-width:100%; }
+@media(max-width:640px) { .site-container {width:calc(100% - 2rem);} input,select,textarea {font-size:1rem;} }
+@media(prefers-reduced-motion:reduce) { *,*::before,*::after {animation-duration:0.01ms!important;transition-duration:0.01ms!important;scroll-behavior:auto!important;} }

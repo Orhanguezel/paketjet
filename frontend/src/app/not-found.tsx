@@ -15,7 +15,7 @@ export default function NotFound() {
           </p>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark transition-colors"
+            className="inline-flex items-center justify-center rounded-xl bg-action px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-dark transition-colors"
           >
             Ana Sayfa
           </Link>

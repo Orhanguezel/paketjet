@@ -130,7 +130,7 @@ export function AppSidebar({
             )}
           </div>
           <div className="flex flex-col gap-0.5 leading-none">
-            <span className="font-bold text-lg tracking-tight text-foreground">{cleanedName}</span>
+            <span className="font-semibold text-lg tracking-tight text-sidebar-foreground">{cleanedName}</span>
             <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">{panelSub}</span>
           </div>
         </Link>

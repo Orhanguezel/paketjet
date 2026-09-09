@@ -53,9 +53,9 @@ export default async function SiteShell({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header logoUrl={logoUrl} logoDarkUrl={logoDarkUrl} logoAlt={logoAlt} navLinks={headerMenu} />
-      <div className="flex-grow">{children}</div>
+      <main id="main-content" className="flex-grow">{children}</main>
       <Footer
-        logoUrl={logoDarkUrl || logoUrl}
+        logoUrl={logoUrl}
         logoAlt={logoAlt}
         about={footerAbout}
         contact={contact}

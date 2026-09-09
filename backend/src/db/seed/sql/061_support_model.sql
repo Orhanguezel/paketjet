@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS renewal_content_snapshots (
+ source_key VARCHAR(190) PRIMARY KEY, snapshot JSON NOT NULL, created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT IGNORE INTO renewal_content_snapshots(source_key,snapshot)
+ SELECT CONCAT('faq:',faq_id,':',locale),JSON_OBJECT('question',question,'answer',answer) FROM support_faqs_i18n;
+UPDATE support_faqs_i18n SET answer='PaketJet, taşıyıcı güzergâh ilanları ile göndericileri buluşturur. Gönderici uygun ilanın özel iletişim bilgilerine erişim satın alır; taşıma koşullarını taraflar doğrudan görüşür.' WHERE faq_id='66666666-6666-4666-8666-666666666661' AND locale='tr';
+UPDATE support_faqs_i18n SET answer='Güzergâh ve tarih filtreleriyle uygun ilanı bulun. İletişim erişimini satın alın veya ilan alma hakkınızı kullanın. Taşımanın ücretini ve teslim koşullarını taşıyıcıyla doğrudan görüşün.' WHERE faq_id='66666666-6666-4666-8666-666666666662' AND locale='tr';
+UPDATE support_faqs_i18n SET answer='Hesabınızla giriş yapıp güzergâh, hareket tarihi, araç ve özel iletişim bilgileriyle ücretsiz ilan verebilirsiniz. İlanınız incelemeden sonra yayımlanır.' WHERE faq_id='66666666-6666-4666-8666-666666666663' AND locale='tr';
+UPDATE support_faqs_i18n SET question='İletişim erişimi ücreti neleri kapsar?',answer='Platformda ödenen tutar ilanın özel iletişim bilgilerine erişim içindir; taşıma ücreti değildir. Ekranda kullanılabilir görünen ödeme yöntemi veya mevcut ilan alma hakkınızla erişebilirsiniz. Taşıma bedeli ve koşulları taraflar arasında belirlenir.' WHERE faq_id='66666666-6666-4666-8666-666666666664' AND locale='tr';
+UPDATE support_faqs_i18n SET question='PaketJet kargo takibi sunuyor mu?',answer='PaketJet kargo takip hizmeti sunmaz. Taşımanın durumu için iletişim bilgilerine eriştiğiniz taşıyıcıyla doğrudan görüşün. Satın aldığınız iletişime hesabınızdan yeniden ulaşabilirsiniz.' WHERE faq_id='66666666-6666-4666-8666-666666666665' AND locale='tr';
+UPDATE email_templates SET is_active=0 WHERE template_key IN ('booking_created','booking_confirmed','booking_cancelled','booking_delivered','booking_in_transit','wallet_deposit','wallet_refund','carrier_payment');

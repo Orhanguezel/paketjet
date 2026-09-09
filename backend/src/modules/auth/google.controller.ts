@@ -63,7 +63,7 @@ export async function googleAuth(req: FastifyRequest, reply: FastifyReply) {
       const id = randomUUID();
       const password_hash = await argonHash(randomUUID() + randomUUID());
       await repoCreateUser({ id, email, password_hash, full_name: info.name, rules_accepted_at: new Date() });
-      role = adminEmails.has(email) ? 'admin' : 'customer';
+      role = 'customer';
       await repoAssignRole(id, role);
       await repoEnsureProfileRow(id, { full_name: info.name ?? null, phone: null });
       u = await repoGetUserById(id);
@@ -73,6 +73,7 @@ export async function googleAuth(req: FastifyRequest, reply: FastifyReply) {
 
     if (!u) return reply.status(500).send({ error: { message: 'user_create_failed' } });
 
+    if (!u.is_active) return reply.code(401).send({ error: { message: "account_disabled" } });
     await repoUpdateLastSignIn(u.id);
     const { access, refresh } = await issueTokens(req.server, u, role);
     setAccessCookie(reply, access);

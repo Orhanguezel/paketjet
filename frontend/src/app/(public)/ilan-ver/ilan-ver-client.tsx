@@ -29,15 +29,15 @@ export default function IlanVerClient() {
   if (!user) return null;
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-6 pt-16 pb-16">
+    <section className="bg-surface">
+      <div className="site-container py-10">
         <div className="flex flex-col items-center">
-          <div className="w-full max-w-lg">
-            <h1 className="text-3xl font-extrabold text-foreground mb-8">Yeni İlan Oluştur</h1>
+          <div className="w-full max-w-3xl">
+            <h1 className="text-3xl font-extrabold text-foreground mb-8">Ücretsiz ilan ver</h1>
             <IlanVerForm />
           </div>
         </div>
       </div>
-    </main>
+    </section>
   );
 }

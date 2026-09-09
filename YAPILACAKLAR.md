@@ -1,5 +1,7 @@
 # PaketJet — Yapılacaklar (Temiz Başlangıç · Pazar Yeri / Lead Modeli)
 
+> **9 Eylül 2026 güncellemesi:** Teknik düzeltme ve tasarım yenilemesinin güncel yürütme listesi [CEKLIST-IYILESTIRME-VE-TASARIM.md](CEKLIST-IYILESTIRME-VE-TASARIM.md). Bu belgedeki eski durum/dağıtım varsayımları güncel raporla doğrulanmadan uygulanmaz; kesin iş modeli `YAPILACAKLAR.md` §0 referansıdır.
+
 > **Bu dosya tek geçerli yapılacaklar listesidir (2026-05-30).**
 > Eski `docs/yapilacaklar.md`, `docs/remaining-work-plan.md`, `docs/cp22-plan.md` ve kök `CLAUDE.md` içindeki CP-1…CP-20 listesi **arşiv kabul edilir** — referans için durur, ama iş buradan takip edilir.
 

@@ -26,7 +26,7 @@ export function buildPublicUrl(
 ): string {
   if (providerUrl) {
     if (providerUrl.startsWith("/") && cfg?.publicApiBase) {
-      return `${cfg.publicApiBase.replace(/\/+$/, "")}${providerUrl}`;
+      try { return new URL(providerUrl, cfg.publicApiBase).toString(); } catch { return providerUrl; }
     }
     return providerUrl;
   }

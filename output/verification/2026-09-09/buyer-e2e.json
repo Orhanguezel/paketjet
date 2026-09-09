@@ -1,0 +1,10 @@
+{
+  "results": [
+    "admin moderation HTTP 200",
+    "mobile buyer consumes one right and sees contact",
+    "balance decremented exactly one",
+    "purchase snapshot survives navigation and reload",
+    "anonymous remains 401 after sale"
+  ],
+  "errors": []
+}

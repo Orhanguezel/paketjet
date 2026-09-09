@@ -5,6 +5,7 @@
 // Admin Storage Upload/Edit
 // =============================================================
 
+import {useUnsavedChanges} from '@/hooks/use-unsaved-changes';
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -69,6 +70,9 @@ export default function AdminStorageDetailClient({ id }: { id: string }) {
   // File state (only for upload)
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+
+  const originalForm=existingItem ? {name:existingItem.name||'',bucket:existingItem.bucket||ADMIN_STORAGE_DEFAULT_BUCKET,folder:existingItem.folder||''} : createAdminStorageDetailFormData();
+  useUnsavedChanges(!isCreating && !isUpdating && (Boolean(selectedFile) || JSON.stringify(formData)!==JSON.stringify(originalForm)));
 
   // Delete dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);

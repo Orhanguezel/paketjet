@@ -6,7 +6,8 @@ import type { FastifyRequest, FastifyReply } from "fastify";
 import { randomUUID } from "node:crypto";
 import type { MultipartFile } from "@fastify/multipart";
 
-import { handleRouteError } from "@/modules/_shared";
+import { hasAnyRole } from "@/common/middleware/roles";
+import { getAuthUserId, handleRouteError } from "@/modules/_shared";
 import { getCloudinaryConfig, uploadBufferAuto } from "./cloudinary";
 import { buildPublicUrl, stripLeadingSlashes } from "./util";
 import { signMultipartBodySchema, type SignPutBody, type SignMultipartBody } from "./validation";
@@ -67,6 +68,9 @@ export async function uploadToBucket(req: FastifyRequest, reply: FastifyReply) {
   try {
     const { bucket } = req.params as { bucket: string };
     const query = req.query as { path?: string; upsert?: string };
+    const userId = getAuthUserId(req);
+    const admin = hasAnyRole(req, ["admin"]);
+    if (!admin && bucket !== "avatars") return reply.code(403).send({ message: "forbidden" });
 
     const cfg = await getCloudinaryConfig();
     if (!cfg) return reply.code(501).send({ message: "storage_not_configured" });
@@ -84,18 +88,18 @@ export async function uploadToBucket(req: FastifyRequest, reply: FastifyReply) {
     const desired = normalizePath(bucket, desiredRaw);
     const cleanName = desired.split("/").pop()!.replace(/[^\w.\-]+/g, "_");
     const folderRaw = desired.includes("/") ? desired.split("/").slice(0, -1).join("/") : undefined;
-    const folder = folderRaw || bucket; // bucket'ı her zaman folder olarak kullan
-    const publicIdBase = cleanName.replace(/\.[^.]+$/, "");
+    const folder = admin ? (folderRaw || bucket) : `avatars/${userId}`; // bucket'ı her zaman folder olarak kullan
+    const publicIdBase = `${randomUUID()}-${cleanName.replace(/\.[^.]+$/, "")}`;
 
     const up = await uploadBufferAuto(cfg, buf, { folder, publicId: publicIdBase, mime: mp.mimetype });
 
-    const path = `${folder}/${cleanName}`;
+    const path = up.public_id;
     const recId = randomUUID();
     const provider = cfg.driver === "local" ? "local" : "cloudinary";
 
     const recordBase: NewStorageAsset = {
       id: recId,
-      user_id: (req as FileRequest).user?.id ? String((req as FileRequest).user?.id) : null,
+      user_id: userId,
       name: cleanName, bucket, path, folder: folder ?? null,
       mime: mp.mimetype,
       size: typeof up.bytes === "number" ? up.bytes : buf.length,

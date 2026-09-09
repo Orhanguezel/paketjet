@@ -36,9 +36,9 @@ export {
   normalizeTelegramAutoReplyConfig,
 } from '@/integrations/shared/telegram-inbound';
 
-export {
-  type TelegramUpdate,
-  type TelegramWebhookResponse,
+export type {
+  TelegramUpdate,
+  TelegramWebhookResponse,
 } from '@/integrations/shared/telegram-webhook';
 
 export {

@@ -2,7 +2,7 @@ const path = require('path');
 
 const appRoot = process.env.ADMIN_PANEL_CWD || __dirname;
 const bindHost = process.env.ADMIN_PANEL_HOST || '127.0.0.1';
-const port = process.env.ADMIN_PANEL_PORT || '3022';
+const port = process.env.ADMIN_PANEL_PORT || '3071';
 const appName = process.env.ADMIN_PANEL_APP_NAME || 'paketjet-admin-panel';
 
 module.exports = {
@@ -31,10 +31,10 @@ module.exports = {
       },
       out_file:
         process.env.ADMIN_PANEL_OUT_LOG ||
-        `/home/orhan/.pm2/logs/${appName}.out.log`,
+        path.join(process.env.PM2_HOME || path.join(require("os").homedir(), ".pm2"), "logs", `${appName}.out.log`),
       error_file:
         process.env.ADMIN_PANEL_ERR_LOG ||
-        `/home/orhan/.pm2/logs/${appName}.err.log`,
+        path.join(process.env.PM2_HOME || path.join(require("os").homedir(), ".pm2"), "logs", `${appName}.err.log`),
       combine_logs: true,
       time: true,
     },

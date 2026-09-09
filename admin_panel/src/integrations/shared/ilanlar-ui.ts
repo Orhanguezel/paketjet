@@ -9,8 +9,8 @@ export function getAdminIlanStatusVariant(
   status: IlanStatus,
 ): VariantProps<typeof badgeVariants>['variant'] {
   if (status === 'active') return 'default';
-  if (status === 'inactive') return 'secondary';
-  if (status === 'pending') return 'outline';
+  if (status === 'paused') return 'secondary';
+  if (status === 'pending_approval') return 'outline';
   return 'destructive';
 }
 

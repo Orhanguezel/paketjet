@@ -12,7 +12,7 @@ describe("Health", () => {
     expect(JSON.parse(res.body)).toMatchObject({
       status: "ok",
       db: "ok",
-      redis: "ok",
+      redis: "disabled",
     });
   });
 });

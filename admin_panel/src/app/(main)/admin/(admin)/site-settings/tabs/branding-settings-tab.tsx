@@ -75,7 +75,7 @@ export const BrandingSettingsTab: React.FC<BrandingSettingsTabProps> = ({ locale
     }
 
     setForm(brandingToSiteSettingsForm(normalizeSiteSettingsBrandingConfig(fullConfig)));
-  }, [fullConfig, loading, locale]); // ✅ Added locale to ensure it resets on lang change
+  }, [fullConfig, loading]); // ✅ Added locale to ensure it resets on lang change
 
   const handleChange = (field: keyof SiteSettingsBrandingForm, value: string) =>
     setForm((p) => ({ ...p, [field]: value }));

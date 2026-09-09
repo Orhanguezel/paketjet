@@ -2,7 +2,7 @@ import { withQuery } from '@/integrations/shared/api';
 
 export const ILANLAR_ADMIN_BASE = '/admin/ilanlar';
 
-export type IlanStatus = 'active' | 'inactive' | 'pending' | 'cancelled';
+export type IlanStatus = 'active' | 'paused' | 'pending_approval' | 'cancelled' | 'sold' | 'expired' | 'removed';
 export type VehicleType = 'car' | 'van' | 'truck' | 'motorcycle' | 'other';
 
 export interface IlanAdminItem {
@@ -20,6 +20,8 @@ export interface IlanAdminItem {
   min_kg: number | null;
   max_kg: number | null;
   status: IlanStatus;
+  contact_phone: string | null;
+  title:string|null; description:string|null;
   phone: string | null;
   notes: string | null;
   created_at: string;

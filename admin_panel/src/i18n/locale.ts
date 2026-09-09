@@ -123,5 +123,5 @@ export function useResolvedLocale(explicitLocale?: string | null): string {
     // ✅ 6) fallback
     return normLocaleTag(FALLBACK_LOCALE) || 'tr';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname, explicitLocale, appLocalesMeta, defaultLocaleMeta]);
+  }, [explicitLocale, appLocalesMeta, defaultLocaleMeta]);
 }

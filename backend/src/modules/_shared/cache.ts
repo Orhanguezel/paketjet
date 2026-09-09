@@ -74,8 +74,8 @@ export async function repoDeleteCacheByPrefixes(prefixes: string[]) {
 
 export async function repoInvalidateIlanCache(id: string) {
   await repoDeleteCacheByPrefixes([
-    cacheKeys.ilanDetail(id),
-    `${PREFIX}:ilanlar:list:`,
+    `${PREFIX}:ilanlar:`,
+    `public-v2:${PREFIX}:ilanlar:`,
   ]);
 }
 

@@ -1,3 +1,4 @@
+import {repoContentRevisions} from './revision.repository';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { handleRouteError, sendNotFound } from '@/modules/_shared';
 import { createSchema, listQuerySchema, reorderSchema, updateSchema } from './validation';
@@ -75,4 +76,9 @@ export async function adminReorderPages(req: FastifyRequest, reply: FastifyReply
   } catch (e) {
     return handleRouteError(reply, req, e, 'admin_custom_page_reorder');
   }
+}
+
+export async function adminPageRevisions(req:FastifyRequest,reply:FastifyReply){
+ try { const {id}=req.params as {id:string}; return reply.send(await repoContentRevisions(id)); }
+ catch(e){return handleRouteError(reply,req,e,'admin_content_revisions');}
 }

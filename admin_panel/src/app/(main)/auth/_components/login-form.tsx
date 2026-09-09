@@ -102,7 +102,7 @@ export function LoginForm({ mode = 'admin', fallbackNext }: LoginFormProps = {})
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form method="post" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="email"
@@ -174,23 +174,7 @@ export function LoginForm({ mode = 'admin', fallbackNext }: LoginFormProps = {})
           {isBusy ? t('admin.auth.login.loggingIn') : t('admin.auth.login.loginButton')}
         </Button>
 
-        {/* Hızlı giriş (test) */}
-        <div className="pt-4 border-t">
-          <p className="text-xs text-muted-foreground mb-2 text-center">Hızlı giriş (test)</p>
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            disabled={isBusy}
-            onClick={() => {
-              form.setValue('email', 'admin@paketjet.com');
-              form.setValue('password', 'Admin@2026!');
-              form.handleSubmit(onSubmit)();
-            }}
-          >
-            🛡️ Admin
-          </Button>
-        </div>
+
       </form>
     </Form>
   );

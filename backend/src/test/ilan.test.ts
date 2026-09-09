@@ -5,7 +5,7 @@ import { getTestApp, closeTestApp, registerUser, randomEmail, authHeaders } from
 afterAll(closeTestApp);
 
 const ILAN_DATA = {
-  from_city: "Istanbul",
+  from_city: "İstanbul",
   to_city: "Ankara",
   departure_date: new Date(Date.now() + 86400000).toISOString(),
   total_capacity_kg: 100,
@@ -46,7 +46,8 @@ describe("Ilan — CRUD", () => {
     });
 
     // Plan yoksa 403 (plan_required), plan varsa 200/201, tablo yoksa 500
-    expect(res.statusCode).toBeOneOf([200, 201, 403, 500]);
+    expect(res.statusCode).toBe(201);
+    expect(res.json().status).toBe("pending_approval");
   });
 
   it("auth olmadan ilan olusturulamaz", async () => {

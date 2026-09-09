@@ -11,7 +11,7 @@ const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "")
 type SiteLogo = { url?: string; src?: string; logo_url?: string };
 
 export function generateMetadata(): Metadata {
-  return noIndexMetadata("Giriş Yap", "PaketJet hesabınıza giriş yaparak ilan, rezervasyon ve destek süreçlerine erişin.");
+  return noIndexMetadata("Giriş Yap", "PaketJet hesabınıza giriş yaparak ilan, iletişim alımı ve destek süreçlerine erişin.");
 }
 
 export default async function GirisPage() {

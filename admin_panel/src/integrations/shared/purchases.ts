@@ -38,10 +38,12 @@ export interface IlanPurchaseAdminListResponse {
 
 export interface IlanPurchaseAdminListParams {
   page?: number;
+  search?:string; method?:string; status?:string; from?:string; to?:string;
 }
 
 export const buildIlanPurchasesAdminListUrl = (params: IlanPurchaseAdminListParams = {}) =>
   withQuery(ILAN_PURCHASES_ADMIN_BASE, {
+    ...params,
     page: params.page && params.page > 1 ? params.page : undefined,
   });
 
@@ -49,4 +51,4 @@ export const formatIlanPurchaseMoney = (value?: string | number | null) =>
   value === undefined || value === null || value === '' ? '-' : `₺${Number(value).toLocaleString('tr-TR')}`;
 
 export const formatIlanPurchaseDate = (value?: string | null) =>
-  value ? new Date(value).toLocaleString('tr-TR') : '-';
+  value ? new Date(/[zZ]|[+-]\d{2}:?\d{2}$/.test(value)?value:value.replace(' ','T')+'Z').toLocaleString('tr-TR',{timeZone:'Europe/Istanbul'}) : '-';

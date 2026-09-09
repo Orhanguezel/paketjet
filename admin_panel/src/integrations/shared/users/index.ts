@@ -1,14 +1,14 @@
-export {
-  type AdminRemoveUserBody,
-  type AdminSetActiveBody,
-  type AdminSetPasswordBody,
-  type AdminSetRolesBody,
-  type AdminUpdateUserBody,
-  type AdminUserRaw,
-  type AdminUserView,
-  type AdminUsersListParams,
-  type ProfileRow,
-  type UserRoleName,
+export type {
+  AdminRemoveUserBody,
+  AdminSetActiveBody,
+  AdminSetPasswordBody,
+  AdminSetRolesBody,
+  AdminUpdateUserBody,
+  AdminUserRaw,
+  AdminUserView,
+  AdminUsersListParams,
+  ProfileRow,
+  UserRoleName,
 } from '@/integrations/shared/users/users';
 
 export {
@@ -42,9 +42,9 @@ export {
   normalizeMeFromStatus,
 } from '@/integrations/shared/users/auth-public';
 
-export {
-  type UserRole,
-  type UserRolesListParams,
+export type {
+  UserRole,
+  UserRolesListParams,
 } from '@/integrations/shared/users/user-roles';
 
 export {
@@ -55,15 +55,15 @@ export {
   normalizeProfile,
 } from '@/integrations/shared/users/profiles-normalize';
 
-export {
-  type GetMyProfileArg,
-  type GetMyProfileResp,
-  type Profile,
-  type ProfileSocial,
-  type ProfileUpsertInput,
-  type UpsertMyProfileArg,
-  type UpsertMyProfileReq,
-  type UpsertMyProfileResp,
+export type {
+  GetMyProfileArg,
+  GetMyProfileResp,
+  Profile,
+  ProfileSocial,
+  ProfileUpsertInput,
+  UpsertMyProfileArg,
+  UpsertMyProfileReq,
+  UpsertMyProfileResp,
 } from '@/integrations/shared/users/profiles';
 
 export {

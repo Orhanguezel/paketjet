@@ -1,0 +1,3 @@
+Restored files: 147
+Restored bytes: 51034335
+Source: protected live uploads backup; isolated /tmp extraction.

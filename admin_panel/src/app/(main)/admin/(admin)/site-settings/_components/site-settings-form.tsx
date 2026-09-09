@@ -13,6 +13,7 @@
 
 import * as React from 'react';
 import { toast } from 'sonner';
+import {useUnsavedChanges} from '@/hooks/use-unsaved-changes';
 import { useRouter } from 'next/navigation';
 
 import {
@@ -106,12 +107,15 @@ export const SiteSettingsForm: React.FC<SiteSettingsFormProps> = ({
 
   const coercedInitial = React.useMemo(() => coerceSiteSettingsValue(row?.value), [row?.value]);
 
+  const initialRaw=typeof row?.value === 'string' ? row.value : prettyStringifySiteSettingValue(coercedInitial);
+  useUnsavedChanges(!disabled && (mode === 'raw' ? rawText !== initialRaw : JSON.stringify(structuredValue) !== JSON.stringify(coercedInitial ?? {})));
+
   // sync on key/locale/row change
   React.useEffect(() => {
     setStructuredValue(coercedInitial ?? {});
     if (typeof row?.value === 'string') setRawText(row.value ?? '');
     else setRawText(prettyStringifySiteSettingValue(coercedInitial));
-  }, [coercedInitial, row?.value, settingKey, locale]);
+  }, [coercedInitial, row?.value]);
 
   // guard: if structured renderer missing, force raw
   React.useEffect(() => {

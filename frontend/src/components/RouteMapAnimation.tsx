@@ -18,8 +18,8 @@ export default function RouteMapAnimation() {
       {/* Pin: İstanbul */}
       <div className="absolute" style={{ left: "58%", top: "32%" }}>
         <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-brand animate-ping absolute" />
-          <div className="w-3 h-3 rounded-full bg-brand relative z-10" />
+          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute" />
+          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
           <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
             İstanbul
           </span>
@@ -29,8 +29,8 @@ export default function RouteMapAnimation() {
       {/* Pin: Ankara */}
       <div className="absolute" style={{ left: "48%", top: "40%" }}>
         <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-brand animate-ping absolute [animation-delay:0.5s]" />
-          <div className="w-3 h-3 rounded-full bg-brand relative z-10" />
+          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute [animation-delay:0.5s]" />
+          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
           <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
             Ankara
           </span>
@@ -40,8 +40,8 @@ export default function RouteMapAnimation() {
       {/* Pin: İzmir */}
       <div className="absolute" style={{ left: "33%", top: "50%" }}>
         <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-brand animate-ping absolute [animation-delay:1s]" />
-          <div className="w-3 h-3 rounded-full bg-brand relative z-10" />
+          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute [animation-delay:1s]" />
+          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
           <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
             İzmir
           </span>
@@ -51,8 +51,8 @@ export default function RouteMapAnimation() {
       {/* Pin: Antalya */}
       <div className="absolute" style={{ left: "42%", top: "62%" }}>
         <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-brand animate-ping absolute [animation-delay:1.5s]" />
-          <div className="w-3 h-3 rounded-full bg-brand relative z-10" />
+          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute [animation-delay:1.5s]" />
+          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
           <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
             Antalya
           </span>

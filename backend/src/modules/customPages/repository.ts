@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import { and, asc, desc, eq, inArray, like, or } from 'drizzle-orm';
 import { db } from '@/db/client';
 import { normalizeLocaleStr, toBool } from '@/modules/_shared';
@@ -129,56 +128,4 @@ export async function repoGetCustomPageBySlug(slug: string, locale = 'tr') {
   return pickLocalizedRow(rows, locale);
 }
 
-export async function repoCreateCustomPage(data: CreateCustomPageInput) {
-  const id = randomUUID();
-  await db.insert(customPages).values({
-    id,
-    module_key: data.module_key,
-    is_published: data.is_published !== undefined ? (toBool(data.is_published) ? 1 : 0) : 0,
-    display_order: data.display_order ?? 0,
-    featured_image: data.featured_image ?? null,
-    storage_asset_id: data.storage_asset_id ?? null,
-  });
-  await db.insert(customPagesI18n).values({
-    page_id: id,
-    locale: data.locale,
-    title: data.title,
-    slug: data.slug,
-    content: data.content ?? null,
-    summary: data.summary ?? null,
-    meta_title: data.meta_title ?? null,
-    meta_description: data.meta_description ?? null,
-  });
-  return { id };
-}
-
-export async function repoUpdateCustomPage(id: string, data: UpdateCustomPageInput) {
-  const pagePatch: Record<string, unknown> = {};
-  if (data.module_key !== undefined) pagePatch.module_key = data.module_key;
-  if (data.is_published !== undefined) pagePatch.is_published = toBool(data.is_published) ? 1 : 0;
-  if (data.display_order !== undefined) pagePatch.display_order = data.display_order;
-  if (data.featured_image !== undefined) pagePatch.featured_image = data.featured_image;
-  if (data.storage_asset_id !== undefined) pagePatch.storage_asset_id = data.storage_asset_id;
-  if (Object.keys(pagePatch).length) await db.update(customPages).set(pagePatch).where(eq(customPages.id, id));
-
-  const i18nPatch: Record<string, unknown> = {};
-  if (data.title !== undefined) i18nPatch.title = data.title;
-  if (data.slug !== undefined) i18nPatch.slug = data.slug;
-  if (data.content !== undefined) i18nPatch.content = data.content;
-  if (data.summary !== undefined) i18nPatch.summary = data.summary;
-  if (data.meta_title !== undefined) i18nPatch.meta_title = data.meta_title;
-  if (data.meta_description !== undefined) i18nPatch.meta_description = data.meta_description;
-  if (Object.keys(i18nPatch).length) {
-    await db.update(customPagesI18n).set(i18nPatch).where(and(eq(customPagesI18n.page_id, id), eq(customPagesI18n.locale, data.locale)));
-  }
-}
-
-export async function repoDeleteCustomPage(id: string) {
-  await db.delete(customPages).where(eq(customPages.id, id));
-}
-
-export async function repoReorderCustomPages(items: { id: string; display_order: number }[]) {
-  for (const item of items) {
-    await db.update(customPages).set({ display_order: item.display_order }).where(eq(customPages.id, item.id));
-  }
-}
+export { repoCreateCustomPage, repoUpdateCustomPage, repoDeleteCustomPage, repoReorderCustomPages } from './mutation.repository';

@@ -9,7 +9,7 @@ export const revalidate = 300;
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("faq", {
     canonicalPath: "/destek",
-    fallbackDescription: "PaketJet destek merkezi. Kargo gönderimi, rezervasyon, ödeme ve taşıyıcı hakkında sıkça sorulan sorular.",
+    fallbackDescription: "PaketJet destek merkezi. İlanlar, iletişim erişimi, ödeme ve hesap hakkında sıkça sorulan sorular.",
   });
 }
 

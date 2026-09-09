@@ -7,8 +7,6 @@ export { registerWalletAdmin } from './admin.routes';
 export {
   getMyWallet,
   listMyTransactions,
-  initiateDeposit,
-  iyzicoCallback,
 } from './controller';
 
 export {

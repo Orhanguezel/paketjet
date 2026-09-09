@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import {
+  adminPageRevisions,
   adminCreatePage,
   adminDeletePage,
   adminGetPage,
@@ -11,6 +12,7 @@ import {
 export async function registerCustomPagesAdmin(app: FastifyInstance) {
   const B = '/custom-pages';
   app.get(B, adminListPages);
+  app.get(`${B}/:id/revisions`,adminPageRevisions);
   app.get(`${B}/:id`, adminGetPage);
   app.post(B, adminCreatePage);
   app.patch(`${B}/:id`, adminUpdatePage);

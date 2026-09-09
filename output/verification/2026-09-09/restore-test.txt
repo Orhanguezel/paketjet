@@ -1,0 +1,4 @@
+users	23
+listings	16
+wallets	11
+3425.00

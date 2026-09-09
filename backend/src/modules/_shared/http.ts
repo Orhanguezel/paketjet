@@ -77,6 +77,10 @@ export function handleRouteError(
 ) {
   if (reply.sent) return reply;
   const typedErr = (typeof err === "object" && err !== null ? err : null) as ZodErrorLike | null;
+  const status = (err as { statusCode?: number } | null)?.statusCode;
+  if (status && [400, 401, 403, 404, 409, 413, 415, 503].includes(status)) {
+    return reply.code(status).send({ error: { message: typedErr?.message ?? 'request_failed' } });
+  }
   if (typedErr?.name === "ZodError") return sendValidationError(reply, typedErr.issues);
   if (typedErr?.message === "unauthorized") return sendUnauthorized(reply);
   return sendServerError(reply, req as RequestWithLogger, err, serverCode);

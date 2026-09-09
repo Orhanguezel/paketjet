@@ -1,101 +1,19 @@
-"use client";
-
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { StatCard } from "@/components/ui";
-import { useAuthStore } from "@/modules/auth/auth.store";
-import { getMyIlans } from "@/modules/ilan/ilan.service";
-import { getMyCredits, getMyPurchases } from "@/modules/purchases/purchases.service";
-import { useNotificationStore } from "@/modules/notification/notification.store";
-import type { Ilan } from "@/modules/ilan/ilan.type";
-
-export default function PanelRoot() {
-  const user = useAuthStore((s) => s.user);
-  const { unreadCount, fetchUnreadCount } = useNotificationStore();
-  const [ilanlar, setIlanlar] = useState<Ilan[]>([]);
-  const [purchasedCount, setPurchasedCount] = useState(0);
-  const [remainingRights, setRemainingRights] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let alive = true;
-    setLoading(true);
-
-    Promise.allSettled([
-      getMyIlans(),
-      getMyPurchases(),
-      getMyCredits(),
-      fetchUnreadCount(),
-    ])
-      .then((results) => {
-        if (!alive) return;
-        const [ilanRes, purchaseRes, creditRes] = results;
-        if (ilanRes.status === "fulfilled") setIlanlar(ilanRes.value);
-        if (purchaseRes.status === "fulfilled") setPurchasedCount(purchaseRes.value.data.length);
-        if (creditRes.status === "fulfilled") setRemainingRights(creditRes.value.balance);
-      })
-      .finally(() => {
-        if (alive) setLoading(false);
-      });
-
-    return () => {
-      alive = false;
-    };
-  }, [fetchUnreadCount]);
-
-  const firstName = useMemo(() => {
-    const fullName = user?.full_name?.trim();
-    if (!fullName) return "PaketJet Üyesi";
-    return fullName.split(/\s+/)[0] ?? fullName;
-  }, [user?.full_name]);
-
-  const activeListings = ilanlar.filter((ilan) => ilan.status === "active").length;
-  const soldListings = ilanlar.filter((ilan) => ilan.status === "sold" || ilan.status === "completed").length;
-
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-8">
-      <section className="rounded-[2rem] bg-panel-surface/90 px-6 py-7 shadow-xl shadow-navy/10 ring-1 ring-white/70 md:px-8">
-        <p className="text-sm font-black uppercase tracking-normal text-brand">Özet</p>
-        <h1 className="mt-2 text-3xl font-black tracking-normal text-panel-ink md:text-4xl">
-          Hoş geldiniz, {firstName}!
-        </h1>
-        <p className="mt-2 text-sm font-bold text-panel-ink/60">Gönderi Özeti</p>
-      </section>
-
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          title="İlanlarım"
-          value={loading ? "—" : `${activeListings} aktif / ${soldListings} satılan`}
-          icon="ilanlarim"
-        />
-        <StatCard
-          title="Satın Aldıklarım"
-          value={loading ? "—" : purchasedCount}
-          icon="satin-aldiklarim"
-        />
-        <StatCard
-          title="Okunmamış Bildirim"
-          value={loading ? "—" : unreadCount}
-          icon="bildirimler"
-        />
-        <StatCard
-          title="Kalan İlan Alma Hakkı"
-          value={loading ? "—" : remainingRights ?? 0}
-          icon="ilan-alma-hakki"
-        />
-      </section>
-
-      <section className="flex justify-center">
-        <div className="text-center">
-          <Link
-            href="/ilan-ver"
-            className="inline-flex min-h-16 items-center justify-center rounded-full bg-cta px-10 text-lg font-black text-white shadow-xl shadow-cta/25 transition-colors hover:bg-cta-dark"
-          >
-            Hızlı İlan Aç
-          </Link>
-          <p className="mt-3 text-sm font-black text-panel-ink/60">İlan açmak ücretsizdir.</p>
-        </div>
-      </section>
-    </div>
-  );
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { FileText, ShoppingBag, Ticket } from 'lucide-react';
+import { getMyIlans } from '@/modules/ilan/ilan.service';
+import { getMyCredits, getMyPurchases } from '@/modules/purchases/purchases.service';
+import type { Ilan } from '@/modules/ilan/ilan.type';
+import type { MyPurchase } from '@/modules/purchases/purchases.type';
+export default function PanelRoot(){
+  const [listings,setListings]=useState<Ilan[]|null>(null),[purchases,setPurchases]=useState<MyPurchase[]|null>(null),[balance,setBalance]=useState<number|null>(null),[errors,setErrors]=useState<string[]>([]),[loading,setLoading]=useState(true),[retry,setRetry]=useState(0);
+  useEffect(()=>{let active=true;setLoading(true);Promise.allSettled([getMyIlans(),getMyPurchases(),getMyCredits()]).then(([a,b,c])=>{if(!active)return;const failed=[];if(a.status==='fulfilled')setListings(a.value);else failed.push('İlanlar');if(b.status==='fulfilled')setPurchases(b.value.data);else failed.push('Satın almalar');if(c.status==='fulfilled')setBalance(c.value.balance);else failed.push('Hak bakiyesi');setErrors(failed);setLoading(false);});return()=>{active=false;};},[retry]);
+  const stats=[['İlanlarım',listings?.length,FileText],['Satın aldıklarım',purchases?.length,ShoppingBag],['Kalan hak',balance,Ticket]] as const;
+  return <div className="space-y-8"><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-start"><div><h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Genel bakış</h1><p className="mt-3 text-muted">İlanlarını ve iletişim erişimlerini yönet.</p></div><Link href="/ilan-ver" className="inline-flex min-h-12 items-center justify-center rounded-lg bg-action px-5 font-semibold text-white">Ücretsiz ilan ver</Link></div>
+    {!!errors.length&&<div role="alert" className="rounded-lg border border-border p-4"><p>{errors.join(', ')} yüklenemedi.</p><button onClick={()=>setRetry(n=>n+1)} className="mt-2 min-h-11 text-brand">Yeniden dene</button></div>}
+    <dl className="grid gap-4 sm:grid-cols-3">{stats.map(([label,value,Glyph])=><div key={label} className="flex items-center gap-4 rounded-lg border border-border bg-surface p-5"><span className="grid size-14 place-items-center rounded-lg bg-brand-xlight text-brand"><Glyph size={28} strokeWidth={1.6}/></span><div><dt className="text-sm text-muted">{label}</dt><dd className="mt-1 text-2xl font-bold">{loading?'—':value??'Alınamadı'}</dd></div></div>)}</dl>
+    <div className="grid gap-5 lg:grid-cols-2"><section className="rounded-lg border border-border p-6"><div className="flex flex-wrap justify-between gap-3"><h2 className="text-lg font-semibold">Son ilanlarım</h2><Link href="/panel/ilanlarim" className="text-sm text-brand">Tüm ilanlarım</Link></div>{loading?<p className="py-8" role="status">Yükleniyor…</p>:listings===null?<p className="py-8 text-muted">İlan bilgisi alınamadı.</p>:listings.length?<ul className="mt-5 divide-y divide-border-soft">{listings.slice(0,4).map(i=><li key={i.id} className="py-4"><Link href="/panel/ilanlarim" className="font-medium">{i.from_city} → {i.to_city}</Link></li>)}</ul>:<div className="py-10 text-center"><FileText size={44} className="mx-auto mb-6 text-faint" strokeWidth={1.5}/><h3 className="text-lg font-semibold">Henüz ilan oluşturmadın.</h3><p className="mt-3 leading-7 text-muted">Ücretsiz ilan vererek güzergâhını paylaşabilirsin.</p><Link href="/ilan-ver" className="mt-6 inline-flex min-h-11 items-center font-medium text-brand">İlan oluştur</Link></div>}</section>
+    <section className="rounded-lg border border-border p-6"><div className="flex flex-wrap justify-between gap-3"><h2 className="text-lg font-semibold">Son iletişim erişimlerim</h2><Link href="/panel/satin-aldiklarim" className="text-sm text-brand">Tümünü gör</Link></div>{loading?<p className="py-8" role="status">Yükleniyor…</p>:purchases===null?<p className="py-8 text-muted">Satın alma bilgisi alınamadı.</p>:purchases.length?<ul className="mt-5 divide-y divide-border-soft">{purchases.slice(0,4).map(p=><li key={p.id} className="py-4"><Link href={`/ilanlar/${p.ilan_id}`} className="font-medium">{p.from_city} → {p.to_city}</Link></li>)}</ul>:<div className="py-10 text-center"><ShoppingBag size={44} className="mx-auto mb-6 text-faint" strokeWidth={1.5}/><h3 className="text-lg font-semibold">Henüz iletişim erişimin yok.</h3><p className="mt-3 leading-7 text-muted">İlgini çeken ilanların iletişim bilgilerine erişebilirsin.</p><Link href="/ilanlar" className="mt-6 inline-flex min-h-11 items-center font-medium text-brand">İlanları keşfet</Link></div>}</section></div>
+  </div>;
 }

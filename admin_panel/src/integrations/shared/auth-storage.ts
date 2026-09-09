@@ -67,17 +67,6 @@ export function redirectToLogin(nextPath?: string): void {
 }
 
 export function createBrowserTokenStore(storageKey = ACCESS_TOKEN_STORAGE_KEY) {
-  return {
-    get(): string {
-      return readBrowserStorage(storageKey);
-    },
-    set(token?: string | null): void {
-      if (!token) {
-        removeBrowserStorage(storageKey);
-        return;
-      }
-
-      writeBrowserStorage(storageKey, token);
-    },
-  };
+  const purge = () => { removeBrowserStorage(storageKey); removeBrowserStorage(REFRESH_TOKEN_STORAGE_KEY); };
+  return { get(): string { purge(); return ''; }, set(_token?: string | null): void { purge(); } };
 }

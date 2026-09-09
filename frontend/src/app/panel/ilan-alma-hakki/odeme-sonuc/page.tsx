@@ -1,89 +1,45 @@
-"use client";
+'use client';
+import { Suspense, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { getPaymentStatus } from '@/modules/payments/payments.service';
+import type { PaymentStatus } from '@/modules/payments/payments.type';
+import { ROUTES } from '@/config/routes';
 
-import { Suspense, useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { ROUTES } from "@/config/routes";
-
-function OdemeSonucContent() {
-  const params = useSearchParams();
-  const router = useRouter();
-  const status = params.get("status");
-  const amount = params.get("amount");
-  const reason = params.get("reason");
-  const isSuccess = status === "success";
-  const [countdown, setCountdown] = useState(5);
-
+function Result() {
+  const ref = useSearchParams().get('ref');
+  const [payment, setPayment] = useState<PaymentStatus | null>(null);
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
-    if (!isSuccess) return;
-    const timer = setInterval(() => {
-      setCountdown((current) => {
-        if (current <= 1) {
-          clearInterval(timer);
-          router.push(ROUTES.panel.ilanAlmaHakki);
-        }
-        return current - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isSuccess, router]);
-
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-border-soft bg-surface p-10 text-center shadow-sm">
-        {isSuccess ? (
-          <>
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-success-bg text-3xl">
-              ✓
-            </div>
-            <h1 className="mb-2 text-xl font-extrabold text-foreground">Ödeme Başarılı</h1>
-            {amount && <p className="mb-1 text-3xl font-bold text-success">₺{amount}</p>}
-            <p className="mb-6 text-sm text-muted">İşleminiz hesabınıza eklendi.</p>
-            <p className="mb-4 text-xs text-muted">
-              {countdown} saniye içinde ilan hakkı ekranına yönlendiriliyorsunuz...
-            </p>
-            <Link
-              href={ROUTES.panel.ilanAlmaHakki}
-              className="inline-block rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
-            >
-              İlan Hakkına Dön
-            </Link>
-          </>
-        ) : (
-          <>
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-danger-bg text-3xl">
-              ✕
-            </div>
-            <h1 className="mb-2 text-xl font-extrabold text-foreground">Ödeme Başarısız</h1>
-            <p className="mb-6 text-sm text-muted">
-              {reason === "payment_failed"
-                ? "Kart işlemi reddedildi. Kart bilgilerinizi kontrol edip tekrar deneyin."
-                : reason === "verification_failed"
-                  ? "Ödeme doğrulanamadı. Destek ile iletişime geçin."
-                  : "Ödeme işlemi tamamlanamadı. Lütfen tekrar deneyin."}
-            </p>
-            <div className="flex flex-col gap-3">
-              <Link
-                href={ROUTES.panel.ilanAlmaHakki}
-                className="inline-block rounded-xl bg-brand px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
-              >
-                Tekrar Dene
-              </Link>
-              <Link href={ROUTES.panel.root} className="text-sm text-muted hover:text-foreground">
-                Panele Dön
-              </Link>
-            </div>
-          </>
-        )}
-      </div>
+    if (!ref) return;
+    let active = true;
+    let timer: ReturnType<typeof setTimeout>;
+    let polls = 0;
+    const refresh = async () => {
+      try {
+        const data = await getPaymentStatus(ref);
+        if (!active) return;
+        setPayment(data); setError('');
+        if (['initializing','pending'].includes(data.state) && ++polls < 12) timer = setTimeout(refresh,5000);
+      } catch { if (active) setError('Ödeme durumu alınamadı. Lütfen yeniden deneyin.'); }
+    };
+    void refresh();
+    return () => {active = false; clearTimeout(timer);};
+  }, [ref, attempt]);
+  const success = payment?.state === 'completed';
+  const review = payment && ['review','refund_pending'].includes(payment.state);
+  const failed = payment?.state === 'failed';
+  const title = !ref ? 'Ödeme referansı bulunamadı' : error ? 'Durum kontrol edilemedi' : success ? 'İşlemin tamamlandı' : review ? 'Ödemen inceleniyor' : failed ? 'Ödeme tamamlanmadı' : payment?.state === 'refunded' ? 'Ödeme iade edildi' : 'Ödeme sonucu bekleniyor';
+  const target = payment?.kind === 'listing' && payment.ilan_id ? ROUTES.ilanlar.detail(payment.ilan_id) : ROUTES.panel.ilanAlmaHakki;
+  return <section className="mx-auto my-12 w-full max-w-lg rounded-xl border border-border-soft bg-surface p-6 sm:p-10" aria-live="polite">
+    <h1 className="text-2xl font-bold text-foreground">{title}</h1>
+    <p className="mt-4 leading-7 text-muted">{!ref ? 'İşlem geçmişinden veya destek üzerinden ödemenizi kontrol edebilirsiniz.' : error || (success ? payment.kind === 'listing' ? 'İletişim bilgilerine artık ilan üzerinden erişebilirsin.' : 'Satın aldığın haklar hesabına eklendi.' : review ? 'Bu işlem için yeniden ödeme yapma. Tahsilat ve erişim durumu kontrol ediliyor; gerektiğinde iade süreci takip edilecek.' : failed ? 'Bu işlemle erişim veya hak eklenmedi. İşlem geçmişini kontrol edebilirsin.' : 'Sağlayıcı bildirimi geldiğinde durum güncellenecek. Bu ekranı kapatmak ödemeyi iptal etmez.')}</p>
+    {payment && <p className="mt-4 text-sm text-muted">İşlem tutarı: {Number(payment.amount).toLocaleString('tr-TR',{style:'currency',currency:'TRY'})}</p>}
+    <div className="mt-6 flex flex-wrap gap-3">
+      {success ? <Link className="rounded-lg bg-action px-5 py-3 font-semibold text-white" href={target}>{payment.kind === 'listing' ? 'İletişim bilgilerini gör' : 'Haklarımı gör'}</Link> : ref && <button className="rounded-lg bg-action px-5 py-3 font-semibold text-white" onClick={()=>setAttempt(x=>x+1)}>Durumu yenile</button>}
+      <Link className="rounded-lg border border-border-soft px-5 py-3 text-foreground" href="/destek">Destek</Link>
     </div>
-  );
+  </section>;
 }
-
-export default function OdemeSonucPage() {
-  return (
-    <Suspense>
-      <OdemeSonucContent />
-    </Suspense>
-  );
-}
+export default function PaymentResultPage() { return <Suspense fallback={<p role="status">Ödeme kontrol ediliyor…</p>}><Result /></Suspense>; }

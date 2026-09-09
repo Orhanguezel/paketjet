@@ -55,7 +55,7 @@ export default function ProfilPage() {
       formData.append("file", file);
 
       // generic storage endpoint: POST /storage/:bucket/upload
-      const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+      const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
       const res = await fetch(`${BASE_URL}/api/storage/avatars/upload`, {
         method: "POST",
         body: formData,
@@ -68,8 +68,8 @@ export default function ProfilPage() {
       }
       const data = await res.json();
       setAvatarUrl(data.url);
-    } catch (err: any) {
-      setError("Resim yüklenemedi: " + err.message);
+    } catch {
+      setError("Resim yüklenemedi. PNG, JPEG, WebP veya GIF dosyası seç ve tekrar dene.");
     } finally {
       setUploading(false);
     }
@@ -101,7 +101,7 @@ export default function ProfilPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold text-foreground mb-6">Profil</h1>
+      <h1 className="text-2xl font-semibold text-foreground mb-6">Profil</h1>
 
       <div className="bg-surface rounded-xl border border-border-soft p-6 max-w-md">
         <div className="flex items-center gap-6 mb-8">
@@ -115,13 +115,13 @@ export default function ProfilPage() {
                 </span>
               )}
             </div>
-            <label className="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer rounded-full uppercase">
+            <label className="absolute inset-0 flex items-center justify-center bg-black/40 text-white text-sm font-bold opacity-100 transition-opacity cursor-pointer rounded-full uppercase">
               {uploading ? "..." : "Değiştir"}
-              <input type="file" className="hidden" accept="image/*" onChange={handleFileChange} disabled={uploading} />
+              <input type="file" className="sr-only" accept="image/png,image/jpeg,image/webp,image/gif" onChange={handleFileChange} disabled={uploading} />
             </label>
           </div>
           <div className="min-w-0">
-            <p className="font-extrabold text-lg text-foreground truncate">{fullName || "İsimsiz"}</p>
+            <p className="font-semibold text-lg text-foreground truncate">{fullName || "İsimsiz"}</p>
             <p className="text-sm text-muted truncate">{user?.email}</p>
           </div>
         </div>
@@ -154,7 +154,7 @@ export default function ProfilPage() {
 
       {/* Şifre Değiştirme */}
       <div className="bg-surface rounded-xl border border-border-soft p-6 max-w-md mt-6">
-        <h2 className="text-lg font-extrabold text-foreground mb-4">Şifre Değiştir</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">Şifre Değiştir</h2>
         <form onSubmit={handlePasswordChange} className="flex flex-col gap-4">
           <Input
             label="Mevcut Şifre"

@@ -27,18 +27,14 @@ import {
   repoDeleteIlan,
   repoGetUserIlans,
 } from "./repository";
-import {
-  repoGetActiveSubscription,
-  repoCountMonthlyIlans,
-  repoGetFreeQuota,
-} from "@/modules/subscription";
+
 
 // ── Public ───────────────────────────────────────────────────────────────────
 
 export const listIlans: RouteHandler = async (req, reply) => {
   try {
     const filters = searchIlansSchema.parse(req.query ?? {});
-    const cacheKey = cacheKeys.ilanList(filters);
+    const cacheKey = `public-v2:${cacheKeys.ilanList(filters)}`;
     const cached = await repoGetCacheJson<Awaited<ReturnType<typeof repoListIlans>>>(cacheKey);
     if (cached) {
       reply.header("x-total-count", String(cached.total));
@@ -57,7 +53,7 @@ export const listIlans: RouteHandler = async (req, reply) => {
 export const getIlan: RouteHandler = async (req, reply) => {
   const { id } = req.params as { id: string };
   try {
-    const cacheKey = cacheKeys.ilanDetail(id);
+    const cacheKey = `public-v2:${cacheKeys.ilanDetail(id)}`;
     const cached = await repoGetCacheJson<Awaited<ReturnType<typeof repoGetIlanById>>>(cacheKey);
     if (cached) return reply.send(cached);
 
@@ -89,17 +85,6 @@ export const createIlan: RouteHandler = async (req, reply) => {
 
     // KYC kaldirildi (2026-05-30): kimseye payout yok -> dogrulama gereksiz.
     // Ilan acmak ucretsiz; kargo bedeli/icerik beyani satin alma akışında alınır.
-
-    // Ilan limit kontrolu
-    const [sub, { quota: freeQuota }, monthlyCount] = await Promise.all([
-      repoGetActiveSubscription(userId),
-      repoGetFreeQuota(userId),
-      repoCountMonthlyIlans(userId),
-    ]);
-    const effectiveLimit = Math.max(freeQuota, sub?.ilan_limit ?? 0);
-    if (monthlyCount >= effectiveLimit) {
-      return reply.code(403).send({ error: { message: "ilan_limit_reached" } });
-    }
 
     const ilan = await repoCreateIlan(userId, createIlanInsertPayload(body));
     return reply.code(201).send(ilan);

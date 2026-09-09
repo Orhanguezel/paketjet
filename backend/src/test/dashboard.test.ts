@@ -18,8 +18,8 @@ describe("Dashboard — Özet Bilgiler", () => {
     
     expect(res.statusCode).toBe(200);
     const body = JSON.parse(res.body);
-    expect(body.stats).toBeDefined();
-    expect(body.bookings).toBeDefined();
+    expect(body.total_bookings).toBe(0);
+    expect(Number(body.balance)).toBe(0);
   });
 
   it("taşıyıcı dashboard bilgilerini alabilir", async () => {
@@ -35,6 +35,6 @@ describe("Dashboard — Özet Bilgiler", () => {
     
     expect(res.statusCode).toBe(200);
     const body = JSON.parse(res.body);
-    expect(body.stats).toBeDefined();
+    expect(body.active_ilanlar).toBe(0);
   });
 });

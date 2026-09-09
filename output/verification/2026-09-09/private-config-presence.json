@@ -1,0 +1,79 @@
+[
+  {
+    "key": "storage_driver",
+    "non_placeholder": true,
+    "driver": "local"
+  },
+  {
+    "key": "cloudinary_api_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "cloudinary_api_secret",
+    "non_placeholder": false
+  },
+  {
+    "key": "smtp_password",
+    "non_placeholder": false
+  },
+  {
+    "key": "seo_pages_password_reset",
+    "non_placeholder": true
+  },
+  {
+    "key": "integration.google.client_secret",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.google.api_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.google_maps.api_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.cloudinary.api_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.cloudinary.api_secret",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.telegram.bot_token",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.telegram.webhook_secret",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.iyzico.api_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.iyzico.secret_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.paytr.merchant_id",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.paytr.merchant_key",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.paytr.merchant_salt",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.facebook.app_secret",
+    "non_placeholder": false
+  },
+  {
+    "key": "integration.facebook.access_token",
+    "non_placeholder": false
+  }
+]

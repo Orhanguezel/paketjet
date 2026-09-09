@@ -60,7 +60,7 @@ export function formatAdminStorageBytes(bytes: number): string {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const unitIndex = Math.floor(Math.log(bytes) / Math.log(base));
 
-  return `${Math.round((bytes / Math.pow(base, unitIndex)) * 100) / 100} ${sizes[unitIndex]}`;
+  return `${Math.round((bytes / base ** unitIndex) * 100) / 100} ${sizes[unitIndex]}`;
 }
 
 export function formatAdminStorageDateTime(value: string | null | undefined): string {

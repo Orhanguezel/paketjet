@@ -1,130 +1,20 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { Icon } from "@/components/ui";
-import { getCreditPackages, getListingCreditPrice } from "@/modules/pricing/pricing.service";
-import type { CreditPackage } from "@/modules/pricing/pricing.type";
-import { getMyCredits, purchaseCreditPackage } from "@/modules/purchases/purchases.service";
-import type { MyCreditsResponse } from "@/modules/purchases/purchases.type";
-import PaymentModal from "@/components/PaymentModal";
-
-export default function IlanAlmaHakkiPage() {
-  const [credits, setCredits] = useState<MyCreditsResponse | null>(null);
-  const [listingPrice, setListingPrice] = useState<number | null>(null);
-  const [packages, setPackages] = useState<CreditPackage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [buyingKey, setBuyingKey] = useState<string | null>(null);
-  const [paymentContent, setPaymentContent] = useState("");
-  const [paymentIframeUrl, setPaymentIframeUrl] = useState("");
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  useEffect(() => {
-    Promise.all([getMyCredits(), getListingCreditPrice(), getCreditPackages()])
-      .then(([creditInfo, price, packageList]) => {
-        setCredits(creditInfo);
-        setListingPrice(price);
-        setPackages(packageList);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
-  }, []);
-
-  const formatPrice = (value: number | string) => `₺${Number(value).toLocaleString("tr-TR")}`;
-
-  async function handleBuy(packageKey: string) {
-    setBuyingKey(packageKey);
-    try {
-      const response = await purchaseCreditPackage(packageKey, "paytr");
-      setPaymentIframeUrl(response.iframeUrl ?? "");
-      setPaymentContent(response.checkoutFormContent ?? "");
-      setShowPaymentModal(true);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setBuyingKey(null);
-    }
-  }
-
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6">
-      <section className="rounded-[2rem] bg-panel-surface/90 p-6 shadow-xl shadow-navy/10 ring-1 ring-white/70 md:p-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-black uppercase tracking-normal text-brand">İlan Alma Hakkı</p>
-            <h1 className="mt-2 text-3xl font-black tracking-normal text-panel-ink">
-              Kalan hak: {loading ? "—" : credits?.balance ?? 0} adet
-            </h1>
-            <p className="mt-2 text-sm font-bold text-panel-ink/60">
-              Satın aldığınız her ilan iletişimi 1 hak düşer.
-            </p>
-            <p className="mt-3 text-sm font-black text-brand">
-              Tekil ilan hakkı: {loading || listingPrice === null ? "—" : formatPrice(listingPrice)}
-            </p>
-          </div>
-          <span className="grid size-24 place-items-center rounded-full bg-blue-soft">
-            <Icon name="ilan-alma-hakki" size={76} alt="" />
-          </span>
-        </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-2">
-        {packages.map((pack) => (
-          <article key={pack.key} className="rounded-2xl bg-panel-surface p-5 shadow-sm ring-1 ring-white/70">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-black text-panel-ink">{pack.credits} adet ilan hakkı</h2>
-                <p className="mt-1 text-sm font-bold text-panel-ink/60">Kontör paketi</p>
-              </div>
-              <p className="text-xl font-black text-brand">{formatPrice(pack.price)}</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleBuy(pack.key)}
-              disabled={buyingKey === pack.key}
-              className="mt-5 w-full rounded-lg bg-cta py-3 text-sm font-black text-white transition-colors hover:bg-cta-dark disabled:opacity-60"
-            >
-              {buyingKey === pack.key ? "Hazırlanıyor..." : "Satın Al"}
-            </button>
-          </article>
-        ))}
-      </section>
-
-      <section className="rounded-2xl bg-panel-surface p-5 shadow-sm ring-1 ring-white/70">
-        <h2 className="text-lg font-black text-panel-ink">Hak Hareketleri</h2>
-        <div className="mt-4 divide-y divide-border-soft">
-          {(credits?.ledger ?? []).length === 0 ? (
-            <p className="py-4 text-sm font-bold text-panel-ink/60">Henüz hak hareketi yok.</p>
-          ) : (
-            credits?.ledger.map((item) => (
-              <div key={item.id} className="flex items-center justify-between gap-4 py-3">
-                <div>
-                  <p className="text-sm font-black text-panel-ink">
-                    {item.reason === "reveal_spend" ? "İletişim açma" : item.reason === "package_purchase" ? "Hak satın alma" : item.reason}
-                  </p>
-                  <p className="text-xs font-bold text-panel-ink/55">
-                    {new Date(item.created_at).toLocaleString("tr-TR")}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className={`text-sm font-black ${item.delta < 0 ? "text-danger" : "text-success"}`}>
-                    {item.delta > 0 ? "+" : ""}{item.delta} hak
-                  </p>
-                  <p className="text-xs font-bold text-panel-ink/55">Kalan: {item.balance_after}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-
-      <PaymentModal
-        show={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        checkoutFormContent={paymentContent}
-        iframeUrl={paymentIframeUrl}
-        title="İlan Alma Hakkı Ödemesi"
-        notice="Satın aldığınız haklar, ilan sahibinin iletişim bilgilerine erişmek için kullanılır; kargo taşıma hizmeti değildir."
-      />
-    </div>
-  );
+'use client';
+import {useCallback,useEffect,useRef,useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {getCreditPackages} from '@/modules/pricing/pricing.service';
+import type {CreditPackage} from '@/modules/pricing/pricing.type';
+import {getMyCredits,purchaseCreditPackage} from '@/modules/purchases/purchases.service';
+import type {MyCreditsResponse} from '@/modules/purchases/purchases.type';
+import {getPaymentAvailability} from '@/modules/payments/payments.service';
+import type {PaymentAvailability} from '@/modules/payments/payments.type';
+import PaymentModal from '@/components/PaymentModal';
+import {Button} from '@/components/ui/Button';
+import {formatDate} from '@/lib/date';
+import {ROUTES} from '@/config/routes';
+const money=(value:number)=>new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY'}).format(value);
+export default function CreditsPage(){
+ const router=useRouter(),lock=useRef(false);const [credits,setCredits]=useState<MyCreditsResponse|null>(null),[packages,setPackages]=useState<CreditPackage[]|null>(null),[availability,setAvailability]=useState<PaymentAvailability|null>(null),[errors,setErrors]=useState<string[]>([]),[buying,setBuying]=useState(''),[payment,setPayment]=useState<{iframeUrl?:string;checkoutFormContent?:string;conversationId:string}|null>(null);
+ const load=useCallback(async()=>{const result=await Promise.allSettled([getMyCredits(),getCreditPackages(),getPaymentAvailability()]);const problems:string[]=[];if(result[0].status==='fulfilled')setCredits(result[0].value);else{setCredits(null);problems.push('Hak bakiyesi ve hareketleri alınamadı.');}if(result[1].status==='fulfilled')setPackages(result[1].value);else{setPackages(null);problems.push('Paket seçenekleri alınamadı.');}if(result[2].status==='fulfilled')setAvailability(result[2].value);else{setAvailability(null);problems.push('Ödeme kullanılabilirliği kontrol edilemedi.');}setErrors(problems);},[]);useEffect(()=>{void load();},[load]);
+ async function buy(key:string){if(lock.current||!availability?.enabled)return;lock.current=true;setBuying(key);try{setPayment(await purchaseCreditPackage(key));}catch{setErrors(['Ödeme başlatılamadı. Kartından çekim olduysa tekrar ödemeden destekle görüş.']);}finally{lock.current=false;setBuying('');}}
+ return <div className="space-y-7"><div className="flex flex-wrap items-center justify-between gap-4"><div><h1 className="text-3xl font-semibold">İlan alma hakları</h1><p className="mt-2 text-sm text-muted">Bir hak ile bir ilanın iletişim bilgilerini açabilirsin.</p></div><Button variant="outline" onClick={load}>Yenile</Button></div>{errors.length>0&&<div role="alert" className="rounded-lg border border-danger/30 p-4">{errors.map(error=><p key={error}>{error}</p>)}</div>}<section className="rounded-lg border border-border bg-surface p-6"><h2 className="text-sm text-muted">Kullanılabilir hak</h2><p className="mt-2 text-4xl font-semibold">{credits?credits.balance:'—'} <span className="text-base font-normal text-muted">adet</span></p><p className="mt-3 text-sm text-muted">Daha önce açtığın iletişim bilgilerine yeniden hak harcamadan ulaşabilirsin.</p></section><section><h2 className="mb-4 text-xl font-semibold">Hak paketleri</h2>{availability&&!availability.enabled&&<p role="status" className="mb-4 rounded-lg border border-border bg-surface p-4 text-sm">Kartla ödeme şu anda kullanılamıyor. Mevcut haklarınla ilan iletişimlerini açabilirsin.</p>}<div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,15rem),1fr))] gap-4">{packages?.map(pack=><article key={pack.key} className="rounded-lg border border-border bg-surface p-5"><h3 className="text-lg font-semibold">{pack.credits} ilan hakkı</h3><p className="my-4 text-3xl font-semibold">{money(pack.price)}</p><Button className="w-full" disabled={!availability?.enabled||!!buying} onClick={()=>buy(pack.key)}>{buying===pack.key?'Hazırlanıyor…':'Paketi satın al'}</Button></article>)}</div>{packages?.length===0&&<p className="text-sm text-muted">Şu anda sunulan bir paket bulunmuyor.</p>}</section><section className="rounded-lg border border-border bg-surface p-6"><h2 className="text-xl font-semibold">Hak hareketleri</h2>{credits?<ul className="mt-4 divide-y divide-border">{credits.ledger.map(item=><li key={item.id} className="flex flex-wrap justify-between gap-4 py-4"><div><p>{({reveal_spend:'İletişim açma',package_purchase:'Hak paketi alımı',admin_grant:'Yönetici düzeltmesi',refund:'Hak iadesi'} as Record<string,string>)[item.reason]??'Hak hareketi'}</p><p className="mt-1 text-sm text-muted">{formatDate(item.created_at)}</p></div><div className="shrink-0 text-right"><p className="font-semibold">{item.delta>0?'+':''}{item.delta} hak</p><p className="mt-1 text-sm text-muted">Kalan: {item.balance_after}</p></div></li>)}{!credits.ledger.length&&<li className="py-5 text-sm text-muted">Henüz hak hareketi yok.</li>}</ul>:<p className="mt-4 text-sm text-muted">Hareketler henüz alınamadı.</p>}</section><PaymentModal show={!!payment} onClose={()=>{if(payment)router.push(`${ROUTES.panel.odemeSonuc}?ref=${encodeURIComponent(payment.conversationId)}`);}} iframeUrl={payment?.iframeUrl} checkoutFormContent={payment?.checkoutFormContent} title="Hak paketi ödemesi"/></div>;
 }

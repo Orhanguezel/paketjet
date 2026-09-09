@@ -33,20 +33,13 @@ async function createCarrier(app: Awaited<ReturnType<typeof getTestApp>>) {
   const carrierId = carrier.body.user.id as string;
   const carrierToken = carrier.token as string;
 
-  await app.inject({
-    method: "POST",
-    url: "/api/wallet/deposit",
-    headers: authHeaders(carrierToken),
-    payload: { amount: 2500 },
-  });
-
   const ilanRes = await app.inject({
     method: "POST",
     url: "/api/ilanlar",
     headers: authHeaders(carrierToken),
     payload: {
-      from_city: "Istanbul",
-      to_city: "Izmir",
+      from_city: "İstanbul",
+      to_city: "İzmir",
       departure_date: new Date(Date.now() + 86400000).toISOString(),
       total_capacity_kg: 100,
       price_per_kg: 12,
@@ -55,55 +48,7 @@ async function createCarrier(app: Awaited<ReturnType<typeof getTestApp>>) {
     },
   });
 
-  const ilanBody = JSON.parse(ilanRes.body) as { id?: string };
-  const ilanId = ilanBody.id;
-
-  const customer = await registerUser(app, {
-    email: randomEmail(),
-    password: "Test1234!",
-    full_name: "Customer Test",
-  });
-
-  const customerToken = customer.token as string;
-
-  await app.inject({
-    method: "POST",
-    url: "/api/wallet/deposit",
-    headers: authHeaders(customerToken),
-    payload: { amount: 5000 },
-  });
-
-  if (ilanId) {
-    const bookingRes = await app.inject({
-      method: "POST",
-      url: "/api/bookings",
-      headers: authHeaders(customerToken),
-      payload: { ilan_id: ilanId, kg_amount: 10, customer_notes: "Admin carrier test" },
-    });
-
-    if (bookingRes.statusCode === 200) {
-      const bookingBody = JSON.parse(bookingRes.body) as { id: string };
-
-      await app.inject({
-        method: "PATCH",
-        url: `/api/bookings/${bookingBody.id}/confirm`,
-        headers: authHeaders(carrierToken),
-      });
-
-      await app.inject({
-        method: "PATCH",
-        url: `/api/bookings/${bookingBody.id}/status`,
-        headers: authHeaders(carrierToken),
-        payload: { status: "delivered" },
-      });
-      await app.inject({
-        method: "POST",
-        url: "/api/ratings",
-        headers: authHeaders(customerToken),
-        payload: { booking_id: bookingBody.id, score: 5, comment: "Hizli teslimat" },
-      });
-    }
-  }
+  expect(ilanRes.statusCode).toBe(201);
 
   return { carrierId, carrierEmail };
 }

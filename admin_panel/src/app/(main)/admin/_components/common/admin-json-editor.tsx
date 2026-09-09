@@ -4,7 +4,8 @@
 // FILE: src/app/(main)/admin/_components/common/admin-json-editor.tsx
 // =============================================================
 
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import { Braces } from 'lucide-react';
 
 import { cn } from '@/lib/utils';

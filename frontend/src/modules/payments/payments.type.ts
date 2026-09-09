@@ -1,0 +1,2 @@
+export type PaymentStatus = {payment_ref: string; kind: 'listing' | 'credits' | 'legacy_wallet' | 'legacy_booking'; ilan_id: string | null; amount: string; state: 'initializing' | 'pending' | 'completed' | 'failed' | 'review' | 'refund_pending' | 'refunded'; error_code: string | null};
+export type PaymentAvailability = {provider: 'iyzico' | 'paytr' | null; enabled: boolean; reason: string | null};

@@ -13,6 +13,7 @@ describe("Contact — İletişim Formu", () => {
       payload: {
         name: "Test User",
         email: "test@example.com",
+        phone: "05551234567",
         subject: "Test Konu",
         message: "Bu bir test mesajıdır.",
       },
@@ -20,7 +21,8 @@ describe("Contact — İletişim Formu", () => {
     
     expect(res.statusCode).toBe(201);
     const body = JSON.parse(res.body);
-    expect(body.success).toBe(true);
+    expect(body.id).toBeString();
+    expect(body.subject).toBe("Test Konu");
   });
 
   it("geçersiz email ile hata döner", async () => {

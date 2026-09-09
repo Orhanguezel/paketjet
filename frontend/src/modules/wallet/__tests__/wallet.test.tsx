@@ -1,71 +1,11 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import CuzdanPage from "@/app/panel/cuzdan/page";
-import { getTransactions, getWallet, initiateDeposit } from "../wallet.service";
-
-vi.mock("../wallet.service", () => ({
-  getWallet: vi.fn(),
-  getTransactions: vi.fn(),
-  initiateDeposit: vi.fn(),
-}));
-
-describe("wallet page", () => {
-  beforeEach(() => {
-    vi.mocked(getWallet).mockResolvedValue({
-      id: "wallet-1",
-      user_id: "user-1",
-      balance: "1250.00",
-      total_earnings: "450.00",
-      currency: "TRY",
-      updated_at: "2026-03-21T10:00:00.000Z",
-    });
-    vi.mocked(getTransactions).mockResolvedValue({
-      data: [
-        {
-          id: "tx-1",
-          wallet_id: "wallet-1",
-          type: "carrier_credit",
-          amount: "320.00",
-          description: "Teslimat kazanci",
-          created_at: "2026-03-21T10:00:00.000Z",
-        },
-        {
-          id: "tx-2",
-          wallet_id: "wallet-1",
-          type: "refund",
-          amount: "80.00",
-          description: "Iade",
-          created_at: "2026-03-20T10:00:00.000Z",
-        },
-      ],
-      total: 2,
-      page: 1,
-    });
-    vi.mocked(initiateDeposit).mockResolvedValue({
-      checkoutFormContent: "<div>iyzico</div>",
-      token: "token-1",
-      conversationId: "conv-1",
-      amount: 100,
-      successUrl: "/success",
-      failUrl: "/fail",
-    });
-  });
-
-  it("bakiyeyi dogru gosterir", async () => {
-    render(<CuzdanPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText("₺1250.00")).toBeInTheDocument();
-    });
-    expect(screen.getByText(/toplam kazanç: ₺450.00/i)).toBeInTheDocument();
-  });
-
-  it("transaction listesini renderlar", async () => {
-    render(<CuzdanPage />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/teslimat kazanci/i)).toBeInTheDocument();
-    });
-    expect(screen.getAllByText(/kazanç|iade/i)).toHaveLength(4);
-  });
-});
+import { render, screen } from '@testing-library/react';
+import { beforeEach, expect, it, vi } from 'vitest';
+import ResultPage from '@/app/panel/ilan-alma-hakki/odeme-sonuc/page';
+import { getPaymentStatus } from '@/modules/payments/payments.service';
+const state=vi.hoisted(()=>({query:'status=success&amount=999999'}));
+vi.mock('next/navigation',()=>({useSearchParams:()=>new URLSearchParams(state.query)}));
+vi.mock('@/modules/payments/payments.service',()=>({getPaymentStatus:vi.fn()}));
+beforeEach(()=>vi.clearAllMocks());
+it('querystring success cannot claim payment or credit',()=>{state.query='status=success&amount=999999';render(<ResultPage/>);expect(screen.getByText('Ödeme referansı bulunamadı')).toBeInTheDocument();expect(screen.queryByText('İşlemin tamamlandı')).not.toBeInTheDocument();expect(getPaymentStatus).not.toHaveBeenCalled();});
+it('only server-confirmed completed listing displays access link',async()=>{state.query='ref=owned';vi.mocked(getPaymentStatus).mockResolvedValue({payment_ref:'owned',kind:'listing',ilan_id:'listing-1',amount:'50',state:'completed',error_code:null});render(<ResultPage/>);expect(await screen.findByText('İşlemin tamamlandı')).toBeInTheDocument();expect(screen.getByRole('link',{name:'İletişim bilgilerini gör'})).toHaveAttribute('href','/ilanlar/listing-1');});
+it('paid but undelivered payment displays review, not success',async()=>{state.query='ref=review';vi.mocked(getPaymentStatus).mockResolvedValue({payment_ref:'review',kind:'listing',ilan_id:'listing-1',amount:'50',state:'refund_pending',error_code:'delivery_unavailable'});render(<ResultPage/>);expect(await screen.findByText('Ödemen inceleniyor')).toBeInTheDocument();expect(screen.queryByText('İşlemin tamamlandı')).not.toBeInTheDocument();});

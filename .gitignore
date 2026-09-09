@@ -17,3 +17,7 @@ technical-seo-skill/
 docs/
 localhost_3000-*.json
 _backups/
+
+# Local renewal browser/build output
+.next-dev/
+.playwright-cli/

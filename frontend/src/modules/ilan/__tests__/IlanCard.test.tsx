@@ -26,10 +26,10 @@ describe("IlanCard", () => {
   it("ilan bilgilerini dogru render eder", () => {
     render(<IlanCard ilan={ilan} />);
 
-    expect(screen.getByText(/istanbul/i)).toBeInTheDocument();
-    expect(screen.getByText(/ankara/i)).toBeInTheDocument();
-    expect(screen.getByText(/Minivan/i)).toBeInTheDocument();
-    expect(screen.getByText(/İletişimi Gör/i)).toBeInTheDocument();
+    expect(screen.getByText("Istanbul")).toBeInTheDocument();
+    expect(screen.getByText("Ankara")).toBeInTheDocument();
+    expect(screen.getByText(/Kamyonet/i)).toBeInTheDocument();
+    expect(screen.getByRole("link", {name: /ilanını incele/i})).toBeInTheDocument();
   });
 
   it('"Detay" linki yerine kart linki dogru URL\'ye gider', () => {

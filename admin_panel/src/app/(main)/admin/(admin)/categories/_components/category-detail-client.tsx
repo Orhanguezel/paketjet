@@ -85,7 +85,7 @@ export default function CategoryDetailClient({ id }: Props) {
     if (!isNew && id) {
       refetch();
     }
-  }, [activeLocale, id, isNew, refetch]);
+  }, [id, isNew, refetch]);
 
   const handleBack = () => router.push('/admin/categories');
 

@@ -25,7 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function IletisimPage() {
-  const contactInfo = await getSiteSettingValue<ContactInfo>("contact_info");
+  const [info,email] = await Promise.all([getSiteSettingValue<ContactInfo>("contact_info"),getSiteSettingValue<string>("contact_email")]);
+  const contactInfo = {...info,email:info?.email || email || undefined};
   return (
     <>
       <ContactPointSchema phone={contactInfo?.phone} email={contactInfo?.email} />

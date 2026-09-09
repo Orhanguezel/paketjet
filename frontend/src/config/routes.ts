@@ -5,6 +5,7 @@
 
 export const ROUTES = {
   home: "/",
+  internal: {uiPreview:"/ui-preview"},
 
   auth: {
     login:    "/giris",
@@ -28,6 +29,7 @@ export const ROUTES = {
     odemeSonuc:    "/panel/ilan-alma-hakki/odeme-sonuc",
     tasiyici:      "/panel/tasiyici",
     ilanlarim:     "/panel/ilanlarim",
+    editIlan: (id: string) => `/panel/tasiyici/ilanlar/${encodeURIComponent(id)}/duzenle`,
     satinAldiklarim: "/panel/satin-aldiklarim",
     ilanAlmaHakki: "/panel/ilan-alma-hakki",
     cuzdan:        "/panel/ilan-alma-hakki",

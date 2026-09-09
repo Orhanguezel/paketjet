@@ -1,10 +1,3 @@
-import SiteShell from "@/components/SiteShell";
-import AdminShell from "./admin-shell";
-
-export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SiteShell>
-      <AdminShell>{children}</AdminShell>
-    </SiteShell>
-  );
-}
+import type {Metadata} from 'next';
+export const metadata:Metadata={robots:{index:false,follow:false}};
+export default function Layout({children}:{children:React.ReactNode}){return children;}

@@ -73,10 +73,16 @@ function shouldRun(file: string, flags: Flags) {
 }
 
 /** admin değişkenlerini ENV'den oku + bcrypt üret */
+function requiredSeedPassword(key: string): string {
+  const value = process.env[key]?.trim();
+  if (!value || value.length < 16) throw new Error(`Seed requires ${key} (at least 16 characters)`);
+  return value;
+}
+
 function getAdminVars() {
   const email = (process.env.ADMIN_EMAIL || 'orhanguzell@gmail.com').trim();
   const id = (process.env.ADMIN_ID || '4f618a8d-6fdb-498c-898a-395d368b2193').trim();
-  const plainPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  const plainPassword = requiredSeedPassword('ADMIN_PASSWORD');
   const passwordHash = bcrypt.hashSync(plainPassword, 12);
   return { email, id, passwordHash };
 }
@@ -85,7 +91,7 @@ function getAdminVars() {
 function getCustomerVars() {
   const email = (process.env.CUSTOMER_EMAIL || 'musteri@paketjet.com').trim();
   const id = (process.env.CUSTOMER_ID || 'a1b2c3d4-e5f6-7890-abcd-ef1234567890').trim();
-  const plainPassword = process.env.CUSTOMER_PASSWORD || 'Musteri@2026!';
+  const plainPassword = requiredSeedPassword('CUSTOMER_PASSWORD');
   const passwordHash = bcrypt.hashSync(plainPassword, 12);
   return { email, id, passwordHash };
 }
@@ -94,7 +100,7 @@ function getCustomerVars() {
 function getCarrierVars() {
   const email = (process.env.CARRIER_EMAIL || process.env.SELLER_EMAIL || 'satici@paketjet.com').trim();
   const id = (process.env.CARRIER_ID || process.env.SELLER_ID || 'b2c3d4e5-f6a7-8901-bcde-f23456789012').trim();
-  const plainPassword = process.env.CARRIER_PASSWORD || process.env.SELLER_PASSWORD || 'Tasiyici@2026!';
+  const plainPassword = requiredSeedPassword('CARRIER_PASSWORD');
   const passwordHash = bcrypt.hashSync(plainPassword, 12);
   return { email, id, passwordHash };
 }
@@ -160,7 +166,7 @@ function prepareSqlForRun(
     .replaceAll('{{IYZICO_BASE_URL}}', sqlStr(iyzico.baseUrl))
     .replaceAll('{{IYZICO_IS_TEST_MODE}}', String(iyzico.isTestMode));
 
-  fs.writeFileSync('/tmp/seed_debug.sql', sql);
+
   sql = `${header}\n${sql}`;
   return sql;
 }
@@ -191,6 +197,7 @@ async function runSqlFile(
 }
 
 async function main() {
+  if (process.env.NODE_ENV === 'production') throw new Error('Production seed is disabled; use reviewed migrations.');
   const flags = parseFlags(process.argv);
 
   // 1) Root ile drop + create (opsiyonel)

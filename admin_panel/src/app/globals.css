@@ -251,3 +251,26 @@ html {
 .disable-transitions * {
   transition: none !important;
 }
+
+/* PaketJet shared brand: restrained purple actions and navy navigation. */
+:root:not([data-theme-preset]), :root[data-theme-preset="default"] {
+ --primary:hsl(256 67% 49%); --primary-foreground:hsl(0 0% 100%);
+ --ring:hsl(256 67% 49%); --radius:0.65rem;
+ --background:hsl(220 25% 98%); --foreground:hsl(228 65% 12%);
+ --card:hsl(0 0% 100%); --card-foreground:hsl(228 65% 12%);
+ --muted:hsl(220 25% 96%); --muted-foreground:hsl(218 18% 40%);
+ --border:hsl(218 25% 88%); --input:hsl(218 25% 88%);
+ --sidebar:hsl(228 65% 12%); --sidebar-foreground:hsl(220 25% 95%);
+ --sidebar-primary:hsl(256 67% 60%); --sidebar-primary-foreground:hsl(0 0% 100%);
+ --sidebar-accent:hsl(228 38% 22%); --sidebar-accent-foreground:hsl(0 0% 100%);
+ --sidebar-border:hsl(228 30% 28%); --sidebar-ring:hsl(256 67% 65%);
+}
+:focus-visible {outline:2px solid var(--ring);outline-offset:3px;}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
+
+.dark:root[data-theme-preset="default"] {
+ --background:hsl(225 28% 9%); --foreground:hsl(220 25% 96%);
+ --card:hsl(225 25% 13%); --card-foreground:hsl(220 25% 96%);
+ --muted:hsl(225 23% 18%); --muted-foreground:hsl(220 20% 74%);
+ --border:hsl(220 20% 28%); --input:hsl(220 20% 28%);
+}

@@ -85,7 +85,7 @@ export type StorageUpdateInput = {
   metadata?: Record<string, string> | null;
 };
 
-export const sanitize = (name: string) => name.replace(/[^\w.\-]+/g, '_');
+export const sanitize = (name: string) => name.replace(/[^\w.-]+/g, '_');
 
 export type UploadManyResponse = { items: StoragePublicUploadResponse[] };
 

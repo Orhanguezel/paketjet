@@ -292,9 +292,8 @@ export default function AdminStorageClient() {
 
         <Card>
           <CardContent className="p-4 md:p-6">
-            <div
-              role="button"
-              tabIndex={0}
+            <button
+              type="button"
               onClick={() => inputRef.current?.click()}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') inputRef.current?.click();
@@ -319,14 +318,16 @@ export default function AdminStorageClient() {
               )}
             >
               <UploadCloud className="mb-4 size-12 text-muted-foreground" />
-              <p className="text-lg font-medium">Resim yüklemek için tıklayın</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <span className="text-lg font-medium">Resim yüklemek için tıklayın</span>
+              <span className="mt-1 text-sm text-muted-foreground">
                 Görseller storage içine yüklenir; grid üzerinden URL kopyalama, silme ve yeniden boyutlandırma yapılır.
-              </p>
+              </span>
+
+            </button>
               <input
                 ref={inputRef}
                 type="file"
-                accept="image/*"
+                accept="image/png,image/jpeg,image/webp,image/gif"
                 multiple
                 className="hidden"
                 onChange={(event) => {
@@ -334,7 +335,6 @@ export default function AdminStorageClient() {
                   event.currentTarget.value = '';
                 }}
               />
-            </div>
             {uploadProgress !== null ? (
               <div className="mt-4 space-y-2">
                 <Progress value={uploadProgress} />

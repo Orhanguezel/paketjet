@@ -22,11 +22,13 @@ export const API = {
     detail: (id: string) => `/api/ilanlar/${id}`,
     buy:    (id: string) => `/api/ilanlar/${id}/satin-al`,
     pay:    (id: string) => `/api/ilanlar/${id}/satin-al/odeme`,
+    access: (id: string) => `/api/ilanlar/${encodeURIComponent(id)}/access`,
     contact:(id: string) => `/api/ilanlar/${id}/iletisim`,
     status: (id: string) => `/api/ilanlar/${id}/status`,
     photos: (id: string) => `/api/ilanlar/${id}/photos`,
   },
 
+  payments: {availability: "/api/payments/availability", status: (ref: string) => `/api/payments/${encodeURIComponent(ref)}`},
   purchases: {
     mine: "/api/satin-aldiklarim",
     credits: "/api/ilan-alma-hakki",

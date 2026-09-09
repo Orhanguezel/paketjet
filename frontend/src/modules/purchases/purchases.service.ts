@@ -27,10 +27,13 @@ export function getMyCredits() {
   return apiGet<MyCreditsResponse>(API.purchases.credits);
 }
 
-export function purchaseCreditPackage(packageKey: string, provider: "iyzico" | "paytr" = "paytr") {
+export function purchaseCreditPackage(packageKey: string, provider?: "iyzico" | "paytr") {
   return apiPost<CreditPackagePaymentResponse>(API.purchases.buyCredits, { package_key: packageKey, provider });
 }
 
-export function initiateIlanPayment(id: string, declaration: PurchaseDeclarationInput, provider: "iyzico" | "paytr" = "paytr") {
+export function initiateIlanPayment(id: string, declaration: PurchaseDeclarationInput, provider?: "iyzico" | "paytr") {
   return apiPost<IlanPaymentResponse>(API.ilanlar.pay(id), { ...declaration, provider });
 }
+
+export type ListingAccess = {is_owner:boolean;contact:import('./purchases.type').ContactSnapshot|null;balance:number;state:'purchased'|'owner'|'unavailable'|'credit'|'card'};
+export const getListingAccess = (id:string) => apiGet<ListingAccess>(API.ilanlar.access(id),{cache:'no-store'});

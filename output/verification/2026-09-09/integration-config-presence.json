@@ -1,0 +1,121 @@
+{
+  "at": "2026-09-09T02:05:12.876Z",
+  "settings": [
+    {
+      "key": "contact_phone_display",
+      "configured": true
+    },
+    {
+      "key": "contact_phone_tel",
+      "configured": true
+    },
+    {
+      "key": "contact_email",
+      "configured": true
+    },
+    {
+      "key": "contact_to_email",
+      "configured": true
+    },
+    {
+      "key": "contact_address",
+      "configured": true
+    },
+    {
+      "key": "contact_whatsapp_link",
+      "configured": true
+    },
+    {
+      "key": "smtp_host",
+      "configured": false
+    },
+    {
+      "key": "smtp_port",
+      "configured": true
+    },
+    {
+      "key": "smtp_username",
+      "configured": true
+    },
+    {
+      "key": "smtp_password",
+      "configured": false
+    },
+    {
+      "key": "smtp_from_email",
+      "configured": true
+    },
+    {
+      "key": "smtp_from_name",
+      "configured": true
+    },
+    {
+      "key": "smtp_ssl",
+      "configured": false
+    },
+    {
+      "key": "company_brand",
+      "configured": true
+    },
+    {
+      "key": "socials",
+      "configured": true
+    },
+    {
+      "key": "social_facebook_url",
+      "configured": true
+    },
+    {
+      "key": "social_instagram_url",
+      "configured": true
+    },
+    {
+      "key": "social_twitter_url",
+      "configured": true
+    },
+    {
+      "key": "seo_social_same_as",
+      "configured": true
+    },
+    {
+      "key": "integration.google_maps.enabled",
+      "configured": false
+    },
+    {
+      "key": "integration.google_maps.api_key",
+      "configured": false
+    },
+    {
+      "key": "integration.google_maps.map_id",
+      "configured": false
+    },
+    {
+      "key": "contact_info",
+      "configured": true
+    },
+    {
+      "key": "company_profile",
+      "configured": true
+    },
+    {
+      "key": "socials",
+      "configured": true
+    },
+    {
+      "key": "paketjet__contact_info",
+      "configured": true
+    },
+    {
+      "key": "paketjet__socials",
+      "configured": true
+    },
+    {
+      "key": "paketjet__socials",
+      "configured": true
+    },
+    {
+      "key": "paketjet__company_profile",
+      "configured": true
+    }
+  ]
+}

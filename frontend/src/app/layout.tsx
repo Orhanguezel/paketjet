@@ -3,7 +3,7 @@ import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
 import { OrganizationSchema } from "@/components/JsonLd";
-import SplashLoader from "@/components/SplashLoader";
+
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -12,7 +12,7 @@ const dmSans = DM_Sans({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8078";
+const API_URL = process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8078";
 
 async function fetchGlobalSeo() {
   try {
@@ -52,12 +52,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const siteName = seo?.site_name ?? "PaketJet";
   const titleTemplate = seo?.title_template ?? "%s | PaketJet";
-  const titleDefault = meta?.title ?? seo?.title_default ?? "PaketJet — Hizli ve Guvenilir Kargo";
+  const titleDefault = meta?.title ?? seo?.title_default ?? "PaketJet — Güzergâh ve taşıyıcı ilanları";
   const description = meta?.description ?? seo?.description
-    ?? "PaketJet | Turkiye'nin P2P kargo pazaryeri. Guvenilir tasiyicilarla paketini hizli ve uygun fiyata gonder. 81 ilde binlerce aktif tasiyici seni bekliyor.";
+    ?? "Taşıyıcı güzergâhlarını keşfet, iletişim bilgilerine eriş ve doğrudan görüş. Güzergâhını ücretsiz ilan ver.";
   const keywords = meta?.keywords
     ? meta.keywords.split(",").map((k: string) => k.trim()).filter(Boolean)
-    : ["kargo", "paket takip", "tasiyicilik", "lojistik", "turkiye", "paketjet", "p2p kargo"];
+    : ["kargo",  "tasiyicilik", "lojistik", "turkiye", "paketjet", "p2p kargo"];
   const author = seo?.author ?? "PaketJet";
 
   const ogImages = seo?.open_graph?.images?.length
@@ -99,33 +99,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-async function fetchSplashVideos(): Promise<string[] | null> {
-  try {
-    const res = await fetch(`${API_URL}/api/site_settings/splash_videos`, { next: { revalidate: 300 } });
-    if (!res.ok) return null;
-    const data = await res.json();
-    const val = data?.value;
-    if (Array.isArray(val)) return val;
-    if (typeof val === "string") { try { return JSON.parse(val); } catch { return null; } }
-    return null;
-  } catch { return null; }
-}
-
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const splashVideos = await fetchSplashVideos();
 
   return (
     <html lang="tr" suppressHydrationWarning className={`${dmSans.variable} font-sans`}>
       <body suppressHydrationWarning>
         <OrganizationSchema />
         <ThemeProvider>
-          <SplashLoader videos={splashVideos}>
+          <>
             {children}
-          </SplashLoader>
+          </>
         </ThemeProvider>
       </body>
     </html>

@@ -24,6 +24,7 @@ export const users = mysqlTable(
     wallet_balance: decimal("wallet_balance", { precision: 10, scale: 2 })
       .notNull()
       .default("0.00"),
+    auth_version: int("auth_version").notNull().default(0),
     is_active: tinyint("is_active").notNull().default(1),
     email_verified: tinyint("email_verified").notNull().default(0),
     reset_token: varchar("reset_token", { length: 255 }),

@@ -12,7 +12,8 @@
 // - Cloudinary raw/upload uzantısız => svg sayılmaz
 // =============================================================
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Copy, Image as ImageIcon, Library, Upload, Star, Trash2 } from 'lucide-react';
 
@@ -521,7 +522,7 @@ export const AdminImageUploadField: React.FC<AdminImageUploadFieldProps> = ({
         <Input
           ref={fileInputRef as any}
           type="file"
-          accept="image/*,.svg,.ico"
+          accept="image/png,image/jpeg,image/webp,image/gif"
           multiple={!!multiple}
           className="hidden"
           onChange={handleFileChange}

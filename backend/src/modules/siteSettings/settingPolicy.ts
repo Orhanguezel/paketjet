@@ -1,3 +1,4 @@
+import {z} from 'zod';
 // =============================================================
 // FILE: src/modules/siteSettings/settingPolicy.ts
 // PaketJet – Key policy + value normalization/validation
@@ -82,6 +83,13 @@ export function normalizeValueByKey(key: string, value: JsonLike): JsonLike {
     return validateSeoSettingValue(k, value) as unknown as JsonLike;
   }
 
+  const amount=z.coerce.number().positive().max(99999999).refine(n=>Math.abs(n*100-Math.round(n*100))<0.000001,'En fazla iki ondalık basamak girin');
+  if(k==='pricing.listing_credit_price')return amount.parse(value);
+  if(k==='pricing.credit_packages'){
+    const packages=z.array(z.object({key:z.string().min(1).max(50),credits:z.coerce.number().int().positive().max(100000),price:amount})).max(20).parse(value);
+    if(new Set(packages.map(p=>p.key)).size!==packages.length)throw Object.assign(new Error('duplicate_package_key'),{statusCode:400});
+    return packages;
+  }
   // Media keys: pass-through (string veya object)
   return value;
 }

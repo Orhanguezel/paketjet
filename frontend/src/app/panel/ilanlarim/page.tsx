@@ -1,167 +1,18 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { getMyIlans, updateIlanStatus, deleteIlan } from "@/modules/ilan/ilan.service";
-import type { Ilan } from "@/modules/ilan/ilan.type";
-import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
-import { SkeletonCard } from "@/components/ui/Skeleton";
-import { Icon } from "@/components/ui";
-
-const ILAN_STATUS_COLOR: Record<string, "success" | "muted" | "danger" | "brand" | "warning"> = {
-  active: "success",
-  pending_approval: "warning",
-  paused: "muted",
-  completed: "brand",
-  sold: "brand",
-  cancelled: "danger",
-};
-
-const ILAN_STATUS_LABEL: Record<string, string> = {
-  active: "Aktif",
-  pending_approval: "Onay Bekliyor",
-  paused: "Durduruldu",
-  completed: "Tamamlandı",
-  sold: "Satıldı",
-  cancelled: "İptal",
-};
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-}
-
-export default function IlanlarimPage() {
-  const [ilanlar, setIlanlar] = useState<Ilan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [actionId, setActionId] = useState<string | null>(null);
-
-  useEffect(() => {
-    let alive = true;
-    getMyIlans()
-      .then((data) => {
-        if (alive) setIlanlar(data);
-      })
-      .catch(console.error)
-      .finally(() => {
-        if (alive) setLoading(false);
-      });
-
-    return () => {
-      alive = false;
-    };
-  }, []);
-
-  async function toggleStatus(ilan: Ilan) {
-    const next = ilan.status === "active" ? "paused" : "active";
-    setActionId(ilan.id);
-    try {
-      const updated = await updateIlanStatus(ilan.id, next);
-      setIlanlar((prev) => prev.map((i) => (i.id === ilan.id ? updated : i)));
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setActionId(null);
-    }
-  }
-
-  async function handleDelete(id: string) {
-    if (!confirm("Bu ilanı silmek istediğinize emin misiniz?")) return;
-    setActionId(id);
-    try {
-      await deleteIlan(id);
-      setIlanlar((prev) => prev.filter((i) => i.id !== id));
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setActionId(null);
-    }
-  }
-
-  return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-8">
-      <section className="rounded-[2rem] bg-panel-surface/90 px-6 py-7 shadow-xl shadow-navy/10 ring-1 ring-white/70 md:px-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-black uppercase tracking-normal text-brand">İlan Yönetimi</p>
-            <h1 className="mt-2 text-3xl font-black tracking-normal text-panel-ink md:text-4xl">İlanlarım</h1>
-            <p className="mt-2 text-sm font-bold text-panel-ink/60">
-              Gönderici olarak açtığınız kargo ilanları. Taşıyıcılar bu ilanların iletişim bilgilerini satın alarak sizinle irtibata geçer.
-            </p>
-          </div>
-          <span className="grid size-20 shrink-0 place-items-center rounded-2xl bg-blue-soft">
-            <Icon name="ilanlarim" size={60} alt="" />
-          </span>
-        </div>
-      </section>
-
-      <section className="rounded-[2rem] bg-panel-surface/90 p-6 shadow-xl shadow-navy/10 ring-1 ring-white/70 md:p-8">
-        {loading ? (
-          <div className="flex flex-col gap-3">
-            {[1, 2, 3].map((i) => (
-              <SkeletonCard key={i} />
-            ))}
-          </div>
-        ) : ilanlar.length === 0 ? (
-          <div className="py-16 text-center text-muted">
-            <p className="text-lg font-semibold">Henüz ilanınız bulunmuyor</p>
-            <p className="mt-1 text-sm">Ücretsiz ilan açarak güzergahınızı paylaşabilirsiniz.</p>
-            <Link
-              href="/ilan-ver"
-              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-cta px-6 text-sm font-black text-white hover:bg-cta-dark transition-colors"
-            >
-              Hızlı İlan Aç
-            </Link>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-4">
-            {ilanlar.map((ilan) => (
-              <div
-                key={ilan.id}
-                className="flex flex-col justify-between gap-4 rounded-2xl border border-border-soft p-4 transition-all hover:bg-blue-xsoft sm:flex-row sm:items-center"
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <p className="text-base font-black text-panel-ink">
-                      {ilan.from_city} → {ilan.to_city}
-                    </p>
-                    <Badge color={ILAN_STATUS_COLOR[ilan.status] ?? "muted"}>
-                      {ILAN_STATUS_LABEL[ilan.status] ?? ilan.status}
-                    </Badge>
-                  </div>
-                  <div className="flex flex-col gap-1 text-xs font-bold text-panel-ink/60">
-                    <p>Paket Tarihi: {formatDate(ilan.departure_date)}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  {ilan.status !== "pending_approval" && ilan.status !== "sold" && (
-                    <Button
-                      size="sm"
-                      variant={ilan.status === "active" ? "secondary" : "success"}
-                      loading={actionId === ilan.id}
-                      onClick={() => toggleStatus(ilan)}
-                    >
-                      {ilan.status === "active" ? "Durdur" : "Aktif Et"}
-                    </Button>
-                  )}
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    loading={actionId === ilan.id}
-                    onClick={() => handleDelete(ilan.id)}
-                  >
-                    Sil
-                  </Button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
-    </div>
-  );
+'use client';
+import {useCallback,useEffect,useState} from 'react';
+import Link from 'next/link';
+import {getMyIlans,updateIlanStatus,deleteIlan} from '@/modules/ilan/ilan.service';
+import type {Ilan} from '@/modules/ilan/ilan.type';
+import {Badge} from '@/components/ui/Badge';
+import {Button} from '@/components/ui/Button';
+import {formatDate} from '@/lib/date';
+import {ROUTES} from '@/config/routes';
+const labels:Record<string,string>={active:'Yayında',pending_approval:'İncelemede',paused:'Durduruldu',sold:'Satıldı',expired:'Süresi doldu',cancelled:'Kapatıldı',removed:'Arşivlendi',completed:'Tamamlandı'};
+const effectiveStatus=(row:Ilan)=>['active','pending_approval'].includes(row.status)&&new Date(row.departure_date).getTime()<=Date.now()?'expired':row.status;
+export default function MyListings(){
+ const [rows,setRows]=useState<Ilan[]|null>(null),[error,setError]=useState(''),[filter,setFilter]=useState(''),[busy,setBusy]=useState('');
+ const load=useCallback(async()=>{setError('');try{setRows(await getMyIlans());}catch{setError('İlanların yüklenemedi. Tekrar dene.');}},[]);useEffect(()=>{void load();},[load]);
+ async function action(id:string,kind:'pause'|'archive'){setBusy(id);setError('');try{if(kind==='pause')await updateIlanStatus(id,'paused');else await deleteIlan(id);await load();}catch{setError('İşlem tamamlanamadı. İlan satılmış veya ödeme için ayrılmış olabilir. Yenileyip tekrar dene.');}finally{setBusy('');}}
+ const visible=rows?.filter(row=>!filter||effectiveStatus(row)===filter);
+ return <div className="space-y-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><h1 className="text-3xl font-semibold">İlanlarım</h1><p className="mt-2 text-sm text-muted">Taşıyıcı olarak paylaştığın güzergâhlar ve yayın durumları.</p></div><Link href={ROUTES.ilanVer} className="rounded-lg bg-action px-5 py-3 font-semibold text-white">Ücretsiz ilan ver</Link></div><div className="flex flex-wrap items-end gap-3"><label className="text-sm">İlan durumu<select value={filter} onChange={e=>setFilter(e.target.value)} className="mt-2 block rounded-lg border border-border bg-surface px-3 py-3"><option value="">Tüm ilanlar</option>{Object.entries(labels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label><Button variant="outline" onClick={load}>Yenile</Button></div>{error&&<p role="alert" className="rounded-lg border border-danger/30 bg-danger/5 p-4">{error}</p>}{!rows&&!error?<p role="status">İlanlar yükleniyor…</p>:<div className="space-y-3">{visible?.map(row=>{const state=effectiveStatus(row),editable=!['sold','removed','completed'].includes(state);return <article key={row.id} className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-5 sm:flex-row sm:items-center"><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-3"><h2 className="text-lg font-semibold">{row.from_city} → {row.to_city}</h2><Badge color={state==='active'?'success':state==='pending_approval'?'warning':'muted'}>{labels[state]??state}</Badge></div><p className="mt-2 text-sm text-muted">Kalkış: {formatDate(row.departure_date)}</p>{row.title&&<p className="mt-1 break-words text-sm">{row.title}</p>}</div><div className="flex flex-wrap gap-2">{['active','sold','expired'].includes(state)&&<Link className="rounded-lg border border-border px-3 py-3 text-sm" href={ROUTES.ilanlar.detail(row.slug||row.id)}>Görüntüle</Link>}{editable&&<Link className="rounded-lg border border-border px-3 py-3 text-sm" href={ROUTES.panel.editIlan(row.id)}>Düzenle</Link>}{state==='active'&&<Button variant="outline" disabled={!!busy} onClick={()=>action(row.id,'pause')}>Durdur</Button>}{editable&&<Button variant="outline" disabled={!!busy} onClick={()=>{if(window.confirm('İlan arşive alınacak ve aramada görünmeyecek. Devam edilsin mi?'))void action(row.id,'archive');}}>Arşivle</Button>}</div></article>;})}{visible?.length===0&&<div className="rounded-lg border border-border bg-surface p-10 text-center"><h2 className="font-semibold">{filter?'Bu durumda ilan bulunmuyor.':'Henüz ilan vermedin.'}</h2><p className="mt-2 text-sm text-muted">Yeni güzergâhını ücretsiz paylaşabilir, inceleme sonucunu buradan takip edebilirsin.</p></div>}</div>}</div>;
 }

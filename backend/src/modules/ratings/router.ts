@@ -1,3 +1,4 @@
+import {retiredOperation} from '../purchases/legacy.controller';
 // src/modules/ratings/router.ts
 import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
@@ -10,7 +11,7 @@ export async function registerRatings(app: FastifyInstance) {
   app.post(
     B,
     { preHandler: [requireAuth], config: { rateLimit: { max: 10, timeWindow: "1 minute" } } },
-    createRating,
+    retiredOperation,
   );
 
   app.get(

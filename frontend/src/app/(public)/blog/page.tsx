@@ -15,12 +15,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function BlogPage() {
   return (
-    <main className="bg-background text-foreground">
+    <div className="bg-background text-foreground">
       <BreadcrumbSchema items={[{ name: "Ana Sayfa", url: "/" }, { name: "Blog", url: "/blog" }]} />
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-5xl px-6 py-16">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">Blog</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight">Kargo ve rota odakli rehberler</h1>
+          <p className="text-sm font-semibold uppercase tracking-normal text-brand">Blog</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight">Kargo ve rota odakli rehberler</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
             PaketJet blog, P2P kargo modelini, platform kullanimini ve sehirler arasi tasima planlamasini daha iyi anlamaniz icin hazirlandi.
           </p>
@@ -29,9 +29,9 @@ export default function BlogPage() {
       <section className="mx-auto max-w-5xl px-6 py-12 pb-24">
         <div className="grid gap-6 md:grid-cols-2">
           {BLOG_POSTS.map((post) => (
-            <article key={post.slug} className="rounded-3xl border border-border-soft bg-surface p-6 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand">{post.categoryLabel}</p>
-              <h2 className="mt-3 text-2xl font-black">{post.title}</h2>
+            <article key={post.slug} className="rounded-lg border border-border-soft bg-surface p-6 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-normal text-brand">{post.categoryLabel}</p>
+              <h2 className="mt-3 text-2xl font-semibold">{post.title}</h2>
               <p className="mt-4 text-sm leading-7 text-muted">{post.description}</p>
               <Link href={`/blog/${post.slug}`} className="mt-6 inline-flex text-sm font-semibold text-brand hover:underline">
                 Yaziyi oku
@@ -40,6 +40,6 @@ export default function BlogPage() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

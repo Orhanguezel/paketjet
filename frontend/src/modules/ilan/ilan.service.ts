@@ -2,6 +2,8 @@ import { apiGet, apiPost, apiPatch, apiPut, apiDelete } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
 import type {
   Ilan,
+  PublicIlan,
+  OwnerIlan,
   IlanListResponse,
   IlanSearchFilters,
   CreateIlanInput,
@@ -22,8 +24,8 @@ export function listIlans(filters?: IlanSearchFilters): Promise<IlanListResponse
   return apiGet<IlanListResponse>(`${API.ilanlar.list}${qs ? `?${qs}` : ""}`);
 }
 
-export function getIlan(id: string): Promise<Ilan> {
-  return apiGet<Ilan>(API.ilanlar.detail(id));
+export function getIlan(id: string): Promise<PublicIlan> {
+  return apiGet<PublicIlan>(API.ilanlar.detail(id));
 }
 
 export function getMyIlans(): Promise<Ilan[]> {
@@ -44,4 +46,11 @@ export function updateIlanStatus(id: string, status: string): Promise<Ilan> {
 
 export function deleteIlan(id: string): Promise<{ ok: boolean }> {
   return apiDelete<{ ok: boolean }>(API.ilanlar.detail(id));
+}
+
+export async function getOwnedIlan(id:string):Promise<OwnerIlan> {
+  const rows=await getMyIlans();
+  const row=rows.find(x=>x.id===id);
+  if(!row)throw new Error('İlan bulunamadı veya düzenleme yetkin yok.');
+  return row;
 }

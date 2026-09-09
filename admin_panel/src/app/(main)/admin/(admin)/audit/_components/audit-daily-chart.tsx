@@ -7,7 +7,8 @@
 
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import type React from 'react';
+import { useMemo, useState } from 'react';
 
 import type { AuditMetricsDailyRowDto } from '@/integrations/shared';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
@@ -209,8 +210,16 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
             const isHover = hoverIdx === idx;
 
             return (
+              // biome-ignore lint/a11y/useSemanticElements: SVG groups cannot contain HTML buttons; keyboard handlers expose the same tooltip.
               <g
                 key={`${r.date}-${idx}`}
+                role="button"
+                aria-label={`${r.date}: ${r.requests}`}
+                tabIndex={0}
+                onClick={() => setHoverIdx(idx)}
+                onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setHoverIdx(idx); } }}
+                onFocus={() => setHoverIdx(idx)}
+                onBlur={() => setHoverIdx(null)}
                 onMouseEnter={() => setHoverIdx(idx)}
                 onMouseLeave={() => setHoverIdx(null)}
               >

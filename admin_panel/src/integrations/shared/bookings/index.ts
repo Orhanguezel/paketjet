@@ -1,9 +1,9 @@
-export {
-  type BookingAdminItem,
-  type BookingAdminListParams,
-  type BookingAdminListResponse,
-  type BookingStatus,
-  type UpdateBookingStatusAdminPayload,
+export type {
+  BookingAdminItem,
+  BookingAdminListParams,
+  BookingAdminListResponse,
+  BookingStatus,
+  UpdateBookingStatusAdminPayload,
 } from '@/integrations/shared/bookings';
 
 export {

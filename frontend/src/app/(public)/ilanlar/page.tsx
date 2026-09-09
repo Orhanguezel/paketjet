@@ -5,7 +5,7 @@ import { getPageMetadata } from "@/lib/seo";
 import IlanlarClient from "./ilanlar-client";
 import { getListingCreditPrice } from "@/modules/pricing/pricing.service";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<{
   from?: string;
@@ -17,7 +17,7 @@ type SearchParams = Promise<{
 
 function normalizePage(page: string | undefined) {
   const parsed = Number(page ?? "1");
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,7 +48,7 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
       vehicle_type: filters.vehicle_type || undefined,
       page,
       limit: 20,
-    }).catch(() => ({ data: [], total: 0, page, limit: 20 })),
+    }).then(r=>({...r,error:false})).catch(() => ({ data: [], total: 0, page, limit: 20, error:true })),
     getListingCreditPrice().catch(() => null),
   ]);
 
@@ -56,6 +56,7 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
     <>
       <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "İlanlar" }]} />
       <IlanlarClient
+        initialError={result.error}
         initialIlans={result.data}
         initialTotal={result.total}
         initialPage={page}

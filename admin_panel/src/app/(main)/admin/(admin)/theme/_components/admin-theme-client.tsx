@@ -1,5 +1,6 @@
 'use client';
 
+import {useUnsavedChanges} from '@/hooks/use-unsaved-changes';
 import * as React from 'react';
 import { toast } from 'sonner';
 import { Save, RotateCcw, Palette, Type, CircleDot } from 'lucide-react';
@@ -37,7 +38,7 @@ import { ThemePreview } from './theme-preview';
 
 export default function AdminThemeClient() {
   const t = useAdminT('admin.theme');
-  const { data: theme, isLoading } = useGetThemeAdminQuery();
+  const { data: theme, isLoading, isError, refetch } = useGetThemeAdminQuery();
   const [updateTheme, { isLoading: saving }] = useUpdateThemeAdminMutation();
   const [resetTheme, { isLoading: resetting }] = useResetThemeAdminMutation();
 
@@ -47,6 +48,8 @@ export default function AdminThemeClient() {
     if (theme && !draft) setDraft(toThemeDraft(theme));
   }, [theme, draft]);
 
+  useUnsavedChanges(Boolean(draft && theme && !saving && JSON.stringify(draft)!==JSON.stringify(toThemeDraft(theme))));
+  if (isError) return <div role="alert" className="rounded-lg border border-destructive/30 p-6"><p>Tema ayarları alınamadı.</p><Button onClick={() => refetch()} className="mt-4">Yeniden dene</Button></div>;
   if (isLoading || !draft) {
     return (
       <div className="flex items-center justify-center py-20">

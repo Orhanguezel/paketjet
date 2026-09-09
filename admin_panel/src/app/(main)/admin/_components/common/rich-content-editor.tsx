@@ -4,7 +4,8 @@
 // FILE: src/app/(main)/admin/_components/common/rich-content-editor.tsx
 // =============================================================
 
-import React, { useEffect, useRef, useState } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Bold,
   Italic,
@@ -74,7 +75,7 @@ const RichContentEditor: React.FC<RichContentEditorProps> = ({
       onChange(normalized);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, activeTab, onChange]);
 
   useEffect(() => {
     if (activeTab === 'visual' && editorRef.current) {
@@ -345,10 +346,7 @@ const RichContentEditor: React.FC<RichContentEditorProps> = ({
           <div className="text-xs text-muted-foreground">{t('preview.title')}</div>
           <div className="rounded-md border bg-background p-3">
             {html && html.trim() ? (
-              <div
-                className="prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{ __html: html }}
-              />
+              <iframe title={t('preview.title')} sandbox="" srcDoc={html} className="h-80 w-full border-0 bg-white" />
             ) : (
               <div className="text-sm text-muted-foreground">
                 {t('preview.empty')}

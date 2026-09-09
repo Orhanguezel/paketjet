@@ -1,28 +1,34 @@
 # PaketJet
 
-PaketJet, portfolio metadata'sinda lojistik ve kargo operasyon platformu olarak tanimlanmis bir projedir. Ancak mevcut checkout'ta uygulama kaynak kodu yerine dokuman odakli bir klasor yapisi gorunmektedir.
+PaketJet, taşıyıcıların güzergâh ilanı verdiği ve göndericilerin uygun ilanın özel iletişim bilgilerine erişim satın aldığı pazaryeridir. Taşıma ücreti taraflar arasında belirlenir; platform kargo takibi, escrow, payout veya taşıma garantisi sunmaz.
 
-## Canli Erisim Notu
+| Uygulama | Kaynak | Yerel port | Canlı port |
+| --- | --- | --- | --- |
+| API | `backend/` — Fastify 5, Drizzle, MySQL 8 | 8078 | 8070 |
+| Web | `frontend/` — Next.js 15, React 19, Tailwind 4 | 3000 | 3070 |
+| Yönetim | `admin_panel/` — Next.js 15, RTK Query, Shadcn | 3030 | 3071 |
 
-Canli server `vps-paketjet` SSH kisa yolundadir. Key ile sifresiz erisim: `ssh vps-paketjet`.
+Canlı web `https://paketjet.com`, yönetim `https://panel.paketjet.com`. SSH hedefi `vps-paketjet`, kaynak `/var/www/paketjet`; süreçler PM2 ile yönetilir. Docker dosyalarının bulunması üretimin Docker üzerinde çalıştığı anlamına gelmez.
 
-## Mevcut Workspace Durumu
+## Geliştirme ve doğrulama
 
-- `doku/`: dokumantasyon dosyalari
-- `sozlesme/`: sozlesme veya is dokumanlari
+Bun 1.3.10 ve Node 22/24 kullanılır. Her uygulamanın kendi dizininde `bun install --frozen-lockfile`, ardından `bun run dev`. Ortam değişkenleri ilgili env örneğine göre yerel ve Git dışında tutulur. Backend için MySQL gerekir. İki arayüzün `API_INTERNAL_URL` değeri aynı backend'i göstermelidir. Tarayıcı API çağrıları aynı origin `/api` üzerinden geçer.
 
-Bu checkout'ta `package.json`, backend/frontend uygulama klasoru veya calistirma script'i bulunmamaktadir.
+- Backend: `bun test src/test/`, `bun run build`.
+- Web: `bun run test`, `bun run lint`, `bun run build`.
+- Admin: `bun run lint` (Biome), `bun run build` (tip kontrolünü içerir).
+- Test DB adı `paketjet_test_` ile başlamalı; production hedefi reddedilir. `backend/.env.test.local` yalnız izole yerel test içindir.
+- Temiz test kurulumu: test DB ve rastgele başlangıç parolaları ile `bun run db:seed`. **Üretimde seed çalıştırılmaz.**
+- Mevcut DB yükseltmesi: `bun scripts/renewal-migrate.ts` önce plan üretir. `--apply` uygular, üretim ayrıca `--production` ister; dosya checksum günlüğü tekrar uygulamayı engeller.
 
-## Portfolio Metadata Ozeti
+Kod düzeni ve sınırlar [AGENTS.md](AGENTS.md) içindedir. `project.portfolio.json` envanter metadata'sıdır; çalışan ürün ve yayın durumu için aşağıdaki doğrulanmış belgeler esas alınır.
 
-`project.portfolio.json` su kapsam bilgilerini tasir:
+## Yenileme ve işletim
 
-- kategori: Logistics Platform
-- hedef moduller: shipment tracking, customer portal, operations dashboard
-- hedef stack: Next.js, React, Fastify, MySQL, Drizzle ORM, Bun, Zod
+- [Ana çeklist](CEKLIST-IYILESTIRME-VE-TASARIM.md)
+- [Durum raporu](DURUM-RAPORU-2026-09-09.md)
+- [Yürütme ve test kaydı](YURUTME-KAYDI-2026-09-09.md)
+- [Tasarım yönergesi](TASARIM-YONERGESI-2026-09-09.md)
+- [Yedek, migration, yayın ve geri dönüş](ISLETIM-VE-YAYIN-2026-09-09.md)
 
-Bu bilgiler portfolio metadata kaynagindan gelir; mevcut checkout'ta kaynak kodu teyit edilmemistir.
-
-## Dokumantasyon Kurali
-
-Kaynak kod bu klasore eklendiginde README, gercek klasor yapisi ve komutlarla yeniden guncellenmelidir. Metadata degisirse once `project.portfolio.json` guncellenir.
+Etkin kart sağlayıcısı doğrulanmış gerçek anahtarlarla açılana kadar `PAYMENT_PROVIDER=disabled` kullanılır. Eski TL cüzdanları arşivdir; kendiliğinden satın alma hakkına veya gelire dönüştürülmez. Eski ödeme callback'leri mutabakat için korunur.

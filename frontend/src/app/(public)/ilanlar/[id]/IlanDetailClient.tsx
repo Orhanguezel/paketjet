@@ -1,221 +1,45 @@
-"use client";
-
-import dynamic from "next/dynamic";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ROUTES } from "@/config/routes";
-import { getIlan } from "@/modules/ilan/ilan.service";
-import type { Ilan } from "@/modules/ilan/ilan.type";
-import { getListingCreditPrice } from "@/modules/pricing/pricing.service";
-import { getIlanContact, initiateIlanPayment, purchaseIlan } from "@/modules/purchases/purchases.service";
-import type { ContactSnapshot, PurchaseDeclarationInput } from "@/modules/purchases/purchases.type";
-import { useAuthStore } from "@/modules/auth/auth.store";
-import { cn, maskName } from "@/lib/utils";
-import { RevealAside } from "./RevealAside";
-import PaymentModal from "@/components/PaymentModal";
-
-const RouteMap = dynamic(() => import("@/components/RouteMap").then((m) => m.RouteMap), {
-  ssr: false,
-  loading: () => <div className="h-75 animate-pulse rounded-xl bg-surface-alt" />,
-});
-
-const VEHICLE_LABELS: Record<string, string> = {
-  car: "Otomobil", van: "Minivan", truck: "Kamyon", motorcycle: "Motosiklet", other: "Diğer",
-};
-
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleString("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-export default function IlanDetailClient() {
-  const { id } = useParams<{ id: string }>();
-  const router = useRouter();
-  const { isAuthenticated } = useAuthStore();
-  const [ilan, setIlan] = useState<Ilan | null>(null);
-  const [contact, setContact] = useState<ContactSnapshot | null>(null);
-  const [listingPrice, setListingPrice] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [revealing, setRevealing] = useState(false);
-  const [revealError, setRevealError] = useState("");
-  const [paymentContent, setPaymentContent] = useState("");
-  const [paymentIframeUrl, setPaymentIframeUrl] = useState("");
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-  useEffect(() => {
-    Promise.all([getIlan(id), getListingCreditPrice()])
-      .then(([ilanData, price]) => {
-        setIlan(ilanData);
-        setListingPrice(price);
-      })
-      .catch(() => router.push(ROUTES.ilanlar.list))
-      .finally(() => setLoading(false));
-  }, [id, router]);
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    getIlanContact(id)
-      .then(setContact)
-      .catch(() => {});
-  }, [id, isAuthenticated]);
-
-  async function handleReveal(declaration: PurchaseDeclarationInput) {
-    setRevealError("");
-    if (!isAuthenticated) {
-      router.push(`${ROUTES.auth.login}?next=/ilanlar/${id}`);
-      return;
-    }
-
-    setRevealing(true);
-    try {
-      const result = await purchaseIlan(ilan?.id ?? id, declaration);
-      setContact(result.contact);
-    } catch (err) {
-      const error = err as { status?: number; code?: string };
-      if (error.status === 402 || error.code === "insufficient_credit") {
-        setRevealError("İlan alma hakkınız yok. Kartla ödeme yaparak iletişimi açabilirsiniz.");
-      } else if (error.code === "own_listing") {
-        setRevealError("Kendi ilanınızın iletişimini satın alamazsınız.");
-      } else if (error.code === "unavailable") {
-        setRevealError("Bu ilan artık satın alınamıyor.");
-      } else {
-        setRevealError("İletişim açılamadı. Lütfen tekrar deneyin.");
-      }
-    } finally {
-      setRevealing(false);
-    }
+'use client';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ROUTES } from '@/config/routes';
+import type { PublicIlan } from '@/modules/ilan/ilan.type';
+import { getListingCreditPrice } from '@/modules/pricing/pricing.service';
+import { getListingAccess, initiateIlanPayment, purchaseIlan, type ListingAccess } from '@/modules/purchases/purchases.service';
+import { getPaymentAvailability } from '@/modules/payments/payments.service';
+import type { PurchaseDeclarationInput } from '@/modules/purchases/purchases.type';
+import { useAuthStore } from '@/modules/auth/auth.store';
+import { formatDate } from '@/lib/date';
+import { RevealAside } from './RevealAside';
+import PaymentModal from '@/components/PaymentModal';
+const RouteMap=dynamic(()=>import('@/components/RouteMap').then(m=>m.RouteMap),{ssr:false,loading:()=> <p role="status" className="p-4 text-muted">Harita yükleniyor…</p>});
+const vehicles:Record<string,string>={car:'Otomobil',van:'Kamyonet',truck:'Kamyon',motorcycle:'Motosiklet',other:'Diğer'};
+export default function IlanDetailClient({ilan}:{ilan:PublicIlan}) {
+  const router=useRouter(), {isAuthenticated}=useAuthStore();
+  const [access,setAccess]=useState<ListingAccess|null>(null),[price,setPrice]=useState<number|null>(null),[enabled,setEnabled]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[map,setMap]=useState(false),[attempt,setAttempt]=useState(0);
+  const [checkout,setCheckout]=useState<{checkoutFormContent?:string;iframeUrl?:string;conversationId:string}|null>(null);
+  useEffect(()=>{let active=true;getListingCreditPrice().then(p=>{if(active)setPrice(p);}).catch(()=>{});getPaymentAvailability().then(p=>{if(active)setEnabled(p.enabled);}).catch(()=>{});return()=>{active=false;};},[attempt]);
+  useEffect(()=>{setAccess(null);if(!isAuthenticated)return;let active=true;getListingAccess(ilan.id).then(a=>{if(active){setAccess(a);setError('');}}).catch(()=>{if(active)setError('Hesap durumu alınamadı. Yeniden deneyin.');});return()=>{active=false;};},[ilan.id,isAuthenticated,attempt]);
+  function login(){router.push(`${ROUTES.auth.login}?next=${encodeURIComponent(ROUTES.ilanlar.detail(ilan.slug||ilan.id))}`);}
+  async function purchase(d:PurchaseDeclarationInput,card:boolean){
+    if(!isAuthenticated){login();return;}if(busy)return;
+    setBusy(true);setError('');
+    try{if(card)setCheckout(await initiateIlanPayment(ilan.id,d));else{const r=await purchaseIlan(ilan.id,d);setAccess({is_owner:false,contact:r.contact,balance:r.credit_balance,state:'purchased'});}}
+    catch(e){const code=(e as {code?:string}).code;setError(code==='unavailable'?'Bu ilan artık satın alınamıyor.':code==='payments_unavailable'?'Kartla ödeme şu anda kullanılamıyor.':code==='insufficient_credit'?'Yeterli hak bulunmuyor. Haklarını kontrol et.':'İşlem tamamlanamadı. Yeniden deneyebilirsin.');if(code==='insufficient_credit')setAccess(a=>a?{...a,state:'card'}:a);}
+    finally{setBusy(false);}
   }
-
-  async function handlePay(declaration: PurchaseDeclarationInput) {
-    setRevealError("");
-    if (!isAuthenticated) {
-      router.push(`${ROUTES.auth.login}?next=/ilanlar/${id}`);
-      return;
-    }
-    setRevealing(true);
-    try {
-      const response = await initiateIlanPayment(ilan?.id ?? id, declaration, "paytr");
-      setPaymentIframeUrl(response.iframeUrl ?? "");
-      setPaymentContent(response.checkoutFormContent ?? "");
-      setShowPaymentModal(true);
-    } catch (err) {
-      const error = err as { code?: string };
-      setRevealError(error.code === "unavailable" ? "Bu ilan artık satın alınamıyor." : "Ödeme başlatılamadı. Lütfen tekrar deneyin.");
-    } finally {
-      setRevealing(false);
-    }
-  }
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-background">
-        <div className="mx-auto max-w-2xl px-4 pt-8">
-          <div className="h-64 animate-pulse rounded-2xl border border-border-soft bg-surface" />
-        </div>
-      </main>
-    );
-  }
-
-  if (!ilan) return null;
-
-  const displayName = maskName(ilan.carrier_name ?? "Taşıyıcı");
-
-  return (
-    <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-5xl px-4 pb-16 pt-8">
-        <div className="mb-6 flex items-center gap-2 text-sm text-muted">
-          <Link href={ROUTES.ilanlar.list} className="transition-colors hover:text-brand">İlanlar</Link>
-          <span>›</span>
-          <span className="text-foreground">{ilan.from_city} → {ilan.to_city}</span>
-        </div>
-
-        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-          <div className="rounded-2xl border border-border-soft bg-surface p-6 shadow-sm lg:col-span-2">
-            <div className="mb-6 flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
-                  {ilan.from_city} <span className="text-brand">→</span> {ilan.to_city}
-                </h1>
-                {(ilan.from_district || ilan.to_district) && (
-                  <p className="mt-0.5 text-sm text-muted">
-                    {ilan.from_district && <>{ilan.from_district}, </>}
-                    {ilan.from_city} → {ilan.to_district && <>{ilan.to_district}, </>}{ilan.to_city}
-                  </p>
-                )}
-              </div>
-              <span className={cn(
-                "shrink-0 rounded-full px-3 py-1 text-xs font-semibold",
-                ilan.status === "active" ? "bg-success/10 text-success" : "bg-bg-alt text-muted",
-              )}>
-                {ilan.status === "active" ? "Aktif" : ilan.status === "sold" ? "Satıldı" : ilan.status}
-              </span>
-            </div>
-
-            <div className="mb-6 grid grid-cols-2 gap-3">
-              <div className="rounded-xl bg-background p-4">
-                <p className="mb-1 text-xs text-muted">Kalkış</p>
-                <p className="text-sm font-semibold text-foreground">{formatDate(ilan.departure_date)}</p>
-              </div>
-              {ilan.arrival_date && (
-                <div className="rounded-xl bg-background p-4">
-                  <p className="mb-1 text-xs text-muted">Varış</p>
-                  <p className="text-sm font-semibold text-foreground">{formatDate(ilan.arrival_date)}</p>
-                </div>
-              )}
-              <div className="rounded-xl bg-background p-4">
-                <p className="mb-1 text-xs text-muted">Araç tipi</p>
-                <p className="text-sm font-semibold text-foreground">{VEHICLE_LABELS[ilan.vehicle_type] ?? ilan.vehicle_type}</p>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <RouteMap fromCity={ilan.from_city} toCity={ilan.to_city} height={300} />
-            </div>
-
-            <div className="mb-6 flex items-center gap-3 rounded-xl bg-background p-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-xlight text-sm font-bold text-brand">
-                {displayName[0]}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">{displayName}</p>
-                <p className="text-xs text-muted">Taşıyıcı</p>
-              </div>
-            </div>
-
-            {ilan.description && (
-              <div>
-                <p className="mb-1 text-sm font-medium text-foreground">Açıklama</p>
-                <p className="text-sm leading-relaxed text-muted">{ilan.description}</p>
-              </div>
-            )}
-          </div>
-
-          <RevealAside
-            contact={contact}
-            error={revealError}
-            isAuthenticated={isAuthenticated}
-            isActive={ilan.status === "active"}
-            listingPrice={listingPrice}
-            revealing={revealing}
-            onPay={handlePay}
-            onReveal={handleReveal}
-          />
-        </div>
-      </div>
-      <PaymentModal
-        show={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        checkoutFormContent={paymentContent}
-        iframeUrl={paymentIframeUrl}
-        title="İletişim Erişimi Ödemesi"
-        notice="Satın aldığınız hizmet, kargo taşıma hizmeti değil; ilan sahibinin iletişim bilgilerine anlık erişim hizmetidir."
-      />
-    </main>
-  );
+  const status=ilan.status==='sold'?'Satıldı':ilan.status==='expired'?'Süresi doldu':ilan.status==='active'?'Aktif': 'Kapalı';
+  return <section className="site-container py-8 sm:py-10">
+    <nav aria-label="İçerik yolu" className="mb-8 flex flex-wrap gap-3 text-sm text-muted"><Link href={ROUTES.ilanlar.list} className="hover:text-brand">İlanlar</Link><span aria-hidden="true">/</span><span>{ilan.from_city} – {ilan.to_city}</span></nav>
+    <div className="grid items-start gap-8 lg:grid-cols-[1.65fr_1fr]"><div className="min-w-0">
+      <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">{ilan.from_city} <span className="font-normal">→</span> {ilan.to_city}</h1>
+      {(ilan.from_district||ilan.to_district)&&<p className="mt-3 text-muted">{ilan.from_district} / {ilan.to_district}</p>}
+      <div className="my-7 flex flex-wrap gap-x-6 gap-y-3 border-b border-border-soft pb-7 text-sm"><time dateTime={ilan.departure_date}>{formatDate(ilan.departure_date)}</time><span>{vehicles[ilan.vehicle_type]??ilan.vehicle_type}</span><span>{status}</span></div>
+      <h2 className="text-2xl font-semibold">Açıklama</h2><p className="mt-4 whitespace-pre-wrap break-words leading-8 text-muted">{ilan.description||'İlan sahibi ek açıklama paylaşmadı.'}</p>
+      {ilan.arrival_date&&<p className="mt-5 text-sm text-muted">Planlanan varış: {formatDate(ilan.arrival_date)}</p>}
+      <details className="mt-8 rounded-lg border border-border p-5" onToggle={e=>setMap(e.currentTarget.open)}><summary className="font-medium">Haritayı göster</summary>{map&&<div className="mt-4"><RouteMap fromCity={ilan.from_city} toCity={ilan.to_city} height={300}/><p className="mt-2 text-sm text-muted">Harita güzergâhı yaklaşık gösterir. Kesin buluşma yerini taşıyıcıyla görüş.</p></div>}</details>
+    </div><div><RevealAside contact={access?.contact??null} error={error} isAuthenticated={isAuthenticated} isActive={ilan.status==='active'} listingPrice={price} revealing={busy} state={access?.state} paymentsEnabled={enabled} onLogin={login} onPay={d=>purchase(d,true)} onReveal={d=>purchase(d,false)}/>{(error||price===null)&&<button onClick={()=>setAttempt(n=>n+1)} className="mt-3 min-h-11 text-brand">Bilgileri yeniden yükle</button>}</div></div>
+    <PaymentModal show={!!checkout} onClose={()=>{const ref=checkout?.conversationId;setCheckout(null);if(ref)router.push(`${ROUTES.panel.odemeSonuc}?ref=${encodeURIComponent(ref)}`);}} checkoutFormContent={checkout?.checkoutFormContent} iframeUrl={checkout?.iframeUrl} title="İletişim erişimi ödemesi"/>
+  </section>;
 }

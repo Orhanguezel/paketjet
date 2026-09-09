@@ -1,6 +1,6 @@
-export {
-  type ListingBrandCreatePayload,
-  type ListingBrandListParams,
-  type ListingBrandPatchPayload,
-  type ListingBrandView,
+export type {
+  ListingBrandCreatePayload,
+  ListingBrandListParams,
+  ListingBrandPatchPayload,
+  ListingBrandView,
 } from '@/integrations/shared/brand';

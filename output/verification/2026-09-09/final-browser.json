@@ -1,0 +1,107 @@
+[
+  {
+    "path": "/panel",
+    "width": 390,
+    "overflow": false
+  },
+  {
+    "path": "/panel",
+    "width": 1280,
+    "overflow": false
+  },
+  {
+    "path": "/panel",
+    "zoom": 200,
+    "overflow": false,
+    "scroll": 1280,
+    "client": 1280
+  },
+  {
+    "path": "/panel/ilan-alma-hakki",
+    "width": 390,
+    "overflow": false
+  },
+  {
+    "path": "/panel/ilan-alma-hakki",
+    "width": 1280,
+    "overflow": false
+  },
+  {
+    "path": "/panel/ilan-alma-hakki",
+    "zoom": 200,
+    "overflow": false,
+    "scroll": 1280,
+    "client": 1280
+  },
+  {
+    "path": "/panel/profil",
+    "width": 390,
+    "overflow": false
+  },
+  {
+    "path": "/panel/profil",
+    "width": 1280,
+    "overflow": false
+  },
+  {
+    "path": "/panel/profil",
+    "zoom": 200,
+    "overflow": false,
+    "scroll": 1280,
+    "client": 1280
+  },
+  {
+    "path": "/uye-ol",
+    "width": 390,
+    "overflow": false
+  },
+  {
+    "path": "/uye-ol",
+    "width": 1280,
+    "overflow": false
+  },
+  {
+    "path": "/uye-ol",
+    "zoom": 200,
+    "overflow": false,
+    "scroll": 1280,
+    "client": 1280
+  },
+  {
+    "path": "/iletisim",
+    "width": 390,
+    "overflow": false
+  },
+  {
+    "path": "/iletisim",
+    "width": 1280,
+    "overflow": false
+  },
+  {
+    "path": "/iletisim",
+    "zoom": 200,
+    "overflow": false,
+    "scroll": 1280,
+    "client": 1280
+  },
+  {
+    "path": "/admin/theme",
+    "status": 200,
+    "errorText": false
+  },
+  {
+    "path": "/admin/site-settings",
+    "status": 200,
+    "errorText": false
+  },
+  {
+    "path": "/admin/storage",
+    "status": 200,
+    "errorText": false
+  },
+  {
+    "path": "/admin/ilan-purchases",
+    "status": 200,
+    "errorText": false
+  }
+]

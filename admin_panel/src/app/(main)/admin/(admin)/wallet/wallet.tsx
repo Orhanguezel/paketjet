@@ -1,7 +1,16 @@
 'use client';
-
-import AdminWalletClient from './_components/admin-wallet-client';
-
-export default function WalletPage() {
-  return <AdminWalletClient />;
+import {useState} from 'react';
+import Link from 'next/link';
+import {useListWalletsAdminQuery,useListWalletTransactionsAdminQuery} from '@/integrations/hooks';
+import {formatIlanPurchaseMoney,formatIlanPurchaseDate} from '@/integrations/shared';
+import {Button} from '@/components/ui/button';
+import {Card,CardHeader,CardTitle,CardDescription,CardContent} from '@/components/ui/card';
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';
+export default function WalletPage(){
+ const [page,setPage]=useState(1),[wallet,setWallet]=useState('');const q=useListWalletsAdminQuery({page,limit:20});
+ return <Card><CardHeader><CardTitle>Eski TL cüzdan arşivi</CardTitle><CardDescription>Bu kayıtlar hak bakiyesi veya doğrulanmış gelir değildir. Arşiv salt okunurdur.</CardDescription></CardHeader><CardContent className="space-y-5"><div className="flex flex-wrap gap-4"><Button variant="outline" onClick={()=>q.refetch()}>Yenile</Button><Link className="py-2 text-primary" href="/admin/credits">İlan alma haklarını yönet →</Link></div>{q.isError?<p role="alert">Arşiv yüklenemedi. Yenileyip tekrar deneyin.</p>:q.isLoading?<output>Yükleniyor…</output>:<ul className="divide-y rounded-lg border">{q.data?.data.map(row=><li key={row.id} className="flex flex-wrap items-center gap-4 p-4"><div className="min-w-0 flex-1"><p className="break-all">{row.email??row.user_id}</p><p className="text-sm text-muted-foreground">{row.status}</p></div><p>{formatIlanPurchaseMoney(row.balance)}</p><Button variant="outline" onClick={()=>setWallet(row.id)}>Hareketler</Button></li>)}{!q.data?.data.length&&<li className="p-8 text-center">Arşiv kaydı yok.</li>}</ul>}<div className="flex justify-between"><Button variant="outline" disabled={page===1} onClick={()=>setPage(p=>p-1)}>Önceki</Button><span className="text-sm">Sayfa {page}</span><Button variant="outline" disabled={page*20>=(q.data?.total??0)} onClick={()=>setPage(p=>p+1)}>Sonraki</Button></div>{wallet&&<Transactions wallet={wallet} close={()=>setWallet('')}/>}</CardContent></Card>;
+}
+function Transactions({wallet,close}:{wallet:string;close:()=>void}){
+ const [page,setPage]=useState(1);const q=useListWalletTransactionsAdminQuery({walletId:wallet,page,limit:20});
+ return <Dialog open onOpenChange={open=>{if(!open)close();}}><DialogContent className="max-h-[90dvh] overflow-y-auto"><DialogHeader><DialogTitle>TL hareket arşivi</DialogTitle><DialogDescription className="break-all">{wallet}</DialogDescription></DialogHeader>{q.isError?<p role="alert">Hareketler yüklenemedi. <Button onClick={()=>q.refetch()}>Yenile</Button></p>:q.isLoading?<p>Yükleniyor…</p>:<ul className="divide-y">{q.data?.data.map(row=><li key={row.id} className="space-y-1 py-3 text-sm"><p>{row.type} · {formatIlanPurchaseMoney(row.amount)} · {row.payment_status}</p><p className="text-muted-foreground">{formatIlanPurchaseDate(row.created_at)}</p><p className="break-words">{row.description??row.purpose}</p></li>)}{!q.data?.data.length&&<li>Hareket yok.</li>}</ul>}<div className="flex justify-between"><Button variant="outline" disabled={page===1} onClick={()=>setPage(p=>p-1)}>Önceki</Button><Button variant="outline" disabled={page*20>=(q.data?.total??0)} onClick={()=>setPage(p=>p+1)}>Sonraki</Button></div></DialogContent></Dialog>;
 }

@@ -1,3 +1,4 @@
+import {adminListingHistory} from './admin.controller';
 // =============================================================
 // FILE: src/modules/ilanlar/admin.routes.ts
 // =============================================================
@@ -7,6 +8,7 @@ import { adminListIlans, adminGetIlan, adminUpdateIlanStatus, adminDeleteIlan } 
 export async function registerIlanlarAdmin(app: FastifyInstance) {
   const B = '/ilanlar';
   app.get(`${B}`, adminListIlans);
+  app.get(`${B}/:id/history`,adminListingHistory);
   app.get(`${B}/:id`, adminGetIlan);
   app.patch(`${B}/:id/status`, adminUpdateIlanStatus);
   app.delete(`${B}/:id`, adminDeleteIlan);

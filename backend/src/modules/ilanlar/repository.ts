@@ -1,4 +1,7 @@
+import {listingEvents} from './event.schema';
+import { TURKEY_CITIES } from '../_shared/turkey-cities';
 // src/modules/ilanlar/repository.ts
+import { repoFindReservation } from "../purchases/session.repository";
 import { randomUUID } from "crypto";
 import { db } from "@/db/client";
 import { repoInvalidateDashboardCache, repoInvalidateIlanCache } from "@/modules/_shared";
@@ -19,7 +22,7 @@ export async function repoGetIlanBySlugOrId(slugOrId: string) {
     .where(condition)
     .limit(1);
 
-  if (!row) return null;
+  if (!row || ["removed", "cancelled", "pending_approval", "paused"].includes(row.ilan.status)) return null;
 
   const ilanId = row.ilan.id;
   const photos = await db.select().from(ilanPhotos).where(eq(ilanPhotos.ilan_id, ilanId)).orderBy(ilanPhotos.order);
@@ -98,27 +101,39 @@ export async function repoCreateIlan(userId: string, data: Omit<NewIlan, "id" | 
   return repoGetIlanById(id);
 }
 
-export async function repoUpdateIlan(id: string, data: Partial<NewIlan>) {
-  const [current] = await db.select({ user_id: ilanlar.user_id }).from(ilanlar).where(eq(ilanlar.id, id)).limit(1);
-  await db.update(ilanlar).set(data).where(eq(ilanlar.id, id));
+export async function repoUpdateIlan(id: string, data: Partial<NewIlan>, admin = false, actor?:string) {
+  const userId = await db.transaction(async tx => {
+    const [current] = await tx.select().from(ilanlar).where(eq(ilanlar.id, id)).for("update");
+    if (!current) throw Object.assign(new Error("not_found"), {statusCode: 404});
+    if (["sold", "removed"].includes(current.status)) throw Object.assign(new Error("listing_closed"), {statusCode: 409});
+    if (await repoFindReservation(tx, id)) throw Object.assign(new Error("payment_pending"), {statusCode: 409});
+    if (data.status === "sold") throw Object.assign(new Error("invalid_transition"), {statusCode: 409});
+    if (data.status === "active" && (!admin || new Date(current.departure_date).getTime() <= Date.now())) throw Object.assign(new Error("approval_required"), {statusCode: 409});
+    for (const prefix of ['from','to'] as const) {
+      const city=data[`${prefix}_city`]??current[`${prefix}_city`];
+      const district=data[`${prefix}_district`]===undefined?current[`${prefix}_district`]:data[`${prefix}_district`];
+      if (district && !TURKEY_CITIES.find(c=>c.value===city)?.districts.includes(district)) throw Object.assign(new Error('invalid_district'),{statusCode:400});
+    }
+    const departure = data.departure_date ?? current.departure_date;
+    const arrival = data.arrival_date === undefined ? current.arrival_date : data.arrival_date;
+    if (arrival && new Date(arrival) < new Date(departure)) throw Object.assign(new Error("invalid_arrival_date"), {statusCode: 400});
+    await tx.update(ilanlar).set({...data, ...(!admin && !data.status ? {status: "pending_approval"} : {})}).where(eq(ilanlar.id, id));
+    await tx.insert(listingEvents).values({id:randomUUID(),ilan_id:id,actor_id:actor??(admin?'admin':current.user_id),previous_status:current.status,status:data.status??(!admin?'pending_approval':current.status)});
+    return current.user_id;
+  });
   await repoInvalidateIlanCache(id);
-  await repoInvalidateDashboardCache([String(current?.user_id ?? '')]);
+  await repoInvalidateDashboardCache([userId]);
   return repoGetIlanById(id);
 }
 
-export async function repoUpdateIlanStatus(id: string, status: string) {
-  const [current] = await db.select({ user_id: ilanlar.user_id }).from(ilanlar).where(eq(ilanlar.id, id)).limit(1);
-  await db.update(ilanlar).set({ status }).where(eq(ilanlar.id, id));
-  await repoInvalidateIlanCache(id);
-  await repoInvalidateDashboardCache([String(current?.user_id ?? '')]);
-  return repoGetIlanById(id);
+export async function repoUpdateIlanStatus(id: string, status: string, admin = false, actor?:string) {
+  if (!admin && !["paused", "cancelled", "pending_approval"].includes(status)) throw Object.assign(new Error("invalid_transition"), {statusCode: 409});
+  return repoUpdateIlan(id, {status}, admin, actor);
 }
 
 export async function repoDeleteIlan(id: string) {
-  const [current] = await db.select({ user_id: ilanlar.user_id }).from(ilanlar).where(eq(ilanlar.id, id)).limit(1);
-  await db.delete(ilanlar).where(eq(ilanlar.id, id));
-  await repoInvalidateIlanCache(id);
-  await repoInvalidateDashboardCache([String(current?.user_id ?? '')]);
+  // Archive rather than destroy purchase history and contact snapshots.
+  return repoUpdateIlan(id, {status: "removed"}, true);
 }
 
 export async function repoGetUserIlans(userId: string) {

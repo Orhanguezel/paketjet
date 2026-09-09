@@ -1,3 +1,5 @@
+import {listingEvents} from './event.schema';
+import {ilanPurchases} from '../purchases/schema';
 // =============================================================
 // FILE: src/modules/ilanlar/admin.repository.ts
 // Admin-only ilan DB queries
@@ -37,4 +39,11 @@ export async function repoAdminListIlans(params: {
     data: rows.map((r) => ({ ...r.ilan, carrier_name: r.carrier_name, carrier_email: r.carrier_email })),
     total: Number(countRow?.total ?? 0),
   };
+}
+
+export async function repoAdminListingHistory(id:string){
+ const [events,purchases]=await Promise.all([
+ db.select().from(listingEvents).where(eq(listingEvents.ilan_id,id)).orderBy(desc(listingEvents.created_at)),
+ db.select({id:ilanPurchases.id,buyer_id:ilanPurchases.buyer_id,status:ilanPurchases.status,created_at:ilanPurchases.created_at}).from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id)),
+ ]); return {events,purchases};
 }

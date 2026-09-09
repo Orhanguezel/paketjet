@@ -64,7 +64,7 @@ export default function TelegramSettingsPanel() {
 
     setModel(m);
     setInitialized(true);
-  }, [rows, initialized]);
+  }, [rows, initialized, defaults]);
 
   const initialLoading = !initialized && (isLoading || isFetching);
 

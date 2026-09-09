@@ -9,6 +9,7 @@ export type Role = 'admin' | 'carrier' | 'customer';
 
 export interface JWTPayload {
   sub: string;
+  v?: number;
   email?: string;
   role?: Role;
   purpose?: 'password_reset';
@@ -79,7 +80,7 @@ export function clearAuthCookies(reply: FastifyReply) {
 export async function issueTokens(app: FastifyInstance, u: UserRow, role: Role) {
   const jwt = getJWT(app);
   const access = jwt.sign(
-    { sub: u.id, email: u.email ?? undefined, role },
+    { sub: u.id, email: u.email ?? undefined, role, v: Number(u.auth_version ?? 0) },
     { expiresIn: `${ACCESS_MAX_AGE}s` },
   );
 
@@ -93,12 +94,6 @@ export async function issueTokens(app: FastifyInstance, u: UserRow, role: Role) 
 /* -------------------- Password -------------------- */
 
 export async function verifyPasswordSmart(storedHash: string, plain: string): Promise<boolean> {
-  const allowTemp = env.ALLOW_TEMP_LOGIN === '1';
-  if (allowTemp && storedHash.includes('temporary.hash.needs.reset')) {
-    const expected = env.TEMP_PASSWORD || 'admin123';
-    return plain === expected;
-  }
-
   if (storedHash.startsWith('$2a$') || storedHash.startsWith('$2b$') || storedHash.startsWith('$2y$')) {
     return bcrypt.compare(plain, storedHash);
   }

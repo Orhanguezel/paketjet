@@ -41,6 +41,7 @@ export function pickUploadsRoot(rawFromSettings?: string | null): string {
 export function pickUploadsPrefix(rawFromSettings?: string | null): string {
   const envBase = env.LOCAL_STORAGE_BASE_URL && String(env.LOCAL_STORAGE_BASE_URL).trim();
   let p = envBase || (rawFromSettings || '').trim() || '/uploads';
+  if (/^https?:\/\//.test(p)) p = new URL(p).pathname;
   if (!p.startsWith('/')) p = `/${p}`;
   p = p.replace(/\/+$/, '');
   return `${p}/`;

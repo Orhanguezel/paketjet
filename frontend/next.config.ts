@@ -2,8 +2,10 @@ import type { NextConfig } from "next";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   output: process.env.NODE_ENV === "production" ? "standalone" : undefined,
   compress: true,
+  htmlLimitedBots: /.*/,
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
 
@@ -27,9 +29,10 @@ const nextConfig: NextConfig = {
 
   // /uploads/* isteklerini backend'e proxy et (favicon, logo, video, vb.)
   rewrites: async () => [
+    { source: "/api/:path*", destination: `${process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8078"}/api/:path*` },
     {
       source: "/uploads/:path*",
-      destination: `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "http://localhost:8078"}/uploads/:path*`,
+      destination: `${process.env.API_INTERNAL_URL ?? "http://127.0.0.1:8078"}/uploads/:path*`,
     },
   ],
 

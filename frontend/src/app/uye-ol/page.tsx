@@ -11,7 +11,7 @@ const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "")
 type SiteLogo = { url?: string; src?: string; logo_url?: string };
 
 export function generateMetadata(): Metadata {
-  return noIndexMetadata("Üye Ol", "PaketJet hesabı oluşturarak ilanları yönetin, rezervasyon sürecini takip edin ve panel özelliklerine erişin.");
+  return noIndexMetadata("Üye Ol", "PaketJet hesabı oluşturarak ilanlarınızı yönetin ve satın aldığınız iletişim bilgilerine erişin.");
 }
 
 export default async function UyeOlPage() {

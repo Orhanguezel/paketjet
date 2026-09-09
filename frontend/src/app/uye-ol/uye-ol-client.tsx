@@ -1,11 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registerSchema, type RegisterFormData } from "@/modules/auth/auth.schema";
 import { register } from "@/modules/auth/auth.service";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import { ROUTES } from "@/config/routes";
+import { safeReturnPath } from "@/lib/safe-redirect";
 import { cn } from "@/lib/utils";
 
 type FormErrors = Partial<Record<string, string>>;
@@ -33,6 +34,9 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
   const [errors, setErrors] = useState<FormErrors>({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  useEffect(() => setReady(true), []);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target;
@@ -47,6 +51,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setServerError("");
     const result = registerSchema.safeParse(form);
     if (!result.success) {
@@ -63,7 +68,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
       const { confirmPassword: _, ...payload } = result.data;
       const res = await register(payload as Parameters<typeof register>[0]);
       setUser(res.user);
-      router.push(ROUTES.panel.root);
+      router.push(safeReturnPath(new URLSearchParams(window.location.search).get("next")));
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       setServerError(
@@ -91,25 +96,20 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
             {logoUrl ? (
               <img src={logoUrl} alt="PaketJet" className="h-16 w-auto max-w-44 object-contain" />
             ) : (
-              <span className="text-2xl font-extrabold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
+              <span className="text-2xl font-semibold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
             )}
           </Link>
           <div>
-            <h1 className="text-4xl font-black text-white leading-tight mb-4">
-              Türkiye&apos;nin<br />
-              <span className="text-brand">esnek</span><br />
-              kargo ağı
-            </h1>
+            <p className="text-4xl font-semibold text-white leading-tight mb-4">Taşıyıcıyla<br />doğrudan iletişim.</p>
             <p className="text-white/70 text-sm leading-relaxed mb-8">
-              İlan aç, taşıyıcılarla direkt bağlantı kur.<br />
-              Ücretsiz · Hızlı · Güvenli.
+              Taşıyıcı olarak ücretsiz ilan ver.<br />Gönderici olarak uygun ilanın iletişimine eriş.
             </p>
             <ul className="space-y-3">
               {[
                 "Ücretsiz ilan aç",
                 "Türkiye geneli 81 şehir",
                 "İletişim bilgileriniz korunur",
-                "Güvenli destek akışı",
+                "Satın alınan iletişime kalıcı erişim",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-white/90">
                   <span className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
@@ -122,7 +122,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
               ))}
             </ul>
           </div>
-          <p className="text-white/30 text-xs">© 2026 PaketJet</p>
+          <p className="text-white/70 text-xs">© 2026 PaketJet</p>
         </div>
       </div>
 
@@ -130,13 +130,13 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
       <div className="flex-1 flex flex-col justify-center px-6 py-12 bg-background overflow-y-auto">
         <div className="w-full max-w-md mx-auto">
           <div className="lg:hidden mb-6">
-            <Link href={ROUTES.home} className="text-xl font-extrabold text-brand tracking-tight">
-              paket<span className="text-foreground">jet</span>
+            <Link href={ROUTES.home} className="text-xl font-semibold text-brand tracking-tight">
+              {logoUrl ? <img src={logoUrl} alt="PaketJet" className="h-12 w-auto max-w-36 object-contain"/> : <>paket<span className="text-foreground">jet</span></>}
             </Link>
           </div>
 
-          <div className="bg-surface rounded-2xl border border-border-soft shadow-sm px-8 py-8">
-            <h2 className="text-2xl font-extrabold text-foreground mb-1">Hesap Oluştur</h2>
+          <div className="bg-surface rounded-2xl border border-border-soft shadow-sm px-4 py-6 sm:px-8 sm:py-8">
+            <h1 className="text-2xl font-semibold text-foreground mb-1">Hesap oluştur</h1>
             <p className="text-sm text-muted mb-6">
               Zaten üye misin?{" "}
               <Link href={ROUTES.auth.login} className="text-brand font-semibold hover:underline">
@@ -144,44 +144,45 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
               </Link>
             </p>
 
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+            <form method="post" onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               {serverError && (
-                <div className="px-4 py-3 bg-danger-bg border border-danger/20 rounded-xl text-sm text-danger">{serverError}</div>
+                <div role="alert" className="px-4 py-3 bg-danger-bg border border-danger/20 rounded-xl text-sm text-danger">{serverError}</div>
               )}
 
               <div>
                 <label htmlFor="reg-name" className="block text-sm font-medium text-foreground mb-1.5">Ad Soyad</label>
-                <input id="reg-name" name="full_name" autoComplete="name" value={form.full_name} onChange={handleChange} placeholder="Ahmet Yılmaz" className={inputCls(errors.full_name)} />
-                {errors.full_name && <p className="mt-1 text-xs text-danger">{errors.full_name}</p>}
+                <input id="reg-name" aria-invalid={Boolean(errors.full_name)} aria-describedby={errors.full_name ? "reg-name-error" : undefined} name="full_name" autoComplete="name" value={form.full_name} onChange={handleChange} placeholder="Ahmet Yılmaz" className={inputCls(errors.full_name)} />
+                {errors.full_name && <p id="reg-name-error" className="mt-1 text-xs text-danger">{errors.full_name}</p>}
               </div>
 
               <div>
                 <label htmlFor="reg-email" className="block text-sm font-medium text-foreground mb-1.5">E-posta</label>
-                <input id="reg-email" type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="ornek@mail.com" className={inputCls(errors.email)} />
-                {errors.email && <p className="mt-1 text-xs text-danger">{errors.email}</p>}
+                <input id="reg-email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "reg-email-error" : undefined} type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="ornek@mail.com" className={inputCls(errors.email)} />
+                {errors.email && <p id="reg-email-error" className="mt-1 text-xs text-danger">{errors.email}</p>}
               </div>
 
               <div>
                 <label htmlFor="reg-phone" className="block text-sm font-medium text-foreground mb-1.5">
                   Telefon <span className="text-muted font-normal">(isteğe bağlı)</span>
                 </label>
-                <input id="reg-phone" type="tel" name="phone" autoComplete="tel" value={form.phone} onChange={handleChange} placeholder="05xx xxx xx xx" className={inputCls(errors.phone)} />
-                {errors.phone && <p className="mt-1 text-xs text-danger">{errors.phone}</p>}
+                <input id="reg-phone" aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? "reg-phone-error" : undefined} type="tel" name="phone" autoComplete="tel" value={form.phone} onChange={handleChange} placeholder="05xx xxx xx xx" className={inputCls(errors.phone)} />
+                {errors.phone && <p id="reg-phone-error" className="mt-1 text-xs text-danger">{errors.phone}</p>}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="reg-pass" className="block text-sm font-medium text-foreground mb-1.5">Şifre</label>
-                  <input id="reg-pass" type="password" name="password" autoComplete="new-password" value={form.password} onChange={handleChange} placeholder="En az 6 karakter" className={inputCls(errors.password)} />
-                  {errors.password && <p className="mt-1 text-xs text-danger">{errors.password}</p>}
+                  <input id="reg-pass" aria-invalid={Boolean(errors.password)} aria-describedby={errors.password ? "reg-pass-error" : undefined} type={showPassword ? "text" : "password"} name="password" autoComplete="new-password" value={form.password} onChange={handleChange} placeholder="En az 6 karakter" className={inputCls(errors.password)} />
+                  {errors.password && <p id="reg-pass-error" className="mt-1 text-xs text-danger">{errors.password}</p>}
                 </div>
                 <div>
                   <label htmlFor="reg-pass2" className="block text-sm font-medium text-foreground mb-1.5">Şifre Tekrar</label>
-                  <input id="reg-pass2" type="password" name="confirmPassword" autoComplete="new-password" value={form.confirmPassword} onChange={handleChange} placeholder="Tekrar girin" className={inputCls(errors.confirmPassword)} />
-                  {errors.confirmPassword && <p className="mt-1 text-xs text-danger">{errors.confirmPassword}</p>}
+                  <input id="reg-pass2" aria-invalid={Boolean(errors.confirmPassword)} aria-describedby={errors.confirmPassword ? "reg-pass2-error" : undefined} type={showPassword ? "text" : "password"} name="confirmPassword" autoComplete="new-password" value={form.confirmPassword} onChange={handleChange} placeholder="Tekrar girin" className={inputCls(errors.confirmPassword)} />
+                  {errors.confirmPassword && <p id="reg-pass2-error" className="mt-1 text-xs text-danger">{errors.confirmPassword}</p>}
                 </div>
               </div>
 
+              <button type="button" aria-pressed={showPassword} onClick={() => setShowPassword(!showPassword)} className="self-start text-sm text-brand">{showPassword ? "Şifreleri gizle" : "Şifreleri göster"}</button>
               {/* Checkbox 1 — Sözleşme (zorunlu) */}
               <div className="flex items-start gap-2.5 mt-2 p-3 rounded-xl bg-bg-alt border border-border">
                 <input
@@ -192,15 +193,15 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
                   onChange={(e) => handleCheckbox("rules_accepted", e.target.checked)}
                   className="mt-0.5 w-4 h-4 rounded border-border text-brand focus:ring-brand cursor-pointer shrink-0"
                 />
-                <label htmlFor="rules_accepted" className="text-xs text-muted leading-relaxed cursor-pointer select-none">
-                  <Link href={ROUTES.static.kullanim} target="_blank" className="text-brand font-bold hover:underline">Kullanıcı Sözleşmesi</Link>
+                <label htmlFor="rules_accepted" className="text-sm text-muted leading-relaxed cursor-pointer select-none">
+                  <Link href={ROUTES.static.kullanim} target="_blank" className="text-brand font-semibold hover:underline">Kullanıcı Sözleşmesi</Link>
                   {", "}
-                  <Link href={ROUTES.static.gizlilik} target="_blank" className="text-brand font-bold hover:underline">Gizlilik Politikası</Link>
+                  <Link href={ROUTES.static.gizlilik} target="_blank" className="text-brand font-semibold hover:underline">Gizlilik Politikası</Link>
                   {" ve "}
-                  <Link href={ROUTES.static.tasimaKurallari} target="_blank" className="text-brand font-bold hover:underline">Taşıma Kuralları</Link>
+                  <Link href={ROUTES.static.tasimaKurallari} target="_blank" className="text-brand font-semibold hover:underline">Taşıma Kuralları</Link>
                   {"'nı okudum ve kabul ediyorum."}{" "}
-                  <span className="text-danger font-bold">*</span>
-                  {errors.rules_accepted && <span className="block mt-1 text-danger font-bold">{errors.rules_accepted}</span>}
+                  <span className="text-danger font-semibold">*</span>
+                  {errors.rules_accepted && <span className="block mt-1 text-danger font-semibold">{errors.rules_accepted}</span>}
                 </label>
               </div>
 
@@ -214,20 +215,20 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
                   onChange={(e) => handleCheckbox("kvkk_explicit_consent", e.target.checked)}
                   className="mt-0.5 w-4 h-4 rounded border-border text-brand focus:ring-brand cursor-pointer shrink-0"
                 />
-                <label htmlFor="kvkk_explicit_consent" className="text-xs text-muted leading-relaxed cursor-pointer select-none">
-                  <Link href={ROUTES.static.kvkk} target="_blank" className="text-brand font-bold hover:underline">KVKK Aydınlatma Metni</Link>
-                  {" kapsamında; iletişim ve adres bilgilerimin, ilan bedelini ödeyen üçüncü kişi taşıyıcılarla paylaşılmasına "}
-                  <span className="font-bold text-foreground">AÇIK RIZA</span>
+                <label htmlFor="kvkk_explicit_consent" className="text-sm text-muted leading-relaxed cursor-pointer select-none">
+                  <Link href={ROUTES.static.kvkk} target="_blank" className="text-brand font-semibold hover:underline">KVKK Aydınlatma Metni</Link>
+                  {" kapsamında; ilan için verdiğim özel iletişim bilgilerinin, iletişim erişimini satın alan kullanıcılarla paylaşılmasına "}
+                  <span className="font-semibold text-foreground">AÇIK RIZA</span>
                   {" veriyorum."}{" "}
-                  <span className="text-danger font-bold">*</span>
-                  {errors.kvkk_explicit_consent && <span className="block mt-1 text-danger font-bold">{errors.kvkk_explicit_consent}</span>}
+                  <span className="text-danger font-semibold">*</span>
+                  {errors.kvkk_explicit_consent && <span className="block mt-1 text-danger font-semibold">{errors.kvkk_explicit_consent}</span>}
                 </label>
               </div>
 
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full py-3.5 bg-brand text-white font-bold rounded-xl hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm"
+                disabled={loading || !ready} data-ready={ready}
+                className="w-full py-3.5 bg-action text-white font-semibold rounded-xl hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm"
               >
                 {loading ? "Kaydediliyor…" : "Üye Ol →"}
               </button>

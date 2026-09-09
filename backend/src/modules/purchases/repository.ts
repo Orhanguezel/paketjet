@@ -1,6 +1,9 @@
 // src/modules/purchases/repository.ts
+import { repoInvalidateIlanCache } from "../_shared/cache";
+import { repoFindReservation } from "./session.repository";
+import { users } from "../auth/schema";
 import { randomUUID } from "crypto";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db/client";
 import { ilanlar } from "../ilanlar/schema";
 import { repoGetFirstRowByFallback, rowToDto } from "../siteSettings/repository";
@@ -33,11 +36,16 @@ export async function repoPurchaseIlan(
   declaration: PurchaseDeclaration,
   buyerIp: string,
 ): Promise<PurchaseResult> {
-  return db.transaction(async (tx) => {
+  const result = await db.transaction<PurchaseResult>(async (tx) => {
     const [ilan] = await tx.select().from(ilanlar).where(eq(ilanlar.id, ilanId)).for("update");
     if (!ilan) return { ok: false, code: "not_found" };
     if (ilan.user_id === buyerId) return { ok: false, code: "own_listing" };
-    if (ilan.status !== "active") return { ok: false, code: "unavailable" };
+    const [existing] = await tx.select().from(ilanPurchases).where(and(eq(ilanPurchases.ilan_id, ilanId), eq(ilanPurchases.buyer_id, buyerId), eq(ilanPurchases.status, "completed")));
+    if (existing?.contact_snapshot) {
+      const [balance] = await tx.select().from(userCredits).where(eq(userCredits.user_id, buyerId));
+      return {ok: true, purchase_id: existing.id, contact: existing.contact_snapshot, credit_balance: balance?.balance ?? 0};
+    }
+    if (ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId)) return { ok: false, code: "unavailable" };
 
     const [credit] = await tx.select().from(userCredits).where(eq(userCredits.user_id, buyerId)).for("update");
     if (!credit || credit.balance < 1) return { ok: false, code: "insufficient_credit" };
@@ -72,6 +80,8 @@ export async function repoPurchaseIlan(
 
     return { ok: true, purchase_id: purchaseId, contact, credit_balance: newBalance };
   });
+  if (result.ok) await repoInvalidateIlanCache(ilanId);
+  return result;
 }
 
 /** Reveal — satın alan kullanıcı için iletişim snapshot'ı (yoksa null) */
@@ -123,7 +133,7 @@ export async function repoGetCreditPackages(): Promise<CreditPackageDto[]> {
         price: Number(pack.price),
       };
     })
-    .filter((pack) => pack.key && Number.isFinite(pack.credits) && Number.isFinite(pack.price));
+    .filter((pack) => pack.key && Number.isSafeInteger(pack.credits) && pack.credits > 0 && Number.isFinite(pack.price) && pack.price > 0 && pack.price <= 99999999 && Math.abs(pack.price*100-Math.round(pack.price*100))<0.000001);
 }
 
 /** Hak hareketleri */
@@ -138,7 +148,10 @@ export async function repoGrantCredits(
   reason: "package_purchase" | "admin_grant" | "refund",
   refId?: string | null,
 ): Promise<number> {
+  if (!Number.isSafeInteger(amount) || amount <= 0) throw Object.assign(new Error("invalid_credit_amount"), {statusCode: 400});
   return db.transaction(async (tx) => {
+    await tx.select({id: users.id}).from(users).where(eq(users.id, userId)).for("update");
+    await tx.insert(userCredits).values({id: randomUUID(), user_id: userId, balance: 0}).onDuplicateKeyUpdate({set:{balance: sql`balance`}});
     const [c] = await tx.select().from(userCredits).where(eq(userCredits.user_id, userId)).for("update");
     let balance: number;
     if (!c) {

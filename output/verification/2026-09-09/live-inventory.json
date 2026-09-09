@@ -1,0 +1,52 @@
+{
+  "at": "2026-09-09T02:03:02.225Z",
+  "environment": {
+    "provider": "unset",
+    "iyzico_test": "true",
+    "paytr_configured": false,
+    "smtp_env_configured": false
+  },
+  "users": [
+    {
+      "total": 23,
+      "test_domain": "18",
+      "active": "22"
+    }
+  ],
+  "listings": [
+    {
+      "status": "active",
+      "total": 14,
+      "past": "14"
+    },
+    {
+      "status": "pending_approval",
+      "total": 2,
+      "past": "2"
+    }
+  ],
+  "wallets": [
+    {
+      "total": 11,
+      "balance_tl": "3425.00"
+    }
+  ],
+  "wallet_transactions": [],
+  "listing_payments": [
+    {
+      "status": "pending",
+      "provider": "paytr",
+      "total": 1,
+      "amount": "50.00"
+    }
+  ],
+  "packages": [
+    {
+      "status": "pending",
+      "provider": "paytr",
+      "total": 4,
+      "amount": "725.00"
+    }
+  ],
+  "purchases": []
+}

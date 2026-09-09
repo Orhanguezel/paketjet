@@ -3,7 +3,7 @@
 
 import type { Metadata } from "next";
 
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+const BASE_URL = (process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8078").replace(/\/$/, "");
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
 
 export interface PageSeoData {
@@ -94,6 +94,7 @@ export function buildMetadata(
     ...overrides,
   };
 
+  if(typeof meta.title==='string')meta.title=meta.title.replace(/\s*[|—-]\s*PaketJet\s*$/i,'').replace(/^PaketJet\s*\|\s*/i,'');
   // vars'i metadata'dan temizle
   if ("vars" in meta) delete (meta as Record<string, unknown>).vars;
 

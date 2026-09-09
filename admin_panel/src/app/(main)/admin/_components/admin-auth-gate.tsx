@@ -23,7 +23,7 @@ export default function AdminAuthGate({ children }: { children: React.ReactNode 
   const q = useStatusQuery();
 
   React.useEffect(() => {
-    if (q.isFetching) return;
+    if (q.isFetching || q.isError) return;
     if (q.isUninitialized) return;
     const currentPath = pathname ?? '/admin';
 
@@ -39,7 +39,9 @@ export default function AdminAuthGate({ children }: { children: React.ReactNode 
     if (me.role === 'seller' && canAccessAdminPath('seller', currentPath)) return;
 
     router.replace('/auth/login');
-  }, [q.isFetching, q.isUninitialized, q.data, router, pathname]);
+  }, [q.isFetching, q.isError, q.isUninitialized, q.data, router, pathname]);
+
+  if(q.isError)return <div className="p-8"><p role="alert">Oturum kontrolü yapılamadı.</p><button type="button" className="mt-4 min-h-11 rounded-md border px-4" onClick={()=>q.refetch()}>Yeniden dene</button></div>;
 
   // Loading state (blank or skeleton)
   if (q.isFetching || q.isUninitialized) {

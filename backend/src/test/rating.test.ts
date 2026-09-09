@@ -5,7 +5,7 @@ import { getTestApp, closeTestApp, registerUser, randomEmail, authHeaders } from
 afterAll(closeTestApp);
 
 describe("Rating — Değerlendirme", () => {
-  it("booking olmadan değerlendirme yapılamaz (400/404)", async () => {
+  it("eski değerlendirme yazma akışı kapalıdır (410)", async () => {
     const app = await getTestApp();
     const email = randomEmail();
     const { token } = await registerUser(app, { email, password: "Test1234!" });
@@ -21,6 +21,6 @@ describe("Rating — Değerlendirme", () => {
       },
     });
     
-    expect(res.statusCode).toBeOneOf([400, 404]);
+    expect(res.statusCode).toBeOneOf([410]);
   });
 });

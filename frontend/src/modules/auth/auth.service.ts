@@ -22,12 +22,13 @@ export function logout(): Promise<{ ok: boolean }> {
   return apiPost<{ ok: boolean }>(API.auth.logout);
 }
 
-export function getMe(): Promise<User> {
-  return apiGet<User>(API.auth.me);
+export async function getMe(): Promise<User> {
+  const response=await apiGet<{user:User}>(API.auth.me);
+  return response.user;
 }
 
-export function forgotPassword(email: string): Promise<{ success: boolean; token?: string }> {
-  return apiPost<{ success: boolean; token?: string }>(API.auth.forgotPassword, { email });
+export function forgotPassword(email: string): Promise<{ success: boolean }> {
+  return apiPost<{ success: boolean }>(API.auth.forgotPassword, { email });
 }
 
 export function resetPassword(token: string, password: string): Promise<{ success: boolean }> {

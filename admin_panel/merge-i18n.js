@@ -1,6 +1,8 @@
 // Merge categories i18n keys into existing locale files
-const fs = require('fs');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function mergeDeep(target, source) {
   const result = { ...target };

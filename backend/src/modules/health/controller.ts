@@ -4,9 +4,8 @@ import { repoCheckHealth } from './repository';
 
 export async function getHealth(req: FastifyRequest, reply: FastifyReply) {
   try {
-    console.log('[HEALTH] Check requested');
     const result = await repoCheckHealth(req.server);
-    return reply.send(result);
+    return reply.code(result.status === "ok" ? 200 : 503).send(result);
   } catch (e) {
     return handleRouteError(reply, req, e, 'health_check_failed');
   }

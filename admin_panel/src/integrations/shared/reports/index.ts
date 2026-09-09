@@ -1,6 +1,6 @@
-export {
-  type KpiRow,
-  type LocationRow,
-  type ReportRole,
-  type UserPerformanceRow,
+export type {
+  KpiRow,
+  LocationRow,
+  ReportRole,
+  UserPerformanceRow,
 } from '@/integrations/shared/reports';

@@ -123,7 +123,7 @@ export default function AdminWalletClient() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead></TableHead>
+                <TableHead />
                 <TableHead>{t('table.user')}</TableHead>
                 <TableHead>{t('table.balance')}</TableHead>
                 <TableHead>{t('table.totalEarnings')}</TableHead>

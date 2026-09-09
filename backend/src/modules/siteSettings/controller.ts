@@ -1,3 +1,4 @@
+import { isPublicSetting } from './public-policy';
 // src/modules/siteSettings/controller.ts
 // Public handler'lar — DB sorgusu yok, repo fonksiyonları kullanılır.
 
@@ -35,7 +36,7 @@ export async function listSiteSettings(req: FastifyRequest, reply: FastifyReply)
     });
 
     const map = new Map<string, ReturnType<typeof rowToDto>>();
-    const uniqueKeys = Array.from(new Set(rows.map((r) => r.key)));
+    const uniqueKeys = Array.from(new Set(rows.filter(r=>isPublicSetting(r.key)).map((r) => r.key)));
 
     for (const k of uniqueKeys) {
       const cands = rows.filter((r) => r.key === k);
@@ -72,6 +73,7 @@ export async function getSiteSettingByKey(req: FastifyRequest, reply: FastifyRep
     );
 
     for (const candidateKey of candidateKeys) {
+      if (!isPublicSetting(candidateKey)) continue;
       const rows = await repoGetRowsByKey(candidateKey);
       const byLocale = new Map(rows.map((r) => [r.locale, r]));
 

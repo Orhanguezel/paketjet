@@ -40,12 +40,12 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-4xl px-6 py-16">
           <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand">Kurumsal</p>
-          <h1 className="max-w-3xl text-4xl font-black tracking-tight">{title}</h1>
+          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight">{title}</h1>
           {summary ? <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{summary}</p> : null}
           {(publishedLabel || updatedLabel) ? (
             <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
-              {publishedLabel ? <span>Yayin tarihi: {publishedLabel}</span> : null}
-              {updatedLabel ? <span>Son guncelleme: {updatedLabel}</span> : null}
+              {publishedLabel ? <span>Yayın tarihi: {publishedLabel}</span> : null}
+              {updatedLabel ? <span>Son güncelleme: {updatedLabel}</span> : null}
             </div>
           ) : null}
         </div>
@@ -54,12 +54,10 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
       {heroVideoUrl ? (
         <section className="bg-navy">
           <div className="mx-auto max-w-5xl px-6 py-8">
-            <div className="overflow-hidden rounded-2xl shadow-2xl">
+            <div className="overflow-hidden rounded-lg">
               <video
                 src={heroVideoUrl}
-                autoPlay
-                muted
-                loop
+                controls
                 playsInline
                 preload="metadata"
                 className="w-full object-cover"
@@ -71,7 +69,7 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
 
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
         <article
-          className="prose prose-neutral max-w-none prose-headings:font-extrabold prose-a:text-brand"
+          className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand"
           dangerouslySetInnerHTML={{ __html: displayHtml }}
         />
       </section>

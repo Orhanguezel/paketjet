@@ -69,13 +69,7 @@ function SifreSifirlaForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <Input
-        label="Sıfırlama Token'ı"
-        value={token}
-        onChange={(e) => setToken(e.target.value)}
-        placeholder="Token'ı buraya yapıştırın"
-        required
-      />
+      {!token && <p role="alert" className="text-sm text-danger">Sıfırlama bağlantısı eksik. E-postandaki bağlantıyı aç veya yeni bağlantı iste.</p>}
       <Input
         label="Yeni Şifre"
         type="password"

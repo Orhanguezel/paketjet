@@ -76,6 +76,11 @@ const emptyNav: AdminNavCopy = {
     system:   '',
   },
   items: {
+    payments: '',
+    credits: '',
+    support_tickets: '',
+    faqs: '',
+    pages: '',
     dashboard:       '',
     ilanlar:         '',
     ilan_purchases:  '',
@@ -112,6 +117,11 @@ export function normalizeAdminUiCopy(raw: unknown): AdminUiCopy {
   };
 
   const items: AdminNavCopy['items'] = {
+    payments: uiText(itemsRaw.payments),
+    credits: uiText(itemsRaw.credits),
+    support_tickets: uiText(itemsRaw.support_tickets),
+    faqs: uiText(itemsRaw.faqs),
+    pages: uiText(itemsRaw.pages),
     dashboard:       uiText(itemsRaw.dashboard),
     ilanlar:         uiText(itemsRaw.ilanlar),
     ilan_purchases:  uiText(itemsRaw.ilan_purchases),

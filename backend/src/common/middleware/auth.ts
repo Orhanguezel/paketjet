@@ -1,6 +1,8 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import "@fastify/jwt";
 import "@fastify/cookie";
+import { repoGetUserById } from "@/modules/auth/repository";
+import { getPrimaryRole } from "@/modules/userRoles";
 import { setSentryUserContext } from "@/plugins/sentry";
 
 /** JWT payload'ın bizde aradığımız minimum alanları */
@@ -25,35 +27,26 @@ function authError(message: string): Error {
  * - Header: Authorization: Bearer <token>
  * Doğrulama başarılıysa req.user'ı set eder.
  */
+async function validateAccess(req: FastifyRequest, token: string) {
+  const payload = await req.server.jwt.verify<JwtUser>(token);
+  if (typeof payload.sub !== "string" || (payload.purpose && payload.purpose !== "access")) throw authError("invalid_token");
+  const user = await repoGetUserById(payload.sub);
+  if (!user?.is_active || (payload.v ?? 0) !== user.auth_version) throw authError("invalid_token");
+  const role = await getPrimaryRole(user.id);
+  req.user = { ...payload, role, roles: [role], is_admin: role === "admin" };
+  setSentryUserContext(user.id);
+}
+
 export async function requireAuth(req: FastifyRequest, _reply: FastifyReply) {
-  const cookies = (req.cookies ?? {}) as Record<string, string | undefined>;
+  _reply.header("Cache-Control", "private, no-store");
+  const cookies = req.cookies ?? {};
   const cookieToken = cookies.access_token ?? cookies.accessToken;
-
   if (cookieToken) {
-    try {
-      const payload = (await req.server.jwt.verify(cookieToken)) as JwtUser;
-      (req as unknown as { user: JwtUser }).user = payload;
-      if (payload.sub) setSentryUserContext(String(payload.sub));
-      return;
-    } catch {
-      // Cookie token expired or invalid — fall through to check Bearer header
-    }
+    try { await validateAccess(req, cookieToken); return; } catch { /* Try explicit bearer credentials. */ }
   }
-
   const auth = req.headers.authorization;
   if (typeof auth === "string" && auth.startsWith("Bearer ")) {
-    try {
-      await req.jwtVerify<JwtUser>();
-      const u = (req as unknown as { user?: JwtUser }).user;
-      if (!u) throw authError("invalid_token");
-      if (u.sub) setSentryUserContext(String(u.sub));
-      return;
-    } catch (err) {
-      if (err instanceof Error && (err as Error & { statusCode?: number }).statusCode === 401) throw err;
-      req.log.warn({ err }, "auth_failed");
-      throw authError("invalid_token");
-    }
+    try { await validateAccess(req, auth.slice(7)); return; } catch { throw authError("invalid_token"); }
   }
-
-  throw authError("no_token");
+  throw authError(cookieToken ? "invalid_token" : "no_token");
 }

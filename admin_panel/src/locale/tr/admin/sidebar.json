@@ -66,9 +66,9 @@
     "languagePlaceholder": "Dil seçin"
   },
   "groups": {
-    "general": "Genel / Yönetim",
+    "general": "Genel",
     "listings": "İlan Yönetimi",
-    "finance": "Kullanıcılar & Finans",
+    "finance": "Finans",
     "support": "Destek",
     "content": "İçerik Yönetimi",
     "integrations": "3. Taraf API Entegrasyonları",
@@ -77,9 +77,9 @@
     "system": "Sistem & Ayarlar"
   },
   "items": {
-    "dashboard": "Dashboard",
+    "dashboard": "Genel bakış",
     "ilanlar": "İlanlar",
-    "ilan_purchases": "İlan Satın Almaları",
+    "ilan_purchases": "İletişim satışları",
     "categories": "Kategoriler",
     "users": "Kullanıcılar",
     "carriers": "Taşıyıcılar",

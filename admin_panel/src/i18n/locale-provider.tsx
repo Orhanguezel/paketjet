@@ -1,5 +1,6 @@
 "use client";
-import React, { createContext, useContext } from 'react';
+import type React from 'react';
+import { createContext, useContext } from 'react';
 import { useLocaleShort } from './use-locale-short';
 import { useAdminTranslations } from './admin-ui';
 

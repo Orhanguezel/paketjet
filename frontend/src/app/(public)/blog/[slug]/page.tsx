@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getBlogPostBySlug(slug);
 
   if (!post) {
-    return {};
+    notFound();
   }
 
   return getPageMetadata(post.seoKey, {
@@ -51,7 +51,7 @@ export default async function BlogDetailPage({ params }: Props) {
   }
 
   return (
-    <main className="bg-background text-foreground">
+    <div className="bg-background text-foreground">
       <ArticleSchema
         headline={post.title}
         description={post.description}
@@ -69,8 +69,8 @@ export default async function BlogDetailPage({ params }: Props) {
       />
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-4xl px-6 py-16">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">{post.eyebrow}</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight">{post.title}</h1>
+          <p className="text-sm font-semibold uppercase tracking-normal text-brand">{post.eyebrow}</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight">{post.title}</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{post.summary}</p>
           <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
             <span>Yayin tarihi: {formatDate(post.publishedAt)}</span>
@@ -79,7 +79,7 @@ export default async function BlogDetailPage({ params }: Props) {
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
-        <article className="prose prose-neutral max-w-none prose-headings:font-extrabold prose-a:text-brand">
+        <article className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand">
           {post.sections.map((section, index) => (
             <div key={`${post.slug}-${index}`}>
               {section.title ? <h2>{section.title}</h2> : null}
@@ -90,6 +90,6 @@ export default async function BlogDetailPage({ params }: Props) {
           ))}
         </article>
       </section>
-    </main>
+    </div>
   );
 }

@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = getRouteGuideBySlug(slug);
 
   if (!guide) {
-    return {};
+    notFound();
   }
 
   return getPageMetadata(guide.seoKey, {
@@ -51,7 +51,7 @@ export default async function RouteGuidePage({ params }: Props) {
   }
 
   return (
-    <main className="bg-background text-foreground">
+    <div className="bg-background text-foreground">
       <ArticleSchema
         headline={`${guide.title} Kargo Rotasi`}
         description={guide.description}
@@ -69,8 +69,8 @@ export default async function RouteGuidePage({ params }: Props) {
       />
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-4xl px-6 py-16">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand">{guide.eyebrow}</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight">{guide.title}</h1>
+          <p className="text-sm font-semibold uppercase tracking-normal text-brand">{guide.eyebrow}</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight">{guide.title}</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{guide.summary}</p>
           <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
             <span>Yayin tarihi: {formatDate(guide.publishedAt)}</span>
@@ -79,7 +79,7 @@ export default async function RouteGuidePage({ params }: Props) {
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
-        <article className="prose prose-neutral max-w-none prose-headings:font-extrabold prose-a:text-brand">
+        <article className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand">
           {guide.sections.map((section, index) => (
             <div key={`${guide.slug}-${index}`}>
               {section.title ? <h2>{section.title}</h2> : null}
@@ -90,6 +90,6 @@ export default async function RouteGuidePage({ params }: Props) {
           ))}
         </article>
       </section>
-    </main>
+    </div>
   );
 }

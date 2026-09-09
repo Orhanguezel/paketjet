@@ -89,6 +89,8 @@ import {
 
 /* ----------------------------- component ----------------------------- */
 
+const ALL = ADMIN_AUDIT_ALL_VALUE;
+
 export default function AdminAuditClient() {
   const router = useRouter();
   const sp = useSearchParams();
@@ -429,7 +431,6 @@ export default function AdminAuditClient() {
   const canNextReq = offset + limit < reqTotal;
   const canNextAuth = offset + limit < authTotal;
 
-  const ALL = ADMIN_AUDIT_ALL_VALUE;
 
   const [clearAuditLogs, { isLoading: isClearing }] = useClearAuditLogsAdminMutation();
 

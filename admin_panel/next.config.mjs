@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   experimental: {},
   compiler: { removeConsole: process.env.NODE_ENV === 'production' },
   output: process.env.NODE_ENV === 'production' ? 'standalone' : undefined,

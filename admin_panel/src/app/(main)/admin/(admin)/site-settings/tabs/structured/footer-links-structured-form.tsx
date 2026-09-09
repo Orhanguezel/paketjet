@@ -5,7 +5,7 @@
 
 "use client";
 
-import React from "react";
+import type React from "react";
 import { Plus, Trash2, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

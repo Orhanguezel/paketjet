@@ -1,3 +1,4 @@
+import { getPaymentAvailability, getPaymentStatus, getListingAccess } from "./status.controller";
 import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
 import { authSecurity, fromZodSchema, okResponseSchema } from "@/modules/_shared";
@@ -10,6 +11,9 @@ const ok = { response: { 200: okResponseSchema } };
 const authOk = { security: authSecurity, ...ok };
 
 export async function registerPurchases(app: FastifyInstance) {
+  app.get("/ilanlar/:id/access", {preHandler: [requireAuth]}, getListingAccess);
+  app.get("/payments/availability", getPaymentAvailability);
+  app.get("/payments/:ref", {preHandler: [requireAuth]}, getPaymentStatus);
   app.post("/ilanlar/:id/satin-al", { preHandler: [requireAuth], config: { rateLimit: { max: 20, timeWindow: "1 minute" } }, schema: { tags: ["purchases"], summary: "İlan satın al (iletişim aç)", security: authSecurity, params: idParams, body: fromZodSchema(purchaseIlanSchema, "PurchaseIlanBody"), response: { 201: okResponseSchema } } }, satinAlIlan);
   app.post("/ilanlar/:id/satin-al/odeme", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "İlan iletişim ödemesi başlat", security: authSecurity, params: idParams, body: fromZodSchema(initiateIlanPaymentSchema, "InitiateIlanPaymentBody"), ...ok } }, initiateIlanPayment);
   app.get("/ilanlar/:id/iletisim", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "Satın alınan ilanın iletişimi", params: idParams, ...authOk } }, getIlanIletisim);

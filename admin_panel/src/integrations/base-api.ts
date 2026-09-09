@@ -58,7 +58,7 @@ const rawBaseQuery: RBQ = fetchBaseQuery({
       return headers;
     }
 
-    const token = tokenStore.get() || readBrowserStorage(ACCESS_TOKEN_STORAGE_KEY);
+    const token = tokenStore.get();
 
     if (token && !headers.has('authorization')) {
       headers.set('authorization', `Bearer ${token}`);
@@ -88,6 +88,7 @@ const rawBaseQuery: RBQ = fetchBaseQuery({
 
 /* -------------------- 401 → refresh → retry -------------------- */
 
+let refreshInFlight: ReturnType<RBQ> | null = null;
 const baseQueryWithReauth: RBQ = async (args, api, extra) => {
   let req: AnyArgs = normalizeRequestArg(args);
   const path = typeof req === 'string' ? req : req.url || '';
@@ -105,7 +106,7 @@ const baseQueryWithReauth: RBQ = async (args, api, extra) => {
   result = await coerceSerializableFetchErrorData(result);
 
   if (result.error?.status === 401 && !AUTH_SKIP_REAUTH.has(cleanPath)) {
-    const refreshRes = await rawBaseQuery(
+    refreshInFlight ??= Promise.resolve(rawBaseQuery(
       {
         url: '/auth/token/refresh',
         method: 'POST',
@@ -113,14 +114,15 @@ const baseQueryWithReauth: RBQ = async (args, api, extra) => {
       },
       api,
       extra,
-    );
+    )).finally(() => {refreshInFlight = null;});
+    const refreshRes = await refreshInFlight;
 
     if (!refreshRes.error) {
       const access_token = (refreshRes.data as { access_token?: string } | undefined)?.access_token;
 
       if (access_token) {
         tokenStore.set(access_token);
-        writeBrowserStorage(ACCESS_TOKEN_STORAGE_KEY, access_token);
+
 
         let retry: AnyArgs = normalizeRequestArg(args);
         if (typeof retry !== 'string') {

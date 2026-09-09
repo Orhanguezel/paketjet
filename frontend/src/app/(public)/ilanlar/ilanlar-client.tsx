@@ -1,239 +1,32 @@
-"use client";
-
-import { useCallback, useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import IlanCard from "@/components/IlanCard";
-import CityAutocomplete from "@/components/CityAutocomplete";
-import { listIlans } from "@/modules/ilan/ilan.service";
-import type { Ilan, VehicleType } from "@/modules/ilan/ilan.type";
-
-const VEHICLE_OPTIONS: { value: VehicleType | ""; label: string }[] = [
-  { value: "", label: "Tüm araçlar" },
-  { value: "car", label: "Otomobil" },
-  { value: "van", label: "Minivan" },
-  { value: "truck", label: "Kamyon" },
-  { value: "motorcycle", label: "Motosiklet" },
-];
-
-type ActiveFilters = {
-  from_city: string;
-  to_city: string;
-  date: string;
-  vehicle_type: VehicleType | "";
-};
-
-interface IlanlarClientProps {
-  initialIlans: Ilan[];
-  initialTotal: number;
-  initialPage: number;
-  initialFilters: ActiveFilters;
-  listingCreditPrice?: number | null;
-}
-
-export default function IlanlarClient({
-  initialIlans,
-  initialTotal,
-  initialPage,
-  initialFilters,
-  listingCreditPrice,
-}: IlanlarClientProps) {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  const [ilanlar, setIlanlar] = useState<Ilan[]>(initialIlans);
-  const [total, setTotal] = useState(initialTotal);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(initialPage);
-
-  const [fromCity, setFromCity] = useState(initialFilters.from_city);
-  const [toCity, setToCity] = useState(initialFilters.to_city);
-  const [date, setDate] = useState(initialFilters.date);
-  const [vehicleType, setVehicleType] = useState<VehicleType | "">(initialFilters.vehicle_type);
-  const [activeFilters, setActiveFilters] = useState<ActiveFilters>(initialFilters);
-
-  const fetchIlans = useCallback(async (filters: ActiveFilters, nextPage: number) => {
-    setLoading(true);
-    try {
-      const res = await listIlans({
-        from_city: filters.from_city || undefined,
-        to_city: filters.to_city || undefined,
-        date: filters.date || undefined,
-        vehicle_type: filters.vehicle_type || undefined,
-        page: nextPage,
-        limit: 20,
-      });
-      setIlanlar(res.data);
-      setTotal(res.total);
-    } catch {
-      setIlanlar([]);
-      setTotal(0);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const filtersFromUrl: ActiveFilters = {
-      from_city: searchParams.get("from") ?? "",
-      to_city: searchParams.get("to") ?? "",
-      date: searchParams.get("date") ?? "",
-      vehicle_type: (searchParams.get("vehicle") as VehicleType | "") ?? "",
-    };
-    const urlPage = Number(searchParams.get("page") ?? "1");
-    const normalizedPage = Number.isFinite(urlPage) && urlPage > 0 ? urlPage : 1;
-    const sameFilters = JSON.stringify(filtersFromUrl) === JSON.stringify(activeFilters);
-    const samePage = normalizedPage === page;
-
-    if (sameFilters && samePage) return;
-
-    setFromCity(filtersFromUrl.from_city);
-    setToCity(filtersFromUrl.to_city);
-    setDate(filtersFromUrl.date);
-    setVehicleType(filtersFromUrl.vehicle_type);
-    setActiveFilters(filtersFromUrl);
-    setPage(normalizedPage);
-    fetchIlans(filtersFromUrl, normalizedPage);
-  }, [activeFilters, fetchIlans, page, searchParams]);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [page]);
-
-  function handleFilter(event: React.FormEvent) {
-    event.preventDefault();
-    const filters = {
-      from_city: fromCity.trim(),
-      to_city: toCity.trim(),
-      date,
-      vehicle_type: vehicleType,
-    };
-    const params = new URLSearchParams();
-    if (filters.from_city) params.set("from", filters.from_city);
-    if (filters.to_city) params.set("to", filters.to_city);
-    if (filters.date) params.set("date", filters.date);
-    if (filters.vehicle_type) params.set("vehicle", filters.vehicle_type);
-    router.replace(params.toString() ? `/ilanlar?${params}` : "/ilanlar", { scroll: false });
-  }
-
-  function handleReset() {
-    setFromCity("");
-    setToCity("");
-    setDate("");
-    setVehicleType("");
-    router.replace("/ilanlar", { scroll: false });
-  }
-
-  const hasFilters = Object.values(activeFilters).some(Boolean);
-  const totalPages = Math.ceil(total / 20);
-
-  function handlePagination(nextPage: number) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (nextPage <= 1) {
-      params.delete("page");
-    } else {
-      params.set("page", String(nextPage));
-    }
-    router.replace(params.toString() ? `/ilanlar?${params}` : "/ilanlar", { scroll: false });
-  }
-
-  return (
-    <div className="bg-background">
-      <div className="mx-auto max-w-4xl px-4 pt-8 pb-16">
-        <div className="mb-6">
-          <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Taşıma İlanları</h1>
-          <p className="mt-1 text-sm text-muted">
-            {loading ? "Güncelleniyor..." : `${total} ilan listeleniyor`}
-          </p>
-        </div>
-
-        <form onSubmit={handleFilter} className="relative z-20 mb-6 flex flex-wrap items-end gap-3">
-          <div className="w-40">
-            <CityAutocomplete value={fromCity} onChange={setFromCity} placeholder="Nereden" />
-          </div>
-          <div className="w-40">
-            <CityAutocomplete value={toCity} onChange={setToCity} placeholder="Nereye" />
-          </div>
-          <div className="flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground">
-            <input
-              type="date"
-              value={date}
-              onChange={(event) => setDate(event.target.value)}
-              className="bg-transparent text-foreground outline-none placeholder:text-faint"
-            />
-          </div>
-          <select
-            value={vehicleType}
-            onChange={(event) => setVehicleType(event.target.value as VehicleType | "")}
-            className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground outline-none"
-          >
-            {VEHICLE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          <button type="submit" className="rounded-lg bg-brand px-5 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-dark">
-            Filtrele
-          </button>
-          {hasFilters ? (
-            <button
-              type="button"
-              onClick={handleReset}
-              className="rounded-lg border border-border px-4 py-2 text-sm text-muted transition-colors hover:bg-bg-alt"
-            >
-              Temizle
-            </button>
-          ) : null}
-        </form>
-
-        {loading ? (
-          <div className="flex flex-col gap-3">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-24 animate-pulse rounded-xl border border-border-soft bg-surface" />
-            ))}
-          </div>
-        ) : ilanlar.length === 0 ? (
-          <div className="rounded-2xl border border-border-soft bg-surface px-6 py-12 text-center text-muted">
-            <p className="text-lg font-black text-foreground">İlan bulunamadı</p>
-            <p className="mt-1 text-sm">Farklı filtreler deneyebilir veya ücretsiz ilan açabilirsiniz.</p>
-            <Link
-              href="/ilan-ver"
-              className="mt-5 inline-flex items-center justify-center rounded-xl bg-cta px-5 py-2.5 text-sm font-black text-white transition-colors hover:bg-cta-dark"
-            >
-              Hızlı İlan Aç
-            </Link>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {ilanlar.map((ilan) => (
-              <IlanCard key={ilan.id} ilan={ilan} listingCreditPrice={listingCreditPrice} />
-            ))}
-          </div>
-        )}
-
-        {totalPages > 1 ? (
-          <div className="mt-8 flex items-center justify-center gap-2">
-            <button
-              onClick={() => handlePagination(Math.max(1, page - 1))}
-              disabled={page === 1}
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-bg-alt disabled:opacity-40"
-            >
-              Onceki
-            </button>
-            <span className="px-2 text-sm text-muted">
-              {page} / {totalPages}
-            </span>
-            <button
-              onClick={() => handlePagination(Math.min(totalPages, page + 1))}
-              disabled={page === totalPages}
-              className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-bg-alt disabled:opacity-40"
-            >
-              Sonraki
-            </button>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
+'use client';
+import { useEffect, useState, useTransition } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import IlanCard from '@/components/IlanCard';
+import CityAutocomplete from '@/components/CityAutocomplete';
+import type { PublicIlan, VehicleType } from '@/modules/ilan/ilan.type';
+import { ROUTES } from '@/config/routes';
+type Filters={from_city:string;to_city:string;date:string;vehicle_type:VehicleType|''};
+interface Props {initialIlans:PublicIlan[];initialTotal:number;initialPage:number;initialFilters:Filters;initialError?:boolean;listingCreditPrice?:number|null;}
+export default function IlanlarClient({initialIlans,initialTotal,initialPage,initialFilters,initialError}:Props){
+  const router=useRouter(), query=useSearchParams();
+  const [pending,startTransition]=useTransition();
+  const [filters,setFilters]=useState(initialFilters);
+  useEffect(()=>setFilters(initialFilters),[initialFilters]);
+  function update(key:keyof Filters,value:string){setFilters(old=>({...old,[key]:value}));}
+  function navigate(q:URLSearchParams){startTransition(()=>router.push(`${ROUTES.ilanlar.list}${q.size?'?'+q:''}`,{scroll:false}));}
+  function search(e:React.FormEvent){e.preventDefault();const q=new URLSearchParams();if(filters.from_city.trim())q.set('from',filters.from_city.trim());if(filters.to_city.trim())q.set('to',filters.to_city.trim());if(filters.date)q.set('date',filters.date);if(filters.vehicle_type)q.set('vehicle',filters.vehicle_type);navigate(q);}
+  function page(n:number){const q=new URLSearchParams(query);q.set('page',String(n));navigate(q);}
+  const pages=Math.ceil(initialTotal/20);
+  return <section className="site-container py-10 sm:py-12" aria-busy={pending}>
+    <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">Taşıyıcı ilanları</h1><p className="mt-3 text-lg text-muted">Güzergâhına uygun ilanı bul.</p>
+    <form onSubmit={search} className="my-8 grid items-end gap-4 rounded-lg border border-border bg-surface p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_0.8fr_0.8fr_auto]">
+      <CityAutocomplete label="Nereden" value={filters.from_city} onChange={value=>update('from_city',value)}/><CityAutocomplete label="Nereye" value={filters.to_city} onChange={value=>update('to_city',value)}/>
+      <label className="min-w-0 text-sm font-medium">Tarih<input type="date" value={filters.date} onChange={e=>update('date',e.target.value)} className="mt-2 h-12 w-full min-w-0 rounded-lg border border-border bg-surface px-3"/></label>
+      <label className="min-w-0 text-sm font-medium">Araç tipi<select value={filters.vehicle_type} onChange={e=>update('vehicle_type',e.target.value)} className="mt-2 h-12 w-full rounded-lg border border-border bg-surface px-3"><option value="">Tüm araçlar</option><option value="car">Otomobil</option><option value="van">Kamyonet</option><option value="truck">Kamyon</option><option value="motorcycle">Motosiklet</option><option value="other">Diğer</option></select></label>
+      <button disabled={pending} className="h-12 rounded-lg bg-action px-6 font-semibold text-white disabled:opacity-60">{pending?'Aranıyor…':'İlan Ara'}</button>
+      <button type="button" onClick={()=>navigate(new URLSearchParams())} className="min-h-11 text-left text-sm font-semibold text-brand sm:col-span-2">Filtreleri temizle</button>
+    </form>
+    <div aria-live="polite">{initialError?<div role="alert" className="rounded-lg border border-border bg-surface p-6"><h2 className="text-lg font-semibold">İlanlar yüklenemedi</h2><p className="mt-2 text-muted">Arama koşulların korundu. Yeniden deneyebilirsin.</p><button onClick={()=>startTransition(()=>router.refresh())} className="mt-4 min-h-11 rounded-lg border border-brand px-5 text-brand">Yeniden dene</button></div>:<><p className="mb-5 text-sm">{pending?'Sonuçlar güncelleniyor…':`${initialTotal} ilan bulundu.`}</p>{initialIlans.length?<div className={`space-y-4 ${pending?'opacity-60':''}`}>{initialIlans.map(ilan=><IlanCard key={ilan.id} ilan={ilan}/>)}</div>:<div className="rounded-lg border border-border bg-surface px-6 py-12 text-center"><h2 className="text-xl font-semibold">Bu aramada aktif ilan bulunamadı</h2><p className="mt-2 text-muted">Farklı bir tarih veya güzergâh seçebilirsin.</p><button onClick={()=>navigate(new URLSearchParams())} className="mt-5 min-h-11 rounded-lg border border-brand px-5 font-semibold text-brand">Tüm güncel ilanları göster</button></div>}</>}</div>
+    {!initialError&&pages>1&&<nav aria-label="Sayfalama" className="mt-8 flex flex-wrap items-center justify-center gap-4"><button disabled={initialPage<=1||pending} onClick={()=>page(initialPage-1)} className="min-h-11 rounded-lg border border-border px-4 disabled:opacity-40">Önceki</button><span aria-current="page">{initialPage} / {pages}</span><button disabled={initialPage>=pages||pending} onClick={()=>page(initialPage+1)} className="min-h-11 rounded-lg border border-border px-4 disabled:opacity-40">Sonraki</button></nav>}
+  </section>;
 }

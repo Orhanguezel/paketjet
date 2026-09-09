@@ -21,6 +21,11 @@ export type AdminPermissionKey =
   | 'admin.disputes';
 
 export type AdminNavKey =
+  | 'support_tickets'
+  | 'faqs'
+  | 'pages'
+  | 'payments'
+  | 'credits'
   | 'dashboard'
   | 'ilanlar'
   | 'ilan_purchases'

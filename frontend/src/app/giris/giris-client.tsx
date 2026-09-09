@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef, Suspense } from "react";
+import { safeReturnPath } from "@/lib/safe-redirect";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { loginSchema, type LoginFormData } from "@/modules/auth/auth.schema";
@@ -26,7 +27,7 @@ const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 const inputCls = (err?: string) =>
   cn(
-    "w-full px-4 py-3 rounded-xl border text-foreground text-sm outline-none transition bg-bg-alt",
+    "w-full px-4 py-3 rounded-lg border text-foreground text-sm outline-none transition bg-bg-alt",
     "placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/20 focus:bg-surface",
     err ? "border-red-400" : "border-border"
   );
@@ -34,13 +35,16 @@ const inputCls = (err?: string) =>
 function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUrl?: string | null }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextParam = searchParams.get("next");
+  const nextParam = safeReturnPath(searchParams.get("next"));
   const setUser = useAuthStore((s) => s.setUser);
 
   const [form, setForm] = useState<LoginFormData>({ email: "", password: "" });
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
+  useEffect(() => { setReady(true); }, []);
+  const [showPassword, setShowPassword] = useState(false);
   const googleBtnRef = useRef<HTMLDivElement>(null);
 
   function afterAuth(user: { role?: string }) {
@@ -121,10 +125,6 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
     await doLogin(form);
   }
 
-  async function quickLogin(email: string, password: string) {
-    setForm({ email, password });
-    await doLogin({ email, password });
-  }
 
   return (
     <div className="min-h-screen flex">
@@ -141,18 +141,18 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
             {logoUrl ? (
               <img src={logoUrl} alt="PaketJet" className="h-16 w-auto max-w-44 object-contain " />
             ) : (
-              <span className="text-2xl font-extrabold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
+              <span className="text-2xl font-semibold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
             )}
           </Link>
           <div>
-            <h1 className="text-4xl font-black text-white leading-tight mb-4">
+            <h1 className="text-4xl font-bold text-white leading-tight mb-4">
               Hoş geldin<br /><span className="text-brand">tekrar.</span>
             </h1>
             <p className="text-white/70 text-sm leading-relaxed mb-8">
-              Hesabına giriş yap ve kargo işlemlerine devam et.
+              İlanlarını yönet, satın aldığın iletişim bilgilerine dön.
             </p>
             <ul className="space-y-3">
-              {["Anlık kargo takibi", "Güvenli ödeme sistemi", "7/24 müşteri desteği", "Aktif ilan arama"].map((item) => (
+              {["Güzergâha göre ilan ara", "İletişim bilgilerine eriş", "Taşıyıcıyla doğrudan görüş"].map((item) => (
                 <li key={item} className="flex items-center gap-2.5 text-sm text-white/90">
                   <span className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
                     <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -164,7 +164,7 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
               ))}
             </ul>
           </div>
-          <p className="text-white/30 text-xs">© 2026 PaketJet</p>
+          <p className="text-white/70 text-xs">© 2026 PaketJet</p>
         </div>
       </div>
 
@@ -172,36 +172,37 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
       <div className="flex-1 flex flex-col justify-center px-6 py-12 bg-background">
         <div className="w-full max-w-md mx-auto">
           <div className="lg:hidden mb-6">
-            <Link href={ROUTES.home} className="text-xl font-extrabold text-brand tracking-tight">
-              paket<span className="text-foreground">jet</span>
+            <Link href={ROUTES.home} className="text-xl font-semibold text-brand tracking-tight">
+              {logoUrl ? <img src={logoUrl} alt="PaketJet" className="h-12 w-auto max-w-36 object-contain"/> : <>paket<span className="text-foreground">jet</span></>}
             </Link>
           </div>
 
-          <div className="bg-surface rounded-2xl border border-border-soft shadow-sm px-8 py-8">
-            <h2 className="text-2xl font-extrabold text-foreground mb-1">Giriş Yap</h2>
+          <div className="bg-surface rounded-lg border border-border-soft shadow-sm px-8 py-8">
+            <h2 className="text-2xl font-semibold text-foreground mb-1">Giriş Yap</h2>
             <p className="text-sm text-muted mb-6">
               Hesabın yok mu?{" "}
               <Link href={ROUTES.auth.register} className="text-brand font-semibold hover:underline">Üye ol</Link>
             </p>
 
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+            <form method="post" onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
               {serverError && (
-                <div className="px-4 py-3 bg-danger-bg border border-danger/20 rounded-xl text-sm text-danger">{serverError}</div>
+                <div role="alert" className="px-4 py-3 bg-danger-bg border border-danger/20 rounded-lg text-sm text-danger">{serverError}</div>
               )}
               <div>
                 <label htmlFor="login-email" className="block text-sm font-medium text-foreground mb-1.5">E-posta</label>
-                <input id="login-email" type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="ornek@mail.com" className={inputCls(errors.email)} />
-                {errors.email && <p className="mt-1 text-xs text-danger">{errors.email}</p>}
+                <input aria-invalid={!!errors.email} aria-describedby={errors.email ? "email-error" : undefined} id="login-email" type="email" name="email" autoComplete="email" value={form.email} onChange={handleChange} placeholder="ornek@mail.com" className={inputCls(errors.email)} />
+                {errors.email && <p id="email-error" role="alert" className="mt-1 text-xs text-danger">{errors.email}</p>}
               </div>
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label htmlFor="login-password" className="text-sm font-medium text-foreground">Şifre</label>
                   <Link href={ROUTES.auth.forgotPassword} className="text-xs text-brand hover:underline">Şifremi unuttum</Link>
                 </div>
-                <input id="login-password" type="password" name="password" autoComplete="current-password" value={form.password} onChange={handleChange} placeholder="Şifreniz" className={inputCls(errors.password)} />
-                {errors.password && <p className="mt-1 text-xs text-danger">{errors.password}</p>}
+                <input aria-invalid={!!errors.password} aria-describedby={errors.password ? "password-error" : undefined} id="login-password" type={showPassword ? "text" : "password"} name="password" autoComplete="current-password" value={form.password} onChange={handleChange} placeholder="Şifreniz" className={inputCls(errors.password)} />
+                <button type="button" aria-controls="login-password" aria-pressed={showPassword} onClick={() => setShowPassword(v => !v)} className="min-h-11 text-sm text-brand">{showPassword ? "Şifreyi gizle" : "Şifreyi göster"}</button>
+                {errors.password && <p id="password-error" role="alert" className="mt-1 text-xs text-danger">{errors.password}</p>}
               </div>
-              <button type="submit" disabled={loading} className="w-full py-3.5 bg-brand text-white font-bold rounded-xl hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm">
+              <button type="submit" disabled={loading || !ready} data-ready={ready} className="w-full py-3.5 bg-action text-white font-bold rounded-lg hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm">
                 {loading ? "Giriş yapılıyor…" : "Giriş Yap →"}
               </button>
             </form>
@@ -218,24 +219,7 @@ function GirisForm({ bgImageUrl, logoUrl }: { bgImageUrl?: string | null; logoUr
               </div>
             )}
 
-            {/* Hızlı giriş */}
-            <div className="mt-6 pt-5 border-t border-border-soft">
-              <p className="text-xs text-muted mb-3 text-center">Hızlı giriş</p>
-              <button
-                type="button"
-                disabled={loading}
-                onClick={() => quickLogin("musteri@paketjet.com", "Musteri@2026!")}
-                className="w-full py-2.5 text-xs font-semibold rounded-lg border border-border hover:border-brand/40 hover:bg-brand-xlight transition text-foreground disabled:opacity-60"
-              >
-                👤 Üye Girişi
-              </button>
-              <a
-                href={process.env.NEXT_PUBLIC_ADMIN_URL || "/admin"}
-                className="mt-2 block w-full py-2.5 text-xs font-semibold rounded-lg border border-navy/30 hover:border-navy hover:bg-navy/5 transition text-navy text-center"
-              >
-                🛡️ Admin Panel
-              </a>
-            </div>
+
           </div>
         </div>
       </div>

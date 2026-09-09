@@ -7,6 +7,9 @@ let _app: FastifyInstance | null = null;
 
 /** Singleton test app — tum testler ayni instance'i kullanir */
 export async function getTestApp(): Promise<FastifyInstance> {
+  if (process.env.NODE_ENV !== 'test' || !process.env.DB_NAME?.startsWith('paketjet_test_')) {
+    throw new Error('Use the isolated test environment; production/local application DB tests are forbidden');
+  }
   if (_app) return _app;
   _app = await createApp() as unknown as FastifyInstance;
   await _app.ready();

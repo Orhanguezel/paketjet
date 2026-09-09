@@ -1,6 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useMemo, useRef, useCallback } from 'react';
+import type React from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useCallback } from 'react';
 import {
   useGetSiteSettingAdminByKeyQuery,
   useListSiteSettingsAdminQuery,
@@ -36,7 +37,7 @@ const AdminSettingsContext = createContext<AdminSettingsContextValue>({
   pageMeta: {},
   branding: DEFAULT_BRANDING,
   loading: false,
-  saveAdminConfig: () => {},
+  saveAdminConfig: () => { /* Provider supplies persistence when mounted. */ },
 });
 
 export const useAdminSettings = () => useContext(AdminSettingsContext);

@@ -42,6 +42,7 @@ async function sendTelegramMessage(opts: {
   chatId: string;
   text: string;
 }): Promise<void> {
+  if (process.env.NODE_ENV === "test") return;
   const url = `https://api.telegram.org/bot${opts.botToken}/sendMessage`;
   const payload = {
     chat_id: opts.chatId,

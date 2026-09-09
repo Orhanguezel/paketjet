@@ -39,12 +39,12 @@ export function guessDevBackend(): string {
 }
 
 export function resolveBaseUrl(): string {
-  const apiUrl = (process.env.NEXT_PUBLIC_API_URL || '').trim();
+  const apiUrl = (process.env.NEXT_PUBLIC_PANEL_API_URL || process.env.NEXT_PUBLIC_API_URL || '').trim();
   const apiOrigin = (process.env.NEXT_PUBLIC_API_ORIGIN || '').trim();
   const apiBase = (process.env.NEXT_PUBLIC_API_BASE || '').trim();
-  const isDev = process.env.NODE_ENV !== 'production';
 
-  if (apiUrl && isAbsoluteUrl(apiUrl)) return trimSlash(apiUrl);
+
+  if (apiUrl) return isAbsoluteUrl(apiUrl) ? trimSlash(apiUrl) : ensureLeadingSlash(trimSlash(apiUrl));
   if (apiOrigin && apiBase) return joinOriginAndBase(apiOrigin, apiBase);
 
   if (apiBase) {
@@ -52,7 +52,6 @@ export function resolveBaseUrl(): string {
     return ensureLeadingSlash(trimSlash(apiBase));
   }
 
-  if (isDev) return guessDevBackend();
   return '/api';
 }
 

@@ -1,5 +1,7 @@
 'use client';
 
+import {PurchaseFilters} from './purchase-filters';
+import type {IlanPurchaseAdminListParams} from '@/integrations/shared';
 import * as React from 'react';
 import { RefreshCcw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +16,8 @@ import { formatIlanPurchaseDate, formatIlanPurchaseMoney } from '@/integrations/
 export default function AdminIlanPurchasesClient() {
   const t = useAdminT('admin.purchases');
   const [page, setPage] = React.useState(1);
-  const { data, isLoading, isFetching, refetch } = useListIlanPurchasesAdminQuery({ page });
+  const [filters,setFilters]=React.useState<IlanPurchaseAdminListParams>({});
+  const { data, isLoading, isFetching, isError, refetch } = useListIlanPurchasesAdminQuery({ page,...filters });
   const total = data?.total ?? 0;
   const limit = data?.limit ?? 20;
   const totalPages = Math.ceil(total / limit);
@@ -27,13 +30,14 @@ export default function AdminIlanPurchasesClient() {
             <CardTitle className="text-base">{t('header.title')}</CardTitle>
             <CardDescription>{t('header.description')}</CardDescription>
           </div>
-          <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isFetching}>
+          <Button aria-label="Satın almaları yenile" variant="outline" size="icon" onClick={() => refetch()} disabled={isFetching}>
             <RefreshCcw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
           </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading ? (
+        <PurchaseFilters onChange={value=>{setFilters(value);setPage(1);}}/>
+        {isError ? <p role="alert">Satın alma kayıtları alınamadı. Yenileyip tekrar deneyin.</p> : isLoading ? (
           <div className="space-y-2">
             {Array.from({ length: 5 }).map((_, index) => <Skeleton key={index} className="h-12 w-full" />)}
           </div>

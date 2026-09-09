@@ -48,6 +48,7 @@ async function getTransporter(): Promise<Transporter> {
 
 // ── Low-level sender ───────────────────────────────────────────────────────
 export async function sendMailRaw(input: SendMailInput) {
+  if (process.env.NODE_ENV === "test") return { messageId: "test-disabled", accepted: [], rejected: [] };
   const data = sendMailSchema.parse(input);
   const smtpCfg = await getSmtpSettings();
   const from = buildMailFromAddress(smtpCfg);

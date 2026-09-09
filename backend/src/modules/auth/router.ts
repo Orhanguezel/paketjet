@@ -1,3 +1,5 @@
+import { routeOptions1, routeOptions2, routeOptions3, routeOptions4, routeOptions5, routeOptions6, routeOptions7, routeOptions8, routeOptions9, routeOptions10, routeOptions11, routeOptions12 } from './public-route-options';
+import { requireAuth } from "@/common/middleware/auth";
 import type { FastifyInstance } from 'fastify';
 import { authSecurity, fromZodSchema, okResponseSchema } from '@/modules/_shared';
 import {
@@ -10,59 +12,18 @@ import {
 } from './validation';
 import { signup, token, refresh, passwordResetRequest, passwordResetConfirm, me, status, update, logout } from './controller';
 import { googleAuth } from './google.controller';
-
 export async function registerAuth(app: FastifyInstance) {
   const B = '/auth';
-  const signupSchema = fromZodSchema(signupBody, 'AuthSignupBody');
-  const tokenSchema = fromZodSchema(tokenBody, 'AuthTokenBody');
-  const updateSchema = fromZodSchema(updateBody, 'AuthUpdateBody');
-  const resetRequestSchema = fromZodSchema(passwordResetRequestBody, 'AuthPasswordResetRequestBody');
-  const resetConfirmSchema = fromZodSchema(passwordResetConfirmBody, 'AuthPasswordResetConfirmBody');
-  const googleSchema = fromZodSchema(googleBody, 'AuthGoogleBody');
-
-  app.post(`${B}/signup`, {
-    config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Yeni kullanici kaydi', body: signupSchema, response: { 200: okResponseSchema } },
-  }, signup);
-  app.post(`${B}/register`, {
-    config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Yeni kullanici kaydi (alias)', body: signupSchema, response: { 200: okResponseSchema } },
-  }, signup);
-  app.post(`${B}/token`, {
-    config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Email ve parola ile giris', body: tokenSchema, response: { 200: okResponseSchema } },
-  }, token);
-  app.post(`${B}/login`, {
-    config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Email ve parola ile giris (alias)', body: tokenSchema, response: { 200: okResponseSchema } },
-  }, token);
-  app.post(`${B}/google`, {
-    config: { rateLimit: { max: 30, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Google ile giris (id_token)', body: googleSchema, response: { 200: okResponseSchema } },
-  }, googleAuth);
-  app.post(`${B}/token/refresh`, {
-    config: { rateLimit: { max: 60, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Refresh token yenile', response: { 200: okResponseSchema } },
-  }, refresh);
-  app.post(`${B}/password-reset/request`, {
-    config: { rateLimit: { max: 10, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Sifre sifirlama baglantisi iste', body: resetRequestSchema, response: { 200: okResponseSchema } },
-  }, passwordResetRequest);
-  app.post(`${B}/password-reset/confirm`, {
-    config: { rateLimit: { max: 20, timeWindow: '1 minute' } },
-    schema: { tags: ['auth'], summary: 'Sifre sifirlama tamamla', body: resetConfirmSchema, response: { 200: okResponseSchema } },
-  }, passwordResetConfirm);
-
-  app.get(`${B}/user`, {
-    schema: { tags: ['auth'], summary: 'Mevcut kullanici bilgisi', security: authSecurity, response: { 200: okResponseSchema } },
-  }, me);
-  app.get(`${B}/status`, {
-    schema: { tags: ['auth'], summary: 'Auth durumu', response: { 200: okResponseSchema } },
-  }, status);
-  app.put(`${B}/user`, {
-    schema: { tags: ['auth'], summary: 'Kullanici bilgisi guncelle', security: authSecurity, body: updateSchema, response: { 200: okResponseSchema } },
-  }, update);
-  app.post(`${B}/logout`, {
-    schema: { tags: ['auth'], summary: 'Oturumu kapat', security: authSecurity, response: { 200: okResponseSchema } },
-  }, logout);
+  app.post(`${B}/signup`, routeOptions1, signup);
+  app.post(`${B}/register`, routeOptions2, signup);
+  app.post(`${B}/token`, routeOptions3, token);
+  app.post(`${B}/login`, routeOptions4, token);
+  app.post(`${B}/google`, routeOptions5, googleAuth);
+  app.post(`${B}/token/refresh`, routeOptions6, refresh);
+  app.post(`${B}/password-reset/request`, routeOptions7, passwordResetRequest);
+  app.post(`${B}/password-reset/confirm`, routeOptions8, passwordResetConfirm);
+  app.get(`${B}/user`, routeOptions9, me);
+  app.get(`${B}/status`, routeOptions10, status);
+  app.put(`${B}/user`, routeOptions11, update);
+  app.post(`${B}/logout`, routeOptions12, logout);
 }

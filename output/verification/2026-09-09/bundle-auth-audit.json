@@ -1,0 +1,12 @@
+{
+  "frontend": {
+    "javascript_files": 104,
+    "exposed_password_matches": 0,
+    "test_login_label_matches": 0
+  },
+  "admin_panel": {
+    "javascript_files": 87,
+    "exposed_password_matches": 0,
+    "test_login_label_matches": 0
+  }
+}

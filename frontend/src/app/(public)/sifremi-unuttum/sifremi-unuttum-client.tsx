@@ -10,7 +10,7 @@ import { ROUTES } from "@/config/routes";
 export default function SifremiUnuttumClient() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
+  const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -21,12 +21,12 @@ export default function SifremiUnuttumClient() {
     try {
       const res = await forgotPassword(email);
       if (res.success) {
-        setToken(res.token ?? null);
+        setSent(true);
       } else {
         setError("İstek gönderilemedi. Lütfen tekrar deneyin.");
       }
     } catch {
-      setError("E-posta adresi bulunamadı veya bir hata oluştu.");
+      setError("İstek şu anda gönderilemedi. Lütfen daha sonra tekrar deneyin.");
     } finally {
       setLoading(false);
     }
@@ -46,25 +46,8 @@ export default function SifremiUnuttumClient() {
         </div>
 
         <div className="bg-surface rounded-2xl border border-border-soft p-6">
-          {token ? (
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-3 p-3 bg-success/10 rounded-lg">
-                <span className="text-success text-lg">✓</span>
-                <p className="text-sm text-success font-medium">Sıfırlama token'ı oluşturuldu</p>
-              </div>
-              <p className="text-xs text-muted">
-                Aşağıdaki token'ı kopyalayarak şifre sıfırlama sayfasında kullanın.
-              </p>
-              <div className="bg-bg-alt rounded-lg p-3 break-all">
-                <p className="text-xs font-mono text-foreground">{token}</p>
-              </div>
-              <Link
-                href={`${ROUTES.auth.resetPassword}?token=${encodeURIComponent(token)}`}
-                className="w-full py-2.5 bg-brand text-white text-sm font-semibold rounded-lg hover:bg-brand-dark transition-colors text-center block"
-              >
-                Şifremi Sıfırla →
-              </Link>
-            </div>
+          {sent ? (
+            <div role="status" className="space-y-4 text-sm leading-6"><p>Bu e-posta ile etkin bir hesap varsa sıfırlama bağlantısı gönderilecektir.</p><p>Gelen kutunu ve spam klasörünü kontrol et. Bağlantı bir saat geçerlidir ve yalnız bir kez kullanılabilir.</p></div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <Input

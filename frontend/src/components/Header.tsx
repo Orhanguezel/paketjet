@@ -1,174 +1,33 @@
-"use client";
-
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import Image from "next/image";
-import { useAuthStore } from "@/modules/auth/auth.store";
-import { useNotificationStore } from "@/modules/notification/notification.store";
-import { logout } from "@/modules/auth/auth.service";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
-import { ROUTES } from "@/config/routes";
-
-type NavLink = { title: string; path: string };
-
-interface HeaderProps {
-  overlay?: boolean;
-  logoUrl?: string;
-  logoDarkUrl?: string;
-  logoAlt?: string;
-  navLinks?: NavLink[] | null;
-}
-
-const DEFAULT_NAV: NavLink[] = [
-  { title: "Kargo Gönder", path: "/ilanlar" },
-  { title: "İlanlar", path: "/ilanlar" },
-  { title: "Destek", path: "/destek" },
-];
-
-export default function Header({ overlay = false, logoUrl, logoDarkUrl, logoAlt, navLinks }: HeaderProps) {
-  const router = useRouter();
-  const { user, isAuthenticated, logout: authLogout } = useAuthStore();
-  const { unreadCount, fetchUnreadCount, reset } = useNotificationStore();
-
-  useEffect(() => {
-    if (!isAuthenticated) return;
-    fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 60_000);
-    return () => clearInterval(interval);
-  }, [isAuthenticated, fetchUnreadCount]);
-
-  async function handleLogout() {
-    try { await logout(); } catch {}
-    authLogout();
-    reset();
-    router.push(ROUTES.home);
-  }
-
-  const navText = overlay
-    ? "text-white/90 hover:text-white"
-    : "text-muted hover:text-foreground";
-
-  const outlineBtn = overlay
-    ? "px-4 py-2 text-sm font-medium text-white border border-white/40 rounded-lg hover:bg-white/10 transition-colors"
-    : "px-4 py-2.5 text-sm font-medium text-foreground border border-border rounded-lg hover:bg-bg-alt transition-colors";
-
-  const iconBtn = overlay
-    ? "text-white/70 hover:text-white hover:bg-white/10"
-    : "text-muted hover:text-foreground hover:bg-bg-alt";
-
-  return (
-    <header className={overlay
-      ? "absolute top-0 left-0 right-0 z-50"
-      : "sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border-soft"}>
-      <div className="max-w-6xl mx-auto px-6 py-1 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href={ROUTES.home}
-          aria-label="PaketJet ana sayfa"
-          className="inline-flex items-center p-0"
-        >
-          {logoUrl ? (
-            <span className="relative inline-grid h-14 min-w-22 place-items-center">
-              <img
-                src={logoUrl}
-                alt={logoAlt ?? "PaketJet"}
-                className="site-logo-img site-logo-img--light max-h-14 w-auto max-w-36 object-contain"
-              />
-              {logoDarkUrl ? (
-                <img
-                  src={logoDarkUrl}
-                  alt=""
-                  aria-hidden="true"
-                  className="site-logo-img site-logo-img--dark site-logo-img--on-dark max-h-14 w-auto max-w-36 object-contain"
-                />
-              ) : null}
-            </span>
-          ) : (
-            <Image
-              src="/assets/logo/logo.jpeg"
-              alt="PaketJet logosu"
-              width={120}
-              height={120}
-              priority={overlay}
-              className="h-14 w-14 object-contain"
-            />
-          )}
-        </Link>
-
-        {/* Nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          {(navLinks ?? DEFAULT_NAV).map((link) => (
-            <Link key={link.path + link.title} href={link.path} className={`text-sm font-medium transition-colors ${navText}`}>
-              {link.title}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2">
-          <ThemeToggle className={overlay ? "text-white/70 hover:text-white hover:bg-white/10" : ""} />
-          <Link
-            href="/ilan-ver"
-            title="Ucretsiz hizli ilan ac"
-            className="inline-flex items-center justify-center rounded-lg bg-cta px-3 py-2.5 text-xs font-black text-white shadow-sm shadow-cta/20 transition-colors hover:bg-cta-dark sm:px-4 sm:text-sm"
-          >
-            Hızlı İlan Aç
-          </Link>
-
-          {isAuthenticated ? (
-            <>
-              {/* Bell */}
-              <Link
-                href={ROUTES.panel.bildirimler}
-                className={`relative w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${iconBtn}`}
-                aria-label="Bildirimler"
-              >
-                <Image
-                  src="/assets/icons/notification.png"
-                  alt="Bildirim zili simgesi"
-                  width={18}
-                  height={18}
-                  className="h-4.5 w-4.5"
-                />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 bg-danger text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
-              </Link>
-
-              <Link
-                href={ROUTES.panel.profil}
-                className="flex items-center justify-center w-8 h-8 rounded-full bg-brand-xlight border border-brand/10 overflow-hidden"
-              >
-                {user?.avatar_url ? (
-                  <img src={user.avatar_url} alt="Profil" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-[10px] font-bold text-brand">
-                    {(user?.full_name || user?.email || "?")[0].toUpperCase()}
-                  </span>
-                )}
-              </Link>
-
-              <Link href={ROUTES.panel.root} title="Kullanici paneli" className={outlineBtn}>Panel</Link>
-
-              <button onClick={handleLogout} className={outlineBtn}>Çıkış</button>
-            </>
-          ) : (
-            <>
-              <Link href={ROUTES.auth.login} title="PaketJet giris yap" className={outlineBtn}>Giriş Yap</Link>
-              <Link
-                href={ROUTES.auth.register}
-                title="PaketJet uye ol"
-                className="px-4 py-2.5 text-sm text-white bg-brand-dark rounded-lg hover:brightness-110 transition-colors font-semibold"
-              >
-                Üye Ol
-              </Link>
-            </>
-          )}
-        </div>
-      </div>
-    </header>
-  );
+'use client';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { useAuthStore } from '@/modules/auth/auth.store';
+import { logout } from '@/modules/auth/auth.service';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ROUTES } from '@/config/routes';
+type NavLink = {title:string;path:string};
+interface HeaderProps {overlay?:boolean;logoUrl?:string;logoDarkUrl?:string;logoAlt?:string;navLinks?:NavLink[]|null;}
+const navigation=[{title:'İlanlar',path:ROUTES.ilanlar.list},{title:'Nasıl çalışır',path:'/#nasil-calisir'},{title:'Destek',path:ROUTES.static.destek}];
+export default function Header({logoUrl,logoDarkUrl,logoAlt}:HeaderProps) {
+  const router=useRouter(), pathname=usePathname();
+  const {isAuthenticated,logout:clearAuth}=useAuthStore();
+  const [open,setOpen]=useState(false),[mounted,setMounted]=useState(false);
+  const toggle=useRef<HTMLButtonElement>(null);
+  useEffect(()=>setMounted(true),[]);
+  useEffect(()=>setOpen(false),[pathname]);
+  async function signOut(){await logout().catch(()=>{});clearAuth();setOpen(false);router.push(ROUTES.home);}
+  const signedIn=mounted&&isAuthenticated;
+  return <header className="relative z-40 border-b border-border-soft bg-surface text-foreground" onKeyDown={e=>{if(e.key==='Escape'){setOpen(false);toggle.current?.focus();}}}>
+    <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:bg-surface focus:p-4">İçeriğe geç</a>
+    <div className="site-container flex min-h-18 items-center gap-8">
+      <Link href={ROUTES.home} aria-label="PaketJet ana sayfa" className="mr-auto inline-flex shrink-0 items-center md:mr-0">
+        {logoUrl ? <><img src={logoUrl} alt={logoAlt??'PaketJet'} className="site-logo-img site-logo-img--light h-12 w-auto max-w-36 object-contain"/>{logoDarkUrl&&<img src={logoDarkUrl} alt="" className="site-logo-img site-logo-img--dark h-12 w-auto max-w-36 object-contain"/>}</> : <img src="/assets/logo/logo.jpeg" alt="PaketJet" width="48" height="48"/>}
+      </Link>
+      <nav aria-label="Ana menü" className="hidden items-center gap-7 md:flex">{navigation.map(item=><Link key={item.path} href={item.path} aria-current={pathname===item.path?'page':undefined} className="py-3 text-sm font-medium hover:text-brand">{item.title}</Link>)}</nav>
+      <div className="ml-auto hidden items-center gap-4 md:flex"><ThemeToggle/>{signedIn?<><Link href={ROUTES.panel.root} className="py-3 text-sm">Hesabım</Link><button onClick={signOut} className="py-3 text-sm">Çıkış yap</button></>:<Link href={ROUTES.auth.login} className="py-3 text-sm">Giriş Yap</Link>}<Link href={ROUTES.ilanVer} className="rounded-lg bg-action px-5 py-3 text-sm font-semibold text-white hover:bg-brand-dark">Ücretsiz İlan Ver</Link></div>
+      <button ref={toggle} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open?'Menüyü kapat':'Menüyü aç'} onClick={()=>setOpen(v=>!v)} className="grid size-11 place-items-center rounded-lg border border-border md:hidden"><svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={open?'M6 6l12 12M6 18L18 6':'M4 6h16M4 12h16M4 18h16'}/></svg></button>
+    </div>
+    {open&&<nav id="mobile-navigation" aria-label="Mobil menü" className="site-container flex flex-col gap-1 border-t border-border-soft py-4 md:hidden">{navigation.map(item=><Link onClick={()=>setOpen(false)} key={item.path} href={item.path} className="rounded-lg px-3 py-3">{item.title}</Link>)}<Link href={signedIn?ROUTES.panel.root:ROUTES.auth.login} className="px-3 py-3">{signedIn?'Hesabım':'Giriş Yap'}</Link><Link href={ROUTES.ilanVer} className="rounded-lg bg-action px-3 py-3 font-semibold text-white">Ücretsiz İlan Ver</Link><ThemeToggle/>{signedIn&&<button onClick={signOut} className="px-3 py-3 text-left">Çıkış yap</button>}</nav>}
+  </header>;
 }

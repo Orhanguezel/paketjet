@@ -74,7 +74,7 @@ export default function UserDetailClient({ id }: { id: string }) {
     setActiveLocal(!!u.is_active);
 
     setRolesLocal(u.roles.length > 0 ? u.roles : ['user']);
-  }, [u, id]);
+  }, [u]);
 
   const busy =
     userQ.isFetching ||

@@ -1,57 +1,19 @@
-import type { MetadataRoute } from "next";
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8078").replace(/\/$/, "");
-
-interface IlanSitemapItem {
-  id: string;
-  updated_at?: string;
-}
-
-async function fetchActiveIlans(): Promise<IlanSitemapItem[]> {
-  try {
-    const res = await fetch(`${BASE_URL}/api/ilanlar?limit=500&status=active`, {
-      next: { revalidate: 3600 },
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.data ?? []).map((i: IlanSitemapItem) => ({
-      id: i.id,
-      updated_at: i.updated_at,
-    }));
-  } catch {
-    return [];
-  }
-}
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const ilans = await fetchActiveIlans();
-  const now = new Date().toISOString();
-
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: SITE_URL, lastModified: "2026-03-30", changeFrequency: "daily", priority: 1 },
-    { url: `${SITE_URL}/ilanlar`, lastModified: "2026-03-30", changeFrequency: "hourly", priority: 0.9 },
-    { url: `${SITE_URL}/ilan-ver`, lastModified: "2026-03-15", changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE_URL}/destek`, lastModified: "2026-03-30", changeFrequency: "weekly", priority: 0.6 },
-    { url: `${SITE_URL}/hakkimizda`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.4 },
-    { url: `${SITE_URL}/iletisim`, lastModified: "2026-03-15", changeFrequency: "monthly", priority: 0.5 },
-    { url: `${SITE_URL}/kvkk`, lastModified: "2026-03-20", changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/gizlilik-politikasi`, lastModified: "2026-03-30", changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/kullanim-kosullari`, lastModified: "2026-03-15", changeFrequency: "yearly", priority: 0.3 },
-    { url: `${SITE_URL}/tasima-kurallari`, lastModified: "2026-03-15", changeFrequency: "yearly", priority: 0.4 },
-    { url: `${SITE_URL}/blog`, lastModified: "2026-03-30", changeFrequency: "weekly", priority: 0.7 },
-    { url: `${SITE_URL}/blog/p2p-kargo-nedir`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE_URL}/blog/paketjet-nasil-kullanilir`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.7 },
-    { url: `${SITE_URL}/rota/istanbul-ankara`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.6 },
-    { url: `${SITE_URL}/rota/istanbul-izmir`, lastModified: "2026-03-30", changeFrequency: "monthly", priority: 0.6 },
-  ];
-
-  const ilanPages: MetadataRoute.Sitemap = ilans.map((ilan) => ({
-    url: `${SITE_URL}/ilanlar/${ilan.id}`,
-    lastModified: ilan.updated_at ? new Date(ilan.updated_at) : now,
-    changeFrequency: "daily" as const,
-    priority: 0.8,
-  }));
-
-  return [...staticPages, ...ilanPages];
+import type {MetadataRoute} from 'next';
+import {BLOG_POSTS,ROUTE_GUIDES} from '@/modules/content/content.data';
+const SITE_URL=process.env.NEXT_PUBLIC_SITE_URL??'https://paketjet.com';
+const API_URL=process.env.API_INTERNAL_URL||process.env.NEXT_PUBLIC_API_URL||'http://127.0.0.1:8078';
+export const dynamic='force-dynamic';
+export default async function sitemap():Promise<MetadataRoute.Sitemap>{
+ const result:MetadataRoute.Sitemap=['','/ilanlar','/destek','/hakkimizda','/iletisim','/kvkk','/gizlilik-politikasi','/kullanim-kosullari','/tasima-kurallari','/blog'].map(path=>({url:`${SITE_URL}${path}`}));
+ for(const post of [...BLOG_POSTS,...ROUTE_GUIDES])result.push({url:`${SITE_URL}${post.canonicalPath}`,lastModified:post.updatedAt});
+ for(let page=1;page<=100;page++){
+  try{
+   const response=await fetch(`${API_URL}/api/ilanlar?limit=100&page=${page}`,{cache:'no-store'});
+   if(!response.ok)throw new Error('sitemap_listings_unavailable');
+   const body=await response.json() as {data:Array<{id:string;slug?:string;updated_at:string}>;total:number};
+   for(const ilan of body.data)result.push({url:`${SITE_URL}/ilanlar/${encodeURIComponent(ilan.slug||ilan.id)}`,lastModified:ilan.updated_at});
+   if(page*100>=body.total)break;
+  }catch{break;}
+ }
+ return result;
 }

@@ -5,7 +5,7 @@
 
 "use client";
 
-import React from "react";
+import type React from "react";
 import { z } from "zod";
 import { useAdminTranslations } from "@/i18n";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";

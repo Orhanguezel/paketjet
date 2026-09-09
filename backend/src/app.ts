@@ -26,7 +26,7 @@ export async function createApp() {
   const app = buildFastify({
     // Nginx arkasinda calisir; gercek istemci IP'si X-Forwarded-For'dan alinir.
     // Olmadan req.ip = 127.0.0.1 olur ve rate-limit tum kullanicilari tek bucket'ta birlestirir.
-    trustProxy: true,
+    trustProxy: ["127.0.0.1", "::1"],
     logger: {
       level: env.NODE_ENV === 'production' ? 'info' : 'debug',
       transport: env.NODE_ENV !== 'production'
@@ -34,7 +34,9 @@ export async function createApp() {
         : undefined,
       serializers: {
         req(req) {
-          return { method: req.method, url: req.url, id: req.id };
+          const safeUrl=new URL(req.url,'http://localhost');
+          for(const key of ['password','token','access_token','refresh_token','email','phone'])if(safeUrl.searchParams.has(key))safeUrl.searchParams.set(key,'[redacted]');
+          return { method: req.method, url: safeUrl.pathname+safeUrl.search, id: req.id };
         },
         res(res) {
           return { statusCode: res.statusCode };
@@ -82,6 +84,13 @@ export async function createApp() {
     timeWindow: '1 minute',
   });
 
+  app.addHook('onRequest', async (req, reply) => {
+    if (['GET','HEAD','OPTIONS'].includes(req.method) || (!req.cookies?.access_token && !req.cookies?.refresh_token && !req.cookies?.accessToken)) return;
+    const origin = req.headers.origin;
+    const configuredOrigins = parseCorsOrigins(env.CORS_ORIGIN);
+    const allowed = [...(Array.isArray(configuredOrigins) ? configuredOrigins : []), env.FRONTEND_URL];
+    if ((origin && !allowed.includes(origin)) || req.headers['sec-fetch-site'] === 'cross-site') throw Object.assign(new Error('invalid_origin'), {statusCode:403});
+  });
   await app.register(authPlugin);
   await app.register(mysqlPlugin);
   // await app.register(redisPlugin);
@@ -101,6 +110,10 @@ export async function createApp() {
     root: pickUploadsRoot(storageSettings?.localRoot),
     prefix: pickUploadsPrefix(storageSettings?.localBaseUrl),
     decorateReply: false,
+    setHeaders(res) {
+      res.header('X-Content-Type-Options','nosniff');
+      res.header('Content-Security-Policy',"default-src 'none'; sandbox; style-src 'unsafe-inline'");
+    },
   });
 
   // ── Content parsers ────────────────────────────────────────────────────────

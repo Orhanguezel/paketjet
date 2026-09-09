@@ -141,7 +141,7 @@ export function SearchableSelect({
                   onClick={() => selectOption(option)}
                   className={cn(
                     "w-full px-4 py-2.5 text-left text-sm transition-colors",
-                    isSelected ? "bg-brand text-white" : isActive ? "bg-brand/10 text-foreground" : "text-foreground hover:bg-brand/10",
+                    isSelected ? "bg-action text-white" : isActive ? "bg-brand/10 text-foreground" : "text-foreground hover:bg-brand/10",
                   )}
                 >
                   {option.label}

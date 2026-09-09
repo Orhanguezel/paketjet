@@ -1,4 +1,4 @@
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+const BASE_URL = (typeof window === "undefined" ? (process.env.API_INTERNAL_URL ?? process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8078") : (process.env.NEXT_PUBLIC_API_URL ?? "")).replace(/\/$/, "");
 
 class ApiError extends Error {
   constructor(
@@ -73,7 +73,7 @@ async function request<T>(
     if (res.status === 401 && typeof window !== "undefined") {
       localStorage.removeItem("paketjet-auth");
       if (!window.location.pathname.startsWith("/giris")) {
-        window.location.href = "/giris?expired=true";
+        window.location.href = `/giris?expired=true&next=${encodeURIComponent(window.location.pathname+window.location.search)}`;
       }
     }
 

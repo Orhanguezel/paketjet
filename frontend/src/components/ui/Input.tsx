@@ -12,13 +12,15 @@ export function Input({ label, error, hint, className, id, ...rest }: Props) {
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={inputId} className="text-xs font-medium text-foreground">
+        <label htmlFor={inputId} className="text-sm font-medium text-foreground">
           {label}
         </label>
       )}
       <input
         id={inputId}
         {...rest}
+        aria-invalid={!!error}
+        aria-describedby={error ? `${inputId}-error` : hint ? `${inputId}-hint` : undefined}
         className={cn(
           "w-full px-4 py-2.5 rounded-lg border bg-background text-foreground text-sm outline-none transition-all",
           "placeholder:text-faint",
@@ -29,8 +31,8 @@ export function Input({ label, error, hint, className, id, ...rest }: Props) {
           className
         )}
       />
-      {error && <p className="text-xs text-danger">{error}</p>}
-      {hint && !error && <p className="text-xs text-muted">{hint}</p>}
+      {error && <p id={`${inputId}-error`} role="alert" className="text-sm text-danger">{error}</p>}
+      {hint && !error && <p id={`${inputId}-hint`} className="text-sm text-muted">{hint}</p>}
     </div>
   );
 }

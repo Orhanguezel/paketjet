@@ -79,6 +79,8 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
     key: 'general',
     items: [
       { key: 'dashboard', url: '/admin/dashboard', icon: LayoutDashboard },
+      { key: 'users', url: '/admin/users', icon: Users },
+      { key: 'carriers', url: '/admin/carriers', icon: Users },
     ],
   },
   {
@@ -94,13 +96,8 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
     id: 3,
     key: 'finance',
     items: [
-      { key: 'users', url: '/admin/users', icon: Users },
-      {
-        key: 'carriers',
-        url: '/admin/carriers',
-        icon: Users,
-      },
-
+      { key: 'payments', url: '/admin/payments', icon: CreditCard },
+      { key: 'credits', url: '/admin/credits', icon: Wallet },
       { key: 'disputes', url: '/admin/disputes', icon: MessageSquare },
       { key: 'pricing', url: '/admin/pricing', icon: Percent },
       { key: 'payment_settings', url: '/admin/payment-settings', icon: CreditCard },
@@ -112,6 +109,9 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
     id: 4,
     key: 'support',
     items: [
+      { key: 'support_tickets', url: '/admin/support', icon: MessageSquare },
+      { key: 'faqs', url: '/admin/faqs', icon: MessageSquare },
+      { key: 'pages', url: '/admin/pages', icon: FolderTree },
       { key: 'contacts', url: '/admin/contacts', icon: Contact2 },
       { key: 'email_templates', url: '/admin/email-templates', icon: Mail },
     ],
@@ -141,13 +141,18 @@ export type AdminNavCopy = {
 const FALLBACK_GROUP_LABELS: Record<AdminNavGroupKey, string> = {
   general:  'Genel',
   listings: 'İlan Yönetimi',
-  finance:  'Kullanıcılar & Finans',
+  finance:  'Finans',
   support:  'Destek',
   system:   'Sistem',
 };
 
 const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
-  dashboard: 'Dashboard',
+  support_tickets: 'Destek talepleri',
+  faqs: 'Sık sorulan sorular',
+  pages: 'Sayfalar ve yasal içerik',
+  payments: 'Ödeme incelemeleri',
+  credits: 'İlan alma hakları',
+  dashboard: 'Genel bakış',
   ilanlar: 'İlanlar',
   ilan_purchases: 'İlan Satın Almaları',
   categories: 'Kategoriler',
@@ -155,7 +160,7 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   carriers: 'Taşıyıcılar',
 
   disputes: 'Anlaşmazlıklar',
-  wallets: 'Hak/Cüzdan Arşivi',
+  wallets: 'Eski TL arşivi',
   reports: 'Raporlar',
   contacts: 'İletişim',
   email_templates: 'E-posta Şablonları',
@@ -209,13 +214,14 @@ export function buildAdminSidebarItems(
   t?: TranslateFn,
   role: AdminSidebarRole = 'admin',
 ): NavGroup[] {
+  const translate = (key:string) => {const value=t?.(key as never) ?? '';return value===key||value.startsWith('admin.')?'':value;};
   const labels = copy?.labels ?? ({} as AdminNavCopy['labels']);
   const items  = copy?.items  ?? ({} as AdminNavCopy['items']);
 
   return adminNavConfig.map((group) => {
     const label =
       labels[group.key] ||
-      (t ? t(getAdminNavGroupLabelKey(group.key) as any) : '') ||
+      translate(getAdminNavGroupLabelKey(group.key)) ||
       getAdminNavFallbackGroupLabel(group.key) ||
       '';
 
@@ -230,9 +236,9 @@ export function buildAdminSidebarItems(
         })
         .map((item) => {
           const title =
-            items[item.key] ||
-            (t ? t(getAdminNavTitleKey(item.key) as any) : '') ||
-            (t ? t(getAdminLegacyNavTitleKey(item.key) as any) : '') ||
+            (items[item.key]?.startsWith('admin.')?'':items[item.key]) ||
+            translate(getAdminNavTitleKey(item.key)) ||
+            translate(getAdminLegacyNavTitleKey(item.key)) ||
             getAdminNavFallbackTitle(item.key) ||
             item.key;
 

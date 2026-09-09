@@ -87,6 +87,7 @@ export interface CheckoutFormDetailResponse {
   basketId?: string;
   conversationId?: string;
   fraudStatus?: number;
+  itemTransactions?: { paymentTransactionId: string }[];
 }
 
 // ── Public API ────────────────────────────────────────────────────────────────
@@ -113,7 +114,7 @@ export async function retrieveCheckoutForm(token: string, conversationId: string
   const iyzipay = getIyzipay();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return promisify<CheckoutFormDetailResponse>(
-    (iyzipay.checkoutFormInitialize as any).retrieve.bind(iyzipay.checkoutFormInitialize),
+    (iyzipay.checkoutForm as any).retrieve.bind(iyzipay.checkoutForm),
     { locale: "tr", conversationId, token },
   );
 }

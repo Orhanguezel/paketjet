@@ -36,8 +36,8 @@ export async function createPayTRToken(data: PayTRTokenRequest): Promise<{ token
 
   const test_mode = PAYTR_TEST_MODE ? "1" : "0";
   const debug_on = PAYTR_TEST_MODE ? 1 : 0;
-  const no_installment = data.no_installment ?? 0;
-  const max_installment = data.max_installment ?? 0;
+  const no_installment = data.no_installment ?? 1;
+  const max_installment = data.max_installment ?? 1;
   const currency = data.currency ?? "TL";
 
   const hash_str = merchant_id + data.user_ip + data.merchant_oid + data.email + 
@@ -92,7 +92,9 @@ export async function createPayTRToken(data: PayTRTokenRequest): Promise<{ token
 /** PayTR Callback doğrulama */
 export function verifyPayTRCallback(body: any): boolean {
   const { PAYTR_MERCHANT_KEY, PAYTR_MERCHANT_SALT } = env;
+  if (!PAYTR_MERCHANT_KEY || !PAYTR_MERCHANT_SALT || !body) return false;
   const { merchant_oid, status, total_amount, hash } = body;
+  if (![merchant_oid, status, total_amount, hash].every(v => typeof v === "string") || !/^\d+$/.test(total_amount) || !["success","failed"].includes(status)) return false;
 
   const hash_str = merchant_oid + PAYTR_MERCHANT_SALT + status + total_amount;
   const expected_hash = crypto
@@ -100,7 +102,9 @@ export function verifyPayTRCallback(body: any): boolean {
     .update(hash_str)
     .digest("base64");
 
-  return expected_hash === hash;
+  const actual = Buffer.from(hash);
+  const expected = Buffer.from(expected_hash);
+  return actual.length === expected.length && crypto.timingSafeEqual(actual, expected);
 }
 
 /** Sepet verisini encode et */

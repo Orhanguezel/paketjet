@@ -9,7 +9,7 @@ export function JsonLd({ data }: JsonLdProps) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
     />
   );
 }
@@ -27,17 +27,8 @@ export function OrganizationSchema() {
         url: SITE_URL,
         logo: `${SITE_URL}/uploads/media/logo/logo-512x512.png`,
         description:
-          "Türkiye'nin P2P kargo pazaryeri. Göndericiler ücretsiz ilan açar, taşıyıcılar ilan sahibinin iletişim bilgilerine erişir.",
-        foundingDate: "2024",
-        email: "info@paketjet.net",
-        areaServed: { "@type": "Country", name: "Turkey" },
-        sameAs: [
-          "https://www.instagram.com/paketjet",
-          "https://www.facebook.com/paketjet",
-          "https://www.linkedin.com/company/paketjet",
-          "https://www.youtube.com/@paketjet",
-          "https://x.com/paketjet",
-        ],
+          "Türkiye'nin P2P kargo pazaryeri. Taşıyıcılar ücretsiz güzergâh ilanı açar, göndericiler iletişim bilgilerine erişerek doğrudan görüşür.",
+
       }}
     />
   );
@@ -56,7 +47,7 @@ export function WebSiteSchema() {
         description: "Türkiye'nin P2P kargo pazaryeri",
         potentialAction: {
           "@type": "SearchAction",
-          target: `${SITE_URL}/ilanlar?from={search_term_string}`,
+          target: `${SITE_URL}/ilanlar?from_city={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
       }}
@@ -179,31 +170,30 @@ export function HowToSchema() {
       data={{
         "@context": "https://schema.org",
         "@type": "HowTo",
-        name: "PaketJet ile Kargo Nasıl Gönderilir?",
+        name: "PaketJet ile Taşıyıcıya Nasıl Ulaşılır?",
         description:
-          "PaketJet P2P kargo pazaryerinde 3 adımda kargo gönderme süreci.",
-        totalTime: "PT5M",
+          "Güzergâh ilanı bulma ve taşıyıcı iletişimine erişme adımları.",
         step: [
           {
             "@type": "HowToStep",
             position: 1,
             name: "Rota Ara",
-            text: "Gideceğin şehri, tarihi ve ağırlığı gir. Sana uygun taşıyıcıları listeleyelim.",
+            text: "Nereden, nereye ve hareket tarihini seçerek güncel ilanları listele.",
             url: `${SITE_URL}/ilanlar`,
           },
           {
             "@type": "HowToStep",
             position: 2,
             name: "Taşıyıcı Seç",
-            text: "Fiyat, araç tipi ve taşıyıcı puanına göre en iyi seçimi yap.",
+            text: "Güzergâh, hareket tarihi ve araç bilgilerini karşılaştır.",
             url: `${SITE_URL}/ilanlar`,
           },
           {
             "@type": "HowToStep",
             position: 3,
-            name: "Paketini Gönder",
-            text: "Rezervasyonunu onayla, taşıyıcıyla buluş, kargoyu teslim et.",
-            url: `${SITE_URL}/ilan-ver`,
+            name: "İletişime Eriş",
+            text: "İletişim erişimini satın al veya ilan alma hakkını kullan; taşıma koşullarını taşıyıcıyla doğrudan görüş.",
+            url: `${SITE_URL}/ilanlar`,
           },
         ],
         speakable: {

@@ -1,3 +1,4 @@
+import {retiredOperation} from '../purchases/legacy.controller';
 // =============================================================
 // FILE: src/modules/wallet/admin.routes.ts
 // =============================================================
@@ -15,8 +16,8 @@ export async function registerWalletAdmin(app: FastifyInstance) {
   const B = '/wallets';
   app.get(B, adminListWallets);
   app.get(`${B}/:id`, adminGetWallet);
-  app.patch(`${B}/:id/status`, adminUpdateWalletStatus);
-  app.post(`${B}/adjust`, adminAdjustWallet);
+  app.patch(`${B}/:id/status`, retiredOperation);
+  app.post(`${B}/adjust`, retiredOperation);
   app.get(`${B}/:walletId/transactions`, adminListTransactions);
-  app.patch('/wallet_transactions/:id/status', adminUpdateTransactionStatus);
+  app.patch('/wallet_transactions/:id/status', retiredOperation);
 }
