@@ -57,5 +57,5 @@ jobs:
         working-directory: frontend
       - run: bun install --frozen-lockfile
         working-directory: admin_panel
-      - run: bun run lint && NODE_ENV=production NEXT_PUBLIC_PANEL_API_URL=/api bun run build
+      - run: bun run test && bun run lint && NODE_ENV=production NEXT_PUBLIC_PANEL_API_URL=/api bun run build
         working-directory: admin_panel
