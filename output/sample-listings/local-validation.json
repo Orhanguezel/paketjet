@@ -1,0 +1,14 @@
+{
+  "backendTests": 90,
+  "frontendTests": 13,
+  "testFailures": 0,
+  "backendBuild": "passed",
+  "frontendBuild": "passed",
+  "lintErrors": 0,
+  "existingLintWarnings": 16,
+  "sampleTests": [
+    "credit/card/access cannot deliver or debit",
+    "captured card payment cannot deliver a listing marked sample",
+    "seed twice preserves edited title and departure date; count remains 30"
+  ]
+}

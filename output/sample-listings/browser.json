@@ -1,0 +1,19 @@
+{
+  "release": "4da2454",
+  "sampleAssertionsPassed": true,
+  "viewports": [
+    1440,
+    390
+  ],
+  "checksPerViewport": {
+    "homeCards": 4,
+    "listPage1Cards": 20,
+    "listPage2Cards": 10,
+    "detailNoticeVisible": true,
+    "detailPurchaseButtons": 0,
+    "horizontalOverflow": false
+  },
+  "uncaughtPageErrors": 0,
+  "existingConsoleIssue": "The /ilan-ver link prefetch redirects an anonymous user to https://localhost:3070/giris?next=%2Filan-ver. Observed before and after this release; outside sample listing changes.",
+  "screenshots": "output/playwright/sample-listings/"
+}

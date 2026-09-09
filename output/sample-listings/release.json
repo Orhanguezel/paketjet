@@ -1,0 +1,13 @@
+{
+  "code": "4da2454e1e52750038c691cfc9ca9678888b0d45",
+  "publishedAt": "2026-09-09T09:15:44Z",
+  "releaseDirectory": "/var/www/paketjet-releases/4da2454e1e52",
+  "serverBuilds": [
+    "backend",
+    "frontend",
+    "admin_panel"
+  ],
+  "seedExamples": 30,
+  "productionFullSeedRun": false,
+  "paymentProvider": "disabled"
+}
