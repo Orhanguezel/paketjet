@@ -5,6 +5,7 @@
 @import "./account-design.css";
 @import "./member-design.css";
 @import "./listing-wizard.css";
+@import "./legal-design.css";
 @source "../**/*.{js,ts,jsx,tsx,mdx}";
 
 /* ─────────────────────────────────────────────────────────

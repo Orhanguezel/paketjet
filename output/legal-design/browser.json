@@ -1,0 +1,41 @@
+{
+  "results": [
+    {
+      "slug": "kullanim-kosullari",
+      "status": 200,
+      "singleTitle": true,
+      "textPreserved": true,
+      "navigation": true,
+      "responsive": true
+    },
+    {
+      "slug": "gizlilik-politikasi",
+      "status": 200,
+      "singleTitle": true,
+      "textPreserved": true,
+      "navigation": true,
+      "responsive": true
+    },
+    {
+      "slug": "kvkk",
+      "status": 200,
+      "singleTitle": true,
+      "textPreserved": true,
+      "navigation": true,
+      "responsive": true
+    },
+    {
+      "slug": "tasima-kurallari",
+      "status": 200,
+      "singleTitle": true,
+      "textPreserved": true,
+      "navigation": true,
+      "responsive": true
+    }
+  ],
+  "darkTheme": true,
+  "print": true,
+  "panel": true,
+  "errors": [],
+  "checkedAt": "2026-09-09T14:06:26.721Z"
+}

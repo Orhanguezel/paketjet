@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
 import type { CustomPage } from "@/modules/customPage/customPage.type";
+import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
 import { SkeletonCard } from "@/components/ui/Skeleton";
 
 export default function PanelTasimaKurallariPage() {
@@ -33,26 +34,5 @@ export default function PanelTasimaKurallariPage() {
     );
   }
 
-  let displayHtml = page.content ?? "<p>İçerik bulunamadı.</p>";
-  if (page.content && page.content.trim().startsWith("{")) {
-    try {
-      const parsed = JSON.parse(page.content);
-      if (parsed && typeof parsed.html === "string") {
-        displayHtml = parsed.html;
-      }
-    } catch {}
-  }
-
-  return (
-    <div className="max-w-3xl">
-      <h1 className="text-2xl font-extrabold text-foreground mb-2">{page.title}</h1>
-      {page.summary && <p className="text-sm text-muted mb-6">{page.summary}</p>}
-      <div className="bg-surface rounded-xl border border-border-soft p-6">
-        <article
-          className="prose prose-neutral max-w-none prose-headings:font-extrabold prose-a:text-brand prose-sm"
-          dangerouslySetInnerHTML={{ __html: displayHtml }}
-        />
-      </div>
-    </div>
-  );
+  return <LegalPageView slug="tasima-kurallari" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} embedded/>;
 }

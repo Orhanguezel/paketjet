@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
-import { CustomPageView } from "@/modules/customPage/CustomPageView";
+import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
 import { BreadcrumbSchema } from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug("kvkk");
     return {
-      title: page.meta_title || page.title,
+      title: { absolute: page.meta_title || `${page.title} | PaketJet` },
       description: page.meta_description || page.summary || "PaketJet KVKK aydınlatma metni.",
       alternates: { canonical: `${SITE_URL}/kvkk` },
     };
@@ -27,7 +27,7 @@ export default async function KvkkPage() {
     return (
       <>
         <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "KVKK" }]} />
-        <CustomPageView title={page.title} summary={page.summary} html={page.content} />
+        <LegalPageView slug="kvkk" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} />
       </>
     );
   } catch {

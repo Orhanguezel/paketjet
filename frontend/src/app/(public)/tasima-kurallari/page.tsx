@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
-import { CustomPageView } from "@/modules/customPage/CustomPageView";
+import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
 
 export const revalidate = 300;
 
@@ -9,8 +11,9 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug("tasima-kurallari");
     return {
-      title: page.meta_title || page.title,
+      title: { absolute: page.meta_title || `${page.title} | PaketJet` },
       description: page.meta_description || page.summary || "PaketJet taşıma kuralları.",
+      alternates: { canonical: `${SITE_URL}/tasima-kurallari` },
       openGraph: {
         title: page.meta_title || page.title,
         description: page.meta_description || page.summary || "PaketJet taşıma kuralları.",
@@ -27,7 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function TasimaKurallariPage() {
   try {
     const page = await getCustomPageBySlug("tasima-kurallari");
-    return <CustomPageView title={page.title} summary={page.summary} html={page.content} createdAt={page.created_at} updatedAt={page.updated_at} />;
+    return <LegalPageView slug="tasima-kurallari" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} />;
   } catch {
     notFound();
   }
