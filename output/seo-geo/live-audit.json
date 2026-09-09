@@ -1,0 +1,658 @@
+{
+  "checkedAt": "2026-09-09T15:51:07.665Z",
+  "base": "https://paketjet.com",
+  "sitemapCount": 14,
+  "pages": [
+    {
+      "path": "/",
+      "status": 200,
+      "title": "Taşıyıcı ilanları ve ücretsiz güzergâh paylaşımı | PaketJet",
+      "description": "Taşıyıcı güzergâhlarını ara, iletişim bilgilerine eriş ve doğrudan görüş. Taşıyıcılar için ücretsiz ilan. İletişim bedeli taşıma ücretinden ayrıdır.",
+      "canonical": "https://paketjet.com/",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList",
+        "FAQPage"
+      ]
+    },
+    {
+      "path": "/ilanlar",
+      "status": 200,
+      "title": "Taşıyıcı ilanları | PaketJet",
+      "description": "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
+      "canonical": "https://paketjet.com/ilanlar",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/destek",
+      "status": 200,
+      "title": "Destek ve sıkça sorulan sorular | PaketJet",
+      "description": "PaketJet ilanları, iletişim erişimi, ilan alma hakkı ve hesap işlemleri hakkında soruların yanıtları.",
+      "canonical": "https://paketjet.com/destek",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "FAQPage",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/hakkimizda",
+      "status": 200,
+      "title": "Hakkımızda | PaketJet",
+      "description": "PaketJet taşıyıcı ilanları ve iletişim erişimi platformu hakkında bilgi alın.",
+      "canonical": "https://paketjet.com/hakkimizda",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/iletisim",
+      "status": 200,
+      "title": "İletişim | PaketJet",
+      "description": "PaketJet ile iletişime geçin. Sorularınız için bize ulaşın.",
+      "canonical": "https://paketjet.com/iletisim",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/kvkk",
+      "status": 200,
+      "title": "KVKK | PaketJet",
+      "description": "PaketJet KVKK aydınlatma metni.",
+      "canonical": "https://paketjet.com/kvkk",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/gizlilik-politikasi",
+      "status": 200,
+      "title": "Gizlilik Politikası | PaketJet",
+      "description": "PaketJet gizlilik politikası ve veri koruma yaklaşımı.",
+      "canonical": "https://paketjet.com/gizlilik-politikasi",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/kullanim-kosullari",
+      "status": 200,
+      "title": "Kullanım Koşulları | PaketJet",
+      "description": "PaketJet hizmet kullanım koşulları ve platform kuralları.",
+      "canonical": "https://paketjet.com/kullanim-kosullari",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization"
+      ]
+    },
+    {
+      "path": "/tasima-kurallari",
+      "status": 200,
+      "title": "Taşıma Kuralları | PaketJet",
+      "description": "PaketJet taşıma kuralları, yasaklı maddeler ve sorumluluklar.",
+      "canonical": "https://paketjet.com/tasima-kurallari",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization"
+      ]
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "title": "PaketJet Blog | PaketJet",
+      "description": "P2P kargo, PaketJet kullanım rehberleri ve şehirler arası taşıma rehberleri.",
+      "canonical": "https://paketjet.com/blog",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/blog/p2p-kargo-nedir",
+      "status": 200,
+      "title": "P2P kargo nedir? | PaketJet",
+      "description": "P2P kargo yaklaşımını ve PaketJet üzerinden taşıyıcı iletişimine nasıl erişildiğini öğren.",
+      "canonical": "https://paketjet.com/blog/p2p-kargo-nedir",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "Article",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/blog/paketjet-nasil-kullanilir",
+      "status": 200,
+      "title": "PaketJet nasıl kullanılır? | PaketJet",
+      "description": "Gönderici ve taşıyıcı için PaketJet’in temel adımlarını öğren.",
+      "canonical": "https://paketjet.com/blog/paketjet-nasil-kullanilir",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "Article",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/rota/istanbul-ankara",
+      "status": 200,
+      "title": "İstanbul – Ankara taşıyıcı güzergâhı | PaketJet",
+      "description": "İstanbul – Ankara güzergâhında güncel ilan arama ve taşıyıcıyla doğrudan iletişim rehberi.",
+      "canonical": "https://paketjet.com/rota/istanbul-ankara",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "Article",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/rota/istanbul-izmir",
+      "status": 200,
+      "title": "İstanbul – İzmir taşıyıcı güzergâhı | PaketJet",
+      "description": "İstanbul – İzmir güzergâhında güncel ilan arama ve taşıyıcıyla doğrudan iletişim rehberi.",
+      "canonical": "https://paketjet.com/rota/istanbul-izmir",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "Article",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar?page=2",
+      "status": 200,
+      "title": "Taşıyıcı ilanları — Sayfa 2 | PaketJet",
+      "description": "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
+      "canonical": "https://paketjet.com/ilanlar?page=2",
+      "indexable": true,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar?from=İstanbul",
+      "status": 200,
+      "title": "Taşıyıcı ilanları | PaketJet",
+      "description": "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
+      "canonical": "https://paketjet.com/ilanlar",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-30-balikesir-izmir",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Balıkesir → İzmir taşıyıcı ilanı",
+      "description": "Balıkesir çıkışlı, İzmir varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-30-balikesir-izmir",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-29-istanbul-tekirdag",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İstanbul → Tekirdağ taşıyıcı ilanı",
+      "description": "İstanbul çıkışlı, Tekirdağ varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-29-istanbul-tekirdag",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-28-diyarbakir-gaziantep",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Diyarbakır → Gaziantep taşıyıcı ilanı",
+      "description": "Diyarbakır çıkışlı, Gaziantep varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-28-diyarbakir-gaziantep",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-27-erzurum-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Erzurum → Ankara taşıyıcı ilanı",
+      "description": "Erzurum çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-27-erzurum-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-26-trabzon-samsun",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Trabzon → Samsun taşıyıcı ilanı",
+      "description": "Trabzon çıkışlı, Samsun varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-26-trabzon-samsun",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-25-samsun-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Samsun → Ankara taşıyıcı ilanı",
+      "description": "Samsun çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-25-samsun-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-24-mugla-antalya",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Muğla → Antalya taşıyıcı ilanı",
+      "description": "Muğla çıkışlı, Antalya varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-24-mugla-antalya",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-23-izmir-mugla",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İzmir → Muğla taşıyıcı ilanı",
+      "description": "İzmir çıkışlı, Muğla varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-23-izmir-mugla",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-22-denizli-izmir",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Denizli → İzmir taşıyıcı ilanı",
+      "description": "Denizli çıkışlı, İzmir varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-22-denizli-izmir",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-21-sakarya-bursa",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Sakarya → Bursa taşıyıcı ilanı",
+      "description": "Sakarya çıkışlı, Bursa varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-21-sakarya-bursa",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-20-kocaeli-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Kocaeli → Ankara taşıyıcı ilanı",
+      "description": "Kocaeli çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-20-kocaeli-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-19-eskisehir-istanbul",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Eskişehir → İstanbul taşıyıcı ilanı",
+      "description": "Eskişehir çıkışlı, İstanbul varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-19-eskisehir-istanbul",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-18-ankara-eskisehir",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Ankara → Eskişehir taşıyıcı ilanı",
+      "description": "Ankara çıkışlı, Eskişehir varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-18-ankara-eskisehir",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-17-kayseri-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Kayseri → Ankara taşıyıcı ilanı",
+      "description": "Kayseri çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-17-kayseri-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-16-adana-gaziantep",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Adana → Gaziantep taşıyıcı ilanı",
+      "description": "Adana çıkışlı, Gaziantep varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-16-adana-gaziantep",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-15-gaziantep-adana",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Gaziantep → Adana taşıyıcı ilanı",
+      "description": "Gaziantep çıkışlı, Adana varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-15-gaziantep-adana",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-14-mersin-adana",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Mersin → Adana taşıyıcı ilanı",
+      "description": "Mersin çıkışlı, Adana varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-14-mersin-adana",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-13-adana-mersin",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Adana → Mersin taşıyıcı ilanı",
+      "description": "Adana çıkışlı, Mersin varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-13-adana-mersin",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-12-ankara-konya",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Ankara → Konya taşıyıcı ilanı",
+      "description": "Ankara çıkışlı, Konya varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-12-ankara-konya",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-11-konya-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Konya → Ankara taşıyıcı ilanı",
+      "description": "Konya çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-11-konya-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-10-istanbul-antalya",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İstanbul → Antalya taşıyıcı ilanı",
+      "description": "İstanbul çıkışlı, Antalya varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-10-istanbul-antalya",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-09-antalya-istanbul",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Antalya → İstanbul taşıyıcı ilanı",
+      "description": "Antalya çıkışlı, İstanbul varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-09-antalya-istanbul",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-08-istanbul-bursa",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İstanbul → Bursa taşıyıcı ilanı",
+      "description": "İstanbul çıkışlı, Bursa varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-08-istanbul-bursa",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-07-bursa-istanbul",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Bursa → İstanbul taşıyıcı ilanı",
+      "description": "Bursa çıkışlı, İstanbul varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-07-bursa-istanbul",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-06-izmir-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İzmir → Ankara taşıyıcı ilanı",
+      "description": "İzmir çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-06-izmir-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-05-ankara-izmir",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Ankara → İzmir taşıyıcı ilanı",
+      "description": "Ankara çıkışlı, İzmir varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-05-ankara-izmir",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-04-izmir-istanbul",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İzmir → İstanbul taşıyıcı ilanı",
+      "description": "İzmir çıkışlı, İstanbul varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-04-izmir-istanbul",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-03-istanbul-izmir",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İstanbul → İzmir taşıyıcı ilanı",
+      "description": "İstanbul çıkışlı, İzmir varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-03-istanbul-izmir",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-02-ankara-istanbul",
+      "status": 200,
+      "title": "ÖRNEK İLAN — Ankara → İstanbul taşıyıcı ilanı",
+      "description": "Ankara çıkışlı, İstanbul varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-02-ankara-istanbul",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "path": "/ilanlar/ornek-ilan-01-istanbul-ankara",
+      "status": 200,
+      "title": "ÖRNEK İLAN — İstanbul → Ankara taşıyıcı ilanı",
+      "description": "İstanbul çıkışlı, Ankara varışlı taşıyıcı ilanının güzergâhını ve hareket tarihini incele. İletişim erişimi taşıma bedelinden ayrıdır.",
+      "canonical": "https://paketjet.com/ilanlar/ornek-ilan-01-istanbul-ankara",
+      "indexable": false,
+      "h1": 1,
+      "ogImage": "https://paketjet.com/opengraph-image",
+      "schemas": [
+        "Organization",
+        "BreadcrumbList"
+      ]
+    }
+  ],
+  "errors": []
+}

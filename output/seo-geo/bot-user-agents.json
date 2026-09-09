@@ -1,0 +1,37 @@
+[
+  {
+    "agent": "Googlebot",
+    "status": 200,
+    "title": "Taşıyıcı ilanları ve ücretsiz güzergâh paylaşımı | PaketJet",
+    "h1": "Gönderine uygun taşıyıcıyı bul.",
+    "hasAnswers": true
+  },
+  {
+    "agent": "bingbot",
+    "status": 200,
+    "title": "Taşıyıcı ilanları ve ücretsiz güzergâh paylaşımı | PaketJet",
+    "h1": "Gönderine uygun taşıyıcıyı bul.",
+    "hasAnswers": true
+  },
+  {
+    "agent": "OAI-SearchBot",
+    "status": 200,
+    "title": "Taşıyıcı ilanları ve ücretsiz güzergâh paylaşımı | PaketJet",
+    "h1": "Gönderine uygun taşıyıcıyı bul.",
+    "hasAnswers": true
+  },
+  {
+    "agent": "PerplexityBot",
+    "status": 200,
+    "title": "Taşıyıcı ilanları ve ücretsiz güzergâh paylaşımı | PaketJet",
+    "h1": "Gönderine uygun taşıyıcıyı bul.",
+    "hasAnswers": true
+  },
+  {
+    "agent": "Claude-SearchBot",
+    "status": 200,
+    "title": "Taşıyıcı ilanları ve ücretsiz güzergâh paylaşımı | PaketJet",
+    "h1": "Gönderine uygun taşıyıcıyı bul.",
+    "hasAnswers": true
+  }
+]

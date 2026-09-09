@@ -38,7 +38,7 @@ Başlangıç sitemap'inde 14 URL vardı: 10 genel sayfa, 2 blog yazısı, 2 rota
 - [x] llms.txt: görünür ürün tanımı ve yanıtların ortak kaynağı; güncel rehber/yasal bağlantılar.
 - [x] Google doğrulama meta etiketi için opsiyonel `GOOGLE_SITE_VERIFICATION` desteği; gerçek değer uydurulmadı.
 - [x] Tekrar çalıştırılabilir SEO taraması: `cd frontend && bun run seo:audit https://paketjet.com /tmp/paketjet-seo-audit.json`.
-- [ ] Son yayın ve canlı doğrulama kaydı.
+- [x] Son yayın ve canlı doğrulama kaydı.
 
 ## Dış bağımlılıklar ve ölçüm sınırı
 
@@ -52,6 +52,19 @@ Başlangıç sitemap'inde 14 URL vardı: 10 genel sayfa, 2 blog yazısı, 2 rota
 | Kurumsal güven / yasal kaynak | Canlı iletişim formu ve destek e-postası mevcut; doğrulanmış ticaret unvanı/adresini bu denetim kanıtlamıyor | İşletmeci bilgileri ve yasal metinlerin yetkili kişi tarafından doğrulanması. Sahte adres, rating veya LocalBusiness şeması eklenmedi |
 
 Google/Bing sonuçlarında eski sitenin rezervasyon/takip anlatımı ve eski kurumsal metinleri görüldü. Bunlar arama önbelleği bulgusudur, bugünkü canlı sayfa içeriği olarak alınmadı. Yeniden tarama ve indeks değişimi yayın anında doğrulanamaz. `site:` araması indeks kapsamı veya sıralama raporu değildir.
+
+## Arama niyeti ve içerik eşleşmesi
+
+| Niyet / hedef sorgu grubu | Ana hedef | Değerlendirme |
+|---|---|---|
+| Taşıyıcı ilanları, güzergâh ilanları | Ana sayfa ve /ilanlar | İş modelini açıklayan tanım ve ilan keşfi; örnek arz indekse alınmaz |
+| P2P kargo nedir? | /blog/p2p-kargo-nedir | İletişim erişimi ile taşıma ayrımı açıklanır |
+| PaketJet nasıl kullanılır? | /blog/paketjet-nasil-kullanilir | Gönderici/taşıyıcı akışı; köy/adres ve aynı il alternatifleri güncellendi |
+| İstanbul–Ankara / İstanbul–İzmir taşıyıcı | Mevcut iki rota rehberi | Kalıcı sefer, fiyat, süre veya mevcut taşıyıcı sayısı uydurulmaz; güncel listeye yönlendirir |
+| Ücretsiz taşıyıcı ilanı | Ana sayfa ve kullanım rehberi | /ilan-ver oturum gerektirir, indeks hedefi değildir |
+| İletişim ücreti / taşıma bedeli / köy araması | Ana sayfa soruları ve destek | Görünür yanıtlar, ilgili rehberler ve ortak makine metni |
+
+Bu eşleştirme ürün ve arama niyetinden türetilmiştir; arama hacmi veya anahtar kelime sıralaması ölçülmüş değildir. Benzer 81 il sayfası topluca üretilmedi: gerçek içerik, güncel ilan ve özgün fayda olmadan çoğaltmak bu açığı kapatmaz. Site dışı otorite/backlink verisi GSC/harici yetkili veri olmadan değerlendirilemedi; dış platformlara tanıtım, mesaj veya sahte yorum gönderilmedi. Sosyal hesapların doğrulanmış sahipliği kanıtlanmadığı için Organization şemasına sameAs eklenmedi.
 
 ## İzleme planı
 
@@ -70,3 +83,13 @@ Yetkili Search Console erişimi sağlandığında sitemap gönder; ana sayfa, li
 İlk hızlı yerel tarama canlı API'nin aynı IP istek kotasına takıldı; bir kısım detay sayfası geçici 500 döndürdü. Sonraki tarama aralığı sınırlandırıldı; tekrarlanan kamu ayarı istekleri sunucu önbelleğine alındı. Bu test gürültüsü, kalıcı sayfa hatası olarak sayılmadı. Denetim paylaşım görselinin gerçekten bulunmadığını ve iki yasal sayfanın OG override eksikliğini yakaladı; bunlar düzeltildi.
 
 Yerel son doğrulama: 40 test / 13 dosya geçti; üretim derlemesi başarılı. 14 sitemap adresi ve iç bağlantılarla keşfedilen toplam 46 sayfa sıfır denetim hatasıyla geçti. Chrome 1440/390 px: soru-cevap açılması, footer → blog → rota geçişi, taşma ve JS hata kontrolleri geçti. JavaScript kapalı ana sayfada beş yanıt HTML içinde mevcut. Kanıtlar `output/seo-geo/`.
+
+## Yayın ve kapanış
+
+Kod sürümü `9877e4fbb74dca14c09fe778c41deb62f166c49f`, 9 Eylül 2026 **15:48:52 UTC** yayında. Üç PM2 servisi yeni sürümde online; ana site, API ve admin giriş sağlık kontrolleri geçti. Bu yayında migration, seed veya veri bakımı çalıştırılmadı.
+
+Canlı son tarama: **46 sayfa, 14 sitemap adresi, 0 denetim hatası**. 30 örnek ilanın noindex durumu, filtre noindex'i, ikinci sayfanın canonical'ı ve olmayan sayfanın 404'ü doğrulandı. Paylaşım PNG'si HTTP 200 ve image/png döndürüyor. Googlebot, bingbot, OAI-SearchBot, PerplexityBot ve Claude-SearchBot kullanıcı ajanlarıyla HTTP 200 ve aynı görünür içerik alındı. Bu bir kullanıcı ajanı simülasyonudur; gerçek bot IP'sinden tarama veya indekslenme kanıtı değildir.
+
+Chrome canlı örnekleri: 1440 px LCP 1.148 ms / CLS 0,00013; 390 px LCP 516 ms / CLS 0,00068. Bunlar ağ/CPU kısıtlamasız iki laboratuvar örneğidir, gerçek kullanıcı p75 değerleri veya Lighthouse puanı değildir. Soru-cevap açılması, rehber gezinmesi, tek H1, taşma ve JavaScript hatası kontrolleri geçti. Görünür yanıtlar JavaScript kapalıyken de okunur.
+
+**Durum:** teknik uygulama, yayın ve tanımlı regresyon kontrolleri tamamlandı. DNS/alan adı erişimi, Search Console ve ölçüm hesabı yetkileri, saha performans verisi ve birbirinin aynısı olan üç yasal belgenin doğrulanarak ayrıştırılması açık dış işlerdir. Bu başlıklar tamamlanmadan tüm SEO/GEO çalışmasına yüzde 100 tamamlandı denmez. Öncelik sırası: yasal metinlerin doğrulanması → www DNS/HTTPS → Search Console ve ölçüm bağlantısı → 7/28 günlük indeks/performans takibi.

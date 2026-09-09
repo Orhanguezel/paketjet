@@ -1,0 +1,31 @@
+{
+  "base": "https://paketjet.com",
+  "results": [
+    {
+      "width": 1440,
+      "metrics": {
+        "lcp": 1148,
+        "cls": 0.00012819809941520466,
+        "ttfb": 519.1999999880791
+      },
+      "faqOpens": true,
+      "guideNavigation": true,
+      "noOverflow": true,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "metrics": {
+        "lcp": 516,
+        "cls": 0.0006775026635414447,
+        "ttfb": 194.69999998807907
+      },
+      "faqOpens": true,
+      "guideNavigation": true,
+      "noOverflow": true,
+      "errors": []
+    }
+  ],
+  "serverRenderedAnswers": true,
+  "metricScope": "Unthrottled lab samples, not field Core Web Vitals or Lighthouse scores"
+}

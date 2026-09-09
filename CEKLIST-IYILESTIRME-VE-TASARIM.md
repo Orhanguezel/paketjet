@@ -1,3 +1,5 @@
+> **9 Eylül 2026 15:48 UTC — SEO/GEO teknik düzenlemeleri canlı:** robots, canonical/sayfalama, OG/Twitter, örnek ilan noindex, sitemap hata kontrolü, içerik/şema tutarlılığı, rehber bağlantıları ve kamu ayarı önbelleği tamamlandı. 40 test ve 46 canlı sayfa denetimi geçti. DNS, GSC/ölçüm erişimi ve üç aynı yasal metnin doğrulanıp ayrıştırılması açık. [Tam rapor ve çeklist](SEO-GEO-DURUM-VE-CEKLIST.md).
+
 > **9 Eylül 2026 15:11 UTC — Kısa açılış introsu canlı:** `9d32a4b`; ana sayfada 1,2 saniyelik sessiz logo/rota animasyonu, sekme oturumunda bir kez. Tıklama/tuş/kaydırma ile hemen kapanır; hareket azaltmada ve depolama engelinde atlanır. 34 frontend testi ve üretim derlemeleri geçti. Canlı Chrome 1440/390 px: süre, tekrar açılmama, etkileşim, doğrudan ilan sayfası, JavaScript kapalı erişim ve taşma kontrolleri başarılı; JS hatası yok.
 
 > **9 Eylül 2026 14:55 UTC — Hesabım kontrastı canlı:** karşılama alanı, sekme, kart ve ikincil yazılar belirginleştirildi. Açık/koyu tema ve mobil tarayıcı kontrolleri geçti. [Test ve yayın raporu](HESABIM-KONTRAST.md).
