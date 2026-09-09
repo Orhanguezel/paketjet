@@ -1,0 +1,143 @@
+{
+  "at": "2026-09-09T08:47:50.469Z",
+  "base": "http://127.0.0.1:3081",
+  "rows": [
+    {
+      "case": "video_not_loaded_at_entry",
+      "passed": true
+    },
+    {
+      "case": "route_pause",
+      "passed": true
+    },
+    {
+      "case": "route_resume",
+      "passed": true
+    },
+    {
+      "case": "video_pause",
+      "passed": true
+    },
+    {
+      "case": "video_resume",
+      "passed": true
+    },
+    {
+      "case": "video_pauses_outside_view",
+      "passed": true
+    },
+    {
+      "case": "swap_cities",
+      "passed": true
+    },
+    {
+      "case": "search_preserves_route",
+      "passed": true
+    },
+    {
+      "case": "layout_360_light",
+      "passed": true
+    },
+    {
+      "case": "images_360_light",
+      "passed": true
+    },
+    {
+      "case": "layout_360_dark",
+      "passed": true
+    },
+    {
+      "case": "images_360_dark",
+      "passed": true
+    },
+    {
+      "case": "layout_390_light",
+      "passed": true
+    },
+    {
+      "case": "images_390_light",
+      "passed": true
+    },
+    {
+      "case": "layout_390_dark",
+      "passed": true
+    },
+    {
+      "case": "images_390_dark",
+      "passed": true
+    },
+    {
+      "case": "layout_768_light",
+      "passed": true
+    },
+    {
+      "case": "images_768_light",
+      "passed": true
+    },
+    {
+      "case": "layout_768_dark",
+      "passed": true
+    },
+    {
+      "case": "images_768_dark",
+      "passed": true
+    },
+    {
+      "case": "layout_1024_light",
+      "passed": true
+    },
+    {
+      "case": "images_1024_light",
+      "passed": true
+    },
+    {
+      "case": "layout_1024_dark",
+      "passed": true
+    },
+    {
+      "case": "images_1024_dark",
+      "passed": true
+    },
+    {
+      "case": "layout_1440_light",
+      "passed": true
+    },
+    {
+      "case": "images_1440_light",
+      "passed": true
+    },
+    {
+      "case": "layout_1440_dark",
+      "passed": true
+    },
+    {
+      "case": "images_1440_dark",
+      "passed": true
+    },
+    {
+      "case": "mobile_menu_escape",
+      "passed": true
+    },
+    {
+      "case": "zoom_200",
+      "passed": true
+    },
+    {
+      "case": "reduced_motion_no_video_download",
+      "passed": true
+    },
+    {
+      "case": "reduced_motion_no_route_animation",
+      "passed": true
+    },
+    {
+      "case": "reduced_motion_manual_play",
+      "passed": true
+    },
+    {
+      "case": "no_browser_errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

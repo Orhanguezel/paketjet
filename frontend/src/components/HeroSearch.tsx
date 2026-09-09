@@ -1,20 +1,25 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import {useState} from 'react';
+import {useRouter} from 'next/navigation';
+import {ArrowRightLeft, CalendarDays, MapPin, Search} from 'lucide-react';
 import CityAutocomplete from './CityAutocomplete';
-import { ROUTES } from '@/config/routes';
+import RouteMapAnimation from './RouteMapAnimation';
+import {ROUTES} from '@/config/routes';
 type HeroConfig = {title?: string; subtitle?: string} | null;
 export default function HeroSearch({heroConfig}: {heroConfig?: HeroConfig}) {
   const router=useRouter();
   const [from,setFrom]=useState(''), [to,setTo]=useState(''), [date,setDate]=useState('');
-  return <section className="bg-surface" aria-labelledby="home-title"><div className="site-container py-10 sm:py-14">
-    <h1 id="home-title" className="max-w-2xl text-4xl font-bold leading-[1.04] tracking-tight sm:text-6xl">{heroConfig?.title || 'Gönderine uygun taşıyıcıyı bul.'}</h1>
-    <p className="mt-5 max-w-3xl text-lg leading-7 text-muted">{heroConfig?.subtitle || 'Güzergâhları keşfet, iletişim bilgilerine eriş ve taşıyıcıyla doğrudan görüş.'}</p>
-    <form className="mt-7 grid items-end gap-4 rounded-lg border border-border bg-surface p-4 md:grid-cols-[1fr_1fr_0.8fr_auto]" onSubmit={e=>{e.preventDefault();const q=new URLSearchParams();if(from.trim())q.set('from',from.trim());if(to.trim())q.set('to',to.trim());if(date)q.set('date',date);router.push(`${ROUTES.ilanlar.list}?${q}`);}}>
-      <CityAutocomplete label="Nereden" value={from} onChange={setFrom} placeholder="Şehir seçin"/>
-      <CityAutocomplete label="Nereye" value={to} onChange={setTo} placeholder="Şehir seçin"/>
-      <label className="block min-w-0 text-sm font-medium">Tarih<input type="date" value={date} onChange={e=>setDate(e.target.value)} className="mt-2 h-12 w-full min-w-0 rounded-lg border border-border bg-surface px-3 text-base"/></label>
-      <button className="h-12 rounded-lg bg-action px-8 font-semibold text-white hover:bg-brand-dark">İlan Ara</button>
+  return <section className="home-hero" aria-labelledby="home-title"><div className="site-container">
+    <div className="hero-composition"><div className="hero-copy">
+      <h1 id="home-title">{heroConfig?.title || 'Gönderine uygun taşıyıcıyı bul.'}</h1>
+      <p>{heroConfig?.subtitle || 'Güzergâhları keşfet, iletişim bilgilerine eriş ve taşıyıcıyla doğrudan görüş.'}</p>
+    </div><RouteMapAnimation/></div>
+    <form className="hero-search" onSubmit={e=>{e.preventDefault();const q=new URLSearchParams();if(from.trim())q.set('from',from.trim());if(to.trim())q.set('to',to.trim());if(date)q.set('date',date);router.push(`${ROUTES.ilanlar.list}${q.size?'?'+q:''}`);}}>
+      <div className="search-city"><MapPin aria-hidden="true"/><CityAutocomplete label="Nereden" value={from} onChange={setFrom} placeholder="Şehir seçin"/></div>
+      <button type="button" className="search-swap" aria-label="Kalkış ve varış şehirlerini değiştir" onClick={()=>{setFrom(to);setTo(from);}}><ArrowRightLeft size={17}/></button>
+      <div className="search-city"><MapPin aria-hidden="true"/><CityAutocomplete label="Nereye" value={to} onChange={setTo} placeholder="Şehir seçin"/></div>
+      <div className="search-city"><CalendarDays aria-hidden="true"/><label className="min-w-0 text-sm font-semibold">Tarih<input aria-label="Tarih" type="date" value={date} onChange={e=>setDate(e.target.value)} className="mt-2 h-12 w-full min-w-0 rounded-xl border border-border-soft bg-surface px-3 text-base"/></label></div>
+      <button className="primary-action search-submit"><Search size={20} aria-hidden="true"/>İlan Ara</button>
     </form>
   </div></section>;
 }

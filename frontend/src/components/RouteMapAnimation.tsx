@@ -1,103 +1,20 @@
-"use client";
+'use client';
+import Image from 'next/image';
+import {Pause, Play, Truck} from 'lucide-react';
+import {useAmbientMotion} from './home/useAmbientMotion';
 
-/**
- * Türkiye haritası silüeti + animasyonlu rota pinleri
- * "Nasıl Çalışır" → Adım 1: Rota Ara kartı için
- */
+/** Decorative route illustration, never a live vehicle or availability map. */
 export default function RouteMapAnimation() {
-  return (
-    <div className="relative h-full w-full bg-gradient-to-br from-navy/5 to-brand/5 flex items-center justify-center overflow-hidden">
-      {/* Türkiye harita silüeti */}
-      <svg viewBox="0 0 800 400" className="w-[90%] h-auto opacity-15" fill="currentColor" aria-hidden>
-        <path
-          className="text-navy"
-          d="M180 200c10-30 40-60 80-80s90-20 130-30c30-8 60-5 90 5s50 30 70 50c15 15 35 25 55 20s40-20 55-35c10-10 25-15 38-10 20 8 15 35 5 50s-25 30-40 40c-20 13-45 18-65 25-30 10-55 25-85 30s-65 3-95-5c-25-7-50-18-75-25s-55-10-80-5c-20 4-38 15-55 25s-35 18-55 15c-15-2-28-15-30-30s5-30 15-40z"
-        />
-      </svg>
-
-      {/* Pin: İstanbul */}
-      <div className="absolute" style={{ left: "58%", top: "32%" }}>
-        <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute" />
-          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
-          <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
-            İstanbul
-          </span>
-        </div>
-      </div>
-
-      {/* Pin: Ankara */}
-      <div className="absolute" style={{ left: "48%", top: "40%" }}>
-        <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute [animation-delay:0.5s]" />
-          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
-          <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
-            Ankara
-          </span>
-        </div>
-      </div>
-
-      {/* Pin: İzmir */}
-      <div className="absolute" style={{ left: "33%", top: "50%" }}>
-        <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute [animation-delay:1s]" />
-          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
-          <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
-            İzmir
-          </span>
-        </div>
-      </div>
-
-      {/* Pin: Antalya */}
-      <div className="absolute" style={{ left: "42%", top: "62%" }}>
-        <div className="relative">
-          <div className="w-3 h-3 rounded-full bg-action animate-ping absolute [animation-delay:1.5s]" />
-          <div className="w-3 h-3 rounded-full bg-action relative z-10" />
-          <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[10px] font-bold text-navy whitespace-nowrap">
-            Antalya
-          </span>
-        </div>
-      </div>
-
-      {/* Animated route line: İstanbul → Ankara */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <line
-          x1="58" y1="34" x2="48" y2="42"
-          stroke="currentColor"
-          className="text-brand"
-          strokeWidth="0.3"
-          strokeDasharray="2 2"
-        >
-          <animate attributeName="stroke-dashoffset" from="4" to="0" dur="1.5s" repeatCount="indefinite" />
-        </line>
-        <line
-          x1="48" y1="42" x2="33" y2="52"
-          stroke="currentColor"
-          className="text-brand/60"
-          strokeWidth="0.3"
-          strokeDasharray="2 2"
-        >
-          <animate attributeName="stroke-dashoffset" from="4" to="0" dur="1.5s" repeatCount="indefinite" begin="0.5s" />
-        </line>
-        <line
-          x1="48" y1="42" x2="42" y2="64"
-          stroke="currentColor"
-          className="text-brand/60"
-          strokeWidth="0.3"
-          strokeDasharray="2 2"
-        >
-          <animate attributeName="stroke-dashoffset" from="4" to="0" dur="1.5s" repeatCount="indefinite" begin="1s" />
-        </line>
-      </svg>
-
-      {/* Taşınan paket ikonu — rota üzerinde hareket */}
-      <div className="absolute animate-bounce [animation-duration:2s]" style={{ left: "52%", top: "36%" }}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-          <line x1="12" y1="22.08" x2="12" y2="12" />
-        </svg>
-      </div>
-    </div>
-  );
+  const {root, running, paused, setPaused, reduced} = useAmbientMotion();
+  return <div ref={root} className="route-scene" data-running={running}>
+    <Image src="/assets/motion/route-landscape.webp" alt="" fill sizes="(max-width: 767px) 90vw, 50vw" className="object-contain" priority/>
+    <svg viewBox="0 0 600 400" className="route-lines" aria-hidden="true">
+      <path className="route-track" d="M165 132 Q248 116 302 195 T478 207 M165 132 Q133 180 136 234 Q221 262 302 195"/>
+      <path className="route-flow" d="M165 132 Q248 116 302 195 T478 207 M136 234 Q221 262 302 195"/>
+      {[[165,132],[302,195],[136,234],[478,207]].map(([cx,cy],i)=><g key={cx}><circle className="route-halo" cx={cx} cy={cy} r="15" style={{animationDelay:`${i*0.5}s`}}/><circle className="route-node" cx={cx} cy={cy} r="7"/></g>)}
+      <g className="route-label"><text x="165" y="109">İstanbul</text><text x="310" y="176">Ankara</text><text x="136" y="267">İzmir</text></g>
+    </svg>
+    <div className="route-vehicle" aria-hidden="true"><Truck size={23} strokeWidth={1.6}/></div>
+    <div className="route-caption"><span>Güzergâhları keşfet</span>{!reduced&&<button type="button" onClick={()=>setPaused(!paused)} aria-label={paused?'Rota animasyonunu başlat':'Rota animasyonunu duraklat'} aria-pressed={paused}>{paused?<Play size={15}/>:<Pause size={15}/>}</button>}</div>
+  </div>;
 }
