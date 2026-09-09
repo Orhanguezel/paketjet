@@ -37,3 +37,9 @@ Konsept: `output/ilan-wizard/concept.png` (1505×1045). Yerleşik Browser/IAB bu
 | Mobil düzeltme | İki satırlık adım etiketinin numarayı yukarı kaydırması düzeltildi. |
 
 Bilinçli konsept farkları: mevcut onaylı site logosu, üst menüsü ve footer'ı korundu. Yeni bir haritadan nokta seçici eklemek yerine mevcut adres seçimine bağlı “Haritada göster” kullanıldı. Yer tutucular köy/açık adres kullanımını anlatır. Sağ özet araç seçimini de gösterir. Konseptteki kopya ve adım sırası denetlendi; işlevsel açıklamalar sonraki adımlarda aynı tasarım diliyle tamamlandı. Konsept yönü bu uyarlamalarla doğrulandı; açık görsel hata kalmadı.
+
+## Canlı yayın
+
+9 Eylül 2026 13:35:24 UTC: `6926ccb1d1c2c43489d1dc025e9895d3fc26bd6f` yayımlandı. Üç sunucu derlemesi başarılı; üç PM2 süreci doğru sürüm dizininde online. Yeni wizard CSS, `/ilan-ver` giriş yönlendirmesi, giriş ekranı kontrolleri ve mobil taşma kontrolü geçti. İlk canlı test genel ağ boşalmasını beklerken zaman aşımına uğradı; DOM ve görünür kontrol hazırlığını bekleyen tekrar başarılı. Uygulama JS hatası yok. Canlı sağlık kontrolleri geçti; kayıt ve bakiye toplamları değişmedi.
+
+Kanıtlar: `output/ilan-wizard/browser.json`, `live.json`, `release.json` ve ekran görüntüleri.
