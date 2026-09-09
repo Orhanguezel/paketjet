@@ -1,0 +1,36 @@
+.login-page,.account-shell{background:linear-gradient(135deg,var(--color-brand-xlight),var(--color-bg-alt) 65%);color:var(--color-foreground)}
+.login-page{min-height:100svh;padding:28px clamp(20px,5vw,80px);display:flex;flex-direction:column;gap:32px}
+.login-topbar,.login-footer{width:100%;max-width:1120px;margin-inline:auto;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.login-stage{width:100%;max-width:1120px;margin:auto;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;border:1px solid var(--color-border-soft);border-radius:28px;background:var(--color-surface);box-shadow:0 20px 70px color-mix(in srgb,var(--color-brand) 8%,transparent)}
+.login-story{padding:48px 32px 12px;text-align:center;background:linear-gradient(155deg,var(--color-brand-xlight),color-mix(in srgb,var(--color-brand-light) 18%,var(--color-surface)));overflow:hidden}
+.login-story h2{font-size:30px;font-weight:750;line-height:1.25;letter-spacing:-.035em;max-width:430px;margin:auto}
+.login-story>p{color:var(--color-muted);font-size:15px;line-height:1.7;margin-top:16px}
+.login-features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:28px 0 0}
+.login-features span{display:grid;place-items:center;width:44px;height:44px;margin:auto;border-radius:50%;background:color-mix(in srgb,var(--color-brand) 9%,transparent);color:var(--color-brand)}
+.login-features p{font-size:13px;font-weight:600;line-height:1.5;margin-top:10px}
+.login-story .route-scene{width:100%;min-height:0;aspect-ratio:1.65;margin:4px 0 0}
+.login-story .route-caption{font-size:11px}
+.login-form-panel{padding:clamp(32px,4vw,60px);align-self:center;min-width:0}
+.login-footer{font-size:13px;color:var(--color-muted);padding-block:8px}
+.login-footer a{min-height:44px;display:flex;align-items:center}
+.account-topbar{background:color-mix(in srgb,var(--color-surface) 90%,transparent)}
+.account-sidebar{background:linear-gradient(170deg,var(--color-navy),color-mix(in srgb,var(--color-navy) 88%,var(--color-brand)))}
+.account-card,.account-stat{border:1px solid var(--color-border-soft);background:var(--color-surface);border-radius:20px;box-shadow:0 6px 22px color-mix(in srgb,var(--color-navy) 3%,transparent)}
+.account-card{padding:24px;min-width:0}
+.account-stat{display:flex;align-items:center;gap:16px;padding:24px}
+.account-row-icon{display:grid;place-items:center;flex-shrink:0;width:48px;height:48px;border-radius:14px;background:var(--color-brand-xlight);color:var(--color-brand)}
+.account-card-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.account-card-heading h2{font-size:17px;font-weight:650;letter-spacing:-.02em}
+.account-card-heading a{display:inline-flex;min-height:36px;align-items:center;gap:7px;font-size:13px;color:var(--color-brand);font-weight:500}
+.account-listing{display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--color-border-soft);border-radius:14px;transition:border-color .2s,background .2s}
+.account-listing:hover{border-color:var(--color-brand-light);background:var(--color-brand-xlight)}
+.account-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:12px 8px 4px}
+.account-empty>svg{color:var(--color-faint);margin-bottom:4px}
+.account-empty h3{font-size:15px;font-weight:600}
+.account-empty p{font-size:14px;line-height:1.6;color:var(--color-muted);max-width:310px}
+.account-empty a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 18px;border:1px solid var(--color-border);border-radius:10px;color:var(--color-brand);font-size:14px;font-weight:600;margin-top:4px}
+.account-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 18px;border:1px solid transparent;border-radius:12px;background:var(--color-action);color:white;font-size:14px;font-weight:600}
+.account-action.secondary{background:var(--color-surface);border-color:var(--color-border);color:var(--color-brand)}
+@media(min-width:768px){.account-sidebar{position:sticky;top:0;height:100svh;overflow:auto}}
+@media(max-width:767px){.login-page{padding:16px;gap:24px}.login-topbar{gap:10px}.login-topbar>a:last-child{font-size:12px}.login-topbar img{width:36px;height:36px}.login-topbar span{font-size:20px}.login-stage{grid-template-columns:1fr;border-radius:22px}.login-story{display:none}.login-form-panel{padding:32px 24px}.login-footer{font-size:12px}.account-card,.account-stat{padding:20px}.account-listing{flex-wrap:wrap}.account-listing>.account-row-icon{display:none}.account-listing>.min-w-0{flex-basis:100%}.account-stat dd{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.account-listing{transition:none}}
