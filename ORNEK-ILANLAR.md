@@ -1,15 +1,15 @@
 # 30 örnek ilan — 9 Eylül 2026
 
 - [x] İstanbul, Ankara, İzmir ve diğer illerde 30 farklı güzergâh/açıklama.
-- [x] Her başlık `ÖRNEK İLAN —`, her açıklama `ÖRNEK İLANDIR.` ile başlar.
-- [x] Liste kartı ve detayında açık örnek etiketi; gerçek hizmet/ödeme sunulmaz.
+- [x] Kullanıcının son tercihi: `ÖRNEK İLAN —` yalnızca başlıkta; açıklamalar normal ilan metni.
+- [x] Tekrarlanan etiket ve uyarı kutusu kaldırıldı. Detay normal fiyat/iletişim alanını kullanır. Sunucudaki örnek ödeme koruması sürer.
 - [x] Kredi satın alma, kart oturumu ve kart teslim callback koruması.
 - [x] Tekrar çalıştırma çoğaltmaz; düzenlenen başlıkları ve tarihleri korur.
 - [x] Pasif, giriş yapılamayan örnek hesap; gerçek kişi iletişimi içermez.
 - [x] Örnek detayları noindex; sitemap dışında.
 - [x] 90 backend, 13 frontend testi; backend/frontend build; lint 0 hata (16 mevcut uyarı).
 - [x] Canlı aktarım: `4da2454`, 09:15:44 UTC; 30 aktif örnek ilan.
-- [x] Masaüstü 1440 px ve mobil 390 px: ana sayfa 4, liste 20+10, detay uyarısı, satın alma düğmesi yok, yatay taşma yok.
+- [x] Masaüstü 1440 px ve mobil 390 px: ana sayfa 4, liste 20+10, ilk yayındaki detay uyarısı, satın alma düğmesi yok, yatay taşma yok.
 - [x] Finansal tablo sayıları ve bakiyeler önce/sonra aynı; yalnızca 30 ilan ve 1 pasif örnek hesap eklendi.
 
 ## Kaynaklar ve çalıştırma
@@ -42,3 +42,7 @@ Gerçek ilana dönüştürmeden önce gerçek ilan sahibi, iletişim, tarih ve g
 ## Ayrı takip notu
 
 Tarayıcı konsolunda bu sürümden önce de bulunan `/ilan-ver` ön yükleme yönlendirmesi gözlendi: anonim kullanıcı `https://localhost:3070/giris?next=%2Filan-ver` adresine yönlendiriliyor. Kaynak `frontend/src/middleware.ts`, `new URL(login, req.url)`; ters proxy arkasındaki iç adres dış yönlendirmeye taşınıyor. Örnek ilan liste/detay kontrollerini etkilemedi. Bu ekleme kapsamında değiştirilmedi; ayrı düzeltme ve gerçek ilan-ver giriş akışı testi gerektiriyor.
+
+## Başlıkla sınırlı işaretleme güncellemesi
+
+`065_sample_listing_copy.sql` yalnızca önceki seed açıklaması birebir eşleşen 30 örneğin açıklamasını temizler; düzenlenmiş içerikleri, başlıkları ve tarihleri korur. 064 yeni kurulumlar için temiz metinleri içerir. 065 üretim migration listesine alınmıştır. Fiyat/iletişim paneli normal bileşendir; gerçek iletişim veya başarılı ödeme sonucu taklit edilmez.
