@@ -1,3 +1,4 @@
+import RelatedGuides from "@/modules/content/RelatedGuides";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleSchema, BreadcrumbSchema } from "@/components/JsonLd";
@@ -73,13 +74,13 @@ export default async function BlogDetailPage({ params }: Props) {
           <h1 className="mt-3 text-4xl font-semibold tracking-tight">{post.title}</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{post.summary}</p>
           <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
-            <span>Yayin tarihi: {formatDate(post.publishedAt)}</span>
-            <span>Son guncelleme: {formatDate(post.updatedAt)}</span>
+            <span>Yayın tarihi: {formatDate(post.publishedAt)}</span>
+            <span>Son güncelleme: {formatDate(post.updatedAt)}</span>
           </div>
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
-        <article className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand">
+        <article className="legal-prose">
           {post.sections.map((section, index) => (
             <div key={`${post.slug}-${index}`}>
               {section.title ? <h2>{section.title}</h2> : null}
@@ -89,6 +90,8 @@ export default async function BlogDetailPage({ params }: Props) {
             </div>
           ))}
         </article>
+        <p className="mt-6 text-sm text-muted">Hazırlayan: PaketJet · Platform kullanım rehberi</p>
+        <RelatedGuides currentPath={post.canonicalPath}/>
       </section>
     </div>
   );

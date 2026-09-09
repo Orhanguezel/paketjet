@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
@@ -11,11 +12,12 @@ export const revalidate = 300;
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug("kvkk");
-    return {
+    return buildMetadata(null, {
+      canonicalPath: "/kvkk",
       title: { absolute: page.meta_title || `${page.title} | PaketJet` },
       description: page.meta_description || page.summary || "PaketJet KVKK aydınlatma metni.",
       alternates: { canonical: `${SITE_URL}/kvkk` },
-    };
+    });
   } catch {
     return { title: "KVKK" };
   }

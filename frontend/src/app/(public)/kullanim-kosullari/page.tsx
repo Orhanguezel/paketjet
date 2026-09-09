@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
@@ -10,7 +11,8 @@ export const revalidate = 300;
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug("kullanim-kosullari");
-    return {
+    return buildMetadata(null, {
+      canonicalPath: "/kullanim-kosullari",
       title: { absolute: page.meta_title || `${page.title} | PaketJet` },
       description: page.meta_description || page.summary || "PaketJet kullanım koşulları.",
       alternates: { canonical: `${SITE_URL}/kullanim-kosullari` },
@@ -21,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
         publishedTime: page.created_at,
         modifiedTime: page.updated_at,
       },
-    };
+    });
   } catch {
     return { title: "Kullanım Koşulları | PaketJet" };
   }

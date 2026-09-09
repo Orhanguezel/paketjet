@@ -1,3 +1,4 @@
+import { buildMetadata } from "@/lib/seo";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
@@ -12,10 +13,11 @@ const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "")
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug("hakkimizda");
-    return {
+    return buildMetadata(null, {
+      canonicalPath: "/hakkimizda",
       title: page.meta_title || page.title,
       description: page.meta_description || page.summary || "PaketJet hakkında bilgi alın.",
-    };
+    });
   } catch {
     return { title: "Hakkımızda" };
   }

@@ -1,3 +1,4 @@
+import RelatedGuides from "@/modules/content/RelatedGuides";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArticleSchema, BreadcrumbSchema } from "@/components/JsonLd";
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return getPageMetadata(guide.seoKey, {
-    title: `${guide.title} Kargo Rotasi`,
+    title: `${guide.title} taşıyıcı güzergâhı`,
     description: guide.description,
     canonicalPath: guide.canonicalPath,
     fallbackDescription: guide.description,
@@ -53,7 +54,7 @@ export default async function RouteGuidePage({ params }: Props) {
   return (
     <div className="bg-background text-foreground">
       <ArticleSchema
-        headline={`${guide.title} Kargo Rotasi`}
+        headline={`${guide.title} taşıyıcı güzergâhı`}
         description={guide.description}
         url={guide.canonicalPath}
         publishedTime={guide.publishedAt}
@@ -63,7 +64,7 @@ export default async function RouteGuidePage({ params }: Props) {
       <BreadcrumbSchema
         items={[
           { name: "Ana Sayfa", url: "/" },
-          { name: "Rota Rehberi", url: guide.canonicalPath },
+          { name: "Rehberler", url: "/blog" },
           { name: guide.title, url: guide.canonicalPath },
         ]}
       />
@@ -73,13 +74,13 @@ export default async function RouteGuidePage({ params }: Props) {
           <h1 className="mt-3 text-4xl font-semibold tracking-tight">{guide.title}</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{guide.summary}</p>
           <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
-            <span>Yayin tarihi: {formatDate(guide.publishedAt)}</span>
-            <span>Son guncelleme: {formatDate(guide.updatedAt)}</span>
+            <span>Yayın tarihi: {formatDate(guide.publishedAt)}</span>
+            <span>Son güncelleme: {formatDate(guide.updatedAt)}</span>
           </div>
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
-        <article className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand">
+        <article className="legal-prose">
           {guide.sections.map((section, index) => (
             <div key={`${guide.slug}-${index}`}>
               {section.title ? <h2>{section.title}</h2> : null}
@@ -89,6 +90,8 @@ export default async function RouteGuidePage({ params }: Props) {
             </div>
           ))}
         </article>
+        <p className="mt-6 text-sm text-muted">Hazırlayan: PaketJet · Platform kullanım rehberi</p>
+        <RelatedGuides currentPath={guide.canonicalPath}/>
       </section>
     </div>
   );

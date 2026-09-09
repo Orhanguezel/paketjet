@@ -1,35 +1,29 @@
-import { NextResponse } from "next/server";
+import {PRODUCT_SUMMARY,PRODUCT_FAQS} from '@/modules/content/product-facts';
+import {BLOG_POSTS,ROUTE_GUIDES} from '@/modules/content/content.data';
+import {SITE_URL} from '@/lib/seo';
+export function GET(){
+ const content = `# PaketJet
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
+${PRODUCT_SUMMARY}
 
-export async function GET() {
-  const content = `# PaketJet - P2P Kargo Pazaryeri
+## Sorular ve yanıtlar
 
-PaketJet, Türkiye'nin P2P (kişiden kişiye) kargo pazaryeridir. Taşıyıcılar ücretsiz güzergâh ilanı açar; göndericiler taşıyıcının iletişim bilgilerine erişmek için ilan alma hakkı kullanır. Kartla ödeme yalnız etkin sağlayıcı varsa sunulur. İletişim erişim ücreti taşıma bedeli değildir. Taşıma koşulları taraflarca doğrudan görüşülür.
+${PRODUCT_FAQS.map(f=>`### ${f.question}\n${f.answer}`).join('\n\n')}
 
-## Temel Özellikler
-- Şehir ve tarihle güzergâh arama
-- Ücretsiz taşıyıcı ilanı ve moderasyon
-- Maskeli iletişim ve ilan alma hakkı modeli
-- Taşıyıcıyla doğrudan görüşme
+## Rehberler
+${[...BLOG_POSTS,...ROUTE_GUIDES].map(p=>`- [${p.title}](${SITE_URL}${p.canonicalPath}): ${p.description}`).join('\n')}
 
-## SEO & GEO Bilgileri
-- Web: ${SITE_URL}
-- Lokasyon: Türkiye Geneli
-- Model: P2P Lojistik / Paylaşımlı Ekonomi
+## Platform
+- [İlanlar](${SITE_URL}/ilanlar)
+- [Destek](${SITE_URL}/destek)
+- [Hakkımızda](${SITE_URL}/hakkimizda)
+- [İletişim](${SITE_URL}/iletisim)
+- [Taşıma kuralları](${SITE_URL}/tasima-kurallari)
+- [Kullanım koşulları](${SITE_URL}/kullanim-kosullari)
+- [Gizlilik politikası](${SITE_URL}/gizlilik-politikasi)
+- [KVKK](${SITE_URL}/kvkk)
 
-## Önemli Bağlantılar
-- İlanlar: ${SITE_URL}/ilanlar
-- Destek: ${SITE_URL}/destek
-- Hakkımızda: ${SITE_URL}/hakkimizda
-- Kullanım Koşulları: ${SITE_URL}/kullanim-kosullari
-- Gizlilik: ${SITE_URL}/gizlilik-politikasi
-- KVKK: ${SITE_URL}/kvkk
+İlan durumu ve hareket tarihi zamanla değişir; güncel bilgi için ilan sayfası esas alınır. Başlığı ÖRNEK ile başlayan ilanlar örnek içeriktir. Kartla ödeme yalnız etkin bir ödeme sağlayıcısı bulunduğunda sunulur.
 `;
-
-  return new NextResponse(content, {
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-    },
-  });
+ return new Response(content,{headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'public, max-age=3600'}});
 }

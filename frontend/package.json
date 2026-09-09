@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "seo:audit": "node scripts/seo-audit.mjs"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.8",

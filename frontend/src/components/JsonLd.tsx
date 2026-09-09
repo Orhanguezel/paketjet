@@ -23,6 +23,7 @@ export function OrganizationSchema() {
       data={{
         "@context": "https://schema.org",
         "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
         name: "PaketJet",
         url: SITE_URL,
         logo: `${SITE_URL}/uploads/media/logo/logo-512x512.png`,
@@ -41,33 +42,13 @@ export function WebSiteSchema() {
       data={{
         "@context": "https://schema.org",
         "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
         name: "PaketJet",
+        publisher: {"@id": `${SITE_URL}/#organization`},
         url: SITE_URL,
         inLanguage: "tr",
         description: "Türkiye'nin P2P kargo pazaryeri",
-        potentialAction: {
-          "@type": "SearchAction",
-          target: `${SITE_URL}/ilanlar?from_city={search_term_string}`,
-          "query-input": "required name=search_term_string",
-        },
-      }}
-    />
-  );
-}
 
-/** Anasayfa — Service */
-export function ServiceSchema() {
-  return (
-    <JsonLd
-      data={{
-        "@context": "https://schema.org",
-        "@type": "Service",
-        name: "PaketJet P2P Kargo Hizmeti",
-        description:
-          "Şehirler arası gönderi taleplerini taşıyıcılarla buluşturan P2P kargo pazaryeri. Göndericiler ücretsiz ilan açar, taşıyıcılar iletişim erişimi satın alır.",
-        provider: { "@type": "Organization", name: "PaketJet", url: SITE_URL },
-        serviceType: "P2P Kargo Pazaryeri",
-        areaServed: { "@type": "Country", name: "Turkey" },
       }}
     />
   );
@@ -124,87 +105,6 @@ export function ContactPointSchema({
   );
 }
 
-/** İlan detay — Offer */
-export function OfferSchema({
-  title,
-  description,
-  price,
-  currency,
-  fromCity,
-  toCity,
-  url,
-}: {
-  title: string;
-  description?: string;
-  price: number;
-  currency?: string;
-  fromCity: string;
-  toCity: string;
-  url: string;
-}) {
-  return (
-    <JsonLd
-      data={{
-        "@context": "https://schema.org",
-        "@type": "Offer",
-        name: title,
-        ...(description && { description }),
-        price,
-        priceCurrency: currency ?? "TRY",
-        availability: "https://schema.org/InStock",
-        url: url.startsWith("/") ? `${SITE_URL}${url}` : url,
-        seller: { "@type": "Organization", name: "PaketJet" },
-        areaServed: [
-          { "@type": "City", name: fromCity },
-          { "@type": "City", name: toCity },
-        ],
-      }}
-    />
-  );
-}
-
-/** Anasayfa — HowTo (Nasıl Çalışır) + speakable */
-export function HowToSchema() {
-  return (
-    <JsonLd
-      data={{
-        "@context": "https://schema.org",
-        "@type": "HowTo",
-        name: "PaketJet ile Taşıyıcıya Nasıl Ulaşılır?",
-        description:
-          "Güzergâh ilanı bulma ve taşıyıcı iletişimine erişme adımları.",
-        step: [
-          {
-            "@type": "HowToStep",
-            position: 1,
-            name: "Rota Ara",
-            text: "Nereden, nereye ve hareket tarihini seçerek güncel ilanları listele.",
-            url: `${SITE_URL}/ilanlar`,
-          },
-          {
-            "@type": "HowToStep",
-            position: 2,
-            name: "Taşıyıcı Seç",
-            text: "Güzergâh, hareket tarihi ve araç bilgilerini karşılaştır.",
-            url: `${SITE_URL}/ilanlar`,
-          },
-          {
-            "@type": "HowToStep",
-            position: 3,
-            name: "İletişime Eriş",
-            text: "İletişim erişimini satın al veya ilan alma hakkını kullan; taşıma koşullarını taşıyıcıyla doğrudan görüş.",
-            url: `${SITE_URL}/ilanlar`,
-          },
-        ],
-        speakable: {
-          "@type": "SpeakableSpecification",
-          cssSelector: ["h1", "h2", ".hero-subtitle"],
-        },
-      }}
-    />
-  );
-}
-
 /** Blog / rota icerikleri — Article */
 export function ArticleSchema({
   headline,
@@ -233,7 +133,8 @@ export function ArticleSchema({
         datePublished: publishedTime,
         dateModified: modifiedTime,
         ...(section && { articleSection: section }),
-        ...(image && { image: image.startsWith("/") ? `${SITE_URL}${image}` : image }),
+        image: image ? (image.startsWith("/") ? `${SITE_URL}${image}` : image) : `${SITE_URL}/opengraph-image`,
+        inLanguage: "tr-TR",
         mainEntityOfPage: url.startsWith("/") ? `${SITE_URL}${url}` : url,
         author: {
           "@type": "Organization",

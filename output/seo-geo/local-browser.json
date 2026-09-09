@@ -1,0 +1,31 @@
+{
+  "base": "http://localhost:3079",
+  "results": [
+    {
+      "width": 1440,
+      "metrics": {
+        "lcp": 328,
+        "cls": 0.000601011462394412,
+        "ttfb": 86.69999998807907
+      },
+      "faqOpens": true,
+      "guideNavigation": true,
+      "noOverflow": true,
+      "errors": []
+    },
+    {
+      "width": 390,
+      "metrics": {
+        "lcp": 240,
+        "cls": 0.0015233182399318134,
+        "ttfb": 102.09999999403954
+      },
+      "faqOpens": true,
+      "guideNavigation": true,
+      "noOverflow": true,
+      "errors": []
+    }
+  ],
+  "serverRenderedAnswers": true,
+  "metricScope": "Unthrottled lab samples, not field Core Web Vitals or Lighthouse scores"
+}

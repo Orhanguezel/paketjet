@@ -1,137 +1,43 @@
-// src/lib/seo.ts
-// SEO helper — backend'den sayfa SEO verisini cekip Next.js Metadata objesi olusturur
-
-import type { Metadata } from "next";
-
-const BASE_URL = (process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8078").replace(/\/$/, "");
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
-
+import type { Metadata } from 'next';
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://paketjet.com').replace(/\/$/, '');
+export const DEFAULT_DESCRIPTION = 'Taşıyıcı güzergâhlarını keşfet, iletişim bilgilerine eriş ve doğrudan görüş. Güzergâhını ücretsiz ilan ver. İletişim erişim bedeli taşıma ücretinden ayrıdır.';
+const API_URL = (process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8078').replace(/\/$/, '');
 export interface PageSeoData {
-  pageKey: string;
-  title?: string;
-  description?: string;
-  keywords?: string;
-  open_graph?: {
-    type?: string;
-    images?: string[];
-  };
-  twitter?: {
-    card?: string;
-    site?: string;
-    creator?: string;
-  };
-  robots?: {
-    noindex?: boolean;
-    index?: boolean;
-    follow?: boolean;
-  };
+  pageKey: string; title?: string; description?: string; keywords?: string;
+  open_graph?: {type?: string; images?: string[]};
+  twitter?: {card?: string; site?: string; creator?: string};
+  robots?: {noindex?: boolean; index?: boolean; follow?: boolean};
   _fallback?: boolean;
 }
-
-/**
- * Backend'den sayfa SEO verisini cek.
- * Hata durumunda null doner (sayfa hala render olur).
- */
+type Overrides = Partial<Metadata> & {vars?: Record<string,string>; canonicalPath?: string; fallbackDescription?: string; publishedTime?: string; modifiedTime?: string};
 export async function fetchPageSeo(pageKey: string): Promise<PageSeoData | null> {
   try {
-    const res = await fetch(`${BASE_URL}/api/site_settings/seo/${pageKey}`, {
-      next: { revalidate: 300 },
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
+    const res = await fetch(`${API_URL}/api/site_settings/seo/${pageKey}`, {next:{revalidate:300}, signal:AbortSignal.timeout(5000)});
+    return res.ok ? res.json() : null;
+  } catch {return null;}
 }
-
-/**
- * Template degiskenleri degistir: {{from_city}} -> "Istanbul"
- */
-function interpolate(template: string, vars: Record<string, string>): string {
-  return template.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? "");
-}
-
-/**
- * SEO verisinden Next.js Metadata objesi olustur.
- */
-export function buildMetadata(
-  seo: PageSeoData | null,
-  overrides?: Partial<Metadata> & { vars?: Record<string, string>; publishedTime?: string; modifiedTime?: string },
-): Metadata {
-  const vars = overrides?.vars ?? {};
-
-  const title = seo?.title ? interpolate(seo.title, vars) : undefined;
-  const description = seo?.description ? interpolate(seo.description, vars) : undefined;
-  const keywords = seo?.keywords ? seo.keywords.split(",").map((k) => k.trim()).filter(Boolean) : undefined;
-
-  const robots = seo?.robots?.noindex
-    ? { index: false, follow: seo.robots.follow ?? true }
-    : undefined;
-
-  const ogImages = seo?.open_graph?.images?.map((img) =>
-    img.startsWith("/") ? `${SITE_URL}${img}` : img,
-  );
-
-  const meta: Metadata = {
-    ...(title && { title }),
-    ...(description && { description }),
-    ...(keywords && { keywords }),
-    ...(robots && { robots }),
-    openGraph: {
-      ...(title && { title }),
-      ...(description && { description }),
-      ...(seo?.open_graph?.type && { type: seo.open_graph.type as "website" }),
-      ...(ogImages?.length && { images: ogImages }),
-      siteName: "PaketJet",
-      ...(overrides?.publishedTime && { publishedTime: overrides.publishedTime }),
-      ...(overrides?.modifiedTime && { modifiedTime: overrides.modifiedTime }),
-    },
-    twitter: {
-      card: (seo?.twitter?.card as "summary_large_image") ?? "summary_large_image",
-      ...(seo?.twitter?.site && { site: seo.twitter.site }),
-      ...(seo?.twitter?.creator && { creator: seo.twitter.creator }),
-    },
-    ...overrides,
+const interpolate = (text: string, vars: Record<string,string>) => text.replace(/\{\{(\w+)\}\}/g, (_,key)=>vars[key]??'');
+export function buildMetadata(seo: PageSeoData | null, overrides: Overrides = {}): Metadata {
+  const {vars={}, canonicalPath, fallbackDescription, publishedTime, modifiedTime, ...explicit} = overrides;
+  const rawTitle = explicit.title ?? (seo?.title ? interpolate(seo.title,vars) : 'Taşıyıcı ilanları');
+  const title = typeof rawTitle === 'string' ? rawTitle.replace(/\s*[|—-]\s*PaketJet\s*$/i,'').replace(/^PaketJet\s*\|\s*/i,'') : rawTitle;
+  const shareTitle = typeof title === 'string' ? `${title} | PaketJet` : title && 'absolute' in title ? title.absolute : 'PaketJet';
+  const description = explicit.description ?? (seo?.description ? interpolate(seo.description,vars) : fallbackDescription ?? DEFAULT_DESCRIPTION);
+  const url = canonicalPath ? `${SITE_URL}${canonicalPath}` : undefined;
+  const images = seo?.open_graph?.images?.length ? seo.open_graph.images.map(img=>img.startsWith('/')?`${SITE_URL}${img}`:img) : [`${SITE_URL}/opengraph-image`];
+  const robots = seo?.robots ? {index:!seo.robots.noindex && seo.robots.index!==false,follow:seo.robots.follow!==false} : undefined;
+  return {
+    ...explicit, title, description,
+    ...(seo?.keywords && {keywords:seo.keywords.split(',').map(s=>s.trim()).filter(Boolean)}),
+    ...(robots && {robots}), ...(explicit.robots && {robots:explicit.robots}),
+    ...(url && {alternates:{...explicit.alternates,canonical:url}}),
+    openGraph:{type:'website',siteName:'PaketJet',locale:'tr_TR',title:shareTitle,description,images,...(url && {url}),...(publishedTime && {publishedTime}),...(modifiedTime && {modifiedTime}),...explicit.openGraph},
+    twitter:{card:'summary_large_image',title:shareTitle,description,images,...(seo?.twitter?.site && {site:seo.twitter.site}),...explicit.twitter},
   };
-
-  if(typeof meta.title==='string')meta.title=meta.title.replace(/\s*[|—-]\s*PaketJet\s*$/i,'').replace(/^PaketJet\s*\|\s*/i,'');
-  // vars'i metadata'dan temizle
-  if ("vars" in meta) delete (meta as Record<string, unknown>).vars;
-
-  return meta;
 }
-
-/**
- * Kisayol: fetchPageSeo + buildMetadata tek satirda.
- */
-export async function getPageMetadata(
-  pageKey: string,
-  overrides?: Partial<Metadata> & { vars?: Record<string, string>; canonicalPath?: string; fallbackDescription?: string },
-): Promise<Metadata> {
-  const seo = await fetchPageSeo(pageKey);
-  const meta = buildMetadata(seo, overrides);
-
-  if (!meta.description && overrides?.fallbackDescription) {
-    meta.description = overrides.fallbackDescription;
-  }
-
-  if (!meta.openGraph?.description && (meta.description || overrides?.fallbackDescription)) {
-    meta.openGraph = {
-      ...meta.openGraph,
-      description: meta.description ?? overrides?.fallbackDescription,
-    };
-  }
-
-  // Canonical URL
-  const path = overrides?.canonicalPath;
-  if (path) {
-    meta.alternates = { canonical: `${SITE_URL}${path}` };
-  }
-
-  return meta;
+export async function getPageMetadata(pageKey: string, overrides?: Overrides): Promise<Metadata> {
+  return buildMetadata(await fetchPageSeo(pageKey),overrides);
 }
-
-/** noindex sayfalar icin hizli metadata */
 export function noIndexMetadata(title: string, description?: string): Metadata {
-  return { title, ...(description && { description }), robots: { index: false, follow: false } };
+  return {title,...(description && {description}),robots:{index:false,follow:false}};
 }

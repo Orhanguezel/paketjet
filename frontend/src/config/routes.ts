@@ -5,6 +5,7 @@
 
 export const ROUTES = {
   home: "/",
+  shareImage: "/opengraph-image",
   internal: {uiPreview:"/ui-preview"},
 
   auth: {

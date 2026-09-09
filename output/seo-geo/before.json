@@ -1,0 +1,295 @@
+{
+  "base": "https://paketjet.com",
+  "pages": [
+    {
+      "path": "",
+      "status": 200,
+      "title": "Kargo Göndermek Artık Çok Kolay | PaketJet",
+      "description": "PaketJet ile taşıyıcı ilanlarına göz at, kargo rezervasyonu yap. Türkiye geneli P2P kargo pazaryeri.",
+      "canonical": "https://paketjet.com",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Gönderine uygun taşıyıcıyı bul."
+      ]
+    },
+    {
+      "path": "/ilanlar",
+      "status": 200,
+      "title": "Taşıma İlanları | PaketJet",
+      "description": "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
+      "canonical": "https://paketjet.com/ilanlar",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Taşıyıcı ilanları"
+      ]
+    },
+    {
+      "path": "/destek",
+      "status": 200,
+      "title": "Sıkça Sorulan Sorular | PaketJet",
+      "description": "PaketJet hakkında sıkça sorulan sorular ve cevapları. Kargo gönderimi, rezervasyon, ödeme süreçleri.",
+      "canonical": "https://paketjet.com/destek",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Sıkça Sorulan Sorular ve Destek Talebi"
+      ]
+    },
+    {
+      "path": "/hakkimizda",
+      "status": 200,
+      "title": "Hakkımızda | PaketJet",
+      "description": "PaketJet taşıyıcı ilanları ve iletişim erişimi platformu hakkında bilgi alın.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": null,
+      "h1": [
+        "Hakkımızda"
+      ]
+    },
+    {
+      "path": "/iletisim",
+      "status": 200,
+      "title": "İletişim | PaketJet",
+      "description": "PaketJet ile iletişime geçin. Sorularınız için bize ulaşın.",
+      "canonical": "https://paketjet.com/iletisim",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Bize ulaşın"
+      ]
+    },
+    {
+      "path": "/kvkk",
+      "status": 200,
+      "title": "KVKK | PaketJet",
+      "description": "PaketJet KVKK aydınlatma metni.",
+      "canonical": "https://paketjet.com/kvkk",
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": null,
+      "h1": [
+        "KVKK Aydınlatma Metni"
+      ]
+    },
+    {
+      "path": "/gizlilik-politikasi",
+      "status": 200,
+      "title": "Gizlilik Politikası | PaketJet",
+      "description": "PaketJet gizlilik politikası ve veri koruma yaklaşımı.",
+      "canonical": "https://paketjet.com/gizlilik-politikasi",
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": null,
+      "h1": [
+        "Gizlilik Politikası"
+      ]
+    },
+    {
+      "path": "/kullanim-kosullari",
+      "status": 200,
+      "title": "Kullanım Koşulları | PaketJet",
+      "description": "PaketJet hizmet kullanım koşulları ve platform kuralları.",
+      "canonical": "https://paketjet.com/kullanim-kosullari",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Kullanım Koşulları"
+      ]
+    },
+    {
+      "path": "/tasima-kurallari",
+      "status": 200,
+      "title": "Taşıma Kuralları | PaketJet",
+      "description": "PaketJet taşıma kuralları, yasaklı maddeler ve sorumluluklar.",
+      "canonical": "https://paketjet.com/tasima-kurallari",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Taşıma Kuralları"
+      ]
+    },
+    {
+      "path": "/blog",
+      "status": 200,
+      "title": "PaketJet Blog | PaketJet",
+      "description": "P2P kargo, PaketJet kullanim rehberleri ve sehirler arasi tasima odakli icerikler.",
+      "canonical": "https://paketjet.com/blog",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Kargo ve rota odakli rehberler"
+      ]
+    },
+    {
+      "path": "/blog/p2p-kargo-nedir",
+      "status": 200,
+      "title": "P2P kargo nedir? | PaketJet",
+      "description": "P2P kargo yaklaşımını ve PaketJet üzerinden taşıyıcı iletişimine nasıl erişildiğini öğren.",
+      "canonical": "https://paketjet.com/blog/p2p-kargo-nedir",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "P2P kargo nedir?"
+      ]
+    },
+    {
+      "path": "/blog/paketjet-nasil-kullanilir",
+      "status": 200,
+      "title": "PaketJet nasıl kullanılır? | PaketJet",
+      "description": "Gönderici ve taşıyıcı için PaketJet’in temel adımlarını öğren.",
+      "canonical": "https://paketjet.com/blog/paketjet-nasil-kullanilir",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "PaketJet nasıl kullanılır?"
+      ]
+    },
+    {
+      "path": "/rota/istanbul-ankara",
+      "status": 200,
+      "title": "İstanbul – Ankara Kargo Rotasi | PaketJet",
+      "description": "İstanbul – Ankara güzergâhında güncel ilan arama ve taşıyıcıyla doğrudan iletişim rehberi.",
+      "canonical": "https://paketjet.com/rota/istanbul-ankara",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "İstanbul – Ankara"
+      ]
+    },
+    {
+      "path": "/rota/istanbul-izmir",
+      "status": 200,
+      "title": "İstanbul – İzmir Kargo Rotasi | PaketJet",
+      "description": "İstanbul – İzmir güzergâhında güncel ilan arama ve taşıyıcıyla doğrudan iletişim rehberi.",
+      "canonical": "https://paketjet.com/rota/istanbul-izmir",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "İstanbul – İzmir"
+      ]
+    },
+    {
+      "path": "/ilanlar?page=2",
+      "status": 200,
+      "title": "Taşıma İlanları | PaketJet",
+      "description": "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
+      "canonical": "https://paketjet.com/ilanlar",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Taşıyıcı ilanları"
+      ]
+    },
+    {
+      "path": "/ilanlar?from=İstanbul",
+      "status": 200,
+      "title": "Taşıma İlanları | PaketJet",
+      "description": "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
+      "canonical": "https://paketjet.com/ilanlar",
+      "ogImage": null,
+      "robots": null,
+      "h1": [
+        "Taşıyıcı ilanları"
+      ]
+    },
+    {
+      "path": "/blog/seo-audit-missing",
+      "status": 404,
+      "title": "PaketJet — Taşıyıcı ilanları",
+      "description": "Güzergâhına uygun taşıyıcı ilanını bul, iletişim bilgilerine eriş ve doğrudan görüş. İlan vermek ücretsizdir.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": "noindex",
+      "h1": []
+    },
+    {
+      "path": "/rota/seo-audit-missing",
+      "status": 404,
+      "title": "PaketJet — Taşıyıcı ilanları",
+      "description": "Güzergâhına uygun taşıyıcı ilanını bul, iletişim bilgilerine eriş ve doğrudan görüş. İlan vermek ücretsizdir.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": "noindex",
+      "h1": []
+    },
+    {
+      "path": "/ilanlar/seo-audit-missing",
+      "status": 404,
+      "title": "Taşıma İlanları | PaketJet",
+      "description": "Aktif kargo taşıma ilanları. Şehir, tarih ve araç tipine göre filtrele, en uygun taşıyıcıyı bul.",
+      "canonical": null,
+      "ogImage": null,
+      "robots": "noindex",
+      "h1": []
+    },
+    {
+      "path": "/giris",
+      "status": 200,
+      "title": "Giriş Yap | PaketJet",
+      "description": "PaketJet hesabınıza giriş yaparak ilan, iletişim alımı ve destek süreçlerine erişin.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": "noindex, nofollow",
+      "h1": [
+        "Tekrar hoş geldin"
+      ]
+    },
+    {
+      "path": "/uye-ol",
+      "status": 200,
+      "title": "Üye Ol | PaketJet",
+      "description": "PaketJet hesabı oluşturarak ilanlarınızı yönetin ve satın aldığınız iletişim bilgilerine erişin.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": "noindex, nofollow",
+      "h1": [
+        "Hesap oluştur"
+      ]
+    },
+    {
+      "path": "/panel",
+      "status": 200,
+      "title": "Giriş Yap | PaketJet",
+      "description": "PaketJet hesabınıza giriş yaparak ilan, iletişim alımı ve destek süreçlerine erişin.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": "noindex, nofollow",
+      "h1": [
+        "Tekrar hoş geldin"
+      ]
+    },
+    {
+      "path": "/ilan-ver",
+      "status": 200,
+      "title": "Giriş Yap | PaketJet",
+      "description": "PaketJet hesabınıza giriş yaparak ilan, iletişim alımı ve destek süreçlerine erişin.",
+      "canonical": null,
+      "ogImage": "https://paketjet.com/assets/og-default.png",
+      "robots": "noindex, nofollow",
+      "h1": [
+        "Tekrar hoş geldin"
+      ]
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200,
+      "title": null,
+      "description": null,
+      "canonical": null,
+      "ogImage": null,
+      "robots": null,
+      "h1": []
+    },
+    {
+      "path": "/llms.txt",
+      "status": 200,
+      "title": null,
+      "description": null,
+      "canonical": null,
+      "ogImage": null,
+      "robots": null,
+      "h1": []
+    }
+  ]
+}

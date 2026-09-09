@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import IlanCard from '@/components/IlanCard';
@@ -15,7 +16,7 @@ export default function IlanlarClient({initialIlans,initialTotal,initialPage,ini
   function update(key:keyof Filters,value:string){setFilters(old=>({...old,[key]:value}));}
   function navigate(q:URLSearchParams){startTransition(()=>router.push(`${ROUTES.ilanlar.list}${q.size?'?'+q:''}`,{scroll:false}));}
   function search(e:React.FormEvent){e.preventDefault();const q=new URLSearchParams();if(filters.from_city.trim())q.set('from',filters.from_city.trim());if(filters.to_city.trim())q.set('to',filters.to_city.trim());if(filters.date)q.set('date',filters.date);if(filters.vehicle_type)q.set('vehicle',filters.vehicle_type);navigate(q);}
-  function page(n:number){const q=new URLSearchParams(query);q.set('page',String(n));navigate(q);}
+  function pageHref(n:number){const q=new URLSearchParams(query);if(n>1)q.set('page',String(n));else q.delete('page');return `${ROUTES.ilanlar.list}${q.size?'?'+q:''}`;}
   const pages=Math.ceil(initialTotal/20);
   return <section className="site-container listing-page py-10 sm:py-12" aria-busy={pending}>
     <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">Taşıyıcı ilanları</h1><p className="mt-3 text-lg text-muted">Güzergâhına uygun ilanı bul.</p>
@@ -27,6 +28,6 @@ export default function IlanlarClient({initialIlans,initialTotal,initialPage,ini
       <button type="button" onClick={()=>navigate(new URLSearchParams())} className="min-h-11 text-left text-sm font-semibold text-brand sm:col-span-2">Filtreleri temizle</button>
     </form>
     <div aria-live="polite">{initialError?<div role="alert" className="rounded-lg border border-border bg-surface p-6"><h2 className="text-lg font-semibold">İlanlar yüklenemedi</h2><p className="mt-2 text-muted">Arama koşulların korundu. Yeniden deneyebilirsin.</p><button onClick={()=>startTransition(()=>router.refresh())} className="mt-4 min-h-11 rounded-lg border border-brand px-5 text-brand">Yeniden dene</button></div>:<>{alternativeScope&&<div className="mb-6 rounded-2xl border border-brand/20 bg-brand/5 p-6"><p className="text-sm text-muted">Aradığın adreste bu koşullara uygun aktif ilan bulunamadı.</p><h2 className="mt-2 text-xl font-semibold">Aynı ildeki alternatifler</h2><p className="mt-2 font-medium text-brand">{alternativeScope}</p><p className="mt-2 text-sm text-muted">Seçtiğin tarih, araç tipi ve rota yönü korunarak il genelindeki ilanlar gösteriliyor. Kesin buluşma yerini taşıyıcıyla görüşebilirsin.</p></div>}<p className="mb-5 text-sm">{pending?'Sonuçlar güncelleniyor…':`${initialTotal} ${alternativeScope?'alternatif ilan':'ilan'} bulundu.`}</p>{initialIlans.length?<div className={`space-y-4 ${pending?'opacity-60':''}`}>{initialIlans.map(ilan=><IlanCard key={ilan.id} ilan={ilan}/>)}</div>:<div className="listing-empty rounded-2xl border border-border-soft bg-surface px-6 py-16 text-center"><h2 className="text-xl font-semibold">Bu aramada aktif ilan bulunamadı</h2><p className="mt-2 text-muted">Farklı bir tarih veya güzergâh seçebilirsin.</p><button onClick={()=>navigate(new URLSearchParams())} className="mt-5 min-h-11 rounded-lg border border-brand px-5 font-semibold text-brand">Tüm güncel ilanları göster</button></div>}</>}</div>
-    {!initialError&&pages>1&&<nav aria-label="Sayfalama" className="mt-8 flex flex-wrap items-center justify-center gap-4"><button disabled={initialPage<=1||pending} onClick={()=>page(initialPage-1)} className="min-h-11 rounded-lg border border-border px-4 disabled:opacity-40">Önceki</button><span aria-current="page">{initialPage} / {pages}</span><button disabled={initialPage>=pages||pending} onClick={()=>page(initialPage+1)} className="min-h-11 rounded-lg border border-border px-4 disabled:opacity-40">Sonraki</button></nav>}
+    {!initialError&&pages>1&&<nav aria-label="Sayfalama" className="mt-8 flex flex-wrap items-center justify-center gap-4">{initialPage>1&&<Link href={pageHref(initialPage-1)} rel="prev" className="min-h-11 rounded-lg border border-border px-4 py-3">Önceki</Link>}<span aria-current="page">{initialPage} / {pages}</span>{initialPage<pages&&<Link href={pageHref(initialPage+1)} rel="next" className="min-h-11 rounded-lg border border-border px-4 py-3">Sonraki</Link>}</nav>}
   </section>;
 }

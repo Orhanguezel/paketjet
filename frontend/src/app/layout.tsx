@@ -48,6 +48,7 @@ async function fetchIcons() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const [{ seo, meta }, icons] = await Promise.all([fetchGlobalSeo(), fetchIcons()]);
+  const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
   const bingVerification = process.env.BING_VERIFICATION ?? "";
 
   const siteName = seo?.site_name ?? "PaketJet";
@@ -62,7 +63,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const ogImages = seo?.open_graph?.images?.length
     ? seo.open_graph.images.map((img: string) => img.startsWith("/") ? `${SITE_URL}${img}` : img)
-    : [`${SITE_URL}/assets/og-default.png`];
+    : [`${SITE_URL}/opengraph-image`];
 
   const twitterCard = seo?.twitter?.card ?? "summary_large_image";
   const twitterSite = seo?.twitter?.site || undefined;
@@ -93,9 +94,10 @@ export async function generateMetadata(): Promise<Metadata> {
       card: twitterCard as "summary_large_image",
       ...(twitterSite && { site: twitterSite }),
     },
-    verification: bingVerification
-      ? { other: { "msvalidate.01": bingVerification } }
-      : undefined,
+    verification: {
+      ...(googleVerification && {google:googleVerification}),
+      ...(bingVerification && {other:{"msvalidate.01":bingVerification}}),
+    },
   };
 }
 

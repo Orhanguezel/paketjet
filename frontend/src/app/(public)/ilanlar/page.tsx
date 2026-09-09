@@ -1,3 +1,4 @@
+import {notFound} from "next/navigation";
 import type { Metadata } from "next";
 import { searchIlansWithAlternatives } from "@/modules/ilan/ilan-search.service";
 import type { VehicleType } from "@/modules/ilan/ilan.type";
@@ -20,11 +21,15 @@ function normalizePage(page: string | undefined) {
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({searchParams}: {searchParams: SearchParams}): Promise<Metadata> {
+  const params = await searchParams;
+  const page = normalizePage(params.page);
+  const filtered = !!(params.from || params.to || params.date || params.vehicle);
   return getPageMetadata("listings", {
-    title: "Taşıma İlanları",
+    title: `Taşıyıcı ilanları${page > 1 ? ` — Sayfa ${page}` : ""}`,
     description: "PaketJet üzerindeki aktif taşıma ilanlarını güzergah, tarih ve araç tipine göre inceleyin.",
-    canonicalPath: "/ilanlar",
+    canonicalPath: page > 1 ? `/ilanlar?page=${page}` : "/ilanlar",
+    ...(filtered && {robots:{index:false,follow:true}}),
   });
 }
 
@@ -51,6 +56,8 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
     }).then(r=>({...r,error:false})).catch(() => ({ data: [], total: 0, page, limit: 20, alternativeScope:null, error:true })),
     getListingCreditPrice().catch(() => null),
   ]);
+
+  if (!result.error && page > Math.max(1, Math.ceil(result.total / 20))) notFound();
 
   return (
     <>
