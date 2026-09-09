@@ -1,5 +1,7 @@
 # PaketJet detaylı durum raporu — 9 Eylül 2026
 
+> **9 Eylül il alternatifleri:** `0a2f704`, 11:26:09 UTC yayında. Tam adreste sonuç yoksa aynı ildeki ilanlar açıklamalı alternatif olarak gösteriliyor; tarih, araç ve rota yönü korunuyor. Canlı Şirince aramasında 3 İzmir alternatifi doğrulandı. [Kapsam](ADRES-VE-HARITA.md), [test ve yayın kanıtı](output/nearby-search/verification.json).
+
 > **9 Eylül adres ve harita güncellemesi:** `d0e2838`, 10:24:29 UTC yayında. Tüm mevcut adres girişleri ortak köy/mahalle/açık adres önerileri ve haritaya taşındı; koordinatlar ilanla kaydediliyor, serbest giriş ve eski şehir ilanları destekleniyor. 93 backend + 16 frontend testi, üç üretim derlemesi ve canlı mobil/masaüstü kontrolleri başarılı. [Kapsam ve doğrulama](ADRES-VE-HARITA.md).
 
 > **Son görünüm tercihi:** `ce672b2`, 09:29:09 UTC yayında. Örnek işareti yalnızca ilan başlığında bırakıldı; açıklamadaki tekrarlar ve detay uyarı kutusu kaldırıldı. Normal fiyat/iletişim alanı geri getirildi. [Güncel doğrulama](output/sample-copy/verification.json).

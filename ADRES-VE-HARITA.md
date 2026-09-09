@@ -56,3 +56,5 @@ Sanitize edilmiş yayın kanıtları: [adres doğrulaması](output/locations/ver
 - Backend `from_province` / `to_province` eşitlik filtresi kullanır; başka illerdeki benzer mahalle/cadde adları sonuçlara karışmaz. Aktiflik, tarih ve özel iletişim gizliliği mevcut public sorguda korunur.
 - 22 frontend testi geçti. Backend turunda 93 test geçti, bir gizlilik testi eşzamanlı derleme sırasında 5 saniye sınırını aştı; tek başına tekrarında 3,1 saniyede geçti (94 testin tamamı doğrulandı). Backend/site üretim derlemeleri başarılı.
 - Yerel Chromium 1440/390 px: il alternatifleri, orijinal adresin korunması, normal şehir sonuçları, tarih/araç kısıtı ve bilinmeyen adres durumu geçti; sayfa hatası/taşma yok.
+
+**Canlı doğrulama:** `0a2f704` sürümü 9 Eylül 2026 11:26:09 UTC tarihinde yayınlandı. Şirince tam adres araması 0, İzmir il alternatifleri 3 ilan döndürdü. Canlı Chromium 1440/390 px, tarih/araç kısıtı, normal sonuçların korunması ve bilinmeyen adres kontrolleri geçti. Üç PM2 süreci yeni sürümde online; health kontrolleri başarılı; yayın öncesi/sonrası kayıt sayıları ve cüzdan toplamı aynı. [Yayın kanıtı](output/nearby-search/verification.json).

@@ -1,0 +1,147 @@
+{
+  "release": "0a2f704a7590646013ab87408e1707fdb94f444c",
+  "publishedAt": "2026-09-09T11:26:09Z",
+  "frontendTestsPassed": 22,
+  "backendTestsVerified": 94,
+  "backendTestNote": "93 initial passes; one 5s startup timeout passed separately in 3.1s",
+  "productionBuilds": [
+    "backend",
+    "frontend",
+    "admin_panel"
+  ],
+  "localBrowser": {
+    "report": [
+      {
+        "width": 1440,
+        "provinceAlternatives": true,
+        "originalAddressRetained": true,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "provinceAlternatives": true,
+        "originalAddressRetained": true,
+        "overflow": false
+      }
+    ],
+    "exactCityResultsUnchanged": true,
+    "dateVehicleRespected": true,
+    "unknownVillageNotGuessed": true,
+    "errors": []
+  },
+  "liveBrowser": {
+    "report": [
+      {
+        "width": 1440,
+        "provinceAlternatives": true,
+        "originalAddressRetained": true,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "provinceAlternatives": true,
+        "originalAddressRetained": true,
+        "overflow": false
+      }
+    ],
+    "exactCityResultsUnchanged": true,
+    "dateVehicleRespected": true,
+    "unknownVillageNotGuessed": true,
+    "errors": []
+  },
+  "liveApi": {
+    "at": "2026-09-09T11:26:26.971Z",
+    "exactTotal": 0,
+    "provinceTotal": 3,
+    "provinceConstraint": true,
+    "privateAddressHidden": true,
+    "dateVehiclePreserved": true
+  },
+  "health": {
+    "at": "2026-09-09T11:26:09.045Z",
+    "checks": [
+      {
+        "url": "https://paketjet.com",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 324,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/api/health",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 22,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/blog/renewal-missing-check",
+        "status": 404,
+        "expected": 404,
+        "bodyOK": true,
+        "ms": 20,
+        "ok": true
+      },
+      {
+        "url": "https://panel.paketjet.com/auth/login",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 28,
+        "ok": true
+      },
+      {
+        "name": "disk",
+        "diskUsedPercent": 19,
+        "ok": true
+      }
+    ]
+  },
+  "processes": [
+    {
+      "name": "paketjet-backend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/0a2f704a7590/backend"
+    },
+    {
+      "name": "paketjet-frontend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/0a2f704a7590/frontend"
+    },
+    {
+      "name": "paketjet-admin",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/0a2f704a7590/admin_panel"
+    }
+  ],
+  "inventoryBefore": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  },
+  "inventoryAfter": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  }
+}
