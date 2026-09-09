@@ -11,6 +11,8 @@ type IlanPatch = Parameters<typeof repoUpdateIlan>[1];
 export function createIlanInsertPayload(body: CreateIlanInput) {
   return {
     from_city: body.from_city,
+    from_location: body.from_location ?? null,
+    to_location: body.to_location ?? null,
     to_city: body.to_city,
     from_district: body.from_district ?? null,
     to_district: body.to_district ?? null,
@@ -34,6 +36,12 @@ export function createIlanInsertPayload(body: CreateIlanInput) {
 
 export function buildIlanPatch(body: UpdateIlanInput): IlanPatch {
   const patch: IlanPatch = {};
+  if ((body.from_city !== undefined || body.from_district !== undefined) && body.from_location === undefined) patch.from_location = null;
+  if ((body.to_city !== undefined || body.to_district !== undefined) && body.to_location === undefined) patch.to_location = null;
+  if (body.from_location !== undefined) patch.from_location = body.from_location;
+  if (body.to_location !== undefined) patch.to_location = body.to_location;
+  if (body.contact_address !== undefined) patch.contact_address = body.contact_address;
+  if (body.contact_name !== undefined) patch.contact_name = body.contact_name;
 
   if (body.from_city !== undefined) patch.from_city = body.from_city;
   if (body.to_city !== undefined) patch.to_city = body.to_city;

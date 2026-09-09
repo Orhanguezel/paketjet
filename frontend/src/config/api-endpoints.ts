@@ -5,6 +5,7 @@
  */
 
 export const API = {
+  locations: {search: "/api/locations/search"},
   auth: {
     login:    "/api/auth/token",
     google:   "/api/auth/google",

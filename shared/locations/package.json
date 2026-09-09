@@ -1,0 +1,1 @@
+{"name":"@paketjet/locations","version":"1.0.0","private":true,"type":"module","exports":{".":"./index.ts","./style.css":"./style.css"},"peerDependencies":{"react":"^19.0.0"}}

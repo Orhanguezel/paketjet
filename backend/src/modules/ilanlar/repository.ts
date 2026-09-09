@@ -1,5 +1,4 @@
 import {listingEvents} from './event.schema';
-import { TURKEY_CITIES } from '../_shared/turkey-cities';
 // src/modules/ilanlar/repository.ts
 import { repoFindReservation } from "../purchases/session.repository";
 import { randomUUID } from "crypto";
@@ -109,11 +108,6 @@ export async function repoUpdateIlan(id: string, data: Partial<NewIlan>, admin =
     if (await repoFindReservation(tx, id)) throw Object.assign(new Error("payment_pending"), {statusCode: 409});
     if (data.status === "sold") throw Object.assign(new Error("invalid_transition"), {statusCode: 409});
     if (data.status === "active" && (!admin || new Date(current.departure_date).getTime() <= Date.now())) throw Object.assign(new Error("approval_required"), {statusCode: 409});
-    for (const prefix of ['from','to'] as const) {
-      const city=data[`${prefix}_city`]??current[`${prefix}_city`];
-      const district=data[`${prefix}_district`]===undefined?current[`${prefix}_district`]:data[`${prefix}_district`];
-      if (district && !TURKEY_CITIES.find(c=>c.value===city)?.districts.includes(district)) throw Object.assign(new Error('invalid_district'),{statusCode:400});
-    }
     const departure = data.departure_date ?? current.departure_date;
     const arrival = data.arrival_date === undefined ? current.arrival_date : data.arrival_date;
     if (arrival && new Date(arrival) < new Date(departure)) throw Object.assign(new Error("invalid_arrival_date"), {statusCode: 400});

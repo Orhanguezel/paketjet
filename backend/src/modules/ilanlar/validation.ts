@@ -1,4 +1,4 @@
-import { TURKEY_CITIES } from "../_shared/turkey-cities";
+import { locationValueSchema } from "../locations/validation";
 // src/modules/ilanlar/validation.ts
 import { z } from "zod";
 
@@ -6,8 +6,10 @@ const vehicleTypes = ["van", "truck", "motorcycle", "car", "other"] as const;
 const ilanStatuses = ["active", "pending_approval", "paused", "completed", "cancelled", "sold", "expired", "removed"] as const;
 
 const ilanFields = z.object({
-  from_city: z.string().min(1).max(128),
-  to_city: z.string().min(1).max(128),
+  from_location: locationValueSchema.optional().nullable(),
+  to_location: locationValueSchema.optional().nullable(),
+  from_city: z.string().trim().min(1).max(128),
+  to_city: z.string().trim().min(1).max(128),
   from_district: z.string().max(128).optional().nullish(),
   to_district: z.string().max(128).optional().nullish(),
   departure_date: z.string().datetime({ offset: true }),
@@ -35,14 +37,6 @@ const ilanFields = z.object({
 });
 
 function validateDates(data: {departure_date?: string; arrival_date?: string | null; from_city?:string; to_city?:string; from_district?:string|null; to_district?:string|null}, ctx: z.RefinementCtx) {
-  for (const prefix of ['from','to'] as const) {
-    const city = data[`${prefix}_city`];
-    const district = data[`${prefix}_district`];
-    if (!city) continue;
-    const record = TURKEY_CITIES.find(c=>c.value.toLocaleLowerCase('tr-TR')===city.toLocaleLowerCase('tr-TR'));
-    if (!record) ctx.addIssue({code:'custom',path:[`${prefix}_city`],message:'Geçerli bir il seçin'});
-    if (district && record && !record.districts.includes(district)) ctx.addIssue({code:'custom',path:[`${prefix}_district`],message:'İlçeyi seçilen ilden seçin'});
-  }
   if (data.departure_date && new Date(data.departure_date).getTime() <= Date.now()) ctx.addIssue({code: "custom", path: ["departure_date"], message: "Hareket tarihi gelecekte olmalı"});
   if (data.departure_date && data.arrival_date && new Date(data.arrival_date) < new Date(data.departure_date)) ctx.addIssue({code: "custom", path: ["arrival_date"], message: "Varış hareketten önce olamaz"});
 }
@@ -50,8 +44,8 @@ export const createIlanSchema = ilanFields.superRefine(validateDates);
 export const updateIlanSchema = ilanFields.partial().superRefine(validateDates);
 
 export const searchIlansSchema = z.object({
-  from_city: z.string().optional(),
-  to_city: z.string().optional(),
+  from_city: z.string().max(400).optional(),
+  to_city: z.string().max(400).optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => Number.isFinite(new Date(value).getTime()), "Geçerli tarih girin").optional(),
   vehicle_type: z.enum(vehicleTypes).optional(),
   status: z.enum(ilanStatuses).optional().default("active"),

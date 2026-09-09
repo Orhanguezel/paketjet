@@ -138,3 +138,5 @@ body .site-container {width:min(100% - 4rem,76rem);}
   .site-footer {padding:40px 0 24px;}
   .site-footer nav a {min-height:44px;}
 }
+
+.hero-location-previews {grid-column:1 / -1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;}

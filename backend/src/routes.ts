@@ -1,6 +1,7 @@
 // src/routes.ts
 // Tüm modül route kayıtları — public + admin
 
+import { registerLocations } from './modules/locations/router';
 import type { FastifyInstance } from 'fastify';
 import { requireAuth } from '@/common/middleware/auth';
 import { requireAdmin } from '@/common/middleware/roles';
@@ -39,6 +40,7 @@ import { registerEmailTemplatesAdmin } from '@/modules/emailTemplates/admin.rout
 import { registerReportsAdmin } from '@/modules/reports';
 
 const PUBLIC_ROUTE_REGISTRARS = [
+  registerLocations,
   registerAuth,
   registerHealth,
   registerStorage,

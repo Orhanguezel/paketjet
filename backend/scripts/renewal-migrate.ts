@@ -6,7 +6,7 @@ const database=process.env.DB_NAME??'';
 const apply=process.argv.includes('--apply');
 if(!database)throw new Error('DB_NAME_required');
 if(!database.startsWith('paketjet_test_')&&!process.argv.includes('--production'))throw new Error('explicit_production_scope_required');
-const files=readdirSync('src/db/seed/sql').filter(f=>/^(05[3-9]|06[0-35])_/.test(f)).sort();
+const files=readdirSync('src/db/seed/sql').filter(f=>/^(05[3-9]|06[0-356])_/.test(f)).sort();
 const conn=await mysql.createConnection({host:process.env.DB_HOST,port:Number(process.env.DB_PORT||3306),user:process.env.DB_USER,password:process.env.DB_PASSWORD,database,multipleStatements:true});
 try {
  if(apply)await conn.query('CREATE TABLE IF NOT EXISTS renewal_migrations (name VARCHAR(100) PRIMARY KEY, checksum CHAR(64) NOT NULL, applied_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3))');

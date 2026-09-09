@@ -1,6 +1,7 @@
 // src/modules/ilanlar/schema.ts
 import {
   mysqlTable,
+  json,
   char,
   varchar,
   text,
@@ -24,6 +25,9 @@ export const ilanlar = mysqlTable(
     slug: varchar("slug", { length: 255 }).notNull().default(""),
 
     is_sample: tinyint("is_sample").notNull().default(0),
+
+    from_location: json("from_location").$type<import("../locations/validation").LocationValue>(),
+    to_location: json("to_location").$type<import("../locations/validation").LocationValue>(),
 
     // Güzergah
     from_city: varchar("from_city", { length: 128 }).notNull(),

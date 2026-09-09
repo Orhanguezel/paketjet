@@ -1,3 +1,4 @@
+import type {LocationValue} from '@paketjet/locations';
 export type VehicleType = "van" | "truck" | "motorcycle" | "car" | "other";
 export type IlanStatus = "active" | "pending_approval" | "paused" | "sold" | "expired" | "removed" | "completed" | "cancelled";
 
@@ -7,6 +8,8 @@ export interface Ilan {
   slug?: string;
   is_sample?: boolean;
   user_id: string;
+  from_location?: LocationValue | null;
+  to_location?: LocationValue | null;
   from_city: string;
   to_city: string;
   from_district?: string | null;
@@ -58,6 +61,8 @@ export interface IlanSearchFilters {
 }
 
 export interface CreateIlanInput {
+  from_location?: LocationValue | null;
+  to_location?: LocationValue | null;
   from_city: string;
   to_city: string;
   from_district?: string;
@@ -77,5 +82,5 @@ export interface CreateIlanInput {
   contact_address?: string;
 }
 
-export type PublicIlan = Pick<Ilan, 'id'|'slug'|'is_sample'|'from_city'|'to_city'|'from_district'|'to_district'|'departure_date'|'arrival_date'|'vehicle_type'|'title'|'description'|'status'|'created_at'|'updated_at'|'photos'|'contact_locked'>;
+export type PublicIlan = Pick<Ilan, 'id'|'slug'|'from_location'|'to_location'|'is_sample'|'from_city'|'to_city'|'from_district'|'to_district'|'departure_date'|'arrival_date'|'vehicle_type'|'title'|'description'|'status'|'created_at'|'updated_at'|'photos'|'contact_locked'>;
 export type OwnerIlan = Ilan;

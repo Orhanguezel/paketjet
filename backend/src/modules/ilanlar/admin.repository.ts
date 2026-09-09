@@ -1,3 +1,4 @@
+import {locationFilter} from './location-filter';
 import {listingEvents} from './event.schema';
 import {ilanPurchases} from '../purchases/schema';
 // =============================================================
@@ -20,8 +21,8 @@ export async function repoAdminListIlans(params: {
   const conditions: ReturnType<typeof eq>[] = [];
   if (params.status) conditions.push(eq(ilanlar.status, params.status));
   if (params.user_id) conditions.push(eq(ilanlar.user_id, params.user_id));
-  if (params.from_city) conditions.push(like(ilanlar.from_city, `%${params.from_city}%`));
-  if (params.to_city) conditions.push(like(ilanlar.to_city, `%${params.to_city}%`));
+  if (params.from_city) conditions.push(locationFilter('from',params.from_city));
+  if (params.to_city) conditions.push(locationFilter('to',params.to_city));
   const where = conditions.length ? and(...conditions) : undefined;
 
   const [rows, [countRow]] = await Promise.all([

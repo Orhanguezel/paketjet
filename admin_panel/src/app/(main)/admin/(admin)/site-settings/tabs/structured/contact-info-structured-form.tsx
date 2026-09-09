@@ -7,6 +7,7 @@
 "use client";
 
 import type React from "react";
+import {AddressAutocomplete} from "@paketjet/locations";
 import { z } from "zod";
 import { useAdminTranslations } from "@/i18n";
 import { usePreferencesStore } from "@/stores/preferences/preferences-provider";
@@ -89,7 +90,7 @@ export const ContactInfoStructuredForm: React.FC<ContactInfoStructuredFormProps>
   const field = (key: keyof ContactInfoFormState, label: string, opts?: { colSpan2?: boolean; textarea?: boolean }) => (
     <div className={`space-y-2 ${opts?.colSpan2 ? 'md:col-span-2' : ''}`} key={key}>
       <Label htmlFor={`contact-${key}`} className="text-sm">{label}</Label>
-      {opts?.textarea ? (
+      {key==='address' ? <AddressAutocomplete id={`contact-${key}`} value={form.address||''} disabled={disabled} onChange={(address,place)=>onChange({...form,address,...(place?{city:place.city,maps_lat:String(place.lat),maps_lng:String(place.lng)}:{maps_lat:'',maps_lng:''})})}/> : opts?.textarea ? (
         <Textarea
           id={`contact-${key}`}
           rows={3}

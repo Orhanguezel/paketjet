@@ -1,5 +1,7 @@
+import {locationValueSchema} from '../../locations/validation';
+import {locationFilter} from '../location-filter';
 // src/modules/ilanlar/helpers/repository.ts
-import { and, desc, eq, gte, like, lte, type SQL } from "drizzle-orm";
+import { and, desc, eq, gte, lte, type SQL } from "drizzle-orm";
 import { ilanlar, type NewIlan } from "../schema";
 
 export function mapIlanRow(row: {
@@ -31,6 +33,7 @@ function publicDate(value: unknown) {
 export function stripIlanContact<T extends Record<string, unknown>>(ilan: T) {
   const departure = publicDate(ilan.departure_date);
   return {
+    from_location: locationValueSchema.safeParse(ilan.from_location).data ?? null, to_location: locationValueSchema.safeParse(ilan.to_location).data ?? null,
     id: ilan.id, slug: ilan.slug, from_city: ilan.from_city, to_city: ilan.to_city,
     from_district: ilan.from_district, to_district: ilan.to_district,
     departure_date: departure, arrival_date: publicDate(ilan.arrival_date),
@@ -50,12 +53,8 @@ export function buildIlanListWhere(filters: {
 }) {
   const conditions: SQL[] = [eq(ilanlar.status, "active"), gte(ilanlar.departure_date, new Date())];
 
-  if (filters.from_city) {
-    conditions.push(like(ilanlar.from_city, `%${filters.from_city}%`));
-  }
-  if (filters.to_city) {
-    conditions.push(like(ilanlar.to_city, `%${filters.to_city}%`));
-  }
+  if (filters.from_city) conditions.push(locationFilter('from',filters.from_city));
+  if (filters.to_city) conditions.push(locationFilter('to',filters.to_city));
   if (filters.date) {
     const start = new Date(`${filters.date}T00:00:00+03:00`);
     const end = new Date(start.getTime() + 86400000 - 1);
