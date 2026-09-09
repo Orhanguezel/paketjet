@@ -1,0 +1,78 @@
+{
+  "sha": "dcf569aed5eda8393c3ec57b434324e53a812309",
+  "publishedAt": "2026-09-09T14:12:13Z",
+  "pm2": [
+    {
+      "name": "paketjet-backend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/dcf569aed5ed/backend"
+    },
+    {
+      "name": "paketjet-frontend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/dcf569aed5ed/frontend"
+    },
+    {
+      "name": "paketjet-admin",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/dcf569aed5ed/admin_panel"
+    }
+  ],
+  "health": {
+    "at": "2026-09-09T14:12:13.783Z",
+    "checks": [
+      {
+        "url": "https://paketjet.com",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 369,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/api/health",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 18,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/blog/renewal-missing-check",
+        "status": 404,
+        "expected": 404,
+        "bodyOK": true,
+        "ms": 15,
+        "ok": true
+      },
+      {
+        "url": "https://panel.paketjet.com/auth/login",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 30,
+        "ok": true
+      },
+      {
+        "name": "disk",
+        "diskUsedPercent": 26,
+        "ok": true
+      }
+    ]
+  },
+  "inventoryUnchanged": true,
+  "contentUnchanged": true,
+  "contentFingerprints": {
+    "hakkimizda": "d000ae415969cd861382ddec8f533069e3c21223a24d49988d0d1ce8bb49162a",
+    "gizlilik-politikasi": "343b2c0c062e3609b0b58282b5305db7af9794bceb4719ba9bec817ad993475a",
+    "kvkk": "343b2c0c062e3609b0b58282b5305db7af9794bceb4719ba9bec817ad993475a",
+    "kullanim-kosullari": "343b2c0c062e3609b0b58282b5305db7af9794bceb4719ba9bec817ad993475a",
+    "tasima-kurallari": "918a737252e56990222343e326139eef3f22b846f70537e6b740ef2c76353985"
+  },
+  "frontendTests": 34,
+  "legalDatabaseInventory": {
+    "published": 4,
+    "unpublished": 0,
+    "panelCopy": 1
+  }
+}

@@ -1,3 +1,5 @@
+> **9 Eylül 2026 14:12 UTC — Yasal sayfa görünümü canlı:** dört yasal sayfa ve hesap içi taşıma kuralları ortak düzene alındı. Başlık/listeler, bölüm menüsü, mobil/koyu tema ve yazdırma düzeltildi. 34 frontend testi ve dört canlı adresin tarayıcı kontrolleri geçti; metinler değişmedi. [Envanter, içerik bulgusu ve kanıtlar](YASAL-SAYFALAR-GORUNUM.md). Önceki açık dış bağımlılıkların durumu değişmedi.
+
 > **9 Eylül 2026 13:35 UTC — Adımlı ilan formu canlı:** rota/tarih, araç/detaylar, iletişim ve son kontrol tamamlandı. Geri dönüşlerde veri korunur; son kontrolden düzenlenebilir. 30 frontend testi, gerçek API ile oluşturma/düzenleme ve canlı kontroller geçti. [Tasarım ve test raporu](ILAN-VER-ADIMLI-AKIS.md). Önceki açık dış bağımlılıkların durumu değişmedi.
 
 > **9 Eylül 2026 13:15 UTC — Profil güncellemesi canlı:** geniş iki sütunlu düzen, kalıcı fotoğraf yükleme/değiştirme/kaldırma, profil kayıt düzeltmesi ve şifre sonrası oturum yenileme tamamlandı. 97 backend ve 26 frontend testi; gerçek tarayıcı akışı ve canlı kontroller geçti. [Detay ve test kapsamı](PROFIL-IYILESTIRME.md). Bu ek teslim önceki açık dış bağımlılıkların durumunu değiştirmez.

@@ -31,3 +31,9 @@ Canlı `/api/custom-pages?locale=tr&limit=100`, kaynak route'ları ve sitemap ko
 - `view_image` ile masaüstü/mobil/taşıma kuralları ekranları incelendi. Mevcut tasarım içinde hedefli düzenleme olduğundan yeni raster konsept gerekmedi.
 
 Kanıtlar: `output/legal-design/`.
+
+## Canlı yayın
+
+9 Eylül 2026 14:12:13 UTC: `dcf569aed5eda8393c3ec57b434324e53a812309` yayımlandı. Üç sunucu build başarılı; üç PM2 süreci doğru yeni sürüm dizininde online. Dört canlı sayfa 1440/768/390 px gerçek Chrome kontrolünden geçti; bölüm bağlantıları, metin eşitliği, canonical, tek ana başlık, koyu tema ve yazdırma davranışı doğrulandı. JS hatası yok. Hesap içi görünüm yerel gerçek oturumla test edildi.
+
+Canlı veritabanındaki tüm custom_pages/custom_pages_i18n kayıtları salt okunur sorguyla da kontrol edildi: dört yasal kayıt, hepsi yayında; gizli/taslak başka yasal kayıt yok. Yayın öncesi/sonrası içerik SHA-256 değerleri ve kullanıcı/ilan/bakiye toplamları aynı. Hukuki metinlerde değişiklik yapılmadığı doğrulandı.
