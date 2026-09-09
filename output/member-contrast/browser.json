@@ -1,0 +1,16 @@
+{
+  "results": [
+    {
+      "theme": "light",
+      "mutedTextContrast": 7.25,
+      "desktopMobileNoOverflow": true
+    },
+    {
+      "theme": "dark",
+      "mutedTextContrast": 8.15,
+      "desktopMobileNoOverflow": true
+    }
+  ],
+  "profileTab": true,
+  "errors": []
+}
