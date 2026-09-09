@@ -1,3 +1,5 @@
+> **9 Eylül 2026 14:55 UTC — Hesabım kontrastı canlı:** karşılama alanı, sekme, kart ve ikincil yazılar belirginleştirildi. Açık/koyu tema ve mobil tarayıcı kontrolleri geçti. [Test ve yayın raporu](HESABIM-KONTRAST.md).
+
 > **9 Eylül 2026 14:12 UTC — Yasal sayfa görünümü canlı:** dört yasal sayfa ve hesap içi taşıma kuralları ortak düzene alındı. Başlık/listeler, bölüm menüsü, mobil/koyu tema ve yazdırma düzeltildi. 34 frontend testi ve dört canlı adresin tarayıcı kontrolleri geçti; metinler değişmedi. [Envanter, içerik bulgusu ve kanıtlar](YASAL-SAYFALAR-GORUNUM.md). Önceki açık dış bağımlılıkların durumu değişmedi.
 
 > **9 Eylül 2026 13:35 UTC — Adımlı ilan formu canlı:** rota/tarih, araç/detaylar, iletişim ve son kontrol tamamlandı. Geri dönüşlerde veri korunur; son kontrolden düzenlenebilir. 30 frontend testi, gerçek API ile oluşturma/düzenleme ve canlı kontroller geçti. [Tasarım ve test raporu](ILAN-VER-ADIMLI-AKIS.md). Önceki açık dış bağımlılıkların durumu değişmedi.
