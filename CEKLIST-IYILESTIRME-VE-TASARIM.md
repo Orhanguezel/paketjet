@@ -1,3 +1,5 @@
+> **9 Eylül 2026 15:11 UTC — Kısa açılış introsu canlı:** `9d32a4b`; ana sayfada 1,2 saniyelik sessiz logo/rota animasyonu, sekme oturumunda bir kez. Tıklama/tuş/kaydırma ile hemen kapanır; hareket azaltmada ve depolama engelinde atlanır. 34 frontend testi ve üretim derlemeleri geçti. Canlı Chrome 1440/390 px: süre, tekrar açılmama, etkileşim, doğrudan ilan sayfası, JavaScript kapalı erişim ve taşma kontrolleri başarılı; JS hatası yok.
+
 > **9 Eylül 2026 14:55 UTC — Hesabım kontrastı canlı:** karşılama alanı, sekme, kart ve ikincil yazılar belirginleştirildi. Açık/koyu tema ve mobil tarayıcı kontrolleri geçti. [Test ve yayın raporu](HESABIM-KONTRAST.md).
 
 > **9 Eylül 2026 14:12 UTC — Yasal sayfa görünümü canlı:** dört yasal sayfa ve hesap içi taşıma kuralları ortak düzene alındı. Başlık/listeler, bölüm menüsü, mobil/koyu tema ve yazdırma düzeltildi. 34 frontend testi ve dört canlı adresin tarayıcı kontrolleri geçti; metinler değişmedi. [Envanter, içerik bulgusu ve kanıtlar](YASAL-SAYFALAR-GORUNUM.md). Önceki açık dış bağımlılıkların durumu değişmedi.
