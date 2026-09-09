@@ -1,0 +1,16 @@
+{
+  "viewports": [
+    1440,
+    390
+  ],
+  "listCardsPerViewport": 20,
+  "labelOccurrencesPerCard": 1,
+  "labelOccurrencesInDetail": 1,
+  "descriptionWarningCount": 0,
+  "normalContactPanelVisible": true,
+  "displayedPrice": "50 TL",
+  "horizontalOverflow": false,
+  "loginLinkWorks": true,
+  "screenshots": "output/playwright/sample-copy/",
+  "harnessNote": "Final URL assertion initially used URL unavailable in CLI sandbox; same-page login URL verified separately using string prefix."
+}

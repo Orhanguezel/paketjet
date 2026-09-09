@@ -46,3 +46,5 @@ Tarayıcı konsolunda bu sürümden önce de bulunan `/ilan-ver` ön yükleme y�
 ## Başlıkla sınırlı işaretleme güncellemesi
 
 `065_sample_listing_copy.sql` yalnızca önceki seed açıklaması birebir eşleşen 30 örneğin açıklamasını temizler; düzenlenmiş içerikleri, başlıkları ve tarihleri korur. 064 yeni kurulumlar için temiz metinleri içerir. 065 üretim migration listesine alınmıştır. Fiyat/iletişim paneli normal bileşendir; gerçek iletişim veya başarılı ödeme sonucu taklit edilmez.
+
+Yayın: `ce672b2`, 9 Eylül 2026 09:29:09 UTC. Canlı 30 açıklama temiz, başlık önekleri korunmuş; finansal ve ilan sayıları değişmemiştir. 13 frontend testi ve üç sunucu derlemesi geçti. Güncel kanıtlar `output/sample-copy/` altında.

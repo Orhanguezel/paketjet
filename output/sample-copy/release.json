@@ -1,0 +1,11 @@
+{
+  "code": "ce672b20052fa5b4bf89ea0f8bc955ae9f6500f4",
+  "publishedAt": "2026-09-09T09:29:09Z",
+  "serverBuilds": [
+    "backend",
+    "frontend",
+    "admin_panel"
+  ],
+  "migration": "065_sample_listing_copy.sql",
+  "financialAndListingCountsUnchanged": true
+}
