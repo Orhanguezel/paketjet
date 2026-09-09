@@ -1,3 +1,4 @@
+import SplashLoader from "@/components/SplashLoader";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getSiteSettingValue } from "@/lib/site-settings";
@@ -52,6 +53,7 @@ export default async function SiteShell({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SplashLoader logoUrl={logoUrl} />
       <Header logoUrl={logoUrl} logoDarkUrl={logoDarkUrl} logoAlt={logoAlt} navLinks={headerMenu} />
       <main id="main-content" className="flex-grow">{children}</main>
       <Footer

@@ -1,113 +1,57 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
-const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
-const SESSION_KEY = "pj_splash_shown";
+const SESSION_KEY = "pj_short_intro_seen";
 
-function toUrl(path: string) {
-  return path.startsWith("http") ? path : `${API_ORIGIN}${path}`;
-}
-
-export default function SplashLoader({
-  children,
-  videos,
-}: {
-  children: React.ReactNode;
-  videos?: string[] | null;
-}) {
-  const [phase, setPhase] = useState<"loading" | "video" | "fadeout" | "done">("loading");
-  const [videoIdx, setVideoIdx] = useState(0);
-  const [showSkip, setShowSkip] = useState(false);
-  const [unmuted, setUnmuted] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const videoList = videos?.length ? videos : [];
+/** A brief brand greeting, never a prerequisite for using the page. */
+export default function SplashLoader({ logoUrl }: { logoUrl?: string }) {
+  const pathname = usePathname();
+  const initialPath = useRef(pathname);
+  const started = useRef(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (sessionStorage.getItem(SESSION_KEY) || !videoList.length) {
-      setPhase("done");
-    } else {
-      setPhase("video");
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (initialPath.current !== "/" || motion.matches) return;
+    try {
+      if (!started.current && sessionStorage.getItem(SESSION_KEY)) return;
+      sessionStorage.setItem(SESSION_KEY, "1");
+    } catch {
+      // Storage restrictions must never prevent the page from opening.
+      return;
     }
+    started.current = true;
+    setVisible(true);
+    const dismiss = () => setVisible(false);
+    const timer = window.setTimeout(dismiss, 1200);
+    window.addEventListener("pointerdown", dismiss, { once: true, passive: true });
+    window.addEventListener("keydown", dismiss, { once: true });
+    window.addEventListener("wheel", dismiss, { once: true, passive: true });
+    motion.addEventListener("change", dismiss);
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener("pointerdown", dismiss);
+      window.removeEventListener("keydown", dismiss);
+      window.removeEventListener("wheel", dismiss);
+      motion.removeEventListener("change", dismiss);
+    };
   }, []);
 
-  // 3 saniye sonra "Geç" butonu göster
-  useEffect(() => {
-    if (phase !== "video") return;
-    const t = setTimeout(() => setShowSkip(true), 3000);
-    return () => clearTimeout(t);
-  }, [phase]);
-
-  function handleEnd() {
-    sessionStorage.setItem(SESSION_KEY, "1");
-    setPhase("fadeout");
-    setTimeout(() => setPhase("done"), 800);
-  }
-
-  function handleVideoEnded() {
-    // Sonraki video varsa oynat
-    if (videoIdx < videoList.length - 1) {
-      setVideoIdx(videoIdx + 1);
-    } else {
-      handleEnd();
-    }
-  }
-
-  if (phase === "done" || phase === "loading") return <>{children}</>;
-
+  if (!visible || pathname !== "/") return null;
   return (
-    <>
-      <div
-        className="fixed inset-0 z-[99999] flex items-center justify-center bg-navy"
-        style={{
-          opacity: phase === "fadeout" ? 0 : 1,
-          transition: "opacity 800ms ease-out",
-        }}
-      >
-        <video
-          ref={videoRef}
-          key={videoIdx}
-          src={toUrl(videoList[videoIdx])}
-          autoPlay
-          muted={!unmuted}
-          playsInline
-          onEnded={handleVideoEnded}
-          onClick={() => {
-            const v = videoRef.current;
-            if (v) { v.muted = false; setUnmuted(true); }
-          }}
-          className="h-full w-full object-contain max-h-screen max-w-screen cursor-pointer"
-        />
-
-        {/* Ses aç butonu */}
-        {!unmuted && (
-          <button
-            onClick={() => {
-              const v = videoRef.current;
-              if (v) { v.muted = false; setUnmuted(true); }
-            }}
-            className="absolute bottom-8 left-8 px-4 py-2 text-sm text-white/60 hover:text-white border border-white/20 hover:border-white/40 rounded-full backdrop-blur-sm transition-all"
-          >
-            🔊 Sesi Aç
-          </button>
-        )}
-
-        {/* Geç butonu */}
-        <button
-          onClick={handleEnd}
-          className="absolute bottom-8 right-8 px-4 py-2 text-sm text-white/60 hover:text-white border border-white/20 hover:border-white/40 rounded-full backdrop-blur-sm transition-all"
-          style={{
-            opacity: showSkip ? 1 : 0,
-            transform: showSkip ? "translateY(0)" : "translateY(10px)",
-            transition: "opacity 500ms, transform 500ms",
-            pointerEvents: showSkip ? "auto" : "none",
-          }}
-        >
-          Geç →
-        </button>
+    <div className="brand-intro" aria-hidden="true">
+      <div className="brand-intro-content">
+        {logoUrl && <Image src={logoUrl} alt="" width={80} height={80} unoptimized className="brand-intro-logo" />}
+        <span className="brand-intro-name">Paket<span>Jet</span></span>
+        <svg className="brand-intro-route" viewBox="0 0 240 40" fill="none">
+          <path d="M12 30C65 30 65 10 120 10S180 30 228 10" pathLength="1" />
+          <circle cx="12" cy="30" r="4" /><circle cx="228" cy="10" r="4" />
+        </svg>
+        <span className="brand-intro-caption">Yolları bağlantıya dönüştür.</span>
       </div>
-      <div className="invisible">{children}</div>
-    </>
+    </div>
   );
 }

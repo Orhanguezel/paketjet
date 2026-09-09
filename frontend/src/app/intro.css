@@ -1,0 +1,13 @@
+.brand-intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;pointer-events:none;background:var(--color-surface);animation:brand-intro-away 1.2s ease forwards}
+.brand-intro-content{display:flex;align-items:center;flex-direction:column;gap:14px;padding:24px;animation:brand-intro-in .35s ease-out both}
+.brand-intro-logo{width:80px;height:80px;object-fit:contain}
+.brand-intro-name{font-size:38px;font-weight:750;letter-spacing:-.045em;color:var(--color-foreground)}
+.brand-intro-name>span{color:var(--color-brand)}
+.brand-intro-route{width:220px;height:40px;color:var(--color-brand)}
+.brand-intro-route path{stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:brand-intro-draw .7s .1s ease-out forwards}
+.brand-intro-route circle{fill:currentColor}
+.brand-intro-caption{font-size:14px;color:var(--color-muted);letter-spacing:.015em}
+@keyframes brand-intro-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes brand-intro-draw{to{stroke-dashoffset:0}}
+@keyframes brand-intro-away{0%,70%{opacity:1}100%{opacity:0;visibility:hidden}}
+@media(prefers-reduced-motion:reduce){.brand-intro{display:none}.brand-intro-content,.brand-intro-route path{animation:none}}
