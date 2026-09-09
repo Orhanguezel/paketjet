@@ -1,0 +1,109 @@
+{
+  "release": "d0e28385e7cbfc94a940eccca80484cd8e5bddd1",
+  "publishedAt": "2026-09-09T10:24:29Z",
+  "tests": {
+    "backend": 93,
+    "frontend": 16,
+    "productionBuilds": [
+      "backend",
+      "frontend",
+      "admin_panel"
+    ]
+  },
+  "liveBrowser": {
+    "report": [
+      {
+        "width": 1440,
+        "villageSelected": true,
+        "mapCoordinates": true,
+        "searchRetainsAddress": true,
+        "overflow": false
+      },
+      {
+        "width": 390,
+        "villageSelected": true,
+        "mapCoordinates": true,
+        "searchRetainsAddress": true,
+        "overflow": false
+      }
+    ],
+    "errors": []
+  },
+  "liveApi": {
+    "checkedAt": "2026-09-09T10:25:00.553Z",
+    "village": {
+      "id": "osm-R-11562233",
+      "label": "Şirince, Selçuk, İzmir, Türkiye",
+      "city": "İzmir",
+      "district": "Selçuk",
+      "lat": 37.9423518,
+      "lng": 27.4328343
+    },
+    "legacyCitySearchCount": 3,
+    "privateAddressHidden": true,
+    "redirects": [
+      {
+        "url": "https://paketjet.com/ilan-ver",
+        "status": 307,
+        "target": "https://paketjet.com/giris?next=%2Filan-ver"
+      },
+      {
+        "url": "https://panel.paketjet.com/admin",
+        "status": 307,
+        "target": "https://panel.paketjet.com/auth/login?next=%2Fadmin"
+      }
+    ]
+  },
+  "processes": [
+    {
+      "name": "paketjet-backend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/d0e28385e7cb/backend"
+    },
+    {
+      "name": "paketjet-frontend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/d0e28385e7cb/frontend"
+    },
+    {
+      "name": "paketjet-admin",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/d0e28385e7cb/admin_panel"
+    }
+  ],
+  "inventoryBefore": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  },
+  "inventoryAfter": {
+    "users": 26,
+    "ilanlar": 47,
+    "wallets": 11,
+    "wallet_transactions": 0,
+    "user_credits": 0,
+    "credit_ledger": 0,
+    "ilan_purchases": 0,
+    "ilan_purchase_payments": 1,
+    "credit_package_purchases": 4,
+    "payment_sessions": 5,
+    "wallet_balance": "3425.00",
+    "credits": null
+  },
+  "localAdmin": {
+    "contactAddressSelected": true,
+    "cityAndCoordinatesFilled": true,
+    "mapVisible": true,
+    "listingFilterUsesSameComponent": true,
+    "settingsSaved": false
+  }
+}

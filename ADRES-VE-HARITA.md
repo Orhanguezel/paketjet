@@ -34,4 +34,15 @@ Arama, şehir/ilçe ve tam adres etiketini kapsar. `İzmir, Türkiye` gibi öner
 - Yerel Chromium: 1440/390 px, gerçek Şirince önerisi ve harita işareti, kalkış-varış değişimi, arama URL'si, oturumlu ilan oluşturma ve düzenlemede konumun geri gelmesi.
 - Yerel yönetim paneli: iletişim adresinde öneri/harita ve otomatik şehir-koordinat doldurma; ilan filtresi. Test sırasında site ayarları kaydedilmedi.
 
-Canlı yayın sonrası doğrulama bu kayda eklenecektir.
+## Canlı yayın — 9 Eylül 2026
+
+Uygulama sürümü `d0e28385e7cbfc94a940eccca80484cd8e5bddd1`, 10:24:29 UTC tarihinde yayınlandı. Üç uygulama sunucuda yeniden derlendi; veritabanı/kaynak/upload yedeği doğrulandı ve yalnız eksik `066` migrasyonu uygulandı. Üç PM2 süreci yeni sürüm dizininde online.
+
+- [x] Canlı Chromium: 1440 ve 390 px köy seçimi, kalkış-varış değişimi, gerçek harita işareti ve adresin arama sayfasına taşınması; taşma ve sayfa hatası yok.
+- [x] Canlı Photon araması: Şirince / Selçuk / İzmir, 37.9423518 / 27.4328343.
+- [x] `İzmir, Türkiye` araması eski şehir kayıtlarından 3 ilan buldu; özel iletişim adresi kamu yanıtında yok.
+- [x] İlan verme ve admin giriş yönlendirmeleri doğru dış alan adına gidiyor.
+- [x] Ana sayfa, API health ve admin giriş 200; olmayan sayfa 404.
+- [x] Yayın öncesi/sonrası kayıt sayıları ve cüzdan toplamı aynı. Canlı test kullanıcısı veya ilanı oluşturulmadı; yazma akışları izole test veritabanında doğrulandı.
+
+Sanitize edilmiş yayın kanıtları: [adres doğrulaması](output/locations/verification.json). Tarayıcı ekranları yerel `/tmp/paketjet-address/` dizininde tutuldu.
