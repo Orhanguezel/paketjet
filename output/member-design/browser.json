@@ -1,0 +1,34 @@
+{
+  "report": [
+    {
+      "width": 1440,
+      "publicHeader": true,
+      "noSidebar": true,
+      "noStatisticCards": true,
+      "realListings": true,
+      "profileAndListingsTabs": true,
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "publicHeader": true,
+      "noSidebar": true,
+      "noStatisticCards": true,
+      "realListings": true,
+      "profileAndListingsTabs": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "publicHeader": true,
+      "noSidebar": true,
+      "noStatisticCards": true,
+      "realListings": true,
+      "profileAndListingsTabs": true,
+      "overflow": false
+    }
+  ],
+  "darkTheme": true,
+  "logout": true,
+  "errors": []
+}
