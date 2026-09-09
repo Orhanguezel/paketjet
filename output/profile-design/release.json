@@ -1,0 +1,67 @@
+{
+  "sha": "9d11927e1d969a577fd8d9f963c3df3337b5dba1",
+  "publishedAt": "2026-09-09T13:15:38Z",
+  "pm2": [
+    {
+      "name": "paketjet-backend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/9d11927e1d96/backend"
+    },
+    {
+      "name": "paketjet-frontend",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/9d11927e1d96/frontend"
+    },
+    {
+      "name": "paketjet-admin",
+      "status": "online",
+      "cwd": "/var/www/paketjet-releases/9d11927e1d96/admin_panel"
+    }
+  ],
+  "health": {
+    "at": "2026-09-09T13:15:38.948Z",
+    "checks": [
+      {
+        "url": "https://paketjet.com",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 316,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/api/health",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 18,
+        "ok": true
+      },
+      {
+        "url": "https://paketjet.com/blog/renewal-missing-check",
+        "status": 404,
+        "expected": 404,
+        "bodyOK": true,
+        "ms": 13,
+        "ok": true
+      },
+      {
+        "url": "https://panel.paketjet.com/auth/login",
+        "status": 200,
+        "expected": 200,
+        "bodyOK": true,
+        "ms": 23,
+        "ok": true
+      },
+      {
+        "name": "disk",
+        "diskUsedPercent": 23,
+        "ok": true
+      }
+    ]
+  },
+  "inventoryUnchanged": true,
+  "backendTests": 97,
+  "frontendTests": 26,
+  "browserScope": "isolated database and actual local storage; production checks are read-only"
+}

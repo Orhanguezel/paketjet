@@ -1,3 +1,5 @@
+> **9 Eylül 2026 13:15 UTC — Profil güncellemesi canlı:** geniş iki sütunlu düzen, kalıcı fotoğraf yükleme/değiştirme/kaldırma, profil kayıt düzeltmesi ve şifre sonrası oturum yenileme tamamlandı. 97 backend ve 26 frontend testi; gerçek tarayıcı akışı ve canlı kontroller geçti. [Detay ve test kapsamı](PROFIL-IYILESTIRME.md). Bu ek teslim önceki açık dış bağımlılıkların durumunu değiştirmez.
+
 # PaketJet detaylı durum raporu — 9 Eylül 2026
 
 > **9 Eylül Hesabım ikinci düzeni:** `e17ce09`, 12:26:21 UTC yayında. Koyu yan menü ve büyük sayaç kartları kaldırıldı; ana site üst menüsü, kişisel karşılama ve yatay hesap sekmeleri kullanılıyor. 26 test, oturumlu yerel mobil/tablet/masaüstü akışları ve canlı sağlık/giriş kontrolleri başarılı. [Güncel hesap tasarımı](HESABIM-SITE-DUZENI.md).

@@ -19,3 +19,7 @@
 - Canlıda kullanıcı hesabı oluşturulmaz veya mevcut kullanıcının fotoğrafı/şifresi test amacıyla değiştirilmez. Canlı kontrol dağıtım, sağlık, CSS ve oturum yönlendirmesini kapsar.
 
 Kanıt: `output/profile-design/browser.json`, masaüstü/mobil/koyu tema görüntüleri.
+
+## Canlı yayın
+
+9 Eylül 2026 13:15:38 UTC: `9d11927e1d969a577fd8d9f963c3df3337b5dba1` yayımlandı. Üç sunucu build ve üç PM2 servis başarılı. Canlı profil oturum yönlendirmesi, yeni CSS, şifre değişimi bildirimi ve giriş ekranı mobil/şifre görünürlük kontrolü geçti. Kayıt ve bakiye toplamları yayın öncesi/sonrası aynı. Kanıt: `output/profile-design/live.json` ve `release.json`.
