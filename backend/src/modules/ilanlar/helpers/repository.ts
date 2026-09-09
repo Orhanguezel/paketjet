@@ -37,7 +37,7 @@ export function stripIlanContact<T extends Record<string, unknown>>(ilan: T) {
     vehicle_type: ilan.vehicle_type, title: ilan.title, description: ilan.description,
     status: ilan.status === 'active' && departure && new Date(departure).getTime() <= Date.now() ? 'expired' : ilan.status,
     created_at: publicDate(ilan.created_at), updated_at: publicDate(ilan.updated_at),
-    contact_locked: true as const,
+    contact_locked: true as const, is_sample: Number(ilan.is_sample) === 1,
   };
 }
 

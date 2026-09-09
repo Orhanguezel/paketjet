@@ -39,6 +39,7 @@ export async function repoPurchaseIlan(
   const result = await db.transaction<PurchaseResult>(async (tx) => {
     const [ilan] = await tx.select().from(ilanlar).where(eq(ilanlar.id, ilanId)).for("update");
     if (!ilan) return { ok: false, code: "not_found" };
+    if (ilan.is_sample) return { ok: false, code: "unavailable" };
     if (ilan.user_id === buyerId) return { ok: false, code: "own_listing" };
     const [existing] = await tx.select().from(ilanPurchases).where(and(eq(ilanPurchases.ilan_id, ilanId), eq(ilanPurchases.buyer_id, buyerId), eq(ilanPurchases.status, "completed")));
     if (existing?.contact_snapshot) {

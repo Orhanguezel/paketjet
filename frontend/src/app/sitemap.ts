@@ -10,8 +10,8 @@ export default async function sitemap():Promise<MetadataRoute.Sitemap>{
   try{
    const response=await fetch(`${API_URL}/api/ilanlar?limit=100&page=${page}`,{cache:'no-store'});
    if(!response.ok)throw new Error('sitemap_listings_unavailable');
-   const body=await response.json() as {data:Array<{id:string;slug?:string;updated_at:string}>;total:number};
-   for(const ilan of body.data)result.push({url:`${SITE_URL}/ilanlar/${encodeURIComponent(ilan.slug||ilan.id)}`,lastModified:ilan.updated_at});
+   const body=await response.json() as {data:Array<{id:string;is_sample?:boolean;slug?:string;updated_at:string}>;total:number};
+   for(const ilan of body.data.filter(ilan=>!ilan.is_sample))result.push({url:`${SITE_URL}/ilanlar/${encodeURIComponent(ilan.slug||ilan.id)}`,lastModified:ilan.updated_at});
    if(page*100>=body.total)break;
   }catch{break;}
  }

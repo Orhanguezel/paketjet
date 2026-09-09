@@ -11,5 +11,5 @@ const fetchIlan=cache(async(id:string):Promise<PublicIlan>=>{
   return response.json();
 });
 type Props={params:Promise<{id:string}>};
-export async function generateMetadata({params}:Props):Promise<Metadata>{const {id}=await params;const ilan=await fetchIlan(id);return{title:`${ilan.from_city} → ${ilan.to_city} taşıyıcı ilanı`,description:'Taşıyıcı güzergâhını incele ve iletişim bilgilerine eriş.',alternates:{canonical:`/ilanlar/${ilan.slug||ilan.id}`}};}
+export async function generateMetadata({params}:Props):Promise<Metadata>{const {id}=await params;const ilan=await fetchIlan(id);return{robots:ilan.is_sample?{index:false,follow:true}:undefined,title:`${ilan.is_sample?'ÖRNEK İLAN — ':''}${ilan.from_city} → ${ilan.to_city} taşıyıcı ilanı`,description:'Taşıyıcı güzergâhını incele ve iletişim bilgilerine eriş.',alternates:{canonical:`/ilanlar/${ilan.slug||ilan.id}`}};}
 export default async function IlanDetailPage({params}:Props){const {id}=await params;const ilan=await fetchIlan(id);return <><BreadcrumbSchema items={[{name:'Anasayfa',url:'/'},{name:'İlanlar',url:'/ilanlar'},{name:`${ilan.from_city} → ${ilan.to_city}`} ]}/><IlanDetailClient ilan={ilan}/></>;}

@@ -23,6 +23,8 @@ export const ilanlar = mysqlTable(
 
     slug: varchar("slug", { length: 255 }).notNull().default(""),
 
+    is_sample: tinyint("is_sample").notNull().default(0),
+
     // Güzergah
     from_city: varchar("from_city", { length: 128 }).notNull(),
     to_city: varchar("to_city", { length: 128 }).notNull(),
