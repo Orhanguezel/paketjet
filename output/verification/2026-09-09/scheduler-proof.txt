@@ -1,0 +1,14 @@
+2026-09-09T02:43:03Z
+Timezone=Etc/UTC
+active
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=""
+*/5 * * * * root /bin/bash /var/www/paketjet-current/backend/scripts/renewal-jobs.sh health
+*/5 * * * * root /bin/bash /var/www/paketjet-current/backend/scripts/renewal-jobs.sh maintenance
+15 3 * * 1-6 root /bin/bash /var/www/paketjet-current/backend/scripts/renewal-jobs.sh backup
+15 3 * * 0 root /bin/bash /var/www/paketjet-current/backend/scripts/renewal-jobs.sh weekly
+43 02 10 09 * root [ "$(date -u +\%Y)" = "2026" ] && [ ! -f /var/log/paketjet-renewal/checkpoint-24hours.log ] && /bin/bash /var/www/paketjet-current/backend/scripts/renewal-jobs.sh checkpoint 24hours
+43 02 16 09 * root [ "$(date -u +\%Y)" = "2026" ] && [ ! -f /var/log/paketjet-renewal/checkpoint-7days.log ] && /bin/bash /var/www/paketjet-current/backend/scripts/renewal-jobs.sh checkpoint 7days
+{"at":"2026-09-09T02:43:03.754Z","apply":true,"expired":0,"payment_review":0,"metrics":[{"payment_attention":5,"active_listings":0}]}
+{"at":"2026-09-09T02:43:03.143Z","checks":[{"url":"https://paketjet.com","status":200,"expected":200,"bodyOK":true,"ms":189,"ok":true},{"url":"https://paketjet.com/api/health","status":200,"expected":200,"bodyOK":true,"ms":14,"ok":true},{"url":"https://paketjet.com/blog/renewal-missing-check","status":404,"expected":404,"bodyOK":true,"ms":23,"ok":true},{"url":"https://panel.paketjet.com/auth/login","status":200,"expected":200,"bodyOK":true,"ms":34,"ok":true},{"name":"disk","diskUsedPercent":10,"ok":true}]}

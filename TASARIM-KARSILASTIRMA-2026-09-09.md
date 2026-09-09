@@ -24,3 +24,9 @@ Referanslar `output/imagegen/` altında; uygulama ekranları `output/verificatio
 ## Kontrol yöntemi
 
 Konsept ve uygulama; başlık hiyerarşisi, CTA sırası, kolon düzeni, renk ailesi, logo ve boşluk yönünden karşılaştırılır. Üretilmiş görseldeki gerçek olmayan rakamlar ve metin hataları kopyalanmaz. Son kabul; görünür ekran, gerçek API senaryosu ve yatay taşma/hata matrisi birlikte geçince verilir. Ekran görüntüleri test kullanıcılarıyla alınır.
+
+## Canlı son tur
+
+`live-home/list/login/contact-390.png` ve1440 karşılıkları gerçek üretim ekranlarıdır. Yeni admin girişi tek kart, gerçek PaketJet logosu, belirgin başlık,48px alan/düğme ve parola görünürlüğü kullanır; çalışmayan30 gün hatırla vaadi kaldırıldı. `admin-login-final.json` gerçek yerel admin hesabıyla giriş ve satın alma ekranına dönüşü, `live-admin-login-final.json` son canlı ekranı doğrular.
+
+Aynı Chrome mobil laboratuvar koşulunda üç koşunun ortancası: LCP5,612sn →0,728sn; CLS0,19056 →0,00211. Otomatik video sayısı4 →0. Transfer boyutu574.423 →568.397 bayt; büyük bir JavaScript boyut düşüşü iddiası yok. Saha INP verisi ölçülmedi. Kanıt `performance-before.json`, `performance-after.json`.

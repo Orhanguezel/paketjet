@@ -1,0 +1,95 @@
+{
+  "at": "2026-09-09T02:44:26.511Z",
+  "results": [
+    {
+      "name": "home",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "home",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "list",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "list",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "login",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "login",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "contact",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "contact",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "admin-login",
+      "width": 390,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "name": "admin-login",
+      "width": 1440,
+      "status": 200,
+      "overflow": false
+    },
+    {
+      "case": "controlled_signup",
+      "status": 200
+    },
+    {
+      "case": "private_listing_create",
+      "status": 201
+    },
+    {
+      "case": "pending_hidden_from_public",
+      "status": 404
+    },
+    {
+      "case": "owner_edit",
+      "status": 200
+    },
+    {
+      "case": "authenticated_panel_renders_private_listing",
+      "passed": true
+    },
+    {
+      "case": "controlled_listing_archived",
+      "status": 200
+    },
+    {
+      "case": "logout",
+      "status": 204,
+      "private_after": 401
+    }
+  ],
+  "errors": []
+}

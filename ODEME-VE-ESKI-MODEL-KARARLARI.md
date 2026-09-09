@@ -32,3 +32,7 @@ Kullanılmayan24 frontend dosyası import grafiğiyle kaldırıldı (`unused-fro
 ## Tarihsel finans kanıtı
 
 9 Eylül salt okunur canlı envanteri: 23 kullanıcı,16 geçmiş ilan,0 iletişim satın alımı; 1 ilan ödemesi50 TL ve4 paket ödemesi725 TL pending. Bunlar775 TL tahsilat veya gelir kanıtı değildir. Cüzdan hareket tablosu boş olduğundan3425 TL'nin kaynağı mevcut DB'den doğrulanamıyor. Tutar korunur, muhasebe/hak dönüşümü yapılmaz. Makbuz/kayıt bulunmadan bu iki mutabakat maddesi tamamlandı sayılmaz.
+
+## Canlı kapanış mutabakatı
+
+9 Eylül son canlı envanteri: ödeme sağlayıcısı `disabled`;1 tekil50 TL ve4 paket toplam725 TL geçmiş pending kayıt inceleme kapsamında; makbuz olmadan gelir/iptal/iade yapılmadı.11 cüzdanın3.425 TL toplamı değişmedi, eski hareket tablosu boş olduğu için kaynağı çözülemedi.16 geçmiş ilan expired; kontrollü yayına kapalı test ilanı removed, test hesabı inactive. Kontrollü test0 satın alma ve0 ledger hareketi oluşturdu. Kanıt: `live-inventory-after.json`, `production-maintenance.json`, `live-test-cleanup.json`.

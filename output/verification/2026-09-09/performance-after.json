@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-09T02:44:37.074Z",
+  "method": "Chrome desktop headless,390x844,cache disabled,150ms latency,1.6Mbps download,8s observation; LCP/CLS lab only. INP requires field interactions.",
+  "results": [
+    {
+      "lcp": 888,
+      "cls": 0.002111912111196157,
+      "resources": 21,
+      "transfer": 568397,
+      "video": 0
+    },
+    {
+      "lcp": 728,
+      "cls": 0.002111912111196157,
+      "resources": 21,
+      "transfer": 568397,
+      "video": 0
+    },
+    {
+      "lcp": 700,
+      "cls": 0.002111912111196157,
+      "resources": 21,
+      "transfer": 568397,
+      "video": 0
+    }
+  ]
+}

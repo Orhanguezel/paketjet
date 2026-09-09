@@ -1,0 +1,41 @@
+[
+  {
+    "status": 403,
+    "passed": true,
+    "path": "/panel/ilan-alma-hakki"
+  },
+  {
+    "status": 429,
+    "passed": true,
+    "path": "/panel/ilan-alma-hakki"
+  },
+  {
+    "status": 500,
+    "passed": true,
+    "path": "/panel/ilan-alma-hakki"
+  },
+  {
+    "status": 401,
+    "passed": true,
+    "path": "/giris"
+  },
+  {
+    "path": "/blog/renewal-missing-check",
+    "status": 404,
+    "passed": true
+  },
+  {
+    "path": "/rota/renewal-missing-check",
+    "status": 404,
+    "passed": true
+  },
+  {
+    "path": "/ilanlar/renewal-missing-check",
+    "status": 404,
+    "passed": true
+  },
+  {
+    "case": "payment_timeout_20s",
+    "passed": true
+  }
+]

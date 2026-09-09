@@ -1090,7 +1090,10 @@
     "durum": "Açık",
     "fixture": "/auth/register",
     "http": 200,
-    "location": null
+    "location": null,
+    "status": 307,
+    "final_redirect": "https://paketjet.com/kayit",
+    "verification_scope": "live-http.json"
   },
   {
     "uygulama": "admin_panel",
@@ -1103,7 +1106,10 @@
     "durum": "Açık",
     "fixture": "/auth/seller/login",
     "http": 200,
-    "location": null
+    "location": null,
+    "status": 307,
+    "final_redirect": "https://paketjet.com/giris",
+    "verification_scope": "live-http.json"
   },
   {
     "uygulama": "admin_panel",
@@ -1116,7 +1122,10 @@
     "durum": "Açık",
     "fixture": "/auth/seller/register",
     "http": 200,
-    "location": null
+    "location": null,
+    "status": 307,
+    "final_redirect": "https://paketjet.com/kayit",
+    "verification_scope": "live-http.json"
   },
   {
     "uygulama": "admin_panel",

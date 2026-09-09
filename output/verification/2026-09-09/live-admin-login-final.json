@@ -1,0 +1,20 @@
+{
+  "at": "2026-09-09T03:01:12.011Z",
+  "rows": [
+    {
+      "width": 390,
+      "status": 200,
+      "password_toggle": true,
+      "overflow": false,
+      "missing_images": 0
+    },
+    {
+      "width": 1440,
+      "status": 200,
+      "password_toggle": true,
+      "overflow": false,
+      "missing_images": 0
+    }
+  ],
+  "errors": []
+}

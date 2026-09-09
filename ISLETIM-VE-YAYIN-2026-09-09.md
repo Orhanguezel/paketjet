@@ -1,6 +1,6 @@
 # PaketJet işletim ve yayın kaydı
 
-Bu sürüm kullanıcı talimatıyla yetkili yenilemedir. Çalışma dizini `/var/www/paketjet`; SSH `vps-paketjet`. Kamu sitesi paketjet.com, yönetim paneli panel.paketjet.com. Backend 8070, web 3070, admin 3071. PM2 süreçleri Node/Next çalıştırır; MySQL ve Nginx sistem servisleridir. Docker/Nginx dosyaları değiştirilmez.
+Bu sürüm kullanıcı talimatıyla yetkili yenilemedir. Aktif çalışma dizini `/var/www/paketjet-current` → `/var/www/paketjet-releases/e9317bb5cb81`; eski kaynak ve upload arşivi `/var/www/paketjet`; SSH `vps-paketjet`. Kamu sitesi paketjet.com, yönetim paneli panel.paketjet.com. Backend 8070, web 3070, admin 3071. PM2 süreçleri Node/Next çalıştırır; MySQL ve Nginx sistem servisleridir. Docker/Nginx dosyaları değiştirilmez.
 
 ## Yedek ve yükseltme
 
@@ -33,3 +33,34 @@ Ayrı `paketjet` servis hesabı; kod okunabilir, yalnız uploads/log dizinleri y
 ## Güvenlik bağımlılık kapısı
 
 Next.js25 Ağustos2026 güvenlik duyurusu nedeniyle iki arayüz15.5.24'e yükseltildi: https://nextjs.org/blog/august-2026-security-release . Sharp0.35.4 ve ilgili transitive düzeltmeler kilitlendi; üç Bun kilidinin advisory taraması0 bulgu. Bun1.3.10, Node22/24 hedefidir. Fastify static10 değişen header API'si gerçek HTTP avatar regresyonuyla doğrulandı.
+
+## Gerçek yayın ve geri dönüş komutları
+
+Ana yenileme `d058642` 9 Eylül 02:42 UTC'de yayınlandı. Admin girişinin son düzeltmesi `e9317bb5cb810092b5a3083e172a218c1605293b` aynı izole sürüm süreciyle9 Eylül03:00:50 UTC'de yayınlandı; son gerçekleşmiş yayın zamanı `release-final.json` kanıtındadır. Dokümantasyon commit'i uygulama build SHA'sından sonra gelebilir; çalışan kod SHA'sı bu kayıttır.
+
+Sunucudaki özel `/var/backups/paketjet/renewal-20260909/prepare-release.sh` yeni detached worktree açar, mevcut aktif sürümün özel env dosyalarını0600 kopyalar, uploads arşivine bağlantı kurar ve üç uygulamayı frozen lock ile derler. `publish-release.sh` taze DB/source/upload yedeği alır, gzip doğrular, additive migration journal'ını uygular, süre bakımını çalıştırır ve süreçleri yeni dizinden açar.
+
+PM2 `startOrReload --update-env` eski sürecin cwd'sini değiştirmediği için ilk geçişte eski kaynakta kaldı; HTTP404 kontrolü bunu yakaladı. Çözüm üç PaketJet sürecini silip yeni ecosystem kaydıyla yeniden oluşturmaktır. Başka uygulamalara dokunulmaz. Her geçişten sonra `pm2 jlist` içindeki cwd/script ve üç HTTP uygulaması doğrulanır.
+
+Son admin düzeltmesinden önceki güvenli uygulama sürümüne dönüş için:
+
+```bash
+ssh vps-paketjet
+# Önce mevcut sürümde olay anı yedeği alınır.
+cd /var/www/paketjet-current/backend
+node scripts/renewal-backup.mjs --weekly
+# İşletim ecosystem dosyasının kopyasında üç cwd d058642bc559 sürümüne ayarlanır.
+# PAYMENT_PROVIDER=disabled korunur; dosya0600 tutulur.
+pm2 delete paketjet-backend paketjet-frontend paketjet-admin
+pm2 start /var/backups/paketjet/renewal-20260909/rollback-ecosystem.json
+ln -sfn /var/www/paketjet-releases/d058642bc559 /var/www/paketjet-current
+pm2 save
+cd /var/www/paketjet-current/backend
+node scripts/renewal-monitor.mjs
+```
+
+`rollback-ecosystem.json` hazır dosyadır; son iki sürüm aynı053–062 şemayı kullanır. Bu dönüş DB restore gerektirmez. Daha eski güvensiz sürüme otomatik dönüş yapılmaz.
+
+Gerçek cron `/etc/cron.d/paketjet-renewal`, host timezone `Etc/UTC`, servis active. Health ve bakım5 dakikada bir; DB yedeği pazartesi–cumartesi03:15 UTC, source/upload dahil haftalık yedek pazar03:15 UTC. Logrotate `/etc/logrotate.d/paketjet-renewal`, günlük14 kopya. Dosya logları `/var/log/paketjet-renewal/health.jsonl`, `maintenance.jsonl`, `backup.jsonl`.
+
+24 saat kontrolü **10 Eylül2026 02:43 UTC**,7 gün kontrolü **16 Eylül2026 02:43 UTC**; yıl ve çıktı varlığıyla tek çalışımlık korunur. Beklenen çıktılar `checkpoint-24hours.log` ve `checkpoint-7days.log`. Health hataları yerel syslog'a gider; harici bildirim teslimi kurulmuş sayılmaz. Gerçek sonuçlar tarihleri gelmeden tamamlandı olarak işaretlenmez.

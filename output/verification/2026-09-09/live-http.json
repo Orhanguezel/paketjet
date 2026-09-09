@@ -1,0 +1,210 @@
+{
+  "at": "2026-09-09T03:01:11.753Z",
+  "checks": [
+    {
+      "host": "paketjet.com",
+      "path": "/",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "csp": true,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/ilanlar",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "csp": true,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/giris",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "csp": true,
+      "noindex": "noindex, nofollow",
+      "location": null
+    },
+    {
+      "host": "panel.paketjet.com",
+      "path": "/auth/login",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "csp": true,
+      "noindex": "noindex, nofollow",
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/blog/renewal-missing-check",
+      "status": 404,
+      "expected": 404,
+      "passed": true,
+      "csp": true,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/rota/renewal-missing-check",
+      "status": 404,
+      "expected": 404,
+      "passed": true,
+      "csp": true,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/ilanlar/renewal-missing-check",
+      "status": 404,
+      "expected": 404,
+      "passed": true,
+      "csp": true,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/api/site_settings/smtp_password",
+      "status": 404,
+      "expected": 404,
+      "passed": true,
+      "csp": false,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/api/ilan-alma-hakki",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "csp": false,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/api/admin/payment-operations",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "csp": false,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "paketjet.com",
+      "path": "/ui-preview",
+      "status": 404,
+      "expected": 404,
+      "passed": true,
+      "csp": true,
+      "noindex": null,
+      "location": null
+    },
+    {
+      "host": "panel.paketjet.com",
+      "path": "/auth/register",
+      "status": 307,
+      "expected": 307,
+      "passed": true,
+      "csp": true,
+      "noindex": "noindex, nofollow",
+      "location": "https://paketjet.com/uye-ol"
+    },
+    {
+      "host": "panel.paketjet.com",
+      "path": "/auth/seller/login",
+      "status": 307,
+      "expected": 307,
+      "passed": true,
+      "csp": true,
+      "noindex": "noindex, nofollow",
+      "location": "https://paketjet.com/giris"
+    },
+    {
+      "host": "panel.paketjet.com",
+      "path": "/auth/seller/register",
+      "status": 307,
+      "expected": 307,
+      "passed": true,
+      "csp": true,
+      "noindex": "noindex, nofollow",
+      "location": "https://paketjet.com/uye-ol"
+    }
+  ],
+  "sitemap": [
+    {
+      "url": "https://paketjet.com",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/ilanlar",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/destek",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/hakkimizda",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/iletisim",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/kvkk",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/gizlilik-politikasi",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/kullanim-kosullari",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/tasima-kurallari",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/blog",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/blog/p2p-kargo-nedir",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/blog/paketjet-nasil-kullanilir",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/rota/istanbul-ankara",
+      "status": 200
+    },
+    {
+      "url": "https://paketjet.com/rota/istanbul-izmir",
+      "status": 200
+    }
+  ],
+  "public_settings_private_keys": [],
+  "active_listing_count": 0,
+  "payment_availability": {
+    "provider": null,
+    "enabled": false,
+    "reason": "payments_unavailable"
+  }
+}

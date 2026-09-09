@@ -1,0 +1,26 @@
+[
+  {
+    "name": "paketjet-backend",
+    "status": "online",
+    "cwd": "/var/www/paketjet-releases/e9317bb5cb81/backend",
+    "script": "/usr/bin/node",
+    "restarts": 0,
+    "uptime": 1788922841909
+  },
+  {
+    "name": "paketjet-frontend",
+    "status": "online",
+    "cwd": "/var/www/paketjet-releases/e9317bb5cb81/frontend",
+    "script": "/usr/bin/npm",
+    "restarts": 0,
+    "uptime": 1788922841910
+  },
+  {
+    "name": "paketjet-admin",
+    "status": "online",
+    "cwd": "/var/www/paketjet-releases/e9317bb5cb81/admin_panel",
+    "script": "/usr/bin/npm",
+    "restarts": 0,
+    "uptime": 1788922841926
+  }
+]

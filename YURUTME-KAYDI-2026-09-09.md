@@ -1,5 +1,7 @@
 # PaketJet yenileme yürütme kaydı
 
+> **Güncel kapanış:**138/145 tamamlandı;7 dış/tarihli bağımlılık açık. Son canlı kod `e9317bb`,9 Eylül03:00:50 UTC. Aşağıdaki zaman çizelgesinin eski yayın adayı notları tarihsel ara durumlardır.
+
 Kullanıcının son talimatı, 145 maddelik çeklistin uygulama, test ve yayın aşamalarını onay beklemeden yürütmektir. Çeklistteki önceki plan-only notu önceki talebe aittir. Bu kayıt yapılmış işi ve dış bağımlılıkları ayırır; açık görevler kanıtsız kapatılmaz.
 
 ## Başlangıç
@@ -71,3 +73,16 @@ Iyzico callback token ile bulunur; conversationId tek başına bağlayıcı değ
 - Yeni063 değil, **053–062** arası additive migration paketi hazırlanmıştır; kaynak checksum günlüğü vardır. Gerçek kart sağlayıcısı, SMTP teslimi, Maps konsolu ve harici alarm teslimi dış bağımlılıktır.
 
 Bu bölüm yayın öncesi kapıdır. Commit/PM2/canlı veri ve yayın sonrası ölçüm bir sonraki bölümde kaydedilecektir.
+
+## Son yayın, test ve mutabakat
+
+- `d058642` ana yenileme canlıya alındı; PM2 reload eski cwd'yi koruduğu için ilk HTTP kapısı hatayı yakaladı. Üç PaketJet süreci yeni ecosystem ile yeniden oluşturularak02:42:51 UTC'de doğrulandı. Yayın betiği kalıcı olarak bu yönteme düzeltildi.
+- Admin girişi sadeleştirildi, işlevsiz30 gün seçeneği kaldırıldı, parola görünürlüğü/hydration ve güvenli dönüş adresi tamamlandı. Yerel gerçek admin girişi satın alma yönetimine döndü; tarayıcı hatası0.
+- `e9317bb` commit/push; frozen install ve üç sunucu production build başarılı. Taze DB/source/upload yedeği doğrulandı,053–062 journal idempotent geçti. Son yayın03:00:50 UTC; PM2 üç doğru sürüm cwd, online, restart0.
+-101 otomatik test başarılı:87 backend,13 frontend,1 admin. Web/admin tip kontrolü ve üç build başarılı. Lint hata0; web14/admin407 uyarı kalan bakım borcu. İzole restore DB'sine062 son migration da uygulandı; sıfır DB seed062'ye kadar geçti.
+- Son canlı HTTP14 kontrol/sitemap14 URL geçti; üç404 ve özel API yetkisi doğrulandı. Kamu ayarlarında private anahtar yok; boş Maps browser anahtarı bilinçli public yapılandırma olarak ayrıldı.
+- Canlı kontrollü signup→özel pending ilan→düzenleme→panel→arşiv→logout geçti. Test hesabı inactive, ilan removed;0 satın alma/ledger. Son24 kullanıcı/22 aktif,16 expired +1 removed ilan,0 aktif ilan;11 cüzdan/3.425 TL ve5 pending ödeme korundu.
+- Mobil laboratuvar üç koşu ortanca LCP5,612→0,728sn, CLS0,19056→0,00211; otomatik video4→0. Bu saha INP verisi değildir.
+- Gerçek cron03:00 UTC otomatik health/bakım çalışması kanıtlandı. Günlük/haftalık yedek, logrotate, disk eşiği kurulu.10 Eylül02:43 UTC /16 Eylül02:43 UTC takipleri zamanlandı, sonuçları henüz yok.
+- Kalan7 madde ve somut bağımlılıkları güncel durum raporu ile ana çeklistte. Ödeme disabled; eksik sağlayıcı/mail/Maps/alarm yapılandırması sahte başarıyla gizlenmedi.
+- Başlangıç kullanıcı değişiklikleri `.gitignore`, iki tsbuildinfo ve `project.portfolio.json` korundu, commit kapsamına alınmadı. Tarihsel untracked listeler silinmedi. Sunucudaki geçici denetim betikleri özel işletim arşivine taşındı. Canlı worktree'deki uploads symlink'i kalıcı medya arşividir.

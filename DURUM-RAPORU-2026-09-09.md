@@ -1,5 +1,46 @@
 # PaketJet detaylı durum raporu — 9 Eylül 2026
 
+## Yenileme sonrası güncel durum — 9 Eylül 2026
+
+**Uygulanabilir yenileme işleri tamamlandı; 145 maddeden138'i kapalı,7'si dış kanıt veya gelecek tarih bağımlılığı nedeniyle açık.** Bu oran ticari hazırlık ya da satış başarısı yüzdesi değildir. Aşağıdaki eski inceleme, yenileme öncesi başlangıç fotoğrafıdır; güncel uygulamanın kusur listesi olarak okunmamalıdır.
+
+Ana uygulama düzeltmeleri `d058642`, son admin giriş düzeltmesi `e9317bb5cb810092b5a3083e172a218c1605293b`. Dal `codex/renewal-20260909`; kod commit/push ve canlı sürüm eşleşmesi `output/verification/2026-09-09/release-final.json` kaydında. Aktif süreçler sürüm dizininde PM2 ile çalışır; Docker/Nginx değiştirilmedi.
+
+| Alan | Gerçek son durum | Kanıt |
+| --- | --- | --- |
+| Tasarım | Ana sayfa, liste/detay, ilan formu, kullanıcı paneli, giriş/kayıt, iletişim ve admin ekranlarında ortak temiz tasarım; orijinal logo korundu | Tasarım karşılaştırma belgesi,132 koşullu görsel matris, canlı390/1440 ekranları |
+| Gizlilik/oturum | Kamu ilan DTO'sunda kimlik/iletişim sızıntısı kaldırıldı; rol/aktif hesap/oturum sürümü kontrolü, güvenli cookie ve dönüş adresleri | Backend87 test, auth-session-test, admin safe-next testi, live-http |
+| Ödeme/hak | Atomik hak tüketimi, tekrar callback ve yarış koruması, sağlayıcı/tutar/para birimi doğrulaması, süre/inceleme kuyruğu | buyer-e2e, backend testleri, error-matrix; gerçek kart checkout'u açık bağımlılık |
+| Eski model | Eski rezervasyon/cüzdan yazımları kapalı, kullanılmayan web parçaları kaldırıldı; tarihsel okuma ve gerekli callback'ler korundu | Model karar kaydı, import analizi, üç build |
+| Veri |16 geçmiş ilan expired; kamu listesi0 aktif ilan. Kontrollü test ilanı removed, test hesabı inactive | live-inventory-after, live-test-cleanup |
+| Finans |11 cüzdan toplam3.425 TL korundu;1 tekil +4 paket pending ödeme toplam775 TL gelir sayılmadı | Canlı toplulaştırılmış DB envanteri |
+| Test |87 backend +13 frontend +1 admin =101 test geçti; üç üretim build'i geçti | validation-summary, release-final |
+| Canlı doğrulama |14 HTTP kontrolü,14 sitemap URL'si; mobil/masaüstü tur; kayıt→özel ilan→düzenleme→panel→arşiv→çıkış | live-http, live-browser, live-admin-login-final |
+| Performans | Aynı mobil laboratuvarda ortanca LCP5,612→0,728 sn; CLS0,19056→0,00211; otomatik video4→0 | performance-before/after; saha INP ölçülmedi |
+| İşletim | DB/source/upload yedek ve izole geri yükleme;053–062 yükseltme; cron/logrotate/disk kontrolü;24 saat/7 gün kontrolü zamanlandı | Restore logları, scheduler-proof, runbook |
+
+Tamamlanmış testler bütün gerçek sağlayıcıların üretimde çalıştığı anlamına gelmez. Web lint14 uyarı, admin lint407 uyarı içeriyor; hata sayısı0. Adminin bazı eski büyük dosyaları ve bu uyarılar teknik bakım borcu olarak sürüyor. Harici alarm teslimi ve saha performans verisi henüz kanıtlanmış değil.
+
+### Açık kalan7 madde
+
+| Madde | Engel / korunan durum | Tamamlanması için gereken |
+| --- | --- | --- |
+| F02-13 | Yerel ödeme/hak matrisi geçti; gerçek kart sağlayıcısı eksik. Canlı PAYMENT_PROVIDER=disabled | Gerçek sağlayıcı ortamı ile kabul/ret/3DS/iptal/timeout mutabakatı |
+| F03-06 |5 eski pending ödeme makbuzsuz; inceleme kuyruğunda | Sağlayıcı hareket/makbuz kanıtıyla kayıt bazında sonuçlandırma |
+| F03-07 |3.425 TL eski bakiyenin hareket kaynağı yok; otomatik dönüşüm yapılmadı | Muhasebe/sağlayıcı hareket kaydıyla sahiplik ve toplam mutabakatı |
+| F13-04 | Gerçek SMTP kimliği ve DKIM selector yok; teslim kanıtı yok | Gönderici DNS/SMTP yapılandırması ve yetkili alıcıya teslim testi |
+| F13-05 | Maps anahtarı boş; kota/billing/domain konsol kanıtı ve gerçek ödeme anahtarları yok | İlgili servis konsol/ortam yapılandırması |
+| F13-06 | Yerel health/syslog var; harici alarm alıcısı/DSN yok | Kontrollü hata/ödeme alarmının gerçek kanala teslimi |
+| F14-05 | Kontroller sunucuda planlandı; henüz tarihi gelmedi |10 Eylül02:43 UTC ve16 Eylül02:43 UTC çıktılarının değerlendirilmesi |
+
+Canlı kontrollü test bir hesap ve bir kamuya kapalı ilan oluşturdu; ilan arşivlendi, hesap pasifleştirildi, oturumlar iptal edildi. Satın alma veya ledger hareketi oluşmadı. Son toplam24 kullanıcı/22 aktif hesap; bu kayıt sayısı doğrulanmış gerçek müşteri sayısı değildir. Aktif ilan bulunmadığından site dürüst boş durum gösterir; örnek ilan veya sahte istatistik üretilmez.
+
+Kaynaklar: [Ana çeklist](CEKLIST-IYILESTIRME-VE-TASARIM.md), [İşletim ve geri dönüş](ISLETIM-VE-YAYIN-2026-09-09.md), [Tasarım karşılaştırması](TASARIM-KARSILASTIRMA-2026-09-09.md), [Test ve canlı kanıtlar](output/verification/2026-09-09/).
+
+---
+
+## Yenileme öncesi tarihsel inceleme
+
 İnceleme zamanı: 9 Eylül 2026, Europe/Berlin; sunucu ölçümleri 8 Eylül 23:23–23:28 UTC civarı. Yerel kaynak kod, mevcut iş listeleri, SSH üzerinden çalışan servisler, anonim HTTP GET istekleri ve MySQL toplulaştırılmış sorguları incelendi.
 
 ## 1. Yönetici değerlendirmesi
