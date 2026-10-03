@@ -70,3 +70,19 @@ Başlık, slogan, bildiri, sipariş onay mesajı, e-posta, telefon dolduruldu; *
 - İade edilen ilan tekrar satışa açılmaz (`ilan_purchases` ilan başına tek satır); gerekirse admin elle yönetir.
 - Her webhook aboneliğinin ayrı token'ı var: `SHOPIER_WEBHOOK_TOKEN` virgülle ayrılmış liste
   (`order.created`, `refund.requested`, `refund.updated`).
+
+## Admin ayarları (Ödeme Ayarları → Kart ödemesi (Shopier))
+
+- Kartla ödemeyi aç/kapa, API anahtarı, bağlantı testi, webhook'ları yeniden kur, ödeme ürün görseli.
+- Öncelik: panelde kaydedilen (DB, `site_settings` `payment.shopier`, `locale='*'`, herkese kapalı) > sunucu env.
+- Anahtar ve webhook token'ları AES-256-GCM ile şifreli; anahtar `SETTINGS_ENCRYPTION_KEY` (64 hex, zorunlu,
+  her ortamda farklı). Anahtar değişirse paneldeki şifreli değerler açılamaz → sunucu env'e düşülür; panelden yeniden girilir.
+- Yeni anahtar kaydedilmeden önce Shopier'de doğrulanır (`GET /orders` + `GET /shop/settings`).
+- "Bildirimleri yeniden kur": Shopier liste yanıtı token vermediği için bu siteye ait abonelikler silinip yeniden açılır.
+
+## Footer ve yasal sayfalar
+
+- Kartla ödeme açıkken footer'da güvenli ödeme alanı (Shopier, 3D Secure, SSL, Visa/Mastercard/Troy) görünür.
+- `/mesafeli-satis-sozlesmesi` ve `/iptal-ve-iade-kosullari` 069 ile **taslak** (yayında değil). Admin → Sayfalar'dan
+  satıcı bilgileri doldurulup yayınlanınca sayfa açılır ve footer bağlantısı kendiliğinden görünür.
+  Yayından sonra: yasal sayfa yan menüsüne (`LegalPageView`) ve `sitemap.ts`'e eklenmeli.
