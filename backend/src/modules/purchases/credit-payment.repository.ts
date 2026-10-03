@@ -23,7 +23,7 @@ export type CreditPackagePaymentResult =
   | { ok: true; purchase: CreditPackagePurchase; pack: CreditPackageDto; user: typeof users.$inferSelect }
   | { ok: false; code: "user_not_found" | "package_not_found" };
 
-export async function repoCreateCreditPackagePayment(userId: string, packageKey: string, provider: "iyzico" | "paytr") {
+export async function repoCreateCreditPackagePayment(userId: string, packageKey: string, provider: "iyzico" | "paytr" | "bank_transfer" | "bank_test") {
   const [[user], packages] = await Promise.all([
     db.select().from(users).where(eq(users.id, userId)).limit(1),
     repoGetCreditPackages(),
@@ -36,7 +36,7 @@ export async function repoCreateCreditPackagePayment(userId: string, packageKey:
   const id = randomUUID();
   const paymentRef = randomUUID();
   await db.transaction(async (tx) => {
-  await tx.insert(paymentSessions).values({payment_ref: paymentRef, user_id: userId, kind: "credits", provider, amount: pack.price.toFixed(2), expires_at: new Date(Date.now() + 15 * 60000)});
+  await tx.insert(paymentSessions).values({payment_ref: paymentRef, user_id: userId, kind: "credits", provider, amount: pack.price.toFixed(2), state: provider.startsWith("bank_") ? "pending" : "initializing", expires_at: new Date(Date.now() + (provider.startsWith("bank_") ? 48 * 60 : 15) * 60000)});
   await tx
     .insert(creditPackagePurchases)
     .values({
@@ -94,7 +94,7 @@ export async function repoCompleteCreditPackagePayment(paymentRef: string, proof
       .set({ status: "completed" })
       .where(eq(creditPackagePurchases.id, purchase.id));
 
-    await repoTransitionPayment(tx, paymentRef, "completed", null);
+    await repoTransitionPayment(tx, paymentRef, "completed", null, proof.actorId);
     return { ok: true, already_processed: false, purchase };
   });
 }

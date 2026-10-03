@@ -27,9 +27,9 @@ export default function BankDetailsCard() {
   React.useEffect(() => {
     if (!bankQ.data) return;
     try {
-      const row = bankQ.data as { value?: string };
+      const row = bankQ.data as { value?: string | BankDetails };
       if (row.value) {
-        const parsed = JSON.parse(row.value) as BankDetails;
+        const parsed = (typeof row.value === 'string' ? JSON.parse(row.value) : row.value) as BankDetails;
         setForm({
           iban: parsed.iban ?? '',
           account_name: parsed.account_name ?? '',
@@ -47,7 +47,7 @@ export default function BankDetailsCard() {
       await updateSetting({
         key: 'bank_details',
         locale: 'tr',
-        value: JSON.stringify(form),
+        value: { ...form },
       }).unwrap();
       toast.success(t('saved'));
     } catch {

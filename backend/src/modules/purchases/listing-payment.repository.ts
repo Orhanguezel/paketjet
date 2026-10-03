@@ -32,7 +32,7 @@ async function repoGetListingCreditPrice() {
 export async function repoCreateIlanPayment(
   ilanId: string,
   buyerId: string,
-  provider: "iyzico" | "paytr",
+  provider: "iyzico" | "paytr" | "bank_transfer" | "bank_test",
   declaration: PurchaseDeclaration,
   buyerIp: string,
 ) {
@@ -50,7 +50,7 @@ export async function repoCreateIlanPayment(
   const id = randomUUID();
   const paymentRef = randomUUID();
   if (!Number.isFinite(price) || price <= 0) throw Object.assign(new Error("invalid_price"), {statusCode: 503});
-  await tx.insert(paymentSessions).values({payment_ref: paymentRef, user_id: buyerId, ilan_id: ilanId, kind: "listing", provider, amount: price.toFixed(2), expires_at: new Date(Date.now() + 15 * 60000)});
+  await tx.insert(paymentSessions).values({payment_ref: paymentRef, user_id: buyerId, ilan_id: ilanId, kind: "listing", provider, amount: price.toFixed(2), state: provider.startsWith("bank_") ? "pending" : "initializing", expires_at: new Date(Date.now() + (provider.startsWith("bank_") ? 48 * 60 : 15) * 60000)});
   await tx.insert(ilanPurchasePayments).values({
     id,
     ilan_id: ilanId,
@@ -96,7 +96,7 @@ export async function repoCompleteIlanPayment(paymentRef: string, proof: Payment
       buyer_id: payment.buyer_id,
       seller_id: ilan.user_id,
       price_paid: payment.price,
-      pay_method: "card",
+      pay_method: payment.provider.startsWith("bank_") ? payment.provider : "card",
       credit_used: 0,
       payment_ref: payment.payment_ref,
       estimated_value_snapshot: payment.estimated_value_snapshot,
@@ -109,7 +109,7 @@ export async function repoCompleteIlanPayment(paymentRef: string, proof: Payment
     });
     await tx.update(ilanlar).set({ status: "sold", sold_at: new Date(), sold_to_user_id: payment.buyer_id }).where(eq(ilanlar.id, ilan.id));
     await tx.update(ilanPurchasePayments).set({ status: "completed" }).where(eq(ilanPurchasePayments.id, payment.id));
-    await repoTransitionPayment(tx, paymentRef, "completed", null);
+    await repoTransitionPayment(tx, paymentRef, "completed", null, proof.actorId);
     return { ok: true, already_processed: false, payment, purchase_id: purchaseId, contact };
   });
 }

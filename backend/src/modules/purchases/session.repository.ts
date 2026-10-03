@@ -28,7 +28,7 @@ export async function repoPaymentByRef(ref: string) {
   return row;
 }
 export async function repoMyPayment(ref: string, userId: string) {
-  const [row] = await db.select({ payment_ref: paymentSessions.payment_ref, kind: paymentSessions.kind, ilan_id: paymentSessions.ilan_id, amount: paymentSessions.amount, state: paymentSessions.state, error_code: paymentSessions.error_code, updated_at: paymentSessions.updated_at }).from(paymentSessions).where(and(eq(paymentSessions.payment_ref, ref), eq(paymentSessions.user_id, userId))).limit(1);
+  const [row] = await db.select({ payment_ref: paymentSessions.payment_ref, kind: paymentSessions.kind, provider: paymentSessions.provider, ilan_id: paymentSessions.ilan_id, amount: paymentSessions.amount, state: paymentSessions.state, error_code: paymentSessions.error_code, expires_at: paymentSessions.expires_at, updated_at: paymentSessions.updated_at }).from(paymentSessions).where(and(eq(paymentSessions.payment_ref, ref), eq(paymentSessions.user_id, userId))).limit(1);
   return row;
 }
 export async function repoMarkPayment(ref: string, state: string, errorCode: string | null = null) {
@@ -45,6 +45,7 @@ export interface PaymentProof {
   currency: string;
   paymentId: string;
   transactionIds?: string[];
+  actorId?: string;
 }
 export function matchesPayment(session: PaymentSession, proof: PaymentProof): boolean {
   return session.provider === proof.provider && proof.currency === 'TRY' && Boolean(proof.paymentId) && Number.isFinite(proof.amount) && Math.round(proof.amount * 100) === Math.round(Number(session.amount) * 100);
@@ -52,6 +53,7 @@ export function matchesPayment(session: PaymentSession, proof: PaymentProof): bo
 export async function repoAcceptReceipt(tx: PurchaseTx, ref: string, proof: PaymentProof) {
   const [session] = await tx.select().from(paymentSessions).where(eq(paymentSessions.payment_ref, ref)).for('update');
   if (!session || !matchesPayment(session, proof)) return null;
+  if (session.provider.startsWith('bank_') && session.state !== 'review') return null;
   if (session.provider_payment_id && session.provider_payment_id !== proof.paymentId) return null;
   await tx.update(paymentSessions).set({ provider_payment_id: proof.paymentId, receipt: { paymentId: proof.paymentId, transactionIds: proof.transactionIds } }).where(eq(paymentSessions.payment_ref, ref));
   return session;

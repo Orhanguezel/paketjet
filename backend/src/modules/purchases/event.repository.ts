@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import { paymentEvents } from './event.schema';
 import { paymentSessions } from './session.schema';
 import type { PurchaseTx } from './session.repository';
-export async function repoTransitionPayment(tx: PurchaseTx, ref: string, state: string, errorCode: string | null) {
+export async function repoTransitionPayment(tx: PurchaseTx, ref: string, state: string, errorCode: string | null, actorId = 'provider_callback') {
   await tx.update(paymentSessions).set({state, error_code:errorCode}).where(eq(paymentSessions.payment_ref, ref));
-  await tx.insert(paymentEvents).values({id:randomUUID(),payment_ref:ref,actor_id:'provider_callback',event:state,note:errorCode});
+  await tx.insert(paymentEvents).values({id:randomUUID(),payment_ref:ref,actor_id:actorId,event:state,note:errorCode});
 }

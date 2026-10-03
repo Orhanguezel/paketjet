@@ -61,8 +61,8 @@ export async function repoCommerceSummary() {
    (SELECT COUNT(*) FROM ilanlar WHERE status='active' AND departure_date>UTC_TIMESTAMP()) active_listings,
    (SELECT COUNT(*) FROM ilanlar WHERE status='pending_approval' AND departure_date>UTC_TIMESTAMP()) moderation,
    (SELECT COUNT(*) FROM ilan_purchases WHERE status='completed') contact_sales,
-   (SELECT COALESCE(SUM(price_paid),0) FROM ilan_purchases WHERE status='completed' AND pay_method='card') listing_receipts,
-   (SELECT COALESCE(SUM(amount),0) FROM payment_sessions WHERE state='completed' AND kind='credits') package_receipts,
+   (SELECT COALESCE(SUM(price_paid),0) FROM ilan_purchases WHERE status='completed' AND pay_method IN ('card','bank_transfer')) listing_receipts,
+   (SELECT COALESCE(SUM(amount),0) FROM payment_sessions WHERE state='completed' AND kind='credits' AND provider<>'bank_test') package_receipts,
    (SELECT COUNT(*) FROM ilan_purchases WHERE status='completed' AND pay_method='credit') credit_spends,
    (SELECT COUNT(*) FROM payment_sessions WHERE state IN ('initializing','pending','review','refund_pending')) payment_queue`);
   return (rows as unknown as Record<string,unknown>[])[0];

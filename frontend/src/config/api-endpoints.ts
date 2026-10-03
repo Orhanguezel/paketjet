@@ -23,18 +23,20 @@ export const API = {
     detail: (id: string) => `/api/ilanlar/${id}`,
     buy:    (id: string) => `/api/ilanlar/${id}/satin-al`,
     pay:    (id: string) => `/api/ilanlar/${id}/satin-al/odeme`,
+    bankPay: (id: string) => `/api/ilanlar/${encodeURIComponent(id)}/satin-al/bank-transfer`,
     access: (id: string) => `/api/ilanlar/${encodeURIComponent(id)}/access`,
     contact:(id: string) => `/api/ilanlar/${id}/iletisim`,
     status: (id: string) => `/api/ilanlar/${id}/status`,
     photos: (id: string) => `/api/ilanlar/${id}/photos`,
   },
 
-  payments: {availability: "/api/payments/availability", status: (ref: string) => `/api/payments/${encodeURIComponent(ref)}`},
+  payments: {availability: "/api/payments/availability", status: (ref: string) => `/api/payments/${encodeURIComponent(ref)}`, bankAvailability: "/api/payments/bank-transfer/availability", bankOrder: (ref: string) => `/api/payments/bank-transfer/${encodeURIComponent(ref)}`, bankReport: (ref: string) => `/api/payments/bank-transfer/${encodeURIComponent(ref)}/report`},
   purchases: {
     mine: "/api/satin-aldiklarim",
     credits: "/api/ilan-alma-hakki",
     creditPackages: "/api/ilan-alma-hakki/paketler",
     buyCredits: "/api/ilan-alma-hakki/satin-al",
+    bankBuyCredits: "/api/ilan-alma-hakki/satin-al/bank-transfer",
   },
 
   bookings: {

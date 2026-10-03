@@ -5,12 +5,14 @@ import { authSecurity, fromZodSchema, okResponseSchema } from "@/modules/_shared
 import { getIlanIletisim, getMyCredits, listCreditPackages, listSatinAldiklarim, satinAlIlan } from "./controller";
 import { creditPackageIyzicoCallback, creditPackagePaytrCallback, ilanPaymentIyzicoCallback, ilanPaymentPaytrCallback, initiateIlanPayment, purchaseCreditPackage } from "./payment.controller";
 import { initiateIlanPaymentSchema, purchaseCreditPackageSchema, purchaseIlanSchema } from "./validation";
+import { registerBankTransfer } from './bank-transfer.routes';
 
 const idParams = { type: "object", properties: { id: { type: "string" } }, required: ["id"] } as const;
 const ok = { response: { 200: okResponseSchema } };
 const authOk = { security: authSecurity, ...ok };
 
 export async function registerPurchases(app: FastifyInstance) {
+  await registerBankTransfer(app);
   app.get("/ilanlar/:id/access", {preHandler: [requireAuth]}, getListingAccess);
   app.get("/payments/availability", getPaymentAvailability);
   app.get("/payments/:ref", {preHandler: [requireAuth]}, getPaymentStatus);

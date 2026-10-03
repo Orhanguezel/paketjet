@@ -1,5 +1,6 @@
 import { API } from "@/config/api-endpoints";
 import { apiGet, apiPost } from "@/lib/api-client";
+import type { BankOrder } from '@/modules/payments/payments.type';
 import type {
   ContactSnapshot,
   CreditPackagePaymentResponse,
@@ -29,6 +30,12 @@ export function getMyCredits() {
 
 export function purchaseCreditPackage(packageKey: string, provider?: "iyzico" | "paytr") {
   return apiPost<CreditPackagePaymentResponse>(API.purchases.buyCredits, { package_key: packageKey, provider });
+}
+export function createBankCreditOrder(packageKey:string) {
+  return apiPost<BankOrder>(API.purchases.bankBuyCredits, {package_key:packageKey});
+}
+export function createBankListingOrder(id:string,declaration:PurchaseDeclarationInput) {
+  return apiPost<BankOrder>(API.ilanlar.bankPay(id),declaration);
 }
 
 export function initiateIlanPayment(id: string, declaration: PurchaseDeclarationInput, provider?: "iyzico" | "paytr") {

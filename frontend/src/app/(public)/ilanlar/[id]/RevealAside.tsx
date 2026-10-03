@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { ROUTES } from '@/config/routes';
 import { getSiteSettingValue } from '@/lib/site-settings';
 import type { ContactSnapshot, PurchaseDeclarationInput } from '@/modules/purchases/purchases.type';
-interface Props {contact:ContactSnapshot|null;error:string;isAuthenticated:boolean;isActive:boolean;listingPrice:number|null;revealing:boolean;state?:'owner'|'unavailable'|'credit'|'card'|'purchased';paymentsEnabled:boolean;onLogin:()=>void;onPay:(d:PurchaseDeclarationInput)=>void;onReveal:(d:PurchaseDeclarationInput)=>void;}
-export function RevealAside({contact,error,isAuthenticated,isActive,listingPrice,revealing,state,paymentsEnabled,onLogin,onPay,onReveal}:Props){
+interface Props {contact:ContactSnapshot|null;error:string;isAuthenticated:boolean;isActive:boolean;listingPrice:number|null;revealing:boolean;state?:'owner'|'unavailable'|'credit'|'card'|'purchased';paymentsEnabled:boolean;bankMode:'test'|'real'|null;onLogin:()=>void;onPay:(d:PurchaseDeclarationInput)=>void;onReveal:(d:PurchaseDeclarationInput)=>void;}
+export function RevealAside({contact,error,isAuthenticated,isActive,listingPrice,revealing,state,paymentsEnabled,bankMode,onLogin,onPay,onReveal}:Props){
   const id=useId();
   const [value,setValue]=useState(''),[accepted,setAccepted]=useState(false),[message,setMessage]=useState(''),[loadError,setLoadError]=useState(false),[retry,setRetry]=useState(0),[copied,setCopied]=useState(false);
   useEffect(()=>{let active=true;setLoadError(false);getSiteSettingValue<{message?:string}>('listing.content_declaration','tr').then(s=>{if(active){setMessage(s?.message?.trim()??'');setLoadError(!s?.message);}}).catch(()=>{if(active)setLoadError(true);});return()=>{active=false;};},[retry]);
@@ -20,7 +20,8 @@ export function RevealAside({contact,error,isAuthenticated,isActive,listingPrice
         {loadError?<div role="alert" className="mt-4 text-sm"><p>Beyan metni yüklenemedi.</p><button onClick={()=>setRetry(n=>n+1)} className="min-h-11 text-brand">Yeniden dene</button></div>:<label className="mt-5 flex items-start gap-3 text-sm leading-6"><input type="checkbox" checked={accepted} disabled={!message} onChange={e=>setAccepted(e.target.checked)} className="mt-1 size-5 shrink-0 accent-brand"/><span>{message||'Beyan metni yükleniyor…'}</span></label>}
         {listingPrice===null&&<p role="alert" className="mt-4 text-sm text-danger">Fiyat alınamadı. Sayfayı yenileyerek tekrar deneyin.</p>}
         {error&&<p role="alert" className="mt-4 text-sm text-danger">{error}</p>}
-        {state==='card'&&!paymentsEnabled?<p className="mt-5 text-sm leading-6 text-muted">Kartla ödeme şu anda kullanılamıyor. Mevcut haklarınla işlem yapabilir veya destek alabilirsin.</p>:<button disabled={revealing||!canSubmit||!state} onClick={()=>state==='card'?onPay(declaration()):onReveal(declaration())} className="mt-6 min-h-12 w-full rounded-lg bg-action px-4 font-semibold text-white disabled:opacity-50">{revealing?'İşleniyor…':state==='credit'?'1 hak kullan · İletişimi aç':'Kartla öde · İletişimi aç'}</button>}
+        {state==='unavailable'?<p className="mt-5 text-sm leading-6 text-muted">Bu ilan satın almaya kapalı.</p>:state==='card'&&!paymentsEnabled&&!bankMode?<p className="mt-5 text-sm leading-6 text-muted">Ödeme şu anda kullanılamıyor. Mevcut haklarınla işlem yapabilir veya destek alabilirsin.</p>:<button disabled={revealing||!canSubmit||!state} onClick={()=>state==='card'?onPay(declaration()):onReveal(declaration())} className="mt-6 min-h-12 w-full rounded-lg bg-action px-4 font-semibold text-white disabled:opacity-50">{revealing?'İşleniyor…':state==='credit'?'1 hak kullan · İletişimi aç':bankMode?'Havale talebi oluştur':'Kartla öde · İletişimi aç'}</button>}
+        {state==='card'&&bankMode==='test'&&<p className="mt-3 text-sm text-muted">Test işlemi: gerçek para gönderme. İletişim bilgileri yönetici test onayından sonra açılır.</p>}
         <Link href={ROUTES.panel.ilanAlmaHakki} className="mt-4 inline-flex min-h-11 items-center text-sm font-medium text-brand">İlan alma hakkı paketleri</Link>
       </div>}
     </>}

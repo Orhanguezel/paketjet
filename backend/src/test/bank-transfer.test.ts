@@ -1,0 +1,70 @@
+import { afterAll, expect, it } from 'bun:test';
+import { randomUUID } from 'node:crypto';
+import { eq } from 'drizzle-orm';
+import { db } from '@/db/client';
+import { ilanPurchases } from '@/modules/purchases/schema';
+import { repoGetCreditBalance, repoGetCreditPackages } from '@/modules/purchases/repository';
+import { authHeaders, closeTestApp, getTestApp, randomEmail, registerAdminUser, registerUser } from './setup';
+import { buyer, declaration, listing } from './purchase-fixtures';
+
+const previousMode = process.env.BANK_TRANSFER_TEST_MODE;
+const previousEmails = process.env.BANK_TRANSFER_TEST_EMAILS;
+afterAll(async () => {
+  await closeTestApp();
+  if (previousMode === undefined) delete process.env.BANK_TRANSFER_TEST_MODE; else process.env.BANK_TRANSFER_TEST_MODE = previousMode;
+  if (previousEmails === undefined) delete process.env.BANK_TRANSFER_TEST_EMAILS; else process.env.BANK_TRANSFER_TEST_EMAILS = previousEmails;
+});
+
+it('test havalesi yönetici onayına dek hak vermez; tekrar bildirim ve yanlış tutar güvenlidir', async () => {
+  const app = await getTestApp(), admin = await registerAdminUser(app), email = randomEmail();
+  const user = await registerUser(app, { email, password: randomUUID() });
+  const headers = authHeaders(user.token!);
+  process.env.BANK_TRANSFER_TEST_MODE = 'true';
+  process.env.BANK_TRANSFER_TEST_EMAILS = email;
+  const [pack] = await repoGetCreditPackages();
+  expect(pack).toBeDefined();
+  const initialSummary = (await app.inject({ method: 'GET', url: '/api/admin/commerce-summary', headers: authHeaders(admin.token!) })).json();
+  const availability = await app.inject({ method: 'GET', url: '/api/payments/bank-transfer/availability', headers });
+  expect(availability.json()).toMatchObject({ enabled: true, mode: 'test', bank_details: null });
+  const created = await app.inject({ method: 'POST', url: '/api/ilan-alma-hakki/satin-al/bank-transfer', headers, payload: { package_key: pack.key } });
+  expect(created.statusCode).toBe(201);
+  const ref = created.json().conversationId;
+  expect(await repoGetCreditBalance(user.body.user.id)).toBe(0);
+  const approveUrl = `/api/admin/payment-operations/${ref}/bank-approve`;
+  const payload = { amount: pack.price, confirmed_on_statement: true };
+  expect((await app.inject({ method: 'POST', url: approveUrl, headers: authHeaders(admin.token!), payload })).statusCode).toBe(409);
+  expect((await app.inject({ method: 'POST', url: `/api/payments/bank-transfer/${ref}/report`, headers })).statusCode).toBe(200);
+  expect((await app.inject({ method: 'POST', url: `/api/payments/bank-transfer/${ref}/report`, headers })).statusCode).toBe(200);
+  expect((await app.inject({ method: 'POST', url: approveUrl, headers, payload })).statusCode).toBe(403);
+  expect((await app.inject({ method: 'POST', url: approveUrl, headers: authHeaders(admin.token!), payload: { ...payload, amount: pack.price + 1 } })).statusCode).toBe(400);
+  expect(await repoGetCreditBalance(user.body.user.id)).toBe(0);
+  expect((await app.inject({ method: 'POST', url: approveUrl, headers: authHeaders(admin.token!), payload })).statusCode).toBe(200);
+  expect(await repoGetCreditBalance(user.body.user.id)).toBe(pack.credits);
+  expect((await app.inject({ method: 'POST', url: approveUrl, headers: authHeaders(admin.token!), payload })).statusCode).toBe(409);
+  const summary = await app.inject({ method: 'GET', url: '/api/admin/commerce-summary', headers: authHeaders(admin.token!) });
+  expect(summary.statusCode).toBe(200);
+  expect(Number(summary.json().package_receipts)).toBe(Number(initialSummary.package_receipts));
+});
+
+it('test havalesi iletişimi yalnız onaydan sonra açar; red rezervasyonu bırakır', async () => {
+  const app = await getTestApp(), admin = await registerAdminUser(app), owner = await buyer(), email = randomEmail();
+  const user = await registerUser(app, { email, password: randomUUID() });
+  process.env.BANK_TRANSFER_TEST_MODE = 'true';
+  process.env.BANK_TRANSFER_TEST_EMAILS = email;
+  const headers = authHeaders(user.token!), id = await listing(owner.id);
+  const create = () => app.inject({ method: 'POST', url: `/api/ilanlar/${id}/satin-al/bank-transfer`, headers, payload: declaration });
+  const first = await create();
+  expect(first.statusCode).toBe(201);
+  const ref = first.json().conversationId;
+  expect((await app.inject({ method: 'GET', url: `/api/ilanlar/${id}/iletisim`, headers })).statusCode).toBe(402);
+  expect((await create()).statusCode).toBe(409);
+  expect((await app.inject({ method: 'POST', url: `/api/admin/payment-operations/${ref}/bank-reject`, headers: authHeaders(admin.token!), payload: { reason: 'Test talebi yeniden oluşturulacak' } })).statusCode).toBe(200);
+  const second = await create();
+  expect(second.statusCode).toBe(201);
+  const secondRef = second.json().conversationId;
+  expect((await app.inject({ method: 'POST', url: `/api/payments/bank-transfer/${secondRef}/report`, headers })).statusCode).toBe(200);
+  expect((await app.inject({ method: 'POST', url: `/api/admin/payment-operations/${secondRef}/bank-approve`, headers: authHeaders(admin.token!), payload: { amount: second.json().amount, confirmed_on_statement: true } })).statusCode).toBe(200);
+  expect((await app.inject({ method: 'GET', url: `/api/ilanlar/${id}/iletisim`, headers })).statusCode).toBe(200);
+  const [purchase] = await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id, id));
+  expect(purchase.pay_method).toBe('bank_test');
+});
