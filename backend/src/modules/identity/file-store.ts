@@ -9,6 +9,8 @@ import { safeStoragePath } from '@/modules/storage/upload-policy';
 const EXT: Record<string, string> = { 'image/jpeg': '.jpg', 'image/png': '.png', 'image/webp': '.webp' };
 
 function privateRoot(): string {
+  // Canlida her yayin ayri release dizininde kosar; cwd'ye dusmek bir sonraki deploy'da dosya kaybi demektir.
+  if (!env.PRIVATE_STORAGE_ROOT && env.NODE_ENV === 'production') throw new Error('PRIVATE_STORAGE_ROOT_required');
   return path.resolve(env.PRIVATE_STORAGE_ROOT || path.join(process.cwd(), 'private-uploads'));
 }
 
