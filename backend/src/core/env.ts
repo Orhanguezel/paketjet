@@ -98,6 +98,13 @@ export const env = {
   PAYTR_MERCHANT_SALT: process.env.PAYTR_MERCHANT_SALT || "",
   PAYTR_TEST_MODE:     parseEnvBool(process.env.PAYTR_TEST_MODE, true),
 
+  // Shopier — odeme formu (API anahtar/sifre) + REST API (PAT) ile sunucu tarafi teyit.
+  // Hepsi bos ise Shopier kapali; varsayilan deger YOK.
+  SHOPIER_API_KEY:       process.env.SHOPIER_API_KEY       || "",
+  SHOPIER_API_SECRET:    process.env.SHOPIER_API_SECRET    || "",
+  SHOPIER_WEBSITE_INDEX: parseEnvInt(process.env.SHOPIER_WEBSITE_INDEX, 1),
+  SHOPIER_PAT:           process.env.SHOPIER_PAT           || "",
+
   // SMTP
   SMTP_HOST: process.env.SMTP_HOST || "",
   SMTP_PORT: parseEnvInt(process.env.SMTP_PORT, 465),
