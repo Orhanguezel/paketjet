@@ -30,7 +30,6 @@ export {
 
 export {
   depositSchema,
-  initiateDepositSchema,
   adminAdjustSchema,
   adminStatusSchema,
   adminTransactionStatusSchema,

@@ -5,4 +5,5 @@ export const getPaymentStatus = (ref: string) => apiGet<PaymentStatus>(API.payme
 export const getPaymentAvailability = () => apiGet<PaymentAvailability>(API.payments.availability, {cache: 'no-store'});
 export const getBankAvailability = () => apiGet<BankAvailability>(API.payments.bankAvailability, {cache: 'no-store'});
 export const getBankOrder = (ref:string) => apiGet<BankOrderStatus>(API.payments.bankOrder(ref), {cache:'no-store'});
+export const checkShopierPayment = (ref:string) => apiPost<{state:string}>(API.payments.shopierCheck(ref), {});
 export const reportBankTransfer = (ref:string) => apiPost<{ok:boolean;state:string}>(API.payments.bankReport(ref), {});

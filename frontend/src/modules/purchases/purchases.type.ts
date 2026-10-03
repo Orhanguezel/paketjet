@@ -47,11 +47,10 @@ export interface MyCreditsResponse {
   ledger: CreditLedgerItem[];
 }
 
+/** Kart odemesi Shopier'in odeme sayfasinda tamamlanir; sonuc odeme sonuc sayfasinda izlenir. */
 export interface CreditPackagePaymentResponse {
-  provider: "iyzico" | "paytr";
-  checkoutFormContent?: string;
-  iframeUrl?: string;
-  token?: string;
+  provider: "shopier";
+  redirectUrl: string;
   conversationId: string;
   amount: number;
 }

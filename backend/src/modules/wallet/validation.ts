@@ -7,15 +7,6 @@ export const depositSchema = z.object({
   transaction_ref: z.string().optional(),
 });
 
-export const initiateDepositSchema = z.object({
-  amount: z
-    .number()
-    .positive("Tutar pozitif olmalıdır")
-    .min(10, "Minimum yükleme tutarı ₺10")
-    .max(50000, "Maksimum yükleme tutarı ₺50.000"),
-  provider: z.enum(["iyzico", "paytr"]).optional().default("iyzico"),
-});
-
 export const adminAdjustSchema = z.object({
   user_id: z.string().uuid(),
   type: z.enum(["credit", "debit"]),

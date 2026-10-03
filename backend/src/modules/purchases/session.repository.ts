@@ -19,6 +19,20 @@ export async function repoSavePaymentToken(ref: string, token: string) {
     await tx.insert(paymentEvents).values({id:randomUUID(),payment_ref:ref,actor_id:'checkout',event:'pending'});
   });
 }
+/** Saglayicidaki odeme sayfasi kimligini kaydeder ve oturumu pending'e alir (yalniz initializing'den). */
+export async function repoSaveCheckout(ref: string, checkoutId: string) {
+  return db.transaction(async(tx)=>{
+    const [row]=await tx.select().from(paymentSessions).where(eq(paymentSessions.payment_ref,ref)).for('update');
+    if(row?.state!=='initializing')return false;
+    await tx.update(paymentSessions).set({provider_checkout_id:checkoutId,state:'pending'}).where(eq(paymentSessions.payment_ref,ref));
+    await tx.insert(paymentEvents).values({id:randomUUID(),payment_ref:ref,actor_id:'checkout',event:'pending'});
+    return true;
+  });
+}
+export async function repoPaymentByCheckout(provider: string, checkoutId: string) {
+  const [row] = await db.select().from(paymentSessions).where(and(eq(paymentSessions.provider, provider), eq(paymentSessions.provider_checkout_id, checkoutId))).limit(1);
+  return row;
+}
 export async function repoPaymentByToken(token: string) {
   const [row] = await db.select().from(paymentSessions).where(eq(paymentSessions.token_hash, repoTokenHash(token))).limit(1);
   return row;

@@ -20,7 +20,7 @@ describe('Commerce operations permissions and audit',()=>{
  });
  it('payment queue exposes reference, records actor note and does not grant access',async()=>{
   const app=await getTestApp(),admin=await registerAdminUser(app),owner=await buyer(),customer=await buyer();
-  const ilanId=await listing(owner.id);const payment=await repoCreateIlanPayment(ilanId,customer.id,'paytr',declaration,'127.0.0.1');if(!payment.ok)throw new Error('fixture');
+  const ilanId=await listing(owner.id);const payment=await repoCreateIlanPayment(ilanId,customer.id,'shopier',declaration,'127.0.0.1');if(!payment.ok)throw new Error('fixture');
   const ref=payment.payment.payment_ref,url=`/api/admin/payment-operations/${ref}`;
   expect((await app.inject({method:'GET',url,headers:authHeaders(customer.token)})).statusCode).toBe(403);
   expect((await app.inject({method:'POST',url:`${url}/notes`,headers:authHeaders(admin.token!),payload:{note:'Provider case test reference'}})).statusCode).toBe(200);

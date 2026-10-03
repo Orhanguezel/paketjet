@@ -36,13 +36,3 @@ export interface WalletTransactionListResponse {
   page: number;
 }
 
-export interface DepositInitiateResponse {
-  provider: "iyzico" | "paytr";
-  checkoutFormContent?: string;
-  iframeUrl?: string;
-  token?: string;
-  conversationId: string;
-  amount: number;
-  successUrl: string;
-  failUrl: string;
-}

@@ -1,11 +1,9 @@
-import { env } from '@/core/env';
-export type PaymentProvider = 'iyzico' | 'paytr';
+import { shopierConfigured } from './shopier';
+export type PaymentProvider = 'shopier';
+/** Kart odemesi yalniz Shopier. PAYMENT_PROVIDER=shopier VE Shopier yapilandirmasi tam degilse kapali. */
 export function paymentAvailability() {
-  const selected = process.env.PAYMENT_PROVIDER;
-  const provider: PaymentProvider | null = selected === 'iyzico' || selected === 'paytr' ? selected : null;
-  const configured = provider === 'iyzico' ? Boolean(env.IYZICO_API_KEY && env.IYZICO_SECRET_KEY) : provider === 'paytr' ? Boolean(env.PAYTR_MERCHANT_ID && env.PAYTR_MERCHANT_KEY && env.PAYTR_MERCHANT_SALT) : false;
-  const sandbox = provider === 'iyzico' ? env.IYZICO_TEST_MODE || env.IYZICO_BASE_URL.includes('sandbox') : env.PAYTR_TEST_MODE;
-  const enabled = configured && (env.NODE_ENV !== 'production' || !sandbox);
+  const provider: PaymentProvider | null = process.env.PAYMENT_PROVIDER === 'shopier' ? 'shopier' : null;
+  const enabled = provider === 'shopier' && shopierConfigured();
   return { provider, enabled, reason: enabled ? null : 'payments_unavailable' };
 }
 export function requirePaymentProvider(requested?: string): PaymentProvider {

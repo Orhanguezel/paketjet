@@ -1,59 +1,128 @@
-import { describe, expect, it } from "bun:test";
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { createHmac } from "crypto";
 import { env } from "@/core/env";
-import { buildShopierCheckout, verifyShopierCallback, verifyShopierPayment } from "@/modules/purchases/shopier";
+import { repoGetCreditBalance, repoGetCreditPackages } from "@/modules/purchases/repository";
+import { checkShopierOrder, verifyShopierSignature } from "@/modules/purchases/shopier";
+import { buyer, declaration, listing } from "./purchase-fixtures";
+import { authHeaders, closeTestApp, getTestApp } from "./setup";
 
-const SECRET = "test-shopier-secret";
-const hmac = (data: string) => createHmac("sha256", SECRET).update(data).digest("base64");
-const buyer = { id: "u1", firstName: "Ayşe", lastName: "Yılmaz", email: "ayse@example.com" };
+const TOKEN = "test-webhook-token";
+const mutableEnv = env as unknown as Record<string, string>;
+const realFetch = globalThis.fetch;
+const products = new Map<string, number>();
+const orders = new Map<string, Record<string, unknown>>();
+const deleted: string[] = [];
+let seq = 0;
+const RUN = Date.now().toString(36);
 
-describe("shopier checkout form", () => {
-  it("signs random_nr + order + total + currency like the official module", () => {
-    const { action, fields } = buildShopierCheckout({ orderId: "PJ-1", amount: 50, productName: "İlan iletişim erişimi", callbackUrl: "https://x/cb", buyer }, SECRET, "key");
-    expect(action).toBe("https://www.shopier.com/ShowProduct/api_pay4.php");
-    expect(fields.total_order_value).toBe("50.00");
-    expect(fields.product_type).toBe("1");
-    expect(fields.signature).toBe(hmac(fields.random_nr + "PJ-1" + "50.00" + "0"));
-    expect(Object.values(fields).join()).not.toContain(SECRET);
+beforeAll(() => {
+  process.env.PAYMENT_PROVIDER = "shopier";
+  Object.assign(mutableEnv, { SHOPIER_PAT: "pat", SHOPIER_WEBHOOK_TOKEN: TOKEN, SHOPIER_PRODUCT_IMAGE_URL: "https://example.test/logo.png" });
+  // Yalniz Shopier API sahte; app.inject fetch kullanmaz.
+  globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+    const url = new URL(String(input instanceof Request ? input.url : input));
+    if (url.host !== "api.shopier.com") return realFetch(input, init);
+    const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status });
+    if (init?.method === "POST" && url.pathname === "/v1/products") {
+      const id = `P${Date.now()}${++seq}`;
+      products.set(id, Number(JSON.parse(String(init.body)).priceData.price));
+      return json(200, { id, url: `https://www.shopier.com/${id}` });
+    }
+    if (init?.method === "DELETE") { deleted.push(url.pathname.split("/").pop()!); return json(200, {}); }
+    if (url.pathname === "/v1/orders") return json(200, [...orders.values()].filter((o) => (o.lineItems as { productId: string }[])[0].productId === url.searchParams.get("productId")));
+    const order = orders.get(url.pathname.split("/").pop()!);
+    return order ? json(200, order) : json(404, { error: "notFound" });
+  }) as typeof fetch;
+});
+afterAll(async () => { globalThis.fetch = realFetch; process.env.PAYMENT_PROVIDER = "disabled"; await closeTestApp(); });
+
+const paidOrder = (id: string, productId: string, total: number) => ({ id, paymentStatus: "paid", currency: "TRY", totals: { total: total.toFixed(2) }, lineItems: [{ productId, quantity: 1, total: total.toFixed(2) }] });
+const sign = (raw: string) => createHmac("sha256", TOKEN).update(raw).digest("hex");
+async function webhook(body: Record<string, unknown>, signature?: string) {
+  const raw = JSON.stringify(body);
+  return (await getTestApp()).inject({ method: "POST", url: "/api/payments/shopier/webhook", headers: { "content-type": "application/json", "shopier-event": "order.created", "shopier-signature": signature ?? sign(raw) }, payload: raw });
+}
+async function buyCredits(token: string) {
+  const [pack] = await repoGetCreditPackages();
+  const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(token), payload: { package_key: pack!.key } });
+  expect(res.statusCode).toBe(200);
+  return { ...(res.json() as { redirectUrl: string; conversationId: string; amount: number }), credits: pack!.credits };
+}
+
+describe("shopier pure checks", () => {
+  it("accepts hex and base64 signatures, rejects tampering", () => {
+    const sum = createHmac("sha256", TOKEN).update("{}");
+    const hex = sum.digest("hex");
+    expect(verifyShopierSignature("{}", hex, TOKEN)).toBe(true);
+    expect(verifyShopierSignature("{}", Buffer.from(hex, "hex").toString("base64"), TOKEN)).toBe(true);
+    expect(verifyShopierSignature("{ }", hex, TOKEN)).toBe(false);
+    expect(verifyShopierSignature("{}", hex, "")).toBe(false);
+  });
+  it("requires paid, TRY, single exact product and exact amount", () => {
+    const ok = paidOrder("O", "P", 50);
+    expect(checkShopierOrder(ok, { productId: "P", amount: 50 }).ok).toBe(true);
+    expect(checkShopierOrder({ ...ok, paymentStatus: "unpaid" }, { productId: "P", amount: 50 })).toEqual({ ok: false, reason: "unpaid" });
+    expect(checkShopierOrder(ok, { productId: "X", amount: 50 })).toEqual({ ok: false, reason: "product" });
+    expect(checkShopierOrder(ok, { productId: "P", amount: 49.99 })).toEqual({ ok: false, reason: "amount" });
+    expect(checkShopierOrder({ ...ok, currency: "USD" }, { productId: "P", amount: 50 })).toEqual({ ok: false, reason: "currency" });
   });
 });
 
-describe("shopier callback", () => {
-  const valid = { platform_order_id: "PJ-1", random_nr: "123456", status: "success", payment_id: "998", installment: "0", signature: hmac("123456PJ-1") };
-  it("accepts a correctly signed callback", () => {
-    expect(verifyShopierCallback(valid, SECRET)).toEqual({ orderId: "PJ-1", status: "success", paymentId: "998", installment: "0" });
-  });
-  it("rejects a wrong signature, another order and an empty secret", () => {
-    expect(verifyShopierCallback({ ...valid, signature: hmac("123456PJ-2") }, SECRET)).toBeNull();
-    expect(verifyShopierCallback({ ...valid, platform_order_id: "PJ-2" }, SECRET)).toBeNull();
-    expect(verifyShopierCallback(valid, "")).toBeNull();
-    expect(verifyShopierCallback(null, SECRET)).toBeNull();
-  });
-  it("documents the weakness: status is NOT covered by the signature", () => {
-    // Bu yuzden donus tek basina odeme kaniti sayilmaz; verifyShopierPayment zorunludur.
-    expect(verifyShopierCallback({ ...valid, status: "failed" }, SECRET)?.status).toBe("failed");
-  });
-});
+describe("shopier checkout over HTTP", () => {
+  it("credits are granted once, only after the order is read back from the API", async () => {
+    const user = await buyer();
+    const before = await repoGetCreditBalance(user.id);
+    const start = await buyCredits(user.token);
+    const productId = start.redirectUrl.split("/").pop()!;
+    expect(start.redirectUrl).toBe(`https://www.shopier.com/${productId}`);
+    expect(products.get(productId)).toBe(start.amount);
 
-describe("shopier server-side payment verification", () => {
-  const order = (o: Record<string, unknown>) => (async () => new Response(JSON.stringify(o), { status: 200 })) as unknown as typeof fetch;
-  const paid = { id: "998", paymentStatus: "paid", currency: "TRY", totals: { total: "50.00" }, customer: { email: "ayse@example.com" } };
-  const withPat = async (fn: () => Promise<void>) => {
-    const prev = env.SHOPIER_PAT;
-    (env as { SHOPIER_PAT: string }).SHOPIER_PAT = "pat";
-    try { await fn(); } finally { (env as { SHOPIER_PAT: string }).SHOPIER_PAT = prev; }
-  };
-  it("fails closed without a PAT", async () => {
-    expect(await verifyShopierPayment("998", { amount: 50 })).toEqual({ ok: false, reason: "not_configured" });
+    const forged = { id: "O-forged", lineItems: [{ productId }] };
+    expect((await webhook(forged, "bad")).statusCode).toBe(401);
+    expect((await webhook(forged)).statusCode).toBe(200); // API'de boyle siparis yok → yok sayilir, hak acilmaz
+    expect(await repoGetCreditBalance(user.id)).toBe(before);
+
+    orders.set(`O1-${RUN}`, paidOrder(`O1-${RUN}`, productId, start.amount));
+    expect((await webhook({ id: `O1-${RUN}`, lineItems: [{ productId }] })).statusCode).toBe(200);
+    expect((await webhook({ id: `O1-${RUN}`, lineItems: [{ productId }] })).statusCode).toBe(200);
+    expect(await repoGetCreditBalance(user.id)).toBe(before + start.credits);
+    expect(deleted).toContain(productId);
   });
-  it("confirms only a paid TRY order with the exact amount and buyer", () => withPat(async () => {
-    expect((await verifyShopierPayment("998", { amount: 50, email: "AYSE@example.com" }, order(paid))).ok).toBe(true);
-    expect(await verifyShopierPayment("998", { amount: 50 }, order({ ...paid, paymentStatus: "unpaid" }))).toEqual({ ok: false, reason: "unpaid" });
-    expect(await verifyShopierPayment("998", { amount: 50 }, order({ ...paid, totals: { total: "1.00" } }))).toEqual({ ok: false, reason: "amount_mismatch" });
-    expect(await verifyShopierPayment("998", { amount: 50 }, order({ ...paid, currency: "USD" }))).toEqual({ ok: false, reason: "currency_mismatch" });
-    expect(await verifyShopierPayment("998", { amount: 50, email: "baska@example.com" }, order(paid))).toEqual({ ok: false, reason: "email_mismatch" });
-    expect(await verifyShopierPayment("../x", { amount: 50 }, order(paid))).toEqual({ ok: false, reason: "not_found" });
-    const down = (async () => { throw new Error("net"); }) as unknown as typeof fetch;
-    expect(await verifyShopierPayment("998", { amount: 50 }, down)).toEqual({ ok: false, reason: "api_error" });
-  }));
+
+  it("an underpaid order goes to review instead of granting access", async () => {
+    const user = await buyer(), owner = await buyer();
+    const ilanId = await listing(owner.id);
+    const res = await (await getTestApp()).inject({ method: "POST", url: `/api/ilanlar/${ilanId}/satin-al/odeme`, headers: authHeaders(user.token), payload: declaration });
+    expect(res.statusCode).toBe(200);
+    const { redirectUrl, conversationId, amount } = res.json() as { redirectUrl: string; conversationId: string; amount: number };
+    const productId = redirectUrl.split("/").pop()!;
+    orders.set(`O2-${RUN}`, paidOrder(`O2-${RUN}`, productId, amount - 1));
+    expect((await webhook({ id: `O2-${RUN}`, lineItems: [{ productId }] })).statusCode).toBe(200);
+    const status = await (await getTestApp()).inject({ method: "GET", url: `/api/payments/${conversationId}`, headers: authHeaders(user.token) });
+    expect(status.json()).toMatchObject({ state: "review", error_code: "shopier_amount" });
+  });
+
+  it("the buyer can reconcile a missed webhook; other users cannot", async () => {
+    const user = await buyer(), other = await buyer();
+    const before = await repoGetCreditBalance(user.id);
+    const start = await buyCredits(user.token);
+    const productId = start.redirectUrl.split("/").pop()!;
+    const app = await getTestApp();
+    const check = (token: string) => app.inject({ method: "POST", url: `/api/payments/${start.conversationId}/shopier/check`, headers: authHeaders(token) });
+    expect((await check(user.token)).json()).toEqual({ state: "pending" });
+    orders.set(`O3-${RUN}`, paidOrder(`O3-${RUN}`, productId, start.amount));
+    expect((await check(other.token)).statusCode).toBe(404);
+    expect((await check(user.token)).json()).toEqual({ state: "completed" });
+    expect(await repoGetCreditBalance(user.id)).toBe(before + start.credits);
+  });
+
+  it("payments stay closed when Shopier is not fully configured", async () => {
+    mutableEnv.SHOPIER_WEBHOOK_TOKEN = "";
+    try {
+      const user = await buyer();
+      const [pack] = await repoGetCreditPackages();
+      const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(user.token), payload: { package_key: pack!.key } });
+      expect(res.statusCode).toBe(503);
+    } finally { mutableEnv.SHOPIER_WEBHOOK_TOKEN = TOKEN; }
+  });
 });

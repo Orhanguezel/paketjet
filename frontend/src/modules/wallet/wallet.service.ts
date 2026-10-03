@@ -1,6 +1,6 @@
 import { apiGet, apiPost } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
-import type { Wallet, WalletTransactionListResponse, DepositInitiateResponse } from "./wallet.type";
+import type { Wallet, WalletTransactionListResponse, } from "./wallet.type";
 
 export const getWallet = () =>
   apiGet<Wallet>(API.wallet.get);
@@ -11,10 +11,6 @@ export const getTransactions = (page = 1, filters?: { type?: string; purpose?: s
   if (filters?.purpose) params.set("purpose", filters.purpose);
   return apiGet<WalletTransactionListResponse>(`${API.wallet.transactions}?${params}`);
 };
-
-/** Ödeme başlat — PayTR veya Iyzico */
-export const initiateDeposit = (amount: number, provider: "iyzico" | "paytr" = "paytr") =>
-  apiPost<DepositInitiateResponse>(API.wallet.depositInitiate, { amount, provider });
 
 /** DEV: Doğrudan ilan hakkı ekle (sadece development) */
 export const devDeposit = (amount: number, description?: string) =>

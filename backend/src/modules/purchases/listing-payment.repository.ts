@@ -32,7 +32,7 @@ async function repoGetListingCreditPrice() {
 export async function repoCreateIlanPayment(
   ilanId: string,
   buyerId: string,
-  provider: "iyzico" | "paytr" | "bank_transfer" | "bank_test",
+  provider: "shopier" | "bank_transfer" | "bank_test",
   declaration: PurchaseDeclaration,
   buyerIp: string,
 ) {
@@ -50,7 +50,7 @@ export async function repoCreateIlanPayment(
   const id = randomUUID();
   const paymentRef = randomUUID();
   if (!Number.isFinite(price) || price <= 0) throw Object.assign(new Error("invalid_price"), {statusCode: 503});
-  await tx.insert(paymentSessions).values({payment_ref: paymentRef, user_id: buyerId, ilan_id: ilanId, kind: "listing", provider, amount: price.toFixed(2), state: provider.startsWith("bank_") ? "pending" : "initializing", expires_at: new Date(Date.now() + (provider.startsWith("bank_") ? 48 * 60 : 15) * 60000)});
+  await tx.insert(paymentSessions).values({payment_ref: paymentRef, user_id: buyerId, ilan_id: ilanId, kind: "listing", provider, amount: price.toFixed(2), state: provider.startsWith("bank_") ? "pending" : "initializing", expires_at: new Date(Date.now() + (provider.startsWith("bank_") ? 48 * 60 : 30) * 60000)});
   await tx.insert(ilanPurchasePayments).values({
     id,
     ilan_id: ilanId,

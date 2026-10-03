@@ -19,7 +19,7 @@ it('sample credit/card/access cannot deliver or debit',async()=>{
  await db.update(ilanlar).set({is_sample:1}).where(eq(ilanlar.id,id));
  await repoGrantCredits(user.id,2,'admin_grant');
  expect(await repoPurchaseIlan(id,user.id,declaration,'127.0.0.1')).toEqual({ok:false,code:'unavailable'});
- expect(await repoCreateIlanPayment(id,user.id,'iyzico',declaration,'127.0.0.1')).toEqual({ok:false,code:'unavailable'});
+ expect(await repoCreateIlanPayment(id,user.id,'shopier',declaration,'127.0.0.1')).toEqual({ok:false,code:'unavailable'});
  expect((await repoListingAccess(id,user.id))?.state).toBe('unavailable');
  expect(await repoGetCreditBalance(user.id)).toBe(2);
  expect(await db.select().from(creditLedger).where(eq(creditLedger.user_id,user.id))).toHaveLength(1);
@@ -30,11 +30,11 @@ it('sample credit/card/access cannot deliver or debit',async()=>{
 });
 it('a captured payment cannot deliver a listing subsequently marked sample',async()=>{
  const owner=await buyer(),user=await buyer(),id=await listing(owner.id);
- const p=await repoCreateIlanPayment(id,user.id,'iyzico',declaration,'127.0.0.1');
+ const p=await repoCreateIlanPayment(id,user.id,'shopier',declaration,'127.0.0.1');
  if(!p.ok)throw new Error('fixture');
  await db.update(ilanlar).set({is_sample:1}).where(eq(ilanlar.id,id));
  const ref=p.payment.payment_ref;
- expect((await repoCompleteIlanPayment(ref,{provider:'iyzico',amount:p.price,currency:'TRY',paymentId:ref})).ok).toBe(false);
+ expect((await repoCompleteIlanPayment(ref,{provider:'shopier',amount:p.price,currency:'TRY',paymentId:ref})).ok).toBe(false);
  expect((await repoMyPayment(ref,user.id))?.state).toBe('refund_pending');
  expect(await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id))).toHaveLength(0);
 });

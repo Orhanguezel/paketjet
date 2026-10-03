@@ -10,7 +10,7 @@ import { repoMyPayment } from '@/modules/purchases/session.repository';
 import { buyer, declaration, listing } from './purchase-fixtures';
 import { closeTestApp } from './setup';
 afterAll(closeTestApp);
-const proof = (amount: number, paymentId: string) => ({provider: 'iyzico', amount, currency: 'TRY', paymentId});
+const proof = (amount: number, paymentId: string) => ({provider: 'shopier', amount, currency: 'TRY', paymentId});
 
 describe('Contact purchase integrity with real MySQL locks', () => {
   it('two credit buyers yield one purchase and one debit; winner replay is free', async () => {
@@ -29,7 +29,7 @@ describe('Contact purchase integrity with real MySQL locks', () => {
     const owner = await buyer(), a = await buyer(), b = await buyer();
     const id = await listing(owner.id);
     await repoGrantCredits(b.id, 2, 'admin_grant');
-    const results = await Promise.all([repoCreateIlanPayment(id,a.id,'iyzico',declaration,'127.0.0.1'),repoCreateIlanPayment(id,b.id,'iyzico',declaration,'127.0.0.1')]);
+    const results = await Promise.all([repoCreateIlanPayment(id,a.id,'shopier',declaration,'127.0.0.1'),repoCreateIlanPayment(id,b.id,'shopier',declaration,'127.0.0.1')]);
     expect(results.filter(x => x.ok)).toHaveLength(1);
     expect((await repoPurchaseIlan(id,b.id,declaration,'127.0.0.1')).ok).toBe(false);
     const payment = results.find(x => x.ok)!;
@@ -45,7 +45,7 @@ describe('Contact purchase integrity with real MySQL locks', () => {
   it('late captured payment is recorded for refund and does not deliver', async () => {
     const owner = await buyer(), a = await buyer();
     const id = await listing(owner.id);
-    const payment = await repoCreateIlanPayment(id,a.id,'iyzico',declaration,'127.0.0.1');
+    const payment = await repoCreateIlanPayment(id,a.id,'shopier',declaration,'127.0.0.1');
     if (!payment.ok) throw new Error('fixture');
     await db.update(paymentSessions).set({expires_at:new Date(Date.now()-1000)}).where(eq(paymentSessions.payment_ref,payment.payment.payment_ref));
     const result = await repoCompleteIlanPayment(payment.payment.payment_ref,proof(payment.price,'late-'+id));
@@ -57,8 +57,8 @@ describe('Contact purchase integrity with real MySQL locks', () => {
     const a = await buyer();
     const [pack] = await repoGetCreditPackages();
     expect(pack).toBeDefined();
-    const p = await repoCreateCreditPackagePayment(a.id,pack.key,'iyzico');
-    const q = await repoCreateCreditPackagePayment(a.id,pack.key,'iyzico');
+    const p = await repoCreateCreditPackagePayment(a.id,pack.key,'shopier');
+    const q = await repoCreateCreditPackagePayment(a.id,pack.key,'shopier');
     if (!p.ok || !q.ok) throw new Error('fixture');
     const pProof = proof(Number(p.purchase.price),p.purchase.payment_ref);
     const qProof = proof(Number(q.purchase.price),q.purchase.payment_ref);
@@ -74,6 +74,6 @@ describe('Contact purchase integrity with real MySQL locks', () => {
     expect((await repoPurchaseIlan(own,a.id,declaration,'127.0.0.1')).ok).toBe(false);
     expect((await repoPurchaseIlan(expired,b.id,declaration,'127.0.0.1')).ok).toBe(false);
     expect((await repoPurchaseIlan(own,b.id,declaration,'127.0.0.1')).ok).toBe(false);
-    expect((await repoCreateIlanPayment(expired,b.id,'iyzico',declaration,'127.0.0.1')).ok).toBe(false);
+    expect((await repoCreateIlanPayment(expired,b.id,'shopier',declaration,'127.0.0.1')).ok).toBe(false);
   });
 });

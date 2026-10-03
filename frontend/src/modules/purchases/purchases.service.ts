@@ -28,8 +28,8 @@ export function getMyCredits() {
   return apiGet<MyCreditsResponse>(API.purchases.credits);
 }
 
-export function purchaseCreditPackage(packageKey: string, provider?: "iyzico" | "paytr") {
-  return apiPost<CreditPackagePaymentResponse>(API.purchases.buyCredits, { package_key: packageKey, provider });
+export function purchaseCreditPackage(packageKey: string) {
+  return apiPost<CreditPackagePaymentResponse>(API.purchases.buyCredits, { package_key: packageKey });
 }
 export function createBankCreditOrder(packageKey:string) {
   return apiPost<BankOrder>(API.purchases.bankBuyCredits, {package_key:packageKey});
@@ -38,8 +38,8 @@ export function createBankListingOrder(id:string,declaration:PurchaseDeclaration
   return apiPost<BankOrder>(API.ilanlar.bankPay(id),declaration);
 }
 
-export function initiateIlanPayment(id: string, declaration: PurchaseDeclarationInput, provider?: "iyzico" | "paytr") {
-  return apiPost<IlanPaymentResponse>(API.ilanlar.pay(id), { ...declaration, provider });
+export function initiateIlanPayment(id: string, declaration: PurchaseDeclarationInput) {
+  return apiPost<IlanPaymentResponse>(API.ilanlar.pay(id), declaration);
 }
 
 export type ListingAccess = {is_owner:boolean;contact:import('./purchases.type').ContactSnapshot|null;balance:number;state:'purchased'|'owner'|'unavailable'|'credit'|'card'};

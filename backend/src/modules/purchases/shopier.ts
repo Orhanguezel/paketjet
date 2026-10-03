@@ -1,119 +1,106 @@
 // src/modules/purchases/shopier.ts
-// Shopier odeme formu (api_pay4) + donus dogrulama + REST API ile sunucu tarafi teyit.
+// Shopier REST API (api.shopier.com/v1) istemcisi. HTTP katmani yok, DB yok.
 //
-// GUVENLIK: Shopier donus imzasi yalniz `random_nr + platform_order_id` uzerindedir; `status`
-// ve `payment_id` imzalanmaz ve donus kullanicinin tarayicisindan gelir. Imza dogru olsa bile
-// donus tek basina "odendi" kaniti DEGILDIR. Odeme yalniz verifyShopierPayment() ile
-// Shopier REST API'den okunan siparisle (paid + tutar + para birimi) teyit edilince tamamlanir.
-import { createHmac, randomInt, timingSafeEqual } from 'crypto';
+// Akis: her odeme icin Shopier'de tek kullanimlik, vitrinde gorunmeyen (customListing) dijital urun
+// olusturulur; alici urunun Shopier sayfasinda oder. Odeme, `order.created` webhook'u veya kullanicinin
+// "kontrol et" istegiyle siparis API'den OKUNARAK dogrulanir. Webhook govdesi tek basina kanit sayilmaz.
+import { createHmac, timingSafeEqual } from 'crypto';
 import { env } from '@/core/env';
 
-export const SHOPIER_PAY_URL = 'https://www.shopier.com/ShowProduct/api_pay4.php';
-const SHOPIER_API_URL = 'https://api.shopier.com/v1';
-const PRODUCT_TYPE_DOWNLOADABLE_VIRTUAL = 1;
-const CURRENCY_TL = 0;
-const LANGUAGE_TR = 0;
+const API = 'https://api.shopier.com/v1';
+const TIMEOUT_MS = 8_000;
 
 export function shopierConfigured() {
-  return Boolean(env.SHOPIER_API_KEY && env.SHOPIER_API_SECRET && env.SHOPIER_PAT);
+  return Boolean(env.SHOPIER_PAT && env.SHOPIER_WEBHOOK_TOKEN && env.SHOPIER_PRODUCT_IMAGE_URL);
 }
 
-const sign = (data: string, secret = env.SHOPIER_API_SECRET) => createHmac('sha256', secret).update(data).digest('base64');
+export class ShopierApiError extends Error {
+  constructor(public status: number, public code: string) {
+    super(`shopier_api_${status}_${code}`);
+  }
+}
 
-export type ShopierCheckoutInput = {
-  orderId: string;
-  amount: number;
-  productName: string;
-  callbackUrl: string;
-  buyer: { id: string; firstName: string; lastName: string; email: string; phone?: string | null; accountAgeDays?: number };
+async function call<T>(method: string, path: string, body?: unknown, fetcher: typeof fetch = fetch): Promise<T> {
+  const res = await fetcher(`${API}${path}`, {
+    method,
+    headers: { authorization: `Bearer ${env.SHOPIER_PAT}`, accept: 'application/json', ...(body ? { 'content-type': 'application/json' } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+    signal: AbortSignal.timeout(TIMEOUT_MS),
+  });
+  const text = await res.text();
+  const json = text ? (JSON.parse(text) as unknown) : null;
+  if (!res.ok) throw new ShopierApiError(res.status, String((json as { error?: string } | null)?.error ?? 'error'));
+  return json as T;
+}
+
+export type ShopierProduct = { id: string; url: string };
+
+/** Odeme basina tek kullanimlik urun. Stok 1: ayni urun ikinci kez satilamaz. */
+export async function createShopierCheckout(input: { title: string; description: string; amount: number }, fetcher?: typeof fetch) {
+  const product = await call<{ id?: string; url?: string }>('POST', '/products', {
+    title: input.title.slice(0, 120),
+    description: input.description,
+    type: 'digital',
+    media: [{ type: 'image', url: env.SHOPIER_PRODUCT_IMAGE_URL, placement: 1 }],
+    priceData: { currency: 'TRY', price: input.amount.toFixed(2) },
+    stockQuantity: 1,
+    shippingPayer: 'sellerPays',
+    customListing: true,
+  }, fetcher);
+  if (!product?.id || !product.url || !/^https:\/\/(www\.)?shopier\.com\//.test(product.url)) throw new ShopierApiError(502, 'invalid_product_response');
+  return { id: String(product.id), url: product.url } satisfies ShopierProduct;
+}
+
+export async function deleteShopierCheckout(productId: string, fetcher?: typeof fetch) {
+  try {
+    await call('DELETE', `/products/${encodeURIComponent(productId)}`, undefined, fetcher);
+  } catch (e) {
+    if (!(e instanceof ShopierApiError && e.status === 404)) throw e;
+  }
+}
+
+export type ShopierOrder = {
+  id: string;
+  paymentStatus?: string;
+  currency?: string;
+  totals?: { total?: string | number };
+  lineItems?: { productId?: string | number; quantity?: number; total?: string | number }[];
 };
 
-/** Tarayicinin Shopier'e POST edecegi form. Kart verisi bizim sistemimize hic gelmez. */
-export function buildShopierCheckout(input: ShopierCheckoutInput, secret = env.SHOPIER_API_SECRET, apiKey = env.SHOPIER_API_KEY) {
-  const total = input.amount.toFixed(2);
-  const randomNr = String(randomInt(100000, 1000000));
-  const address = 'Dijital hizmet - teslimat yok';
-  const fields: Record<string, string> = {
-    API_key: apiKey,
-    website_index: String(env.SHOPIER_WEBSITE_INDEX),
-    platform_order_id: input.orderId,
-    product_name: input.productName.slice(0, 120),
-    product_type: String(PRODUCT_TYPE_DOWNLOADABLE_VIRTUAL),
-    buyer_name: input.buyer.firstName,
-    buyer_surname: input.buyer.lastName,
-    buyer_email: input.buyer.email,
-    buyer_account_age: String(Math.max(0, Math.floor(input.buyer.accountAgeDays ?? 0))),
-    buyer_id_nr: input.buyer.id,
-    buyer_phone: input.buyer.phone || '',
-    billing_address: address,
-    billing_city: 'Istanbul',
-    billing_country: 'Turkey',
-    billing_postcode: '34000',
-    shipping_address: address,
-    shipping_city: 'Istanbul',
-    shipping_country: 'Turkey',
-    shipping_postcode: '34000',
-    total_order_value: total,
-    currency: String(CURRENCY_TL),
-    platform: '0',
-    is_in_frame: '0',
-    current_language: String(LANGUAGE_TR),
-    modul_version: '1.0.4',
-    random_nr: randomNr,
-    callback: input.callbackUrl,
-  };
-  fields.signature = sign(randomNr + input.orderId + total + String(CURRENCY_TL), secret);
-  return { action: SHOPIER_PAY_URL, method: 'POST' as const, fields };
-}
+export const getShopierOrder = (orderId: string, fetcher?: typeof fetch) =>
+  call<ShopierOrder>('GET', `/orders/${encodeURIComponent(orderId)}`, undefined, fetcher);
 
-export type ShopierCallback = { orderId: string; status: string; paymentId: string; installment: string };
+export const findShopierOrdersForProduct = (productId: string, fetcher?: typeof fetch) =>
+  call<ShopierOrder[]>('GET', `/orders?productId=${encodeURIComponent(productId)}&limit=10`, undefined, fetcher);
 
-/** Imzayi sabit zamanli karsilastirir. Gecerli imza yalniz "bu siparis no Shopier'den geldi" demektir. */
-export function verifyShopierCallback(body: unknown, secret = env.SHOPIER_API_SECRET): ShopierCallback | null {
-  if (!body || typeof body !== 'object' || !secret) return null;
-  const b = body as Record<string, unknown>;
-  const pick = (k: string) => (typeof b[k] === 'string' ? (b[k] as string) : '');
-  const orderId = pick('platform_order_id'), randomNr = pick('random_nr'), signature = pick('signature');
-  if (!orderId || !randomNr || !signature) return null;
-  const expected = Buffer.from(sign(randomNr + orderId, secret), 'base64');
-  const given = Buffer.from(signature, 'base64');
-  if (expected.length !== given.length || !timingSafeEqual(expected, given)) return null;
-  return { orderId, status: pick('status').toLowerCase(), paymentId: pick('payment_id'), installment: pick('installment') };
-}
+export type ShopierCheck = { ok: true; orderId: string; amount: number } | { ok: false; reason: 'unpaid' | 'currency' | 'amount' | 'product' | 'quantity' };
 
-export type ShopierOrderCheck =
-  | { ok: true; orderId: string; total: number; currency: string }
-  | { ok: false; reason: 'not_configured' | 'not_found' | 'unpaid' | 'amount_mismatch' | 'currency_mismatch' | 'email_mismatch' | 'api_error' };
-
-/** Shopier REST API'den siparisi okuyup odemeyi teyit eder. Belirsizlikte DAIMA ok:false. */
-export async function verifyShopierPayment(
-  paymentId: string,
-  expected: { amount: number; email?: string },
-  fetcher: typeof fetch = fetch,
-): Promise<ShopierOrderCheck> {
-  if (!env.SHOPIER_PAT) return { ok: false, reason: 'not_configured' };
-  if (!/^[A-Za-z0-9_-]{1,64}$/.test(paymentId)) return { ok: false, reason: 'not_found' };
-  let res: Response;
-  try {
-    res = await fetcher(`${SHOPIER_API_URL}/orders/${encodeURIComponent(paymentId)}`, {
-      headers: { authorization: `Bearer ${env.SHOPIER_PAT}`, accept: 'application/json' },
-      signal: AbortSignal.timeout(10_000),
-    });
-  } catch {
-    return { ok: false, reason: 'api_error' };
-  }
-  if (res.status === 404) return { ok: false, reason: 'not_found' };
-  if (!res.ok) return { ok: false, reason: 'api_error' };
-  const order = (await res.json().catch(() => null)) as {
-    id?: string; paymentStatus?: string; currency?: string; totals?: { total?: string | number };
-    shippingInfo?: { email?: string }; billingInfo?: { email?: string }; customer?: { email?: string };
-  } | null;
-  if (!order?.id) return { ok: false, reason: 'not_found' };
+/** Siparis, beklenen urun ve tutarla birebir ortusuyor mu? Saf fonksiyon. */
+export function checkShopierOrder(order: ShopierOrder, expected: { productId: string; amount: number }): ShopierCheck {
+  const cents = (v: unknown) => Math.round(Number(v) * 100);
   if (order.paymentStatus !== 'paid') return { ok: false, reason: 'unpaid' };
-  if (order.currency !== 'TRY') return { ok: false, reason: 'currency_mismatch' };
-  const total = Number(order.totals?.total);
-  if (!Number.isFinite(total) || Math.round(total * 100) !== Math.round(expected.amount * 100)) return { ok: false, reason: 'amount_mismatch' };
-  const email = (order.customer?.email ?? order.billingInfo?.email ?? order.shippingInfo?.email ?? '').toLowerCase();
-  if (expected.email && email && email !== expected.email.toLowerCase()) return { ok: false, reason: 'email_mismatch' };
-  return { ok: true, orderId: order.id, total, currency: order.currency };
+  if (order.currency !== 'TRY') return { ok: false, reason: 'currency' };
+  const items = order.lineItems ?? [];
+  if (items.length !== 1 || String(items[0]?.productId) !== expected.productId) return { ok: false, reason: 'product' };
+  if (Number(items[0]?.quantity ?? 1) !== 1) return { ok: false, reason: 'quantity' };
+  const want = Math.round(expected.amount * 100);
+  if (cents(order.totals?.total) !== want || cents(items[0]?.total) !== want) return { ok: false, reason: 'amount' };
+  return { ok: true, orderId: String(order.id), amount: expected.amount };
+}
+
+/** Shopier-Signature: ham govdenin webhook token'iyla HMAC-SHA256'si (hex veya base64). */
+export function verifyShopierSignature(raw: Buffer | string, signature: string | undefined, token = env.SHOPIER_WEBHOOK_TOKEN) {
+  if (!signature || !token) return false;
+  const sum = createHmac('sha256', token).update(raw).digest();
+  const given = signature.trim();
+  const candidates = [Buffer.from(sum.toString('hex')), Buffer.from(sum.toString('base64'))];
+  const value = Buffer.from(/^[0-9a-f]+$/i.test(given) ? given.toLowerCase() : given);
+  return candidates.some((c) => c.length === value.length && timingSafeEqual(c, value));
+}
+
+/** order.created govdesinden yalniz aday urun kimliklerini cikarir; karar API okumasiyla verilir. */
+export function productIdsFromOrderEvent(payload: unknown): { orderId: string; productIds: string[] } | null {
+  const order = (payload && typeof payload === 'object' && 'data' in payload ? (payload as { data: unknown }).data : payload) as ShopierOrder | null;
+  if (!order?.id) return null;
+  return { orderId: String(order.id), productIds: (order.lineItems ?? []).map((i) => String(i.productId ?? '')).filter(Boolean) };
 }

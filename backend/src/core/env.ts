@@ -86,24 +86,11 @@ export const env = {
   PUBLIC_URL: process.env.PUBLIC_URL || "http://localhost:8083",
   FRONTEND_URL,
 
-  // İyzico
-  IYZICO_API_KEY:          process.env.IYZICO_API_KEY          || "",
-  IYZICO_SECRET_KEY:       process.env.IYZICO_SECRET_KEY       || "",
-  IYZICO_BASE_URL:         process.env.IYZICO_BASE_URL         || "https://sandbox-api.iyzipay.com",
-  IYZICO_TEST_MODE:       parseEnvBool(process.env.IYZICO_TEST_MODE, true),
-
-  // PayTR
-  PAYTR_MERCHANT_ID:   process.env.PAYTR_MERCHANT_ID   || "",
-  PAYTR_MERCHANT_KEY:  process.env.PAYTR_MERCHANT_KEY  || "",
-  PAYTR_MERCHANT_SALT: process.env.PAYTR_MERCHANT_SALT || "",
-  PAYTR_TEST_MODE:     parseEnvBool(process.env.PAYTR_TEST_MODE, true),
-
-  // Shopier — odeme formu (API anahtar/sifre) + REST API (PAT) ile sunucu tarafi teyit.
-  // Hepsi bos ise Shopier kapali; varsayilan deger YOK.
-  SHOPIER_API_KEY:       process.env.SHOPIER_API_KEY       || "",
-  SHOPIER_API_SECRET:    process.env.SHOPIER_API_SECRET    || "",
-  SHOPIER_WEBSITE_INDEX: parseEnvInt(process.env.SHOPIER_WEBSITE_INDEX, 1),
-  SHOPIER_PAT:           process.env.SHOPIER_PAT           || "",
+  // Shopier REST API — odeme basina tek kullanimlik urun + order.created webhook.
+  // Uc deger de yoksa Shopier kapali; varsayilan deger YOK.
+  SHOPIER_PAT:               process.env.SHOPIER_PAT               || "",
+  SHOPIER_WEBHOOK_TOKEN:     process.env.SHOPIER_WEBHOOK_TOKEN     || "",
+  SHOPIER_PRODUCT_IMAGE_URL: process.env.SHOPIER_PRODUCT_IMAGE_URL || "",
 
   // SMTP
   SMTP_HOST: process.env.SMTP_HOST || "",

@@ -1,1 +1,1 @@
-export { retiredOperation as initiateBookingPayment, legacyBookingIyzico as bookingPaymentCallback, legacyBookingPaytr as bookingPayTRCallback } from "../purchases/legacy.controller";
+export { retiredOperation as initiateBookingPayment, retiredOperation as bookingPaymentCallback, retiredOperation as bookingPayTRCallback } from "../purchases/legacy.controller";

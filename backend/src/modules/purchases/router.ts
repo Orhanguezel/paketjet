@@ -3,7 +3,8 @@ import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
 import { authSecurity, fromZodSchema, okResponseSchema } from "@/modules/_shared";
 import { getIlanIletisim, getMyCredits, listCreditPackages, listSatinAldiklarim, satinAlIlan } from "./controller";
-import { creditPackageIyzicoCallback, creditPackagePaytrCallback, ilanPaymentIyzicoCallback, ilanPaymentPaytrCallback, initiateIlanPayment, purchaseCreditPackage } from "./payment.controller";
+import { initiateIlanPayment, purchaseCreditPackage } from "./payment.controller";
+import { registerShopierPayments } from "./shopier.routes";
 import { initiateIlanPaymentSchema, purchaseCreditPackageSchema, purchaseIlanSchema } from "./validation";
 import { registerBankTransfer } from './bank-transfer.routes';
 
@@ -13,6 +14,7 @@ const authOk = { security: authSecurity, ...ok };
 
 export async function registerPurchases(app: FastifyInstance) {
   await registerBankTransfer(app);
+  await registerShopierPayments(app);
   app.get("/ilanlar/:id/access", {preHandler: [requireAuth]}, getListingAccess);
   app.get("/payments/availability", getPaymentAvailability);
   app.get("/payments/:ref", {preHandler: [requireAuth]}, getPaymentStatus);
@@ -23,8 +25,4 @@ export async function registerPurchases(app: FastifyInstance) {
   app.get("/ilan-alma-hakki", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "İlan Alma Hakkı bakiyesi + hareketler", ...authOk } }, getMyCredits);
   app.get("/ilan-alma-hakki/paketler", { schema: { tags: ["purchases"], summary: "İlan Alma Hakkı paketleri", ...ok } }, listCreditPackages);
   app.post("/ilan-alma-hakki/satin-al", { preHandler: [requireAuth], schema: { tags: ["purchases"], summary: "İlan Alma Hakkı satın al", security: authSecurity, body: fromZodSchema(purchaseCreditPackageSchema, "PurchaseCreditPackageBody"), ...ok } }, purchaseCreditPackage);
-  app.post("/ilan-alma-hakki/satin-al/callback", creditPackageIyzicoCallback);
-  app.post("/ilan-alma-hakki/satin-al/paytr-callback", creditPackagePaytrCallback);
-  app.post("/ilanlar/satin-al/callback", ilanPaymentIyzicoCallback);
-  app.post("/ilanlar/satin-al/paytr-callback", ilanPaymentPaytrCallback);
 }

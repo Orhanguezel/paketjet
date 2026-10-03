@@ -30,7 +30,7 @@ export const API = {
     photos: (id: string) => `/api/ilanlar/${id}/photos`,
   },
 
-  payments: {availability: "/api/payments/availability", status: (ref: string) => `/api/payments/${encodeURIComponent(ref)}`, bankAvailability: "/api/payments/bank-transfer/availability", bankOrder: (ref: string) => `/api/payments/bank-transfer/${encodeURIComponent(ref)}`, bankReport: (ref: string) => `/api/payments/bank-transfer/${encodeURIComponent(ref)}/report`},
+  payments: {availability: "/api/payments/availability", status: (ref: string) => `/api/payments/${encodeURIComponent(ref)}`, bankAvailability: "/api/payments/bank-transfer/availability", bankOrder: (ref: string) => `/api/payments/bank-transfer/${encodeURIComponent(ref)}`, bankReport: (ref: string) => `/api/payments/bank-transfer/${encodeURIComponent(ref)}/report`, shopierCheck: (ref: string) => `/api/payments/${encodeURIComponent(ref)}/shopier/check`},
   purchases: {
     mine: "/api/satin-aldiklarim",
     credits: "/api/ilan-alma-hakki",
