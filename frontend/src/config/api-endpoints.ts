@@ -66,6 +66,11 @@ export const API = {
     update: "/api/profiles/me",
   },
 
+  identity: {
+    me:    "/api/identity/me",
+    front: "/api/identity/me/front",
+  },
+
   dashboard: {
     carrier:  "/api/dashboard/carrier",
     customer: "/api/dashboard/customer",

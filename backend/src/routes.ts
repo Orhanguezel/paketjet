@@ -10,6 +10,7 @@ import { requireAdmin } from '@/common/middleware/roles';
 import { registerAuth, registerUserAdmin } from '@/modules/auth';
 import { registerStorage, registerStorageAdmin } from '@/modules/storage';
 import { registerProfiles } from '@/modules/profiles';
+import { registerIdentity, registerIdentityAdmin } from '@/modules/identity';
 import { registerSiteSettings, registerSiteSettingsAdmin } from '@/modules/siteSettings';
 import { registerUserRoles } from '@/modules/userRoles';
 import { registerHealth } from '@/modules/health';
@@ -45,6 +46,7 @@ const PUBLIC_ROUTE_REGISTRARS = [
   registerHealth,
   registerStorage,
   registerProfiles,
+  registerIdentity,
   registerSiteSettings,
   registerUserRoles,
   registerMail,
@@ -91,6 +93,7 @@ const ADMIN_ROUTE_REGISTRARS = [
   registerCarrierAgreementsAdmin,
   registerDisputesAdmin,
   registerPurchasesAdmin,
+  registerIdentityAdmin,
 ] as const;
 
 // ── Public route kayıtları ───────────────────────────────────────────────────

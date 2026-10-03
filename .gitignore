@@ -18,6 +18,10 @@ docs/
 localhost_3000-*.json
 _backups/
 
+# GZL private project manifest
+project.portfolio.private.json
+
 # Local renewal browser/build output
 .next-dev/
 .playwright-cli/
+private-uploads/

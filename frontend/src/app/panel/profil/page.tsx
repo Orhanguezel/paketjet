@@ -8,6 +8,7 @@ import { apiPatch } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
 import ProfilePhoto from "./profile-photo";
 import PasswordForm from "./password-form";
+import IdentityFront from "./identity-front";
 export default function ProfilPage() {
   const { user, setUser } = useAuthStore(),
     [name, setName] = useState(user?.full_name ?? ""),
@@ -39,7 +40,7 @@ export default function ProfilPage() {
     <div>
       <div className="mb-7">
         <h1 className="text-3xl font-bold tracking-tight">Profilim</h1>
-        <p className="mt-3 text-muted">Fotoğrafını, iletişim bilgilerini ve hesap şifreni düzenle.</p>
+        <p className="mt-3 text-muted">Fotoğrafını, kimliğini, iletişim bilgilerini ve hesap şifreni düzenle.</p>
       </div>
       <div className="profile-layout">
         <section className="profile-section">
@@ -51,6 +52,7 @@ export default function ProfilPage() {
             </div>
           </div>
           <ProfilePhoto disabled={saving} onBusy={setUploading} />
+          <IdentityFront disabled={saving} onBusy={setUploading} />
           <form onSubmit={save}>
             <div className="profile-fields">
               <Input

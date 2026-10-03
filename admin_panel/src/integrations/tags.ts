@@ -208,6 +208,7 @@ export const tags = [
   'IlanPurchases',
   'Carrier',
   'Carriers',
+  'Identity',
 ] as const;
 
 export type tag = typeof tags[number];

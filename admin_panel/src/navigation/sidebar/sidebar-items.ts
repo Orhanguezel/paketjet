@@ -9,6 +9,7 @@ import {
   FolderTree,
   CreditCard,
   HardDrive,
+  IdCard,
   Percent,
   ReceiptText,
   LayoutDashboard,
@@ -81,6 +82,7 @@ export const adminNavConfig: AdminNavConfigGroup[] = [
       { key: 'dashboard', url: '/admin/dashboard', icon: LayoutDashboard },
       { key: 'users', url: '/admin/users', icon: Users },
       { key: 'carriers', url: '/admin/carriers', icon: Users },
+      { key: 'identity', url: '/admin/identity', icon: IdCard },
     ],
   },
   {
@@ -158,6 +160,7 @@ const FALLBACK_TITLES: Record<AdminNavItemKey, string> = {
   categories: 'Kategoriler',
   users: 'Kullanıcılar',
   carriers: 'Taşıyıcılar',
+  identity: 'Kimlik doğrulama',
 
   disputes: 'Anlaşmazlıklar',
   wallets: 'Eski TL arşivi',

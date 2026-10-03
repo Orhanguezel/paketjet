@@ -18,7 +18,8 @@ export type AdminPermissionKey =
   | 'admin.reports'
   | 'admin.pricing'
   | 'admin.payment_settings'
-  | 'admin.disputes';
+  | 'admin.disputes'
+  | 'admin.identity';
 
 export type AdminNavKey =
   | 'support_tickets'
@@ -43,7 +44,8 @@ export type AdminNavKey =
   | 'reports'
   | 'pricing'
   | 'payment_settings'
-  | 'disputes';
+  | 'disputes'
+  | 'identity';
 
 const ADMIN_ONLY: PanelRole[] = ['admin'];
 
@@ -66,6 +68,7 @@ const ADMIN_PERMISSION_ROLE_MAP: Record<AdminPermissionKey, PanelRole[]> = {
   'admin.pricing': ADMIN_ONLY,
   'admin.payment_settings': ADMIN_ONLY,
   'admin.disputes': ADMIN_ONLY,
+  'admin.identity': ADMIN_ONLY,
 };
 
 export function canAccessAdminPermission(role: PanelRole, key: AdminPermissionKey): boolean {
@@ -91,6 +94,7 @@ const ADMIN_NAV_PERMISSION_MAP: Partial<Record<AdminNavKey, AdminPermissionKey>>
   reports: 'admin.reports',
   pricing: 'admin.pricing',
   payment_settings: 'admin.payment_settings',
+  identity: 'admin.identity',
 };
 
 export function getAdminNavRoles(key: AdminNavKey): PanelRole[] {
@@ -118,6 +122,7 @@ const ADMIN_PERMISSION_PATHS: Record<AdminPermissionKey, string[]> = {
   'admin.pricing': ['/admin/pricing'],
   'admin.payment_settings': ['/admin/payment-settings'],
   'admin.disputes': ['/admin/disputes'],
+  'admin.identity': ['/admin/identity'],
 };
 
 function stripQueryAndHash(pathname: string): string {

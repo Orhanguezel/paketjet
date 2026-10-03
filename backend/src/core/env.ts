@@ -31,6 +31,7 @@ export const env = {
   // Storage
   STORAGE_DRIVER,
   LOCAL_STORAGE_ROOT: process.env.LOCAL_STORAGE_ROOT || '',
+  PRIVATE_STORAGE_ROOT: process.env.PRIVATE_STORAGE_ROOT || '', // kimlik gibi hassas dosyalar; statik servis EDILMEZ
   LOCAL_STORAGE_BASE_URL: process.env.LOCAL_STORAGE_BASE_URL || '/uploads',
   STORAGE_CDN_PUBLIC_BASE: process.env.STORAGE_CDN_PUBLIC_BASE || '',
   STORAGE_PUBLIC_API_BASE: process.env.STORAGE_PUBLIC_API_BASE || '',
