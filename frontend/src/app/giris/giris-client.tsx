@@ -50,7 +50,8 @@ function GirisForm({ logoUrl }: { logoUrl?: string | null }) {
 
   function afterAuth(user: { role?: string }) {
     setUser(user as Parameters<typeof setUser>[0]);
-    router.push(nextParam ?? ROUTES.panel.root);
+    // Oturum degisti: istemci router onbellegindeki eski '/panel -> giris' yaniti kullanilmasin diye tam sayfa yukleme.
+    window.location.assign(nextParam ?? ROUTES.panel.root);
   }
 
   // Google Identity Services butonu (yalnızca NEXT_PUBLIC_GOOGLE_CLIENT_ID tanımlıysa)
@@ -107,8 +108,8 @@ function GirisForm({ logoUrl }: { logoUrl?: string | null }) {
     setLoading(true);
     try {
       const res = await login(result.data);
-      setUser(res.user);
-      router.push(nextParam ?? ROUTES.panel.root);
+      afterAuth(res.user);
+      return;
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       setServerError(

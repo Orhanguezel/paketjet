@@ -16,7 +16,7 @@ export default function Header({logoUrl,logoDarkUrl,logoAlt}:HeaderProps) {
   const toggle=useRef<HTMLButtonElement>(null);
   useEffect(()=>setMounted(true),[]);
   useEffect(()=>setOpen(false),[pathname]);
-  async function signOut(){await logout().catch(()=>{});clearAuth();setOpen(false);router.push(ROUTES.home);}
+  async function signOut(){await logout().catch(()=>{});clearAuth();setOpen(false);window.location.assign(ROUTES.home);}
   const signedIn=mounted&&isAuthenticated;
   return <header className="site-header relative z-40 text-foreground" onKeyDown={e=>{if(e.key==='Escape'){setOpen(false);toggle.current?.focus();}}}>
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:bg-surface focus:p-4">İçeriğe geç</a>

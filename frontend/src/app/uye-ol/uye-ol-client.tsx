@@ -68,7 +68,9 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
       const { confirmPassword: _, ...payload } = result.data;
       const res = await register(payload as Parameters<typeof register>[0]);
       setUser(res.user);
-      router.push(safeReturnPath(new URLSearchParams(window.location.search).get("next")));
+      // Oturum degisti: istemci router onbellegindeki eski '/panel -> giris' yaniti kullanilmasin diye tam sayfa yukleme.
+      window.location.assign(safeReturnPath(new URLSearchParams(window.location.search).get("next")));
+      return;
     } catch (err: unknown) {
       const code = (err as { code?: string })?.code;
       setServerError(
