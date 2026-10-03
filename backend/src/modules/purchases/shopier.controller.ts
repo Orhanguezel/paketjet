@@ -4,6 +4,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAuthUserId, handleRouteError, sendNotFound } from "@/modules/_shared";
 import { ShopierApiError, productIdsFromOrderEvent, refundIdFromEvent, verifyShopierSignature } from "./shopier";
 import { syncShopierRefund } from "./refund.service";
+import { getShopierConfig } from "./shopier-config";
 import { reconcileShopierPayment, settleShopierOrder } from "./shopier.service";
 
 export type RawBodyRequest = FastifyRequest & { rawBody?: Buffer };
@@ -12,7 +13,7 @@ export type RawBodyRequest = FastifyRequest & { rawBody?: Buffer };
 export async function shopierWebhook(req: RawBodyRequest, reply: FastifyReply) {
   const event = String(req.headers["shopier-event"] ?? "");
   const signature = req.headers["shopier-signature"];
-  if (!req.rawBody || !verifyShopierSignature(req.rawBody, typeof signature === "string" ? signature : undefined)) {
+  if (!req.rawBody || !verifyShopierSignature(req.rawBody, typeof signature === "string" ? signature : undefined, (await getShopierConfig()).webhookTokens)) {
     req.log.warn({ event: "shopier_webhook_rejected", shopierEvent: event }, "shopier_webhook_rejected");
     return reply.code(401).send({ error: { message: "invalid_signature" } });
   }

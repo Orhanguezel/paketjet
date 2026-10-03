@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { IdCard } from 'lucide-react';
-import { fetchIdentityFrontUrl } from '@/integrations/endpoints/admin/identity-admin-endpoints';
+import { fetchIdentityFrontUrl } from '@/integrations/core/identity-file';
 
 /** Görsel yalnız açıkça istendiğinde yüklenir; her görüntüleme backend'de loglanır. */
 export default function IdentityImage({ userId }: { userId: string }) {

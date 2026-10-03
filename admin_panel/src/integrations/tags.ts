@@ -209,6 +209,7 @@ export const tags = [
   'Carrier',
   'Carriers',
   'Identity',
+  'PaymentSettings',
 ] as const;
 
 export type tag = typeof tags[number];

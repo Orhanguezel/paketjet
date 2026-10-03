@@ -7,7 +7,8 @@ import {listingEvents} from '../src/modules/ilanlar/event.schema';
 import {paymentSessions} from '../src/modules/purchases/session.schema';
 import {paymentEvents} from '../src/modules/purchases/event.schema';
 import {repoInvalidateIlanCache} from '../src/modules/_shared/cache';
-import {deleteShopierCheckout,shopierConfigured} from '../src/modules/purchases/shopier';
+import {deleteShopierCheckout} from '../src/modules/purchases/shopier';
+import {getShopierConfig} from '../src/modules/purchases/shopier-config';
 const apply=process.argv.includes('--apply');
 try {
  const result=await db.transaction(async tx=>{
@@ -22,7 +23,7 @@ try {
  if(apply)for(const row of result.listings)await repoInvalidateIlanCache(row.id);
  // Suresi dolan Shopier odeme sayfasi (tek kullanimlik urun) kapatilir; gec odeme alinmaz.
  let closedCheckouts=0;
- if(apply&&shopierConfigured())for(const row of result.payments)if(row.provider==='shopier'&&row.checkout){try{await deleteShopierCheckout(row.checkout);closedCheckouts++;}catch(err){console.error(JSON.stringify({event:'shopier_checkout_close_failed',ref:row.ref,err:String(err)}));}}
+ if(apply&&(await getShopierConfig()).pat)for(const row of result.payments)if(row.provider==='shopier'&&row.checkout){try{await deleteShopierCheckout(row.checkout);closedCheckouts++;}catch(err){console.error(JSON.stringify({event:'shopier_checkout_close_failed',ref:row.ref,err:String(err)}));}}
  const [rows]=await db.execute(sql`SELECT (SELECT COUNT(*) FROM payment_sessions WHERE state IN ('review','refund_pending')) payment_attention, (SELECT COUNT(*) FROM ilanlar WHERE status='active' AND departure_date>UTC_TIMESTAMP()) active_listings`);
  console.log(JSON.stringify({at:new Date().toISOString(),apply,expired:result.listings.length,payment_review:result.payments.length,closed_checkouts:closedCheckouts,metrics:rows}));
 } finally {await pool.end();}

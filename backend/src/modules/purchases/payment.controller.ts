@@ -17,7 +17,7 @@ export async function purchaseCreditPackage(req: FastifyRequest, reply: FastifyR
   try {
     const userId = getAuthUserId(req);
     const body = purchaseCreditPackageSchema.parse(req.body);
-    const provider = requirePaymentProvider(body.provider);
+    const provider = await requirePaymentProvider(body.provider);
     const result = await repoCreateCreditPackagePayment(userId, body.package_key, provider);
     if (!result.ok) return reply.code(result.code === "user_not_found" ? 404 : 400).send({ error: { message: result.code } });
     const ref = result.purchase.payment_ref;
@@ -35,7 +35,7 @@ export async function initiateIlanPayment(req: FastifyRequest, reply: FastifyRep
     const userId = getAuthUserId(req);
     const { id } = req.params as { id: string };
     const body = initiateIlanPaymentSchema.parse(req.body);
-    const provider = requirePaymentProvider(body.provider);
+    const provider = await requirePaymentProvider(body.provider);
     const result = await repoCreateIlanPayment(id, userId, provider, body, normalizeIp(req));
     if (!result.ok) return reply.code(result.code === "user_not_found" ? 404 : 400).send({ error: { message: result.code } });
     const ref = result.payment.payment_ref;

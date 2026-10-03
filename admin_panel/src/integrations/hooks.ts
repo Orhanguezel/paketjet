@@ -188,7 +188,8 @@ export {
 export {
   useListIlanPurchasesAdminQuery,
 } from '@/integrations/endpoints/admin/purchases-admin-endpoints';
-export {usePaymentAvailabilityQuery,useListPaymentOperationsQuery,usePaymentOperationQuery,useAddPaymentNoteMutation,useApproveBankTransferMutation,useRejectBankTransferMutation,useRefundPaymentMutation,useSyncPaymentRefundMutation,useCreditAccountsQuery,useAdjustCreditsMutation,useCommerceSummaryQuery} from '@/integrations/endpoints/admin/commerce-endpoints';
+export {usePaymentAvailabilityQuery,useListPaymentOperationsQuery,usePaymentOperationQuery,useAddPaymentNoteMutation,useApproveBankTransferMutation,useRejectBankTransferMutation,useRefundPaymentMutation,useSyncPaymentRefundMutation,useShopierStatusQuery,useUpdateShopierSettingsMutation,useTestShopierConnectionMutation,useRebuildShopierWebhooksMutation,useCreditAccountsQuery,useAdjustCreditsMutation,useCommerceSummaryQuery} from '@/integrations/endpoints/admin/commerce-endpoints';
 export {useManagedRecordQuery,useManagedContentQuery,useSaveManagedContentMutation,useDeleteManagedContentMutation} from '@/integrations/endpoints/admin/content-management-endpoints';
 
 export {useContentRevisionsQuery,useListingHistoryQuery} from './endpoints/admin/content-management-endpoints';
+export { useListIdentityDocumentsQuery, useReviewIdentityDocumentMutation } from '@/integrations/endpoints/admin/identity-admin-endpoints';

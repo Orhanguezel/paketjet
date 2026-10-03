@@ -67,6 +67,8 @@ export const env = {
   // Auth
   JWT_SECRET: process.env.JWT_SECRET || (() => { throw new Error("Missing required env: JWT_SECRET"); })(),
   COOKIE_SECRET: process.env.COOKIE_SECRET || (() => { throw new Error("Missing required env: COOKIE_SECRET"); })(),
+  // DB'de sifreli saklanan gizli ayarlar (Shopier anahtarlari). 64 hex; fallback YOK.
+  SETTINGS_ENCRYPTION_KEY: process.env.SETTINGS_ENCRYPTION_KEY || (() => { throw new Error("Missing required env: SETTINGS_ENCRYPTION_KEY"); })(),
   ALLOW_TEMP_LOGIN: process.env.ALLOW_TEMP_LOGIN || '',
   TEMP_PASSWORD: process.env.TEMP_PASSWORD || '',
   AUTH_ADMIN_EMAILS: process.env.AUTH_ADMIN_EMAILS || '',

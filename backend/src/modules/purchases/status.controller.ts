@@ -4,7 +4,7 @@ import { getAuthUserId, handleRouteError } from '../_shared';
 import { paymentAvailability } from './payment-policy';
 import { repoMyPayment } from './session.repository';
 export async function getPaymentAvailability(req: FastifyRequest, reply: FastifyReply) {
-  try { return reply.header('Cache-Control', 'no-store').send(paymentAvailability()); }
+  try { return reply.header('Cache-Control', 'no-store').send(await paymentAvailability()); }
   catch (error) { return handleRouteError(reply, req, error, 'payment_availability'); }
 }
 export async function getPaymentStatus(req: FastifyRequest, reply: FastifyReply) {

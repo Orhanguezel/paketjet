@@ -70,3 +70,4 @@ export {
 } from './cache';
 
 export { formatAdminUserRow } from './admin.helpers';
+export { sealSecret, openSecret } from './secret-box';

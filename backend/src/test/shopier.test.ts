@@ -3,6 +3,7 @@ import { createHmac } from "crypto";
 import { env } from "@/core/env";
 import { repoGetCreditBalance, repoGetCreditPackages, repoPurchaseIlan } from "@/modules/purchases/repository";
 import { checkShopierOrder, verifyShopierSignature } from "@/modules/purchases/shopier";
+import { invalidateShopierConfig } from "@/modules/purchases/shopier-config";
 import { buyer, declaration, listing } from "./purchase-fixtures";
 import { authHeaders, closeTestApp, getTestApp, registerAdminUser } from "./setup";
 
@@ -13,17 +14,25 @@ const products = new Map<string, number>();
 const orders = new Map<string, Record<string, unknown>>();
 const deleted: string[] = [];
 const refunds = new Map<string, Record<string, unknown>>();
+const hooks: { id: string; event: string; url: string; token: string }[] = [];
 let seq = 0;
 const RUN = Date.now().toString(36);
 
 beforeAll(() => {
   process.env.PAYMENT_PROVIDER = "shopier";
   Object.assign(mutableEnv, { SHOPIER_PAT: "pat", SHOPIER_WEBHOOK_TOKEN: TOKEN, SHOPIER_PRODUCT_IMAGE_URL: "https://example.test/logo.png" });
+  invalidateShopierConfig();
   // Yalniz Shopier API sahte; app.inject fetch kullanmaz.
   globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
     const url = new URL(String(input instanceof Request ? input.url : input));
     if (url.host !== "api.shopier.com") return realFetch(input, init);
     const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status });
+    const auth = new Headers(init?.headers).get("authorization");
+    if (auth === "Bearer bad.pat.token") return json(401, { error: "unauthorized" });
+    if (url.pathname === "/v1/shop/settings") return json(200, { name: "testshop", title: "Test Dukkan", url: "https://www.shopier.com/testshop" });
+    if (url.pathname === "/v1/webhooks" && init?.method === "POST") { const b = JSON.parse(String(init.body)); const h = { id: `W${++seq}`, event: b.event, url: b.url, token: `tok-${seq}-${RUN}` }; hooks.push(h); return json(200, h); }
+    if (url.pathname === "/v1/webhooks") return json(200, hooks.map(({ token: _t, ...h }) => h));
+    if (url.pathname.startsWith("/v1/webhooks/") && init?.method === "DELETE") { const id = url.pathname.split("/").pop(); hooks.splice(hooks.findIndex((h) => h.id === id), 1); return json(200, {}); }
     if (init?.method === "POST" && url.pathname === "/v1/products") {
       const id = `P${Date.now()}${++seq}`;
       products.set(id, Number(JSON.parse(String(init.body)).priceData.price));
@@ -126,12 +135,13 @@ describe("shopier checkout over HTTP", () => {
 
   it("payments stay closed when Shopier is not fully configured", async () => {
     mutableEnv.SHOPIER_WEBHOOK_TOKEN = "";
+    invalidateShopierConfig();
     try {
       const user = await buyer();
       const [pack] = await repoGetCreditPackages();
       const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(user.token), payload: { package_key: pack!.key } });
       expect(res.statusCode).toBe(503);
-    } finally { mutableEnv.SHOPIER_WEBHOOK_TOKEN = TOKEN; }
+    } finally { mutableEnv.SHOPIER_WEBHOOK_TOKEN = TOKEN; invalidateShopierConfig(); }
   });
 });
 
@@ -202,5 +212,59 @@ describe("shopier refunds", () => {
     await webhook({ id: refundId }, undefined, "refund.updated");
     expect(await state(user.token, start.conversationId)).toMatchObject({ state: "refunded", error_code: "refund_credits_already_used" });
     expect(await repoGetCreditBalance(user.id)).toBe(Math.max(0, left - start.credits));
+  });
+});
+
+describe("shopier admin settings", () => {
+  const base = "/api/admin/payment-settings/shopier";
+  afterAll(async () => {
+    const { db } = await import("@/db/client");
+    const { siteSettings } = await import("@/modules/siteSettings");
+    const { eq } = await import("drizzle-orm");
+    await db.delete(siteSettings).where(eq(siteSettings.key, "payment.shopier"));
+    invalidateShopierConfig();
+  });
+
+  it("never returns or stores the PAT in clear text, and rejects unusable keys", async () => {
+    const app = await getTestApp(), admin = await registerAdminUser(app), h = authHeaders(admin.token!);
+    const user = await buyer();
+    expect((await app.inject({ method: "GET", url: base, headers: authHeaders(user.token) })).statusCode).toBe(403);
+    expect((await app.inject({ method: "PUT", url: base, headers: h, payload: { pat: "not-a-jwt" } })).statusCode).toBe(400);
+    expect((await app.inject({ method: "PUT", url: base, headers: h, payload: { pat: "bad.pat.token" } })).json()).toMatchObject({ error: { message: "shopier_pat_rejected" } });
+    const pat = `aaa.${Buffer.from(JSON.stringify({ exp: 1948821851, scopes: ["orders:read"] })).toString("base64url")}.zzzz9876`;
+    const res = await app.inject({ method: "PUT", url: base, headers: h, payload: { pat } });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).not.toContain(pat);
+    expect(res.json()).toMatchObject({ pat: { set: true, source: "panel", last4: "9876", scopes: ["orders:read"] } });
+    const { db } = await import("@/db/client");
+    const { siteSettings } = await import("@/modules/siteSettings");
+    const { eq } = await import("drizzle-orm");
+    const [row] = await db.select().from(siteSettings).where(eq(siteSettings.key, "payment.shopier"));
+    expect(row!.value).not.toContain(pat);
+    expect(row!.value).toContain("v1:");
+    expect((await app.inject({ method: "GET", url: "/api/site_settings/payment.shopier?locale=*" })).statusCode).not.toBe(200);
+  });
+
+  it("the panel switch closes and reopens card payments", async () => {
+    const app = await getTestApp(), admin = await registerAdminUser(app), h = authHeaders(admin.token!);
+    expect((await app.inject({ method: "PUT", url: base, headers: h, payload: { card_enabled: false } })).json()).toMatchObject({ card_enabled: false, available: false });
+    expect((await app.inject({ method: "GET", url: "/api/payments/availability" })).json()).toMatchObject({ enabled: false });
+    expect((await app.inject({ method: "PUT", url: base, headers: h, payload: { card_enabled: true } })).json()).toMatchObject({ card_enabled: true, available: true });
+    expect((await app.inject({ method: "GET", url: "/api/payments/availability" })).json()).toMatchObject({ enabled: true });
+  });
+
+  it("rebuilding webhooks stores fresh signing tokens that the webhook endpoint accepts", async () => {
+    const app = await getTestApp(), admin = await registerAdminUser(app), h = authHeaders(admin.token!);
+    const test = (await app.inject({ method: "POST", url: `${base}/test`, headers: h })).json();
+    expect(test).toMatchObject({ ok: true, shop_name: "Test Dukkan" });
+    const rebuilt = await app.inject({ method: "POST", url: `${base}/webhooks`, headers: h });
+    expect(rebuilt.json()).toMatchObject({ webhook: { count: 3, source: "panel" } });
+    expect(rebuilt.body).not.toContain("tok-");
+    const fresh = hooks.find((x) => x.event === "refund.updated")!.token;
+    const raw = JSON.stringify({ id: "abc123" });
+    const sig = createHmac("sha256", fresh).update(raw).digest("hex");
+    const res = await app.inject({ method: "POST", url: "/api/payments/shopier/webhook", headers: { "content-type": "application/json", "shopier-event": "refund.updated", "shopier-signature": sig }, payload: raw });
+    expect(res.statusCode).toBe(200);
+    expect((await app.inject({ method: "POST", url: `${base}/test`, headers: h })).json()).toMatchObject({ signing_ready: true, missing_events: [] });
   });
 });

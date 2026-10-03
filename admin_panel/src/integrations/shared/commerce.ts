@@ -7,3 +7,6 @@ export interface CommerceSummary {active_listings:number;moderation:number;conta
 export interface CommercePage<T> {data:T[];total:number;page:number;limit:number;}
 export interface CommerceFilters {page:number;search?:string;state?:string;}
 export const paymentStateLabels:Record<string,string>={initializing:'Başlatılıyor',pending:'Bildirim bekleniyor',completed:'Tamamlandı',failed:'Başarısız',review:'İncelemede',refund_pending:'İade bekliyor',refunded:'İade edildi'};
+export type ShopierSource='panel'|'server'|null;
+export interface ShopierStatus{card_enabled:boolean;card_enabled_source:'panel'|'server';configured:boolean;available:boolean;pat:{set:boolean;last4?:string;expires_at?:string|null;scopes?:string[];source:ShopierSource};webhook:{count:number;expected:number;source:ShopierSource;url:string};product_image:{url:string|null;source:ShopierSource};updated_at:string|null}
+export type ShopierTest={ok:true;shop_name:string;shop_url:string;webhooks:{event:string;url:string;ours:boolean}[];missing_events:string[];signing_ready:boolean}|{ok:false;error:string};

@@ -5,17 +5,11 @@
 // olusturulur; alici urunun Shopier sayfasinda oder. Odeme, `order.created` webhook'u veya kullanicinin
 // "kontrol et" istegiyle siparis API'den OKUNARAK dogrulanir. Webhook govdesi tek basina kanit sayilmaz.
 import { createHmac, timingSafeEqual } from 'crypto';
-import { env } from '@/core/env';
+import { getShopierConfig } from './shopier-config';
 
 const API = 'https://api.shopier.com/v1';
 const TIMEOUT_MS = 8_000;
 
-/** Her webhook aboneligi kendi token'iyla imzalanir; birden fazla abonelik icin virgulle ayrilir. */
-export const shopierWebhookTokens = (raw = env.SHOPIER_WEBHOOK_TOKEN) => raw.split(',').map((t) => t.trim()).filter(Boolean);
-
-export function shopierConfigured() {
-  return Boolean(env.SHOPIER_PAT && shopierWebhookTokens().length && env.SHOPIER_PRODUCT_IMAGE_URL);
-}
 
 export class ShopierApiError extends Error {
   constructor(public status: number, public code: string) {
@@ -23,10 +17,12 @@ export class ShopierApiError extends Error {
   }
 }
 
-async function call<T>(method: string, path: string, body?: unknown, fetcher: typeof fetch = fetch): Promise<T> {
+async function call<T>(method: string, path: string, body?: unknown, fetcher: typeof fetch = fetch, pat?: string): Promise<T> {
+  const token = pat ?? (await getShopierConfig()).pat;
+  if (!token) throw new ShopierApiError(503, 'not_configured');
   const res = await fetcher(`${API}${path}`, {
     method,
-    headers: { authorization: `Bearer ${env.SHOPIER_PAT}`, accept: 'application/json', ...(body ? { 'content-type': 'application/json' } : {}) },
+    headers: { authorization: `Bearer ${token}`, accept: 'application/json', ...(body ? { 'content-type': 'application/json' } : {}) },
     body: body ? JSON.stringify(body) : undefined,
     signal: AbortSignal.timeout(TIMEOUT_MS),
   });
@@ -40,11 +36,12 @@ export type ShopierProduct = { id: string; url: string };
 
 /** Odeme basina tek kullanimlik urun. Stok 1: ayni urun ikinci kez satilamaz. */
 export async function createShopierCheckout(input: { title: string; description: string; amount: number }, fetcher?: typeof fetch) {
+  const { productImageUrl } = await getShopierConfig();
   const product = await call<{ id?: string; url?: string }>('POST', '/products', {
     title: input.title.slice(0, 120),
     description: input.description,
     type: 'digital',
-    media: [{ type: 'image', url: env.SHOPIER_PRODUCT_IMAGE_URL, placement: 1 }],
+    media: [{ type: 'image', url: productImageUrl, placement: 1 }],
     priceData: { currency: 'TRY', price: input.amount.toFixed(2) },
     stockQuantity: 1,
     shippingPayer: 'sellerPays',
@@ -91,9 +88,9 @@ export function checkShopierOrder(order: ShopierOrder, expected: { productId: st
   return { ok: true, orderId: String(order.id), amount: expected.amount };
 }
 
-/** Shopier-Signature: ham govdenin webhook token'iyla HMAC-SHA256'si (hex veya base64). Token listesi denenir. */
-export function verifyShopierSignature(raw: Buffer | string, signature: string | undefined, tokens: string | string[] = shopierWebhookTokens()) {
-  const list = Array.isArray(tokens) ? tokens : shopierWebhookTokens(tokens);
+/** Shopier-Signature: ham govdenin webhook token'iyla HMAC-SHA256'si (hex veya base64). Her abonelik kendi token'ini kullanir. */
+export function verifyShopierSignature(raw: Buffer | string, signature: string | undefined, tokens: string | string[]) {
+  const list = (Array.isArray(tokens) ? tokens : tokens.split(',')).map((t) => t.trim()).filter(Boolean);
   if (!signature || !list.length) return false;
   const given = signature.trim();
   const value = Buffer.from(/^[0-9a-f]+$/i.test(given) ? given.toLowerCase() : given);
@@ -127,3 +124,17 @@ export function refundIdFromEvent(payload: unknown): string | null {
   const r = (payload && typeof payload === 'object' && 'data' in payload ? (payload as { data: unknown }).data : payload) as { id?: unknown } | null;
   return r?.id ? String(r.id) : null;
 }
+
+export const SHOPIER_WEBHOOK_EVENTS = ['order.created', 'refund.requested', 'refund.updated'] as const;
+export type ShopierWebhook = { id: string; event: string; url: string; token?: string };
+
+export const listShopierWebhooks = (pat?: string) => call<ShopierWebhook[]>('GET', '/webhooks?limit=50', undefined, fetch, pat);
+export const createShopierWebhook = (event: string, url: string, pat?: string) => call<ShopierWebhook>('POST', '/webhooks', { event, url }, fetch, pat);
+
+/** Anahtari kaydetmeden ONCE dogrulamak icin: siparis okuma + magaza ayari. */
+export async function probeShopier(pat?: string) {
+  await call<unknown[]>('GET', '/orders?limit=1', undefined, fetch, pat);
+  const shop = await call<{ name?: string; url?: string; title?: string }>('GET', '/shop/settings', undefined, fetch, pat);
+  return { shopName: shop.title || shop.name || '', shopUrl: shop.url || '' };
+}
+export const deleteShopierWebhook = (id: string, pat?: string) => call<unknown>('DELETE', `/webhooks/${encodeURIComponent(id)}`, undefined, fetch, pat);

@@ -1,3 +1,6 @@
+import { getPublicJson } from "@/lib/public-fetch";
+import { ROUTES } from "@/config/routes";
+import { API } from "@/config/api-endpoints";
 import SplashLoader from "@/components/SplashLoader";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -27,6 +30,10 @@ export default async function SiteShell({ children }: { children: React.ReactNod
     footerQuickLinks,
     footerLegalLinks,
     headerMenu,
+    brandName,
+    payments,
+    distanceSales,
+    refundPolicy,
   ] = await Promise.all([
     getSiteSettingValue<SiteLogo>("site_logo", "*"),
     getSiteSettingValue<string | SiteLogo>("site_logo_light", "*"),
@@ -38,6 +45,10 @@ export default async function SiteShell({ children }: { children: React.ReactNod
     getSiteSettingValue<NavLink[]>("footer_quick_links", "*"),
     getSiteSettingValue<NavLink[]>("footer_legal_links", "*"),
     getSiteSettingValue<NavLink[]>("header_menu", "*"),
+    getSiteSettingValue<string>("brand_display_name", "*"),
+    getPublicJson<{ provider: string | null; enabled: boolean }>("/api/payments/availability"),
+    getPublicJson<{ slug?: string }>(`${API.customPages.bySlug("mesafeli-satis-sozlesmesi")}?locale=tr`),
+    getPublicJson<{ slug?: string }>(`${API.customPages.bySlug("iptal-ve-iade-kosullari")}?locale=tr`),
   ]);
 
   const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
@@ -47,6 +58,9 @@ export default async function SiteShell({ children }: { children: React.ReactNod
     if (typeof value === "string") return toUrl(value);
     return toUrl(value.url || value.src || value.logo_url);
   };
+  const purchaseLegalLinks: NavLink[] = [];
+  if (distanceSales) purchaseLegalLinks.push({ title: "Mesafeli satış sözleşmesi", path: ROUTES.static.mesafeliSatis });
+  if (refundPolicy) purchaseLegalLinks.push({ title: "İptal ve iade koşulları", path: ROUTES.static.iptalIade });
   const logoUrl = mediaUrl(logoLight) || mediaUrl(logo) || toUrl(logo?.logo_url);
   const logoDarkUrl = mediaUrl(logoDark) || toUrl(logo?.logo_dark_url) || logoUrl;
   const logoAlt = logo?.alt || logo?.logo_alt || "PaketJet";
@@ -63,8 +77,9 @@ export default async function SiteShell({ children }: { children: React.ReactNod
         contact={contact}
         socials={socials}
         copyright={footerCopyright}
-        quickLinks={footerQuickLinks}
-        legalLinks={footerLegalLinks}
+        brandName={brandName}
+        paymentProvider={payments?.enabled ? payments.provider : null}
+        purchaseLegalLinks={purchaseLegalLinks}
       />
     </div>
   );

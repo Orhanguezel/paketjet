@@ -57,6 +57,8 @@ export const ROUTES = {
     kvkk: "/kvkk",
     kullanim: "/kullanim-kosullari",
     tasimaKurallari: "/tasima-kurallari",
+    mesafeliSatis: "/mesafeli-satis-sozlesmesi",
+    iptalIade: "/iptal-ve-iade-kosullari",
     blog: "/blog",
     rota: (slug: string) => `/rota/${slug}`,
   },

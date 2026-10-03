@@ -2,11 +2,8 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import {
-  type IdentityStatus,
-  useListIdentityDocumentsQuery,
-  useReviewIdentityDocumentMutation,
-} from '@/integrations/endpoints/admin/identity-admin-endpoints';
+import type { IdentityStatus } from '@/integrations/shared';
+import { useListIdentityDocumentsQuery, useReviewIdentityDocumentMutation } from '@/integrations/hooks';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
