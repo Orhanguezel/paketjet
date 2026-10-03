@@ -66,3 +66,49 @@ describe("google login", () => {
     expect((await post({})).statusCode).toBe(403);
   });
 });
+
+describe("google profile picture", () => {
+  const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jJ1sAAAAASUVORK5CYII=", "base64");
+  const realFetch = globalThis.fetch;
+  const fetched: string[] = [];
+  beforeEach(() => {
+    globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
+      const url = String(input instanceof Request ? input.url : input);
+      if (url.includes("googleusercontent.com")) { fetched.push(url); return new Response(png, { headers: { "content-type": "image/png", "content-length": String(png.length) } }); }
+      return realFetch(input, init);
+    }) as typeof fetch;
+  });
+  afterAll(() => { globalThis.fetch = realFetch; });
+  const avatar = async (email: string) => {
+    const [u] = await db.select().from(users).where(eq(users.email, email));
+    const { repoGetProfileById } = await import("@/modules/profiles");
+    return (await repoGetProfileById(u!.id))?.avatar_url ?? "";
+  };
+
+  it("copies the Google photo for a user without one, never overwrites a chosen photo", async () => {
+    const email = randomEmail();
+    payload = { email, email_verified: true, name: "Foto", picture: "https://lh3.googleusercontent.com/a/abc=s96-c" };
+    expect((await post({ rules_accepted: true, kvkk_explicit_consent: true })).statusCode).toBe(200);
+    const first = await avatar(email);
+    expect(first).toContain("avatars");
+    expect(first).not.toContain("googleusercontent");
+    expect(fetched.at(-1)).toContain("=s256-c");
+    const image = await (await getTestApp()).inject({ method: "GET", url: new URL(first, "http://localhost").pathname });
+    expect(image.statusCode).toBe(200);
+
+    const { repoUpsertProfile } = await import("@/modules/profiles");
+    const [u] = await db.select().from(users).where(eq(users.email, email));
+    await repoUpsertProfile(u!.id, { avatar_url: "/uploads/kendi-secimim.png" });
+    const before = fetched.length;
+    expect((await post({})).statusCode).toBe(200);
+    expect(await avatar(email)).toBe("/uploads/kendi-secimim.png");
+    expect(fetched.length).toBe(before);
+  });
+
+  it("ignores pictures from other hosts", async () => {
+    const email = randomEmail();
+    payload = { email, email_verified: true, name: "Yabanci", picture: "https://evil.example/x.png" };
+    expect((await post({ rules_accepted: true, kvkk_explicit_consent: true })).statusCode).toBe(200);
+    expect(await avatar(email)).toBe("");
+  });
+});

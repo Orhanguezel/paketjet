@@ -4,17 +4,15 @@ import type { IdentityDocumentRow } from './schema';
 import { readIdentityFile } from './file-store';
 
 /** Dosya yolu istemciye ASLA gitmez; yalniz durum bilgisi. */
-export function toIdentityDto(row: IdentityDocumentRow | null) {
-  if (!row) return { front: null };
-  return {
-    front: {
+export function toIdentityDto(rows: { front: IdentityDocumentRow | null; back: IdentityDocumentRow | null }) {
+  const sideDto = (row: IdentityDocumentRow | null) => row ? {
       status: row.status,
       reject_reason: row.reject_reason,
       reviewed_at: row.reviewed_at,
       uploaded_at: row.updated_at,
       version: new Date(row.updated_at).getTime(),
-    },
-  };
+    } : null;
+  return { front: sideDto(rows.front), back: sideDto(rows.back) };
 }
 
 /** Kimlik gorselini cache'lenmeyecek, indirilmeyecek sekilde gonderir. */

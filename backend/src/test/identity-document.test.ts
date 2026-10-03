@@ -15,7 +15,7 @@ function multipart(bytes: Buffer, mime = "image/png") {
   };
 }
 
-it("stores the identity front privately: owner and admin can read it, other users and anonymous cannot", async () => {
+it("requires both private identity sides before review and resets approval when either side changes", async () => {
   const app = await getTestApp();
   const owner = await registerUser(app, { email: randomEmail(), password: "Test1234!" });
   const other = await registerUser(app, { email: randomEmail(), password: "Test1234!" });
@@ -23,12 +23,13 @@ it("stores the identity front privately: owner and admin can read it, other user
   const headers = authHeaders(owner.token!);
   const ownerId = owner.body.user.id as string;
 
-  expect((await app.inject({ method: "GET", url: "/api/identity/me", headers })).json()).toEqual({ front: null });
+  expect((await app.inject({ method: "GET", url: "/api/identity/me", headers })).json()).toEqual({ front: null, back: null });
 
   const body = multipart(png);
   const upload = await app.inject({ method: "POST", url: "/api/identity/me/front", headers: { ...headers, "content-type": body.contentType }, payload: body.payload });
   expect(upload.statusCode).toBe(200);
   expect(upload.json().front.status).toBe("pending");
+  expect(upload.json().back).toBeNull();
   expect(JSON.stringify(upload.json())).not.toContain("identity/");
 
   const image = await app.inject({ method: "GET", url: "/api/identity/me/front", headers });
@@ -42,16 +43,35 @@ it("stores the identity front privately: owner and admin can read it, other user
 
   const adminHeaders = authHeaders(admin.token!);
   expect((await app.inject({ method: "GET", url: `/api/admin/identity/${ownerId}/front`, headers: adminHeaders })).rawPayload.equals(png)).toBe(true);
+  expect((await app.inject({ method: "GET", url: `/api/admin/identity/${ownerId}/back`, headers: adminHeaders })).statusCode).toBe(404);
   expect((await app.inject({ method: "PATCH", url: `/api/admin/identity/${ownerId}`, headers: adminHeaders, payload: { status: "rejected" } })).statusCode).toBe(400);
+  expect((await app.inject({ method: "PATCH", url: `/api/admin/identity/${ownerId}`, headers: adminHeaders, payload: { status: "approved" } })).statusCode).toBe(409);
+  expect((await app.inject({ method: "GET", url: "/api/admin/identity", headers: adminHeaders })).json()).toEqual(
+    expect.arrayContaining([expect.objectContaining({ user_id: ownerId, has_front: true, has_back: false, status: "pending" })])
+  );
+  expect((await app.inject({ method: "GET", url: "/api/admin/identity?status=pending", headers: adminHeaders })).json()
+    .some((row: { user_id: string }) => row.user_id === ownerId)).toBe(false);
+  const back = multipart(png);
+  const backUpload = await app.inject({ method: "POST", url: "/api/identity/me/back", headers: { ...headers, "content-type": back.contentType }, payload: back.payload });
+  expect(backUpload.json()).toMatchObject({ front: { status: "pending" }, back: { status: "pending" } });
+  expect((await app.inject({ method: "GET", url: "/api/admin/identity?status=pending", headers: adminHeaders })).json()).toEqual(
+    expect.arrayContaining([expect.objectContaining({ user_id: ownerId, has_front: true, has_back: true, status: "pending" })])
+  );
+  expect((await app.inject({ method: "GET", url: "/api/identity/me/back", headers })).rawPayload.equals(png)).toBe(true);
+  expect((await app.inject({ method: "GET", url: "/api/identity/me/back", headers: authHeaders(other.token!) })).statusCode).toBe(404);
+  expect((await app.inject({ method: "GET", url: `/api/admin/identity/${ownerId}/back`, headers: adminHeaders })).rawPayload.equals(png)).toBe(true);
   const review = await app.inject({ method: "PATCH", url: `/api/admin/identity/${ownerId}`, headers: adminHeaders, payload: { status: "approved" } });
-  expect(review.json().front.status).toBe("approved");
+  expect(review.json()).toMatchObject({ front: { status: "approved" }, back: { status: "approved" } });
 
   const again = multipart(png);
   const reupload = await app.inject({ method: "POST", url: "/api/identity/me/front", headers: { ...headers, "content-type": again.contentType }, payload: again.payload });
-  expect(reupload.json().front.status).toBe("pending");
+  expect(reupload.json()).toMatchObject({ front: { status: "pending" }, back: { status: "pending" } });
 
   expect((await app.inject({ method: "DELETE", url: "/api/identity/me/front", headers })).statusCode).toBe(200);
   expect((await app.inject({ method: "GET", url: "/api/identity/me/front", headers })).statusCode).toBe(404);
+  expect((await app.inject({ method: "GET", url: "/api/identity/me", headers })).json()).toMatchObject({ front: null, back: { status: "pending" } });
+  expect((await app.inject({ method: "PATCH", url: `/api/admin/identity/${ownerId}`, headers: adminHeaders, payload: { status: "approved" } })).statusCode).toBe(409);
+  expect((await app.inject({ method: "DELETE", url: "/api/identity/me/back", headers })).json()).toEqual({ front: null, back: null });
 });
 
 it("rejects non-image, forged and oversized identity uploads", async () => {

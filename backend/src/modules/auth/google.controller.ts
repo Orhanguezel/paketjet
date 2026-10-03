@@ -14,6 +14,8 @@ import { getGoogleSettings } from '@/modules/siteSettings';
 import { getPrimaryRole } from '@/modules/userRoles';
 import { sendWelcomeMail } from '@/modules/mail';
 import { telegramNotify } from '@/modules/telegram';
+import { repoGetProfileById, repoUpsertProfile } from '@/modules/profiles';
+import { storeRemoteAvatar } from '@/modules/storage';
 import { googleBody } from './validation';
 import { getSignupLegalConsentVersions } from './legal-consent';
 import { repoGetUserByEmail, repoCreateUser, repoGetUserById, repoAssignRole, repoEnsureProfileRow, repoUpdateLastSignIn } from './repository';
@@ -25,6 +27,19 @@ const clientFor = (id: string) => {
   if (!c) clients.set(id, (c = new OAuth2Client(id)));
   return c;
 };
+
+/** Profil fotografi yoksa Google fotografini kopyalar; kullanici sonra degistirebilir. Hata girisi durdurmaz. */
+async function adoptGooglePicture(req: FastifyRequest, userId: string, picture: unknown) {
+  if (typeof picture !== 'string' || !picture) return;
+  try {
+    const profile = await repoGetProfileById(userId);
+    if (profile?.avatar_url) return;
+    const url = await storeRemoteAvatar(userId, picture.replace(/=s\d+(-c)?$/, '=s256-c'));
+    if (url) await repoUpsertProfile(userId, { avatar_url: url });
+  } catch (err) {
+    req.log.warn({ err, event: 'google_avatar_copy_failed', userId }, 'google_avatar_copy_failed');
+  }
+}
 
 async function googleClientId() {
   return (await getGoogleSettings()).clientId?.trim() || '';
@@ -95,6 +110,7 @@ export async function googleAuth(req: FastifyRequest, reply: FastifyReply) {
     if (!u) return reply.status(500).send({ error: { message: 'user_create_failed' } });
     if (!u.is_active) return reply.status(403).send({ error: { message: 'account_disabled' } });
 
+    await adoptGooglePicture(req, u.id, payload?.picture);
     await repoUpdateLastSignIn(u.id);
     const { access, refresh } = await issueTokens(req.server, u, role);
     setAccessCookie(reply, access);

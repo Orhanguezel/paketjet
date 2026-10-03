@@ -30,6 +30,8 @@ export {
   adminDiagCloudinary,
 } from './admin.controller.bulk';
 
+export { storeRemoteAvatar } from './remote-avatar.service';
+
 export {
   getCloudinaryConfig,
   uploadBufferAuto,
