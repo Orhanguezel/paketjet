@@ -25,7 +25,7 @@ export async function shopierWebhook(req: RawBodyRequest, reply: FastifyReply) {
     req.log.info({ event: "shopier_webhook_processed", orderId: parsed.orderId, results }, "shopier_webhook_processed");
     return reply.send({ ok: true });
   } catch (err) {
-    if (err instanceof ShopierApiError && err.status === 404) {
+    if (err instanceof ShopierApiError && (err.status === 400 || err.status === 404)) {
       req.log.warn({ event: "shopier_webhook_unknown_order", orderId: parsed.orderId }, "shopier_webhook_unknown_order");
       return reply.send({ ok: true, ignored: "unknown_order" });
     }
@@ -44,7 +44,7 @@ async function handleRefundEvent(req: RawBodyRequest, reply: FastifyReply, event
     req.log.info({ event: "shopier_refund_webhook_processed", shopierEvent: event, refundId, result }, "shopier_refund_webhook_processed");
     return reply.send({ ok: true });
   } catch (err) {
-    if (err instanceof ShopierApiError && err.status === 404) return reply.send({ ok: true, ignored: "unknown_refund" });
+    if (err instanceof ShopierApiError && (err.status === 400 || err.status === 404)) return reply.send({ ok: true, ignored: "unknown_refund" });
     req.log.error({ err, event: "shopier_refund_webhook_failed", refundId }, "shopier_refund_webhook_failed");
     return reply.code(500).send({ error: { message: "retry" } });
   }
