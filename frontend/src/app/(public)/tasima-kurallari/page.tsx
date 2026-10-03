@@ -6,7 +6,7 @@ import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   try {

@@ -1,3 +1,6 @@
+import Link from "next/link";
+import { ArrowUpRight, MapPinned, MessagesSquare, Truck } from "lucide-react";
+
 interface CustomPageViewProps {
   title: string;
   summary?: string | null;
@@ -34,27 +37,31 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
 
   const publishedLabel = formatDate(createdAt);
   const updatedLabel = formatDate(updatedAt);
+  const stepMatches = [...displayHtml.matchAll(/<h2\b[^>]*>([\s\S]*?)<\/h2>\s*<p\b[^>]*>([\s\S]*?)<\/p>/gi)];
+  const steps = stepMatches.length === 3 && !displayHtml.replace(/<h2\b[^>]*>[\s\S]*?<\/h2>\s*<p\b[^>]*>[\s\S]*?<\/p>/gi, "").trim()
+    ? stepMatches.map((match) => ({ title: match[1].replace(/<[^>]+>/g, ""), body: match[2] }))
+    : null;
+  const icons = [MapPinned, MessagesSquare, Truck];
 
   return (
-    <div className="bg-background text-foreground">
-      <section className="border-b border-border-soft bg-bg-alt">
-        <div className="mx-auto max-w-4xl px-6 py-16">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-brand">Kurumsal</p>
-          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight">{title}</h1>
-          {summary ? <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{summary}</p> : null}
+    <main className="editorial-page about-page">
+      <header className="editorial-hero about-hero">
+        <div className="editorial-container">
+          <p className="editorial-eyebrow">Kurumsal</p>
+          <h1>{title}</h1>
+          {summary ? <p className="editorial-lead">{summary}</p> : null}
           {(publishedLabel || updatedLabel) ? (
-            <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
+            <div className="about-dates">
               {publishedLabel ? <span>Yayın tarihi: {publishedLabel}</span> : null}
               {updatedLabel ? <span>Son güncelleme: {updatedLabel}</span> : null}
             </div>
           ) : null}
         </div>
-      </section>
-      {/* Hero Video — içerik altında */}
+      </header>
       {heroVideoUrl ? (
-        <section className="bg-navy">
-          <div className="mx-auto max-w-5xl px-6 py-8">
-            <div className="overflow-hidden rounded-lg">
+        <section className="about-video-band">
+          <div className="editorial-container">
+            <div className="about-video-frame">
               <video
                 src={heroVideoUrl}
                 controls
@@ -67,12 +74,15 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
-        <article
-          className="prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand"
-          dangerouslySetInnerHTML={{ __html: displayHtml }}
-        />
+      <section className="editorial-container about-content">
+        <p className="editorial-eyebrow">Nasıl çalışır?</p>
+        <h2>Gönderici ve taşıyıcı nasıl buluşur?</h2>
+        {steps ? <div className="about-step-grid">{steps.map((step, index) => {
+          const Icon = icons[index];
+          return <article className="about-step" key={index}><span className="about-step-icon"><Icon size={25} /></span><span className="about-step-number">0{index + 1}</span><h3>{step.title}</h3><p dangerouslySetInnerHTML={{ __html: step.body }} /></article>;
+        })}</div> : <article className="about-prose prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand" dangerouslySetInnerHTML={{ __html: displayHtml }} />}
+        <div className="about-cta"><div><h2>Uygun güzergâhı keşfet</h2><p>Güncel taşıyıcı ilanlarını incele ve iletişim bilgilerine eriş.</p></div><Link href="/ilanlar">İlanları keşfet <ArrowUpRight size={18} /></Link></div>
       </section>
-    </div>
+    </main>
   );
 }

@@ -51,7 +51,7 @@ export default function AdminIdentityClient() {
       <div>
         <h1 className="text-xl font-bold tracking-tight">Kimlik doğrulama</h1>
         <p className="text-sm text-muted-foreground">
-          Kullanıcıların yüklediği kimlik ön yüzlerini inceleyin. Görseller yalnız bu ekrandan açılır ve her açılış kayda geçer.
+          Kullanıcıların kimlik ön ve arka yüzlerini birlikte inceleyin. Görseller yalnız bu ekrandan açılır ve her açılış kayda geçer.
         </p>
       </div>
 
@@ -72,14 +72,19 @@ export default function AdminIdentityClient() {
           {data.map((d) => (
             <div key={d.id} className="space-y-3 rounded-lg border p-4">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant={statusVariant(d.status)}>{STATUS_LABEL[d.status]}</Badge>
+                <Badge variant={d.has_front && d.has_back ? statusVariant(d.status) : 'secondary'}>
+                  {d.has_front && d.has_back ? STATUS_LABEL[d.status] : 'Eksik belge'}
+                </Badge>
                 <span className="text-xs text-muted-foreground">Yüklendi: {new Date(d.updated_at).toLocaleString('tr-TR')}</span>
               </div>
               <div>
                 <p className="text-sm font-medium">{d.full_name || 'İsimsiz kullanıcı'}</p>
                 <p className="text-xs text-muted-foreground">{d.email}</p>
               </div>
-              <IdentityImage key={d.updated_at} userId={d.user_id} />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div><p className="mb-2 text-sm font-medium">Ön yüz</p>{d.has_front ? <IdentityImage key={d.updated_at} userId={d.user_id} side="front" /> : <p className="text-sm text-muted-foreground">Henüz yüklenmedi</p>}</div>
+                <div><p className="mb-2 text-sm font-medium">Arka yüz</p>{d.has_back ? <IdentityImage key={d.updated_at} userId={d.user_id} side="back" /> : <p className="text-sm text-muted-foreground">Henüz yüklenmedi</p>}</div>
+              </div>
               {d.status === 'rejected' && d.reject_reason && <p className="text-sm text-destructive">Ret nedeni: {d.reject_reason}</p>}
               {rejectingId === d.user_id ? (
                 <div className="space-y-2">
@@ -91,8 +96,8 @@ export default function AdminIdentityClient() {
                 </div>
               ) : (
                 <div className="flex gap-2">
-                  {d.status !== 'approved' && <Button size="sm" disabled={saving} onClick={() => submit(d.user_id, 'approved')}>Onayla</Button>}
-                  {d.status !== 'rejected' && <Button size="sm" variant="outline" onClick={() => { setRejectingId(d.user_id); setReason(''); }}>Reddet…</Button>}
+                  {d.status !== 'approved' && <Button size="sm" disabled={saving || !d.has_front || !d.has_back} onClick={() => submit(d.user_id, 'approved')}>Onayla</Button>}
+                  {d.status !== 'rejected' && <Button size="sm" variant="outline" disabled={!d.has_front || !d.has_back} onClick={() => { setRejectingId(d.user_id); setReason(''); }}>Reddet…</Button>}
                 </div>
               )}
             </div>

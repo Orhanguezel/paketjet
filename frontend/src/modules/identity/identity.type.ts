@@ -1,6 +1,8 @@
 export type IdentityStatus = "pending" | "approved" | "rejected";
 
-export interface IdentityFront {
+export type IdentitySide = "front" | "back";
+
+export interface IdentityDocument {
   status: IdentityStatus;
   reject_reason: string | null;
   reviewed_at: string | null;
@@ -9,5 +11,6 @@ export interface IdentityFront {
 }
 
 export interface IdentityState {
-  front: IdentityFront | null;
+  front: IdentityDocument | null;
+  back: IdentityDocument | null;
 }

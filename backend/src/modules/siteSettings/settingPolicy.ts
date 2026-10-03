@@ -42,6 +42,7 @@ export const GLOBAL_ONLY_KEYS = new Set<string>([
   // analytics
   'gtm_container_id',
   'ga4_measurement_id',
+  'google_site_verification',
 
   // smtp
   'smtp_host',

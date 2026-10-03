@@ -9,7 +9,7 @@ const publicKeys=new Set([
  'seo_app_icons','seo_defaults','seo_local_business','seo_pages','seo_social_same_as',
  'pricing.credit_packages','pricing.listing_credit_price','listing.content_declaration',
  'google_client_id','integration.google_maps.api_key','integration.google_maps.enabled','integration.google_maps.map_id',
- 'gtm_container_id','ga4_measurement_id','cookie_consent',
+ 'gtm_container_id','ga4_measurement_id','google_site_verification','cookie_consent',
  'brand_display_name','brand_logo','brand_logo_dark','brand_logo_icon','brand_logo_icon_192','brand_logo_icon_512','brand_logo_icon_transparent','brand_logo_text','brand_name','brand_og_image','brand_subtitle','brand_tagline',
  'social_facebook_url','social_instagram_url','social_twitter_url',
 ]);

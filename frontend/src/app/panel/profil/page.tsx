@@ -8,7 +8,7 @@ import { apiPatch } from "@/lib/api-client";
 import { API } from "@/config/api-endpoints";
 import ProfilePhoto from "./profile-photo";
 import PasswordForm from "./password-form";
-import IdentityFront from "./identity-front";
+import IdentityDocuments from "./identity-front";
 export default function ProfilPage() {
   const { user, setUser } = useAuthStore(),
     [name, setName] = useState(user?.full_name ?? ""),
@@ -52,7 +52,7 @@ export default function ProfilPage() {
             </div>
           </div>
           <ProfilePhoto disabled={saving} onBusy={setUploading} />
-          <IdentityFront disabled={saving} onBusy={setUploading} />
+          <IdentityDocuments disabled={saving} onBusy={setUploading} />
           <form onSubmit={save}>
             <div className="profile-fields">
               <Input

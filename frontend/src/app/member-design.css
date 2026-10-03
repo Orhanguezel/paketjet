@@ -1,8 +1,9 @@
 .member-shell{--color-muted:color-mix(in srgb,var(--color-foreground) 72%,var(--color-surface));background:var(--color-bg-alt)}
 .member-shell .site-header{background:var(--color-surface);border-bottom:1px solid var(--color-border-soft)}
 .member-welcome{position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:24px;min-height:156px;margin-top:32px;padding:28px 32px;border-radius:20px;border:1px solid color-mix(in srgb,var(--color-brand) 24%,var(--color-surface));background:linear-gradient(115deg,color-mix(in srgb,var(--color-brand) 17%,var(--color-surface)),color-mix(in srgb,var(--color-brand) 6%,var(--color-surface)))}
-.member-welcome-art{position:absolute;z-index:-1;left:40%;right:12%;top:-55px;bottom:-95px;opacity:.24;pointer-events:none}
-.member-welcome-art img{mask-image:radial-gradient(ellipse,black 10%,transparent 65%)}
+.member-welcome-art{position:absolute;z-index:-1;left:42%;right:12%;top:-55px;bottom:-95px;opacity:.8;pointer-events:none}
+.member-welcome-art img{filter:contrast(1.3) saturate(1.35) brightness(.92);mask-image:linear-gradient(90deg,transparent,black 20%,black 75%,transparent)}
+[data-theme="dark"] .member-welcome-art{opacity:.53}
 .member-identity{display:flex;align-items:center;gap:22px;min-width:0}
 .member-avatar{display:grid;place-items:center;width:76px;height:76px;flex-shrink:0;border-radius:50%;background:var(--color-surface);border:1px solid color-mix(in srgb,var(--color-brand) 22%,var(--color-surface));font-size:30px;font-weight:600;color:var(--color-brand)}
 .member-greeting{font-size:30px;line-height:1.2;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere}
@@ -27,6 +28,7 @@
 .member-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;border-top:1px solid var(--color-border-soft);padding:24px 0;color:var(--color-muted);font-size:13px}.member-footer a{display:inline-flex;align-items:center;gap:8px;min-height:44px}
 @media(max-width:900px){.member-content{grid-template-columns:1fr}.member-content>.account-card{border-left:0;border-top:1px solid var(--color-border-soft);padding:28px 0 0}.member-summary>div{padding:0 20px}.member-welcome{padding:24px}.member-greeting{font-size:26px}}
 @media(max-width:600px){.member-welcome{margin-top:20px;flex-wrap:wrap;gap:12px;padding:24px 20px}.member-avatar{width:52px;height:52px;font-size:23px}.member-identity{gap:14px}.member-greeting{font-size:24px}.member-identity p.text-muted{font-size:13px;line-height:1.5}.member-profile{margin-left:66px;font-size:13px}.member-tabs{gap:20px}.member-tabs a{min-height:56px;font-size:13px}.member-summary{justify-content:flex-start;gap:12px;margin-bottom:28px}.member-summary>div{border:0;padding:0;gap:7px;margin-right:12px}.member-summary svg{width:17px;margin:0}.member-summary dt{font-size:12px}.member-summary dd{font-size:15px}.member-main{padding-top:22px}.member-shell .account-card-heading h2{font-size:21px}.member-shell .account-listing{padding:18px}.member-shell .account-row-icon{display:none}.member-route-callout{padding-inline:0}.member-footer{padding-block:16px}}
+@media(max-width:600px){.member-welcome-art{left:38%;right:-6%;top:-25px;bottom:-15px;opacity:.42}[data-theme="dark"] .member-welcome-art{opacity:.32}}
 
 .member-summary dt{order:2}.member-summary dd{order:1}.member-footer>a{gap:0}
 @media(max-width:600px){.member-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.member-summary>div{display:grid;grid-template-columns:auto 1fr;gap:6px;margin:0}.member-summary dt{grid-column:1/-1;font-size:11px}.member-summary dd{font-size:16px}}

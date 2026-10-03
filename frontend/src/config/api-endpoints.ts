@@ -72,6 +72,7 @@ export const API = {
   identity: {
     me:    "/api/identity/me",
     front: "/api/identity/me/front",
+    back:  "/api/identity/me/back",
   },
 
   dashboard: {

@@ -6,7 +6,7 @@ import { CustomPageView } from "@/modules/customPage/CustomPageView";
 import { BreadcrumbSchema } from "@/components/JsonLd";
 import { getSiteSettingValue } from "@/lib/site-settings";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
 

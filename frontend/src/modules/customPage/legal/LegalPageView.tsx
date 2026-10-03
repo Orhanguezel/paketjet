@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUp, ArrowUpRight, CalendarDays, ChevronRight, FileText, LifeBuoy } from "lucide-react";
+import { ArrowLeft, ArrowUp, ArrowUpRight, CalendarDays, ChevronRight, FileText, LifeBuoy } from "lucide-react";
 import { legalDate, legalHtml, legalPages } from "./legal-content";
 import { LegalArticle } from "./LegalArticle";
 import { ROUTES } from "@/config/routes";
@@ -13,6 +13,9 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
     [active, setActive] = useState("");
   const content = legalHtml(html),
     date = legalDate(updatedAt);
+  const pageIndex = legalPages.findIndex((page) => page.slug === slug);
+  const previousPage = legalPages[pageIndex - 1];
+  const nextPage = legalPages[pageIndex + 1];
   useEffect(() => {
     const headings = Array.from(article.current?.querySelectorAll<HTMLHeadingElement>("h2:not([data-document-title]),h3") ?? []);
     const items = headings
@@ -101,6 +104,10 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
           </aside>
           <div className="legal-document">
             <LegalArticle articleRef={article} title={title} html={content}/>
+            {!embedded && (previousPage || nextPage) && <nav className="legal-neighbor-nav" aria-label="Diğer yasal sayfalar">
+              {previousPage ? <Link href={`/${previousPage.slug}`}><ArrowLeft size={17} /><span><small>Önceki sayfa</small>{previousPage.label}</span></Link> : <span />}
+              {nextPage ? <Link href={`/${nextPage.slug}`}><span><small>Sonraki sayfa</small>{nextPage.label}</span><ArrowUpRight size={17} /></Link> : <span />}
+            </nav>}
             <div className="legal-document-footer">
               <Link href={ROUTES.static.iletisim}>
                 Bize ulaş

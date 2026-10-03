@@ -11,6 +11,7 @@ export const SITE_SETTINGS_API_KEYS = [
   'cloudinary_unsigned_preset',
   'gtm_container_id',
   'ga4_measurement_id',
+  'google_site_verification',
   'ai_provider_order',
   'groq_api_key',
   'groq_model',
@@ -72,6 +73,7 @@ export const SITE_SETTINGS_API_SECTIONS: SiteSettingsApiSectionDef[] = [
     fields: [
       { key: 'gtm_container_id', labelKey: 'gtmContainerId', placeholderKey: 'gtmContainerId' },
       { key: 'ga4_measurement_id', labelKey: 'ga4MeasurementId', placeholderKey: 'ga4MeasurementId' },
+      { key: 'google_site_verification', labelKey: 'googleSiteVerification', placeholderKey: 'googleSiteVerification' },
     ],
   },
   {

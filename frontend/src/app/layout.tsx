@@ -3,6 +3,9 @@ import { DM_Sans } from "next/font/google";
 import { ThemeProvider } from "@/providers/theme-provider";
 import "./globals.css";
 import { OrganizationSchema } from "@/components/JsonLd";
+import { getAnalyticsConfig } from "@/lib/analytics-config";
+import { AnalyticsHead, AnalyticsNoScript } from "@/components/analytics/Analytics";
+import CookieConsent from "@/components/analytics/CookieConsent";
 
 
 const dmSans = DM_Sans({
@@ -47,8 +50,9 @@ async function fetchIcons() {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [{ seo, meta }, icons] = await Promise.all([fetchGlobalSeo(), fetchIcons()]);
-  const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
+  const [{ seo, meta }, icons, analytics] = await Promise.all([fetchGlobalSeo(), fetchIcons(), getAnalyticsConfig()]);
+  // Search Console: admin panelindeki kod, yoksa GOOGLE_SITE_VERIFICATION env.
+  const googleVerification = analytics.googleVerification;
   const bingVerification = process.env.BING_VERIFICATION ?? "";
 
   const siteName = seo?.site_name ?? "PaketJet";
@@ -106,16 +110,20 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
+  const analytics = await getAnalyticsConfig();
+  const tracking = Boolean(analytics.gtmId || analytics.ga4Id);
   return (
     <html lang="tr" suppressHydrationWarning className={`${dmSans.variable} font-sans`}>
+      <head><AnalyticsHead {...analytics} /></head>
       <body suppressHydrationWarning>
+        <AnalyticsNoScript gtmId={analytics.gtmId} />
         <OrganizationSchema />
         <ThemeProvider>
           <>
             {children}
           </>
         </ThemeProvider>
+        {tracking && <CookieConsent />}
       </body>
     </html>
   );

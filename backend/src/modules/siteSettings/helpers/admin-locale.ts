@@ -59,7 +59,7 @@ export function isGlobalKey(key: string): boolean {
   const coerced = coerceLocaleByKey(normalizedKey, 'de');
   if (coerced === '*') return true;
   if (normalizedKey === 'app_locales' || normalizedKey === 'default_locale') return true;
-  if (normalizedKey === 'gtm_container_id' || normalizedKey === 'ga4_measurement_id') return true;
+  if (normalizedKey === 'gtm_container_id' || normalizedKey === 'ga4_measurement_id' || normalizedKey === 'google_site_verification') return true;
   if (normalizedKey === 'cookie_consent') return true;
   if (normalizedKey.startsWith('smtp_')) return true;
   if (normalizedKey.startsWith('storage_')) return true;
