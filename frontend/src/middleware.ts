@@ -9,7 +9,7 @@ export async function middleware(req: NextRequest) {
   response.headers.set('Content-Security-Policy',[
     "default-src 'self'", "base-uri 'self'", "object-src 'none'", "frame-ancestors 'self'",
     "script-src 'self' 'unsafe-inline' " + (process.env.NODE_ENV==='development'?"'unsafe-eval' ":'') + "https://maps.googleapis.com https://maps.gstatic.com https://accounts.google.com https://www.googletagmanager.com https://www.google-analytics.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com", "img-src 'self' data: blob: https:", "font-src 'self' data: https://fonts.gstatic.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://accounts.google.com/gsi/style", "img-src 'self' data: blob: https:", "font-src 'self' data: https://fonts.gstatic.com",
     "connect-src 'self' https: " + (process.env.NODE_ENV==='development'?'http://localhost:* http://127.0.0.1:* ws:':''),
     "frame-src 'self' https://www.openstreetmap.org https://www.google.com https://accounts.google.com https://www.youtube.com",
     "media-src 'self' https: blob:", "form-action 'self'"

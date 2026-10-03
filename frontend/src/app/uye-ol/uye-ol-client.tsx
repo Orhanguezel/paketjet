@@ -8,6 +8,7 @@ import { useAuthStore } from "@/modules/auth/auth.store";
 import { ROUTES } from "@/config/routes";
 import { safeReturnPath } from "@/lib/safe-redirect";
 import { cn } from "@/lib/utils";
+import GoogleSignIn from "@/modules/auth/components/GoogleSignIn";
 
 type FormErrors = Partial<Record<string, string>>;
 
@@ -235,6 +236,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
                 {loading ? "Kaydediliyor…" : "Üye Ol →"}
               </button>
             </form>
+            <GoogleSignIn text="signup_with" onSuccess={(r) => { setUser(r.user); window.location.assign(safeReturnPath(new URLSearchParams(window.location.search).get("next"))); }} />
           </div>
         </div>
       </div>

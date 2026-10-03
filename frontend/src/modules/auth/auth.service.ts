@@ -14,8 +14,12 @@ export function register(data: RegisterInput): Promise<AuthResponse> {
   return apiPost<AuthResponse>(API.auth.register, data);
 }
 
-export function googleLogin(id_token: string): Promise<AuthResponse> {
-  return apiPost<AuthResponse>(API.auth.google, { id_token });
+export type GoogleConsent = { rules_accepted: true; kvkk_explicit_consent: true };
+export function googleLogin(id_token: string, consent?: GoogleConsent): Promise<AuthResponse> {
+  return apiPost<AuthResponse>(API.auth.google, { id_token, ...consent });
+}
+export function getGoogleConfig(): Promise<{ configured: boolean; clientId: string | null }> {
+  return apiGet(API.auth.googleConfig, { cache: "no-store" });
 }
 
 export function logout(): Promise<{ ok: boolean }> {

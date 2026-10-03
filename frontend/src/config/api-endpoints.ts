@@ -9,6 +9,7 @@ export const API = {
   auth: {
     login:    "/api/auth/token",
     google:   "/api/auth/google",
+    googleConfig: "/api/auth/google-config",
     register: "/api/auth/signup",
     logout:   "/api/auth/logout",
     me:       "/api/auth/user",

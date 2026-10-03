@@ -37,6 +37,8 @@ export async function repoCreateUser(data: {
   kvkk_explicit_consent?: number;
   kvkk_consent_at?: Date;
   kvkk_consent_version?: string;
+  /** Yalniz e-postayi saglayici dogruladiysa (Google email_verified) 1. */
+  email_verified?: 0 | 1;
 }) {
   await db.insert(users).values({
     id: data.id,
@@ -45,7 +47,7 @@ export async function repoCreateUser(data: {
     full_name: data.full_name,
     phone: data.phone,
     is_active: 1,
-    email_verified: 0,
+    email_verified: data.email_verified ?? 0,
     rules_accepted_at: data.rules_accepted_at,
     rules_accepted_version: data.rules_accepted_version,
     kvkk_explicit_consent: data.kvkk_explicit_consent ?? 0,

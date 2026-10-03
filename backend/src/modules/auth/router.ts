@@ -11,7 +11,7 @@ import {
   updateBody,
 } from './validation';
 import { signup, token, refresh, passwordResetRequest, passwordResetConfirm, me, status, update, logout } from './controller';
-import { googleAuth } from './google.controller';
+import { googleAuth, googleConfig } from './google.controller';
 export async function registerAuth(app: FastifyInstance) {
   const B = '/auth';
   app.post(`${B}/signup`, routeOptions1, signup);
@@ -19,6 +19,7 @@ export async function registerAuth(app: FastifyInstance) {
   app.post(`${B}/token`, routeOptions3, token);
   app.post(`${B}/login`, routeOptions4, token);
   app.post(`${B}/google`, routeOptions5, googleAuth);
+  app.get(`${B}/google-config`, googleConfig);
   app.post(`${B}/token/refresh`, routeOptions6, refresh);
   app.post(`${B}/password-reset/request`, routeOptions7, passwordResetRequest);
   app.post(`${B}/password-reset/confirm`, routeOptions8, passwordResetConfirm);

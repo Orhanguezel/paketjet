@@ -39,7 +39,11 @@ export const updateBody = z.object({
 });
 
 export const googleBody = z.object({
-  id_token: z.string().min(10),
+  id_token: z.string().min(10).max(4096),
+  // Yalniz ilk Google kaydinda (sunucu consent_required dondurdukten sonra) gonderilir.
+  rules_accepted: z.boolean().optional(),
+  kvkk_explicit_consent: z.boolean().optional(),
+  role: z.enum(['customer', 'carrier']).optional(),
 });
 
 export const passwordResetRequestBody = z.object({
