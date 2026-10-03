@@ -6,6 +6,8 @@ export async function middleware(req: NextRequest) {
   response.headers.set('X-Content-Type-Options','nosniff');
   response.headers.set('Referrer-Policy','strict-origin-when-cross-origin');
   response.headers.set('Permissions-Policy','camera=(), microphone=(), geolocation=(self)');
+  // Google ile giris acilir penceresi sonucu postMessage ile dondurur; same-origin bunu engeller.
+  response.headers.set('Cross-Origin-Opener-Policy','same-origin-allow-popups');
   response.headers.set('Content-Security-Policy',[
     "default-src 'self'", "base-uri 'self'", "object-src 'none'", "frame-ancestors 'self'",
     "script-src 'self' 'unsafe-inline' " + (process.env.NODE_ENV==='development'?"'unsafe-eval' ":'') + "https://maps.googleapis.com https://maps.gstatic.com https://accounts.google.com https://www.googletagmanager.com https://www.google-analytics.com",
