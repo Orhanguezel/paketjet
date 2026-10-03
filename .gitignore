@@ -25,3 +25,4 @@ project.portfolio.private.json
 .next-dev/
 .playwright-cli/
 private-uploads/
+client_secret_*.json
