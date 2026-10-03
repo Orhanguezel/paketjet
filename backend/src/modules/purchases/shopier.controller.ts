@@ -2,7 +2,8 @@
 // Shopier webhook + kullanicinin "odemeyi kontrol et" istegi. DB sorgusu yok.
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { getAuthUserId, handleRouteError, sendNotFound } from "@/modules/_shared";
-import { ShopierApiError, productIdsFromOrderEvent, verifyShopierSignature } from "./shopier";
+import { ShopierApiError, productIdsFromOrderEvent, refundIdFromEvent, verifyShopierSignature } from "./shopier";
+import { syncShopierRefund } from "./refund.service";
 import { reconcileShopierPayment, settleShopierOrder } from "./shopier.service";
 
 export type RawBodyRequest = FastifyRequest & { rawBody?: Buffer };
@@ -15,6 +16,7 @@ export async function shopierWebhook(req: RawBodyRequest, reply: FastifyReply) {
     req.log.warn({ event: "shopier_webhook_rejected", shopierEvent: event }, "shopier_webhook_rejected");
     return reply.code(401).send({ error: { message: "invalid_signature" } });
   }
+  if (event === "refund.requested" || event === "refund.updated") return handleRefundEvent(req, reply, event);
   if (event !== "order.created") return reply.send({ ok: true, ignored: event });
   const parsed = productIdsFromOrderEvent(req.body);
   if (!parsed) return reply.send({ ok: true, ignored: "no_order" });
@@ -29,6 +31,21 @@ export async function shopierWebhook(req: RawBodyRequest, reply: FastifyReply) {
     }
     // 5xx: Shopier yeniden dener. Islem idempotent oldugu icin tekrar guvenli.
     req.log.error({ err, event: "shopier_webhook_failed", orderId: parsed.orderId }, "shopier_webhook_failed");
+    return reply.code(500).send({ error: { message: "retry" } });
+  }
+}
+
+/** Shopier panelinden veya admin'den yapilan iade: durum API'den okunup uygulanir. */
+async function handleRefundEvent(req: RawBodyRequest, reply: FastifyReply, event: string) {
+  const refundId = refundIdFromEvent(req.body);
+  if (!refundId) return reply.send({ ok: true, ignored: "no_refund" });
+  try {
+    const result = await syncShopierRefund(refundId, "shopier_webhook", req.log);
+    req.log.info({ event: "shopier_refund_webhook_processed", shopierEvent: event, refundId, result }, "shopier_refund_webhook_processed");
+    return reply.send({ ok: true });
+  } catch (err) {
+    if (err instanceof ShopierApiError && err.status === 404) return reply.send({ ok: true, ignored: "unknown_refund" });
+    req.log.error({ err, event: "shopier_refund_webhook_failed", refundId }, "shopier_refund_webhook_failed");
     return reply.code(500).send({ error: { message: "retry" } });
   }
 }

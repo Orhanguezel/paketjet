@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { createHmac } from "crypto";
 import { env } from "@/core/env";
-import { repoGetCreditBalance, repoGetCreditPackages } from "@/modules/purchases/repository";
+import { repoGetCreditBalance, repoGetCreditPackages, repoPurchaseIlan } from "@/modules/purchases/repository";
 import { checkShopierOrder, verifyShopierSignature } from "@/modules/purchases/shopier";
 import { buyer, declaration, listing } from "./purchase-fixtures";
-import { authHeaders, closeTestApp, getTestApp } from "./setup";
+import { authHeaders, closeTestApp, getTestApp, registerAdminUser } from "./setup";
 
 const TOKEN = "test-webhook-token";
 const mutableEnv = env as unknown as Record<string, string>;
@@ -12,6 +12,7 @@ const realFetch = globalThis.fetch;
 const products = new Map<string, number>();
 const orders = new Map<string, Record<string, unknown>>();
 const deleted: string[] = [];
+const refunds = new Map<string, Record<string, unknown>>();
 let seq = 0;
 const RUN = Date.now().toString(36);
 
@@ -28,6 +29,13 @@ beforeAll(() => {
       products.set(id, Number(JSON.parse(String(init.body)).priceData.price));
       return json(200, { id, url: `https://www.shopier.com/${id}` });
     }
+    if (init?.method === "POST" && url.pathname === "/v1/refunds") {
+      const b = JSON.parse(String(init.body));
+      const r = { id: `R${Date.now()}${++seq}`, status: "pending", orderId: b.orderId, total: b.amount, currency: "TRY", type: "full" };
+      refunds.set(r.id, r);
+      return json(200, r);
+    }
+    if (url.pathname.startsWith("/v1/refunds/")) { const r = refunds.get(url.pathname.split("/").pop()!); return r ? json(200, r) : json(404, { error: "notFound" }); }
     if (init?.method === "DELETE") { deleted.push(url.pathname.split("/").pop()!); return json(200, {}); }
     if (url.pathname === "/v1/orders") return json(200, [...orders.values()].filter((o) => (o.lineItems as { productId: string }[])[0].productId === url.searchParams.get("productId")));
     const order = orders.get(url.pathname.split("/").pop()!);
@@ -38,9 +46,9 @@ afterAll(async () => { globalThis.fetch = realFetch; process.env.PAYMENT_PROVIDE
 
 const paidOrder = (id: string, productId: string, total: number) => ({ id, paymentStatus: "paid", currency: "TRY", totals: { total: total.toFixed(2) }, lineItems: [{ productId, quantity: 1, total: total.toFixed(2) }] });
 const sign = (raw: string) => createHmac("sha256", TOKEN).update(raw).digest("hex");
-async function webhook(body: Record<string, unknown>, signature?: string) {
+async function webhook(body: Record<string, unknown>, signature?: string, event = "order.created") {
   const raw = JSON.stringify(body);
-  return (await getTestApp()).inject({ method: "POST", url: "/api/payments/shopier/webhook", headers: { "content-type": "application/json", "shopier-event": "order.created", "shopier-signature": signature ?? sign(raw) }, payload: raw });
+  return (await getTestApp()).inject({ method: "POST", url: "/api/payments/shopier/webhook", headers: { "content-type": "application/json", "shopier-event": event, "shopier-signature": signature ?? sign(raw) }, payload: raw });
 }
 async function buyCredits(token: string) {
   const [pack] = await repoGetCreditPackages();
@@ -124,5 +132,75 @@ describe("shopier checkout over HTTP", () => {
       const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(user.token), payload: { package_key: pack!.key } });
       expect(res.statusCode).toBe(503);
     } finally { mutableEnv.SHOPIER_WEBHOOK_TOKEN = TOKEN; }
+  });
+});
+
+describe("shopier refunds", () => {
+  async function paidCredits() {
+    const user = await buyer();
+    const start = await buyCredits(user.token);
+    const productId = start.redirectUrl.split("/").pop()!;
+    const orderId = `OR-${productId}`;
+    orders.set(orderId, paidOrder(orderId, productId, start.amount));
+    expect((await webhook({ id: orderId, lineItems: [{ productId }] })).statusCode).toBe(200);
+    return { user, start, orderId };
+  }
+  const state = async (token: string, ref: string) => (await (await getTestApp()).inject({ method: "GET", url: `/api/payments/${ref}`, headers: authHeaders(token) })).json() as { state: string; error_code: string | null };
+
+  it("admin refund revokes the purchased credits only after Shopier reports success, once", async () => {
+    const app = await getTestApp(), admin = await registerAdminUser(app);
+    const { user, start } = await paidCredits();
+    const before = await repoGetCreditBalance(user.id);
+    expect((await app.inject({ method: "POST", url: `/api/admin/payment-operations/${start.conversationId}/refund`, headers: authHeaders(user.token), payload: { note: "deneme iadesi" } })).statusCode).toBe(403);
+    const res = await app.inject({ method: "POST", url: `/api/admin/payment-operations/${start.conversationId}/refund`, headers: authHeaders(admin.token!), payload: { note: "Test ödemesi iadesi" } });
+    expect(res.statusCode).toBe(200);
+    const { refundId } = res.json() as { refundId: string };
+    expect((await state(user.token, start.conversationId)).state).toBe("refund_pending");
+    expect(await repoGetCreditBalance(user.id)).toBe(before);
+    expect((await app.inject({ method: "POST", url: `/api/admin/payment-operations/${start.conversationId}/refund`, headers: authHeaders(admin.token!), payload: { note: "Test ödemesi iadesi" } })).statusCode).toBe(409);
+
+    refunds.set(refundId, { ...refunds.get(refundId)!, status: "succeeded" });
+    expect((await webhook({ id: refundId }, undefined, "refund.updated")).statusCode).toBe(200);
+    expect((await webhook({ id: refundId }, undefined, "refund.updated")).statusCode).toBe(200);
+    expect((await state(user.token, start.conversationId)).state).toBe("refunded");
+    expect(await repoGetCreditBalance(user.id)).toBe(before - start.credits);
+  });
+
+  it("a refund made in the Shopier panel also closes listing contact access", async () => {
+    const user = await buyer(), owner = await buyer(), app = await getTestApp();
+    const ilanId = await listing(owner.id);
+    const pay = (await app.inject({ method: "POST", url: `/api/ilanlar/${ilanId}/satin-al/odeme`, headers: authHeaders(user.token), payload: declaration })).json() as { redirectUrl: string; conversationId: string; amount: number };
+    const productId = pay.redirectUrl.split("/").pop()!, orderId = `OL-${productId}`;
+    orders.set(orderId, paidOrder(orderId, productId, pay.amount));
+    await webhook({ id: orderId, lineItems: [{ productId }] });
+    const contact = () => app.inject({ method: "GET", url: `/api/ilanlar/${ilanId}/iletisim`, headers: authHeaders(user.token) });
+    expect((await contact()).statusCode).toBe(200);
+    const refundId = `RP-${productId}`;
+    refunds.set(refundId, { id: refundId, status: "succeeded", orderId, total: pay.amount.toFixed(2), currency: "TRY", type: "full" });
+    expect((await webhook({ id: refundId }, undefined, "refund.updated")).statusCode).toBe(200);
+    expect((await state(user.token, pay.conversationId)).state).toBe("refunded");
+    expect((await contact()).statusCode).not.toBe(200);
+  });
+
+  it("partial or failed refunds go to admin review without revoking anything", async () => {
+    const { user, start, orderId } = await paidCredits();
+    const before = await repoGetCreditBalance(user.id);
+    const partial = `RX-${orderId}`;
+    refunds.set(partial, { id: partial, status: "succeeded", orderId, total: (start.amount / 2).toFixed(2), currency: "TRY", type: "partial" });
+    await webhook({ id: partial }, undefined, "refund.updated");
+    expect(await state(user.token, start.conversationId)).toMatchObject({ state: "review", error_code: "shopier_partial_refund" });
+    expect(await repoGetCreditBalance(user.id)).toBe(before);
+  });
+
+  it("credits already spent before the refund are not clawed back below zero and are flagged", async () => {
+    const { user, start, orderId } = await paidCredits();
+    const owner = await buyer();
+    for (let i = 0; i < start.credits; i++) expect((await repoPurchaseIlan(await listing(owner.id), user.id, declaration, "127.0.0.1")).ok).toBe(true);
+    const left = await repoGetCreditBalance(user.id);
+    const refundId = `RS-${orderId}`;
+    refunds.set(refundId, { id: refundId, status: "succeeded", orderId, total: start.amount.toFixed(2), currency: "TRY", type: "full" });
+    await webhook({ id: refundId }, undefined, "refund.updated");
+    expect(await state(user.token, start.conversationId)).toMatchObject({ state: "refunded", error_code: "refund_credits_already_used" });
+    expect(await repoGetCreditBalance(user.id)).toBe(Math.max(0, left - start.credits));
   });
 });

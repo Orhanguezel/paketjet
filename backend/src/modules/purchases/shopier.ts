@@ -10,8 +10,11 @@ import { env } from '@/core/env';
 const API = 'https://api.shopier.com/v1';
 const TIMEOUT_MS = 8_000;
 
+/** Her webhook aboneligi kendi token'iyla imzalanir; birden fazla abonelik icin virgulle ayrilir. */
+export const shopierWebhookTokens = (raw = env.SHOPIER_WEBHOOK_TOKEN) => raw.split(',').map((t) => t.trim()).filter(Boolean);
+
 export function shopierConfigured() {
-  return Boolean(env.SHOPIER_PAT && env.SHOPIER_WEBHOOK_TOKEN && env.SHOPIER_PRODUCT_IMAGE_URL);
+  return Boolean(env.SHOPIER_PAT && shopierWebhookTokens().length && env.SHOPIER_PRODUCT_IMAGE_URL);
 }
 
 export class ShopierApiError extends Error {
@@ -88,14 +91,16 @@ export function checkShopierOrder(order: ShopierOrder, expected: { productId: st
   return { ok: true, orderId: String(order.id), amount: expected.amount };
 }
 
-/** Shopier-Signature: ham govdenin webhook token'iyla HMAC-SHA256'si (hex veya base64). */
-export function verifyShopierSignature(raw: Buffer | string, signature: string | undefined, token = env.SHOPIER_WEBHOOK_TOKEN) {
-  if (!signature || !token) return false;
-  const sum = createHmac('sha256', token).update(raw).digest();
+/** Shopier-Signature: ham govdenin webhook token'iyla HMAC-SHA256'si (hex veya base64). Token listesi denenir. */
+export function verifyShopierSignature(raw: Buffer | string, signature: string | undefined, tokens: string | string[] = shopierWebhookTokens()) {
+  const list = Array.isArray(tokens) ? tokens : shopierWebhookTokens(tokens);
+  if (!signature || !list.length) return false;
   const given = signature.trim();
-  const candidates = [Buffer.from(sum.toString('hex')), Buffer.from(sum.toString('base64'))];
   const value = Buffer.from(/^[0-9a-f]+$/i.test(given) ? given.toLowerCase() : given);
-  return candidates.some((c) => c.length === value.length && timingSafeEqual(c, value));
+  return list.some((token) => {
+    const sum = createHmac('sha256', token).update(raw).digest();
+    return [Buffer.from(sum.toString('hex')), Buffer.from(sum.toString('base64'))].some((c) => c.length === value.length && timingSafeEqual(c, value));
+  });
 }
 
 /** order.created govdesinden yalniz aday urun kimliklerini cikarir; karar API okumasiyla verilir. */
@@ -103,4 +108,22 @@ export function productIdsFromOrderEvent(payload: unknown): { orderId: string; p
   const order = (payload && typeof payload === 'object' && 'data' in payload ? (payload as { data: unknown }).data : payload) as ShopierOrder | null;
   if (!order?.id) return null;
   return { orderId: String(order.id), productIds: (order.lineItems ?? []).map((i) => String(i.productId ?? '')).filter(Boolean) };
+}
+
+export type ShopierRefund = { id: string; status?: 'pending' | 'failed' | 'succeeded' | string; orderId?: string; type?: string; total?: string | number; currency?: string };
+
+/** Tam veya kismi iade. Kart iadesi Shopier tarafinda yurur; sonuc refund.updated ile gelir. */
+export async function createShopierRefund(input: { orderId: string; amount: number; note?: string }, fetcher?: typeof fetch) {
+  const refund = await call<ShopierRefund>('POST', '/refunds', { orderId: input.orderId, amount: input.amount.toFixed(2), ...(input.note ? { note: input.note.slice(0, 250) } : {}) }, fetcher);
+  if (!refund?.id) throw new ShopierApiError(502, 'invalid_refund_response');
+  return { ...refund, id: String(refund.id) };
+}
+
+export const getShopierRefund = (refundId: string, fetcher?: typeof fetch) =>
+  call<ShopierRefund>('GET', `/refunds/${encodeURIComponent(refundId)}`, undefined, fetcher);
+
+/** refund.* govdesinden yalniz iade kimligi; karar API okumasiyla verilir. */
+export function refundIdFromEvent(payload: unknown): string | null {
+  const r = (payload && typeof payload === 'object' && 'data' in payload ? (payload as { data: unknown }).data : payload) as { id?: unknown } | null;
+  return r?.id ? String(r.id) : null;
 }

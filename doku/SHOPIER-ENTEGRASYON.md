@@ -55,3 +55,18 @@ Tekrar güvenliği: tamamlama idempotent; `(provider, provider_payment_id)` uniq
 
 Başlık, slogan, bildiri, sipariş onay mesajı, e-posta, telefon dolduruldu; **sepet kapalı** (her sipariş tek
 ürün olmalı, eşleştirme buna dayanıyor). Panelden değiştirirken sepeti açmayın.
+
+## İade
+
+- **Admin:** Ödeme incelemeleri → kayıt detayı → "Shopier'den iade et" (yalnız tam tutar, not zorunlu).
+  `POST /api/admin/payment-operations/:ref/refund` → `POST /v1/refunds {orderId, amount, note}`; oturum `refund_pending`.
+- **Shopier panelinden yapılan iade** de aynı yoldan işlenir (`refund.requested` / `refund.updated` webhook'u).
+- Karar her zaman `GET /v1/refunds/{id}` okumasıyla verilir:
+  - `succeeded` + tutar = ödeme tutarı → hak paketi: kullanılmamış haklar düşülür (`credit_ledger.reason='payment_refund'`);
+    ilan iletişimi: `ilan_purchases.status='refunded'` → iletişim erişimi kapanır. Oturum `refunded`.
+    Haklar iadeden önce harcanmışsa bakiye eksiye düşmez; `error_code='refund_credits_already_used'`.
+  - `failed` → `review` (`shopier_refund_failed`); kısmi iade → `review` (`shopier_partial_refund`). Otomatik geri alma yok.
+  - `pending` → bekler; admin "İade durumunu yenile" ile `POST …/refund/sync`.
+- İade edilen ilan tekrar satışa açılmaz (`ilan_purchases` ilan başına tek satır); gerekirse admin elle yönetir.
+- Her webhook aboneliğinin ayrı token'ı var: `SHOPIER_WEBHOOK_TOKEN` virgülle ayrılmış liste
+  (`order.created`, `refund.requested`, `refund.updated`).

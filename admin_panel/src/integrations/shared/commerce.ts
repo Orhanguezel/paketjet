@@ -1,5 +1,5 @@
 export interface PaymentOperation {
- payment_ref:string; user_id:string; ilan_id?:string|null; kind:string; provider:string; amount:string; state:string; error_code:string|null; provider_payment_id:string|null; created_at:string; updated_at:string;
+ payment_ref:string; user_id:string; ilan_id?:string|null; kind:string; provider:string; amount:string; state:string; error_code:string|null; provider_payment_id:string|null; receipt?:{paymentId?:string;refundId?:string}|null; created_at:string; updated_at:string;
  events?:Array<{id:string;actor_id:string;event:string;note:string|null;created_at:string}>;
 }
 export interface CreditAccount {user_id:string;email:string;balance:number;}

@@ -11,7 +11,7 @@ export const paymentSessions = mysqlTable('payment_sessions', {
   token_hash: char('token_hash', { length: 64 }),
   provider_checkout_id: varchar('provider_checkout_id', { length: 64 }),
   provider_payment_id: varchar('provider_payment_id', { length: 255 }),
-  receipt: json('receipt').$type<{ paymentId?: string; transactionIds?: string[] }>(),
+  receipt: json('receipt').$type<{ paymentId?: string; transactionIds?: string[]; refundId?: string }>(),
   state: varchar('state', { length: 24 }).notNull().default('initializing'),
   error_code: varchar('error_code', { length: 100 }),
   expires_at: datetime('expires_at', { fsp: 3 }).notNull(),

@@ -7,8 +7,10 @@ const commerceApi=baseApi.injectEndpoints({endpoints:b=>({
  addPaymentNote:b.mutation<{ok:boolean},{ref:string;note:string}>({query:({ref,...body})=>({url:`/admin/payment-operations/${encodeURIComponent(ref)}/notes`,method:'POST',body})}),
  approveBankTransfer:b.mutation<{ok:boolean},{ref:string;amount:number;transaction_id?:string;confirmed_on_statement:true}>({query:({ref,...body})=>({url:`/admin/payment-operations/${encodeURIComponent(ref)}/bank-approve`,method:'POST',body})}),
  rejectBankTransfer:b.mutation<{ok:boolean},{ref:string;reason:string}>({query:({ref,...body})=>({url:`/admin/payment-operations/${encodeURIComponent(ref)}/bank-reject`,method:'POST',body})}),
+ refundPayment:b.mutation<{ok:boolean;state:string;refundId:string},{ref:string;note:string}>({query:({ref,...body})=>({url:`/admin/payment-operations/${encodeURIComponent(ref)}/refund`,method:'POST',body})}),
+ syncPaymentRefund:b.mutation<{state:string|null},string>({query:ref=>({url:`/admin/payment-operations/${encodeURIComponent(ref)}/refund/sync`,method:'POST',body:{}})}),
  creditAccounts:b.query<CommercePage<CreditAccount>,CommerceFilters>({query:params=>({url:'/admin/credits',params})}),
  adjustCredits:b.mutation<{ok:boolean;balance:number},{id:string;user_id:string;delta:number;reason:string}>({query:body=>({url:'/admin/credits/adjust',method:'POST',body})}),
  commerceSummary:b.query<CommerceSummary,void>({query:()=>'/admin/commerce-summary'}),
 })});
-export const {usePaymentAvailabilityQuery,useListPaymentOperationsQuery,usePaymentOperationQuery,useAddPaymentNoteMutation,useApproveBankTransferMutation,useRejectBankTransferMutation,useCreditAccountsQuery,useAdjustCreditsMutation,useCommerceSummaryQuery}=commerceApi;
+export const {usePaymentAvailabilityQuery,useListPaymentOperationsQuery,usePaymentOperationQuery,useAddPaymentNoteMutation,useApproveBankTransferMutation,useRejectBankTransferMutation,useRefundPaymentMutation,useSyncPaymentRefundMutation,useCreditAccountsQuery,useAdjustCreditsMutation,useCommerceSummaryQuery}=commerceApi;

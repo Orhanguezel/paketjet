@@ -88,7 +88,7 @@ export const creditLedger = mysqlTable(
     id: char("id", { length: 36 }).primaryKey().notNull(),
     user_id: char("user_id", { length: 36 }).notNull(),
     delta: int("delta").notNull(),
-    reason: varchar("reason", { length: 40 }).notNull(), // package_purchase | reveal_spend | admin_grant | refund
+    reason: varchar("reason", { length: 40 }).notNull(), // package_purchase | reveal_spend | admin_grant | refund | payment_refund
     ref_id: char("ref_id", { length: 36 }),
     balance_after: int("balance_after").notNull(),
     created_at: datetime("created_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`),
