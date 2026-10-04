@@ -98,6 +98,48 @@ export const BLOG_POSTS:ArticleContent[]=[
  ],
  sources:[SRC.karayolu,SRC.uab],
  },
+ {slug:'tasiyici-yasal-belgeler',seoKey:'blog_tasiyici_belgeler',eyebrow:'Taşıyıcı rehberi',title:'Taşıyıcı olarak yasal belgeler ve sorumluluklar',metaTitle:'Taşıyıcı yasal belgeleri: yetki, SRC, sigorta',cluster:'tasiyici',summary:'Ticari yük taşırken sahip olunması gereken belgeler, sigortalar ve platformdaki taahhütler.',description:'Taşıyıcı yasal belgeleri: yetki belgesi (K türleri), SRC, sürücü belgesi, zorunlu trafik ve yük sigortası, araç muayenesi ve platformdaki taahhütlerin.',publishedAt:newPublishedAt,updatedAt,categoryLabel:'Taşıyıcı rehberi',canonicalPath:'/blog/tasiyici-yasal-belgeler',
+  keyFacts:['Taşıma Kuralları, ilan veren taşıyıcıdan 6 başlıkta taahhüt ister: yetki belgesi, SRC, sürücü belgesi, trafik sigortası, yük sigortası ve muayene.','Gönderi, teslim alındığı andan alıcıya teslim edildiği ana kadar taşıyıcının sorumluluğundadır.','Hangi yetki belgesinin gerektiği aracına ve taşıma türüne göre değişir; resmî kaynaktan doğrulanmalıdır.'],
+  sections:[
+  {title:'Platformdaki taahhüdün',paragraphs:['İlan veren ve taşıma yapan kullanıcı, Taşıma Kuralları gereği aşağıdaki belgelere sahip olduğunu ve araç muayenesinin tam olduğunu taahhüt eder. Bu taahhüt, ilanın yayında kalmasının ön koşuludur; kurallara aykırı ilanlar yayından kaldırılır, ilgili hesaplar kapatılabilir.'],table:[['Belge veya şart','Ne için?'],['Yetki belgesi (K1, K2, K3)','Ticari eşya taşımacılığı faaliyeti'],['SRC belgesi','Mesleki yeterlilik'],['Geçerli sürücü belgesi','Aracı kullanma yetkisi'],['Zorunlu trafik sigortası','Üçüncü kişilere karşı sorumluluk'],['Yük sigortası','Taşınan gönderiye gelebilecek zarar'],['Araç muayenesi','Aracın yola elverişliliği']]},
+  {title:'Hangi yetki belgesi gerekir?',paragraphs:['Yetki belgesi türü; taşımanın ticari olup olmadığına, taşınan eşyanın türüne ve aracın özelliklerine göre değişir. Bu rehber belge türlerinin ayrıntılı koşullarını vermez: güncel şartları 4925 sayılı Karayolu Taşıma Kanunu ve Ulaştırma ve Altyapı Bakanlığı kaynaklarından kontrol et. Belgen yoksa veya kapsamı belirsizse ilan vermeden önce netleştir.']},
+  {title:'Sorumluluk ne zaman başlar, ne zaman biter?',paragraphs:['Gönderi, senin tarafından teslim alındığı andan alıcıya teslim edildiği ana kadar senin sorumluluğundadır. Bu yüzden teslim alma ve teslim etme anlarında fotoğraf, teslim tutanağı veya alıcı onayı gibi kanıtlar almak hem seni hem göndericiyi korur. Kayıp veya hasar iddiasında taraflar iddialarını bu tür somut delillerle ispat eder; tazminatta göndericinin değer beyanı, aksi ispat edilmedikçe tavan kabul edilir.']},
+  {title:'Kabul etmemen gereken gönderiler',paragraphs:['Nakit para, döviz, ziynet eşyası, kıymetli evrak, silah, patlayıcı, yanıcı veya radyoaktif maddeler, uyuşturucu ve kaçak ürünler kesin yasaklıdır. Canlı hayvan özel izne tabidir; bozulabilir gıda, sıvı ve kırılacak eşya için gönderiyle önceden açıkça görüşmelisin. Yasaklı madde trafiğine karışan kullanıcılar doğacak cezai, hukuki ve idari sonuçlardan şahsen sorumludur.']},
+ ],
+ faqs:[
+  {question:'Belgem yoksa ilan verebilir miyim?',answer:'Ticari eşya taşımacılığı yapıyorsan mevzuatın gerektirdiği belgelere sahip olduğunu taahhüt edersin. Belgen yoksa veya taşıman ticari sayılıp sayılmadığından emin değilsen ilan vermeden önce resmî kaynaklardan durumu netleştir.'},
+  {question:'Platform belgelerimi kontrol ediyor mu?',answer:'İlanlar yayına girmeden önce incelenir; ancak belge sahipliği taşıyıcının taahhüdüne dayanır. Taahhüde aykırılık tespit edilirse ilan kaldırılır ve hesap kapatılabilir.'},
+ ],
+ sources:[SRC.karayolu,SRC.uab],
+ },
+ {slug:'tasiyici-teslim-alma-kontrol-listesi',seoKey:'blog_tasiyici_teslim_kontrol',eyebrow:'Taşıyıcı rehberi',title:'Gönderiyi teslim alırken taşıyıcı kontrol listesi',metaTitle:'Gönderi teslim alma: taşıyıcı kontrol listesi',cluster:'tasiyici',summary:'Gönderiyi araca almadan önce içerik, paketleme, değer beyanı ve teslim kanıtı için adım adım kontrol listesi.',description:'Gönderiyi teslim alırken taşıyıcı kontrol listesi: içerik ve yasaklı madde kontrolü, paketleme, değer beyanı, fotoğraf ve teslim tutanağıyla kanıt.',publishedAt:newPublishedAt,updatedAt,categoryLabel:'Taşıyıcı rehberi',canonicalPath:'/blog/tasiyici-teslim-alma-kontrol-listesi',
+  keyFacts:['Teslim alma anı, sorumluluğunun başladığı andır.','Kontrol listesi 7 adımdan oluşur ve birkaç dakika sürer.','Fotoğraf, teslim tutanağı veya alıcı onayı olası bir anlaşmazlıkta temel kanıttır.'],
+  sections:[
+  {title:'Neden kontrol listesi?',paragraphs:['Gönderi senin tarafından teslim alındığı andan alıcıya ulaşana kadar senin sorumluluğundadır. Teslim alırken yapılan birkaç dakikalık kontrol; yasaklı madde riskini, değer anlaşmazlığını ve hasar iddialarını büyük ölçüde önler.']},
+  {title:'Teslim alırken 7 adım',paragraphs:['Aşağıdaki adımları her gönderide aynı sırayla uygulaman, hem süreci hızlandırır hem de kanıtlarının tutarlı olmasını sağlar.'],list:['Göndericinin kimliğini ve görüşmede anlaşılan teslim adresini doğrula.','İçeriği sor; yasaklı madde listesinde olan bir şey varsa gönderiyi kabul etme.','Canlı hayvan, bozulabilir gıda, sıvı veya kırılacak eşya varsa koşulları önceden konuştuğunuzu teyit et.','Paketlemeyi kontrol et; yetersizse göndericiden güçlendirmesini iste.','Göndericinin beyan ettiği yaklaşık değeri yazılı olarak al.','Paketin dört yanından ve etiketinden fotoğraf çek.','Teslim tutanağı veya mesajla teslim aldığını karşılıklı kayda geçir.']},
+  {title:'Teslim ederken',paragraphs:['Alıcıya teslimde de aynı kanıtı oluştur: paketin teslim anındaki fotoğrafı ve alıcı onayı. Hasar fark edilirse teslim anında birlikte kayda geçirin; sonradan yapılan iddialarda taraflar iddialarını somut delillerle ispat eder.']},
+ ],
+ faqs:[
+  {question:'Göndericinin değer beyanı neden önemli?',answer:'Olası bir tazminat durumunda göndericinin beyan ettiği değer, aksi somut delillerle ispat edilmedikçe tavan sınır kabul edilir. Bu yüzden değeri teslim alırken yazılı olarak almak iki taraf için de önemlidir.'},
+  {question:'Paketin içini açıp kontrol edebilir miyim?',answer:'İçeriği sormak ve şüpheli durumda gönderiyi kabul etmemek senin hakkındır. Paketin açılması konusunu göndericiyle birlikte ve onun onayıyla ele almalısın.'},
+ ],
+ sources:[SRC.karayolu],
+ },
+ {slug:'ilan-alma-hakki-nedir',seoKey:'blog_ilan_alma_hakki',eyebrow:'Rehber',title:'İlan alma hakkı nedir, nasıl kullanılır?',metaTitle:'İlan alma hakkı nedir? Paketler ve kullanım',cluster:'urun',summary:'İlan alma hakkı, bir ilanın iletişim bilgilerine erişmek için kullanılan haktır. Paketler, kullanım ve telafi koşulları.',description:'İlan alma hakkı nedir? Bir hakla bir ilanın iletişim bilgilerine erişirsin. Paketler, hakkın kullanımı, Satın aldıklarım ve doğrulanmış şikâyette telafi.',publishedAt:newPublishedAt,updatedAt,categoryLabel:'Ürün rehberi',canonicalPath:'/blog/ilan-alma-hakki-nedir',
+  keyFacts:['1 hak, satışa açık 1 ilanın iletişim bilgilerine 1 kez erişim sağlar.','Daha önce eriştiğin bilgiye yeniden hak harcamadan ulaşırsın.','Doğrulanmış hizmet sorununda aynı işlem için bir defaya mahsus 1 hak tanımlanır.'],
+  sections:[
+  {title:'İlan alma hakkı ne işe yarar?',paragraphs:['Taşıyıcıların iletişim bilgileri herkese açık listede gösterilmez. Uygun bir ilan bulduğunda bilgilere erişmek için ya tek ilan için kartla ödeme yaparsın ya da hesabındaki ilan alma hakkından birini kullanırsın. Erişim tamamlanınca ilanda kayıtlı telefon, e-posta veya adres sana açılır.']},
+  {title:'Hak paketleri',paragraphs:['Haklar adet bazında satılır; birden çok ilana erişmeyi düşünüyorsan paket almak hak başına daha uygun olabilir. Güncel paketler ve fiyatlar aşağıdaki tabloda sistemdeki ayardan okunur. Ödenen bedel taşıma, sigorta veya teslimat garantisi bedeli değildir.']},
+  {title:'Hakkı kullanmak',paragraphs:['Erişim adımları kısadır:'],list:['İlan sayfasında eşyanın tahmini değerini ve içerik beyanını gir.','Kullanım Koşulları onay kutusunu işaretle; onay her işlemde yeniden istenir.','Hakkın varsa “1 hak kullan” ile, yoksa kartla ödeyerek iletişimi aç.','Bilgilere daha sonra hesabındaki Satın aldıklarım bölümünden ulaş.']},
+  {title:'Taşıyıcıya ulaşamazsan',paragraphs:['Açılan numara yanlış veya kullanılamazsa, ilan sahibi güzergâhta hizmet veremediğini bildirirse ya da ulaşılamıyorsa Destek Merkezi üzerinden işlem bilgisi ve varsa kanıtlarla inceleme talep edebilirsin. Erişimden sonraki ilk bir saat içindeki bildirim incelemede özellikle dikkate alınır. Sorun doğrulanırsa aynı işlem için bir defaya mahsus 1 hak tanımlanır; bu telafi kanundan doğan iade haklarının yerine geçmez.']},
+ ],
+ faqs:[
+  {question:'Haklarım bir ilana özel mi?',answer:'Hayır. Paketle aldığın haklar hesabına eklenir ve satışa açık herhangi bir ilanda kullanılabilir.'},
+  {question:'Aynı ilana tekrar erişmek için yeniden hak gerekir mi?',answer:'Hayır. Daha önce eriştiğin iletişim bilgileri Satın aldıklarım bölümünde kalır; yeniden hak kullanman gerekmez.'},
+  {question:'Bir ilana birden fazla kişi erişebilir mi?',answer:'Evet. Her alıcı iletişim bilgilerine kendi erişimini ayrı alır; ilan bir kişi eriştiği için kapanmaz.'},
+ ],
+ sources:[SRC.tuketici,SRC.kvkk],
+ },
 ];
 
 /** Güzergâh rehberleri: yaklaşık karayolu mesafesi, kullanılan güzergâha göre değişir. */

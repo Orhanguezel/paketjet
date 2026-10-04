@@ -35,6 +35,7 @@ export default async function SiteShell({ children }: { children: React.ReactNod
     payments,
     distanceSales,
     refundPolicy,
+    listingPrice,
   ] = await Promise.all([
     getSiteSettingValue<SiteLogo>("site_logo", "*"),
     getSiteSettingValue<string | SiteLogo>("site_logo_light", "*"),
@@ -50,6 +51,7 @@ export default async function SiteShell({ children }: { children: React.ReactNod
     getPublicJson<{ provider: string | null; enabled: boolean }>("/api/payments/availability"),
     getPublicJson<{ slug?: string }>(`${API.customPages.bySlug("mesafeli-satis-sozlesmesi")}?locale=tr`),
     getPublicJson<{ slug?: string }>(`${API.customPages.bySlug("iptal-ve-iade-kosullari")}?locale=tr`),
+    getPublicJson<{ value?: number | string }>("/api/site_settings/pricing.listing_credit_price?locale=tr"),
   ]);
 
   const API_ORIGIN = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/api$/, "");
@@ -81,6 +83,7 @@ export default async function SiteShell({ children }: { children: React.ReactNod
         brandName={brandName}
         paymentProvider={payments?.enabled ? payments.provider : null}
         purchaseLegalLinks={purchaseLegalLinks}
+        listingPrice={Number(listingPrice?.value) > 0 ? Number(listingPrice?.value) : null}
       />
     </div>
   );

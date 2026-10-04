@@ -19,6 +19,15 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  // Ilk yuklemedeki JS dosyasi sayisini sinirla: kucuk ortak parcalar birlestirilir
+  // (cok sayida kucuk istek yerine az sayida orta boy dosya).
+  webpack: (config, { isServer, dev }) => {
+    if (!isServer && !dev && config.optimization?.splitChunks) {
+      config.optimization.splitChunks = { ...config.optimization.splitChunks, maxInitialRequests: 8, minSize: 40000 };
+    }
+    return config;
+  },
+
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "**.paketjet.com" },

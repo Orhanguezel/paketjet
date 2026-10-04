@@ -5,6 +5,7 @@ import { ArrowUpRight, BookOpenText, MapPinned } from "lucide-react";
 import { BreadcrumbSchema, ItemListSchema, WebPageSchema } from "@/components/JsonLd";
 import { SiteBreadcrumb } from "@/components/SiteBreadcrumb";
 import { getPageMetadata } from "@/lib/seo";
+import { getBrand } from "@/lib/brand";
 import { ALL_GUIDES, BLOG_POSTS } from "@/modules/content/content.data";
 import type { ArticleContent } from "@/modules/content/content.type";
 
@@ -25,7 +26,11 @@ const CLUSTERS: { key: NonNullable<ArticleContent["cluster"]>; title: string; in
   { key: "guzergah", title: "Güzergâh rehberleri", intro: "Sık kullanılan şehirlerarası rotalarda yaklaşık mesafe, yayındaki ilanlar ve gönderi öncesi dikkat edilecekler." },
 ];
 
-export default function BlogPage() {
+const fmtDate = (iso: string) => new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }).format(new Date(iso));
+const lastUpdated = ALL_GUIDES.reduce((max, g) => (g.updatedAt > max ? g.updatedAt : max), "");
+
+export default async function BlogPage() {
+  const brand = await getBrand();
   return (
     <div className="editorial-page">
       <BreadcrumbSchema items={[{ name: "Ana Sayfa", url: "/" }, { name: "Blog", url: "/blog" }]} />
@@ -39,6 +44,7 @@ export default function BlogPage() {
             <p className="editorial-lead">
               Kargo rehberleri; şehirlerarası eşya gönderirken, taşıyıcıyla anlaşırken veya aracındaki boş kapasiteyi ilana dönüştürürken işine yarayacak pratik bilgileri bir araya getirir. Her rehberde somut ölçüler, kontrol listeleri, sık sorulan sorular ve ilgili resmî kaynaklar bulunur.
             </p>
+            <p className="blog-detail-meta">{brand.name ? `Hazırlayan: ${brand.name} Editör Ekibi · ` : ""}{ALL_GUIDES.length} rehber · Son güncelleme: <time dateTime={lastUpdated}>{fmtDate(lastUpdated)}</time></p>
           </div>
           <Image className="blog-hero-art" aria-hidden="true" src="/assets/editorial/route-parcel.png" width={540} height={360}
             alt="" priority sizes="(max-width: 760px) 80vw, 420px" />
@@ -69,6 +75,7 @@ export default function BlogPage() {
                     <p className="editorial-eyebrow">{post.categoryLabel}</p>
                     <h3><Link href={post.canonicalPath}>{post.title}</Link></h3>
                     <p>{post.description}</p>
+                    <p className="blog-guide-date"><time dateTime={post.updatedAt}>{fmtDate(post.updatedAt)}</time></p>
                     <Link href={post.canonicalPath} className="editorial-link">Rehberi oku <ArrowUpRight size={18} aria-hidden /></Link>
                   </article>
                 ))}

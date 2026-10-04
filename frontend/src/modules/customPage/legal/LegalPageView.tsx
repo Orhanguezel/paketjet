@@ -6,9 +6,10 @@ import { legalDate, legalHtml, legalPages } from "./legal-content";
 import { LegalArticle } from "./LegalArticle";
 import { ROUTES } from "@/config/routes";
 import { SiteBreadcrumb } from "@/components/SiteBreadcrumb";
-type Props = { slug: string; title: string; summary?: string | null; html?: string | null; updatedAt?: string; embedded?: boolean; publishedSlugs?: string[] };
+import { APP_NAME } from "@/lib/app-name";
+type Props = { slug: string; title: string; summary?: string | null; html?: string | null; updatedAt?: string; embedded?: boolean; publishedSlugs?: string[]; faqs?: { question: string; answer: string }[] };
 type Section = { id: string; label: string };
-export function LegalPageView({ slug, title, summary, html, updatedAt, embedded = false, publishedSlugs }: Props) {
+export function LegalPageView({ slug, title, summary, html, updatedAt, embedded = false, publishedSlugs, faqs }: Props) {
   const isPublished = (page: (typeof legalPages)[number]) => page.slug === slug || (publishedSlugs ? publishedSlugs.includes(page.slug) : page.published);
   const article = useRef<HTMLElement>(null),
     [sections, setSections] = useState<Section[]>([]),
@@ -95,9 +96,14 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
             <header className="legal-header">
               <h1>{title}</h1>
               {summary && <p className="legal-intro">{summary}</p>}
-              {date && <p className="legal-date"><CalendarDays size={16} />Son güncelleme: <time dateTime={updatedAt}>{date}</time></p>}
+              {date && <p className="legal-date"><CalendarDays size={16} />{APP_NAME ? `Hazırlayan: ${APP_NAME} Ekibi · ` : ""}Son güncelleme: <time dateTime={updatedAt}>{date}</time></p>}
             </header>
             <LegalArticle articleRef={article} title={title} html={content}/>
+            {faqs && faqs.length > 0 && <section className="legal-faq" aria-labelledby="legal-faq-title">
+              <h2 id="legal-faq-title">Sıkça sorulan sorular</h2>
+              {faqs.map((f) => <div key={f.question}><h3>{f.question}</h3><p>{f.answer}</p></div>)}
+              <p className="legal-faq-note">Yanıtlar yukarıdaki metnin özetidir; bağlayıcı olan metnin kendisidir.</p>
+            </section>}
             {!embedded && (previousPage || nextPage) && <nav className="legal-neighbor-nav" aria-label="Diğer yasal sayfalar">
               {previousPage ? <Link href={`/${previousPage.slug}`}><ArrowLeft size={17} /><span><small>Önceki sayfa</small>{previousPage.label}</span></Link> : <span />}
               {nextPage ? <Link href={`/${nextPage.slug}`}><span><small>Sonraki sayfa</small>{nextPage.label}</span><ArrowUpRight size={17} /></Link> : <span />}

@@ -3,6 +3,7 @@ import { listFaqs } from "@/modules/support/support.service";
 import { getPageMetadata } from "@/lib/seo";
 import { FAQPageSchema, BreadcrumbSchema } from "@/components/JsonLd";
 import DestekClient from "./destek-client";
+import { getBrand } from "@/lib/brand";
 
 export const revalidate = 300;
 
@@ -16,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function DestekPage() {
-  const faqs = await listFaqs({ locale: "tr", limit: 20 }).catch(() => []);
+  const [faqs, brand] = await Promise.all([listFaqs({ locale: "tr", limit: 50 }).catch(() => []), getBrand()]);
 
   const faqItems = faqs.map((f: { question?: string; answer?: string }) => ({
     question: f.question ?? "",
@@ -27,7 +28,7 @@ export default async function DestekPage() {
     <>
       {faqItems.length > 0 && <FAQPageSchema items={faqItems} />}
       <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "Destek" }]} />
-      <DestekClient faqs={faqs} />
+      <DestekClient faqs={faqs} brandName={brand.name || undefined} />
     </>
   );
 }

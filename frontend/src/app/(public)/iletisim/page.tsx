@@ -3,7 +3,14 @@ import { getPageMetadata } from "@/lib/seo";
 import { ContactPageClient } from "@/modules/contact/ContactPageClient";
 import { getSiteSettingValue } from "@/lib/site-settings";
 import Link from "next/link";
-import { ContactPointSchema, BreadcrumbSchema } from "@/components/JsonLd";
+import { ContactPointSchema, BreadcrumbSchema, FAQPageSchema } from "@/components/JsonLd";
+
+// Kullanım Koşulları bölüm 4–5 ve 7'nin özeti; o metin değişirse burası da güncellenir.
+const CONTACT_FAQS = [
+  { question: "Taşıyıcıya ulaşamıyorum, ne yapmalıyım?", answer: "Açılan numara yanlış veya kullanılamazsa, ilan sahibi güzergâhta hizmet veremediğini bildirirse ya da ulaşılamıyorsa Destek Merkezi üzerinden işlem bilgisi ve varsa kanıtlarla inceleme talep edebilirsin. Erişimden sonraki ilk 1 saat içindeki bildirim incelemede özellikle dikkate alınır. Sorun doğrulanırsa aynı işlem için bir defaya mahsus 1 İlan Alma Hakkı tanımlanır; kanundan doğan iade hakların saklıdır." },
+  { question: "Taşıyıcının telefonu neden ilan sayfasında görünmüyor?", answer: "İlan sahibinin iletişim bilgileri herkese açık listede gösterilmez. Erişim tamamlandığında ilanda kayıtlı telefon, e-posta veya adres doğrudan sana açılır. Gizli numara veya uygulama içi maskeli görüşme sunulmaz." },
+  { question: "İade talebimi nereden iletirim?", answer: "İletişim erişimi, değerlendirme veya iade talebi için Destek Merkezi'ni ya da bu sayfadaki formu kullanabilirsin. Tüketicinin kanundan doğan başvuru hakları saklıdır." },
+];
 import { ROUTES } from "@/config/routes";
 
 export const dynamic = "force-dynamic";
@@ -37,6 +44,7 @@ export default async function IletisimPage() {
     <>
       <ContactPointSchema phone={contactInfo?.phone} email={contactInfo?.email} />
       <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "İletişim" }]} />
+      <FAQPageSchema items={CONTACT_FAQS} />
       <ContactPageClient contactInfo={contactInfo} />
       <section className="site-container pb-16" aria-labelledby="iletisim-kanallari">
         <div className="grid gap-8 border-t border-border-soft pt-10 text-sm leading-7 text-muted md:grid-cols-3">
@@ -57,6 +65,13 @@ export default async function IletisimPage() {
             <h2 className="text-lg font-semibold text-foreground">Önce bunlara göz at</h2>
             <p className="mt-3">Sık sorulan soruların çoğunun yanıtı <Link className="text-brand hover:underline" href={ROUTES.static.destek}>destek ve sıkça sorulan sorular</Link> sayfasında. Taşıma koşulları için <Link className="text-brand hover:underline" href={ROUTES.static.tasimaKurallari}>taşıma kurallarını</Link>, platformun nasıl çalıştığı için <Link className="text-brand hover:underline" href="/blog/paketjet-nasil-kullanilir">kullanım rehberini</Link> okuyabilirsin.</p>
           </div>
+        </div>
+        <div className="mt-10 border-t border-border-soft pt-10 text-sm leading-7 text-muted">
+          <h2 className="text-lg font-semibold text-foreground">Sıkça sorulan sorular</h2>
+          <div className="mt-4 grid gap-6 md:grid-cols-3">
+            {CONTACT_FAQS.map((f) => <div key={f.question}><h3 className="font-semibold text-foreground">{f.question}</h3><p className="mt-2">{f.answer}</p></div>)}
+          </div>
+          <p className="mt-6">Bağlayıcı hükümler için <Link className="text-brand hover:underline" href={ROUTES.static.kullanim}>Kullanım Koşulları</Link> esas alınır.</p>
         </div>
       </section>
     </>

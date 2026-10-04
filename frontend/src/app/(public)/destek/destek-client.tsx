@@ -12,7 +12,9 @@ const INITIAL_FORM: SupportTicketCreateInput = {
   category: "genel",
 };
 
-export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
+export default function DestekClient({ faqs, brandName }: { faqs: SupportFaq[]; brandName?: string }) {
+  // Sayfanın güncelliği: en son düzenlenen sorunun tarihi.
+  const updatedAt = faqs.reduce<string | null>((max, f) => (f.updated_at && (!max || f.updated_at > max) ? f.updated_at : max), null);
   const [form, setForm] = useState(INITIAL_FORM);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState<string | null>(null);
@@ -37,8 +39,12 @@ export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
           <p className="text-sm font-semibold uppercase tracking-normal text-brand">Destek Merkezi</p>
           <h1 className="site-page-title mt-3">Sıkça Sorulan Sorular ve Destek Talebi</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            SSS içeriği sunucu tarafında render edilir. Böylece arama motorları ve yapay zeka tarayıcıları soruları doğrudan okuyabilir.
+            İlan verme, iletişim erişimi, ilan alma hakkı, kartla ödeme, iade ve hesap işlemleriyle ilgili soruların yanıtları burada. Yanıtını bulamadığın konuda destek talebi oluşturabilirsin.
           </p>
+          {(brandName || updatedAt) && <p className="mt-4 text-sm text-muted">
+            {brandName ? `Hazırlayan: ${brandName} Destek Ekibi` : null}{brandName && updatedAt ? " · " : null}
+            {updatedAt ? <>Son güncelleme: <time dateTime={updatedAt}>{new Date(updatedAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}</time></> : null}
+          </p>}
         </div>
       </section>
 

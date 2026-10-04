@@ -7,7 +7,7 @@ import {useAmbientMotion} from './home/useAmbientMotion';
 export default function RouteMapAnimation() {
   const {root, running, paused, setPaused, reduced} = useAmbientMotion();
   return <div ref={root} className="route-scene" data-running={running}>
-    <Image src="/assets/motion/route-landscape.webp" alt="" aria-hidden="true" fill sizes="(max-width: 767px) 90vw, 50vw" className="object-contain" priority/>
+    <Image src="/assets/motion/route-landscape.webp" alt="" aria-hidden="true" width={1100} height={733} sizes="(max-width: 767px) 90vw, 50vw" className="absolute inset-0 h-full w-full object-contain" priority/>
     <svg viewBox="0 0 600 400" className="route-lines" aria-hidden="true">
       <path className="route-track" d="M165 132 Q248 116 302 195 T478 207 M165 132 Q133 180 136 234 Q221 262 302 195"/>
       <path className="route-flow" d="M165 132 Q248 116 302 195 T478 207 M136 234 Q221 262 302 195"/>

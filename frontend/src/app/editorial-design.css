@@ -78,3 +78,9 @@
 .guide-keyfacts{margin:0 0 28px;padding:20px 22px;border:1px solid var(--color-border-soft);border-left:3px solid var(--color-brand);border-radius:12px;background:var(--color-brand-xlight)}.guide-keyfacts-title{font-size:13px;font-weight:700;color:var(--color-brand);margin:0 0 8px!important}.guide-keyfacts ul{margin:0!important;padding-left:20px}.guide-keyfacts li{margin:6px 0!important}
 .guide-trust{display:flex;gap:14px;align-items:flex-start;margin:32px 0 0;padding:20px 22px;border:1px solid var(--color-border-soft);border-radius:12px;background:var(--color-surface);font-size:14px;line-height:1.7;color:var(--color-muted)}.guide-trust svg{flex-shrink:0;color:var(--color-brand);margin-top:3px}.guide-trust-title{font-weight:700;color:var(--color-foreground);margin:0 0 4px!important}.guide-trust a{color:var(--color-brand);text-decoration:underline;text-underline-offset:3px}
 .blog-cluster{margin-top:56px}.blog-cluster-title{font-size:clamp(22px,2.4vw,28px);font-weight:700;letter-spacing:-.02em}.blog-cluster-intro{margin:8px 0 22px;max-width:760px;color:var(--color-muted);line-height:1.7}.blog-guide h3{font-size:20px;font-weight:700;line-height:1.35;margin:6px 0 10px}
+/* Hakkımızda: süreç girişi ve içerik sonrası ek bölümler (ücret tablosu, SSS) */
+.about-content-intro{max-width:720px;color:var(--color-muted);margin:-6px 0 24px}
+.about-extras{margin-block:8px 40px}
+.about-extras section+section{margin-top:32px}
+@media(max-width:760px){.about-extras{padding:24px 20px}}
+.blog-guide-date{font-size:12px;color:var(--color-muted);margin-top:-4px}

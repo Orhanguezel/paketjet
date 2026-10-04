@@ -35,7 +35,11 @@ export async function generateMetadata({searchParams}: {searchParams: SearchPara
 }
 
 import Link from "next/link";
-import { BreadcrumbSchema, ItemListSchema } from "@/components/JsonLd";
+import { BreadcrumbSchema, FAQPageSchema, ItemListSchema } from "@/components/JsonLd";
+import { PRODUCT_FAQS } from "@/modules/content/product-facts";
+
+// İlan arayan için ilgili sorular: ücretin kapsamı, adres araması ve garanti.
+const LISTING_FAQS = PRODUCT_FAQS.slice(1, 4);
 import { ROUTE_GUIDES } from "@/modules/content/content.data";
 import { ROUTES } from "@/config/routes";
 
@@ -66,6 +70,7 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
   return (
     <>
       <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "İlanlar" }]} />
+      <FAQPageSchema items={LISTING_FAQS} />
       <ItemListSchema name="Taşıyıcı ilanları" items={result.data.map((i) => ({ name: i.title || `${i.from_city} → ${i.to_city}`, url: ROUTES.ilanlar.detail(i.slug || i.id) }))} />
       <IlanlarClient
         initialError={result.error}
@@ -80,7 +85,7 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
         <div className="grid gap-8 border-t border-border-soft pt-10 lg:grid-cols-3">
           <div>
             <h2 id="ilanlar-nasil" className="text-lg font-semibold text-foreground">Taşıyıcı ilanları nasıl çalışır?</h2>
-            <p className="mt-3 text-sm leading-7">Bu sayfada yayındaki taşıyıcı ilanları, güncel güzergâh ve rotalar listelenir. Taşıyıcılar güzergâh, hareket tarihi, araç tipi ve boş kapasite bilgisiyle ücretsiz ilan verir. Sen rotana uygun ilanı seçer, iletişim bilgilerine erişir ve taşıma koşullarını taşıyıcıyla doğrudan görüşürsün. Yeni ilanlar yayına girmeden önce incelenir.</p>
+            <p className="mt-3 text-sm leading-7">Bu sayfada yayındaki taşıyıcı ilanları, güncel güzergâh ve rotalar listelenir. Taşıyıcılar güzergâh, hareket tarihi, araç tipi ve boş kapasite bilgisiyle ücretsiz ilan verir. Süreç şöyle işler: rotana uygun ilanı seçer, iletişim bilgilerine erişir ve taşıma koşullarını taşıyıcıyla doğrudan görüşürsün. Yeni ilanlar yayına girmeden önce incelenir.</p>
           </div>
           <div>
             <h2 className="text-lg font-semibold text-foreground">Ücret neyi kapsar?</h2>
@@ -92,6 +97,12 @@ export default async function IlanlarPage({ searchParams }: { searchParams: Sear
               {ROUTE_GUIDES.map((g) => <li key={g.slug}><Link className="text-brand hover:underline" href={g.canonicalPath}>{g.title} taşıyıcı ilanları</Link></li>)}
             </ul>
             <p className="mt-3 text-sm"><Link className="text-brand hover:underline" href={ROUTES.static.blog}>Gönderici ve taşıyıcı rehberleri</Link></p>
+          </div>
+        </div>
+        <div className="mt-10 border-t border-border-soft pt-10">
+          <h2 className="text-lg font-semibold text-foreground">İlanlar hakkında sıkça sorulan sorular</h2>
+          <div className="mt-4 grid gap-6 lg:grid-cols-3">
+            {LISTING_FAQS.map((f) => <div key={f.question}><h3 className="font-semibold text-foreground">{f.question}</h3><p className="mt-2 text-sm leading-7">{f.answer}</p></div>)}
           </div>
         </div>
       </section>
