@@ -58,8 +58,16 @@ export async function repoAdjustCredits(p:{id:string;user_id:string;delta:number
 }
 export async function repoCommerceSummary() {
   const [rows]=await db.execute(sql`SELECT
-   (SELECT COUNT(*) FROM ilanlar WHERE status='active' AND departure_date>UTC_TIMESTAMP()) active_listings,
-   (SELECT COUNT(*) FROM ilanlar WHERE status='pending_approval' AND departure_date>UTC_TIMESTAMP()) moderation,
+   (SELECT COUNT(*) FROM ilanlar WHERE is_sample=0 AND status='active' AND departure_date>UTC_TIMESTAMP()) active_listings,
+   (SELECT COUNT(*) FROM ilanlar WHERE is_sample=0 AND status='pending_approval' AND departure_date>UTC_TIMESTAMP()) moderation,
+   (SELECT COUNT(*) FROM ilanlar WHERE is_sample=0) submitted_listings_total,
+   (SELECT COUNT(*) FROM ilanlar WHERE is_sample=0 AND created_at>=DATE_SUB(UTC_TIMESTAMP(), INTERVAL 30 DAY)) submitted_listings_30d,
+   (SELECT COUNT(*) FROM (
+      SELECT e.ilan_id, MIN(e.created_at) first_published
+      FROM listing_events e JOIN ilanlar i ON i.id=e.ilan_id
+      WHERE i.is_sample=0 AND e.status='active' AND (e.previous_status IS NULL OR e.previous_status<>'active')
+      GROUP BY e.ilan_id
+    ) published WHERE first_published>=DATE_SUB(UTC_TIMESTAMP(), INTERVAL 30 DAY)) published_listings_30d,
    (SELECT COUNT(*) FROM ilan_purchases WHERE status='completed') contact_sales,
    (SELECT COALESCE(SUM(price_paid),0) FROM ilan_purchases WHERE status='completed' AND pay_method IN ('card','bank_transfer')) listing_receipts,
    (SELECT COALESCE(SUM(amount),0) FROM payment_sessions WHERE state='completed' AND kind='credits' AND provider<>'bank_test') package_receipts,

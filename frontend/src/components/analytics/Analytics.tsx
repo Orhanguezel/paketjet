@@ -21,7 +21,7 @@ gtag('set','ads_data_redaction',true);gtag('set','url_passthrough',true);`;
       {ga4Id && (
         <>
           <script id="ga4-src" async src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4Id)}`} />
-          <script id="ga4-config" dangerouslySetInnerHTML={{ __html: `gtag('js',new Date());gtag('config',${JSON.stringify(ga4Id)});` }} />
+          <script id="ga4-config" data-measurement-id={ga4Id} dangerouslySetInnerHTML={{ __html: `gtag('js',new Date());gtag('config',${JSON.stringify(ga4Id)});` }} />
         </>
       )}
     </>

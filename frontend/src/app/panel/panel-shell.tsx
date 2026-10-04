@@ -8,7 +8,7 @@ import Header from '@/components/Header';
 import { useAuthStore } from '@/modules/auth/auth.store';
 import { getMe } from '@/modules/auth/auth.service';
 import { ROUTES } from '@/config/routes';
-const nav=[['/panel','Genel bakış'],['/panel/ilanlarim','İlanlarım'],['/panel/satin-aldiklarim','Satın aldıklarım'],['/panel/ilan-alma-hakki','İlan alma hakkı'],['/panel/bildirimler','Bildirimler'],['/panel/profil','Profil']] as const;
+const nav=[['/panel','Genel bakış'],['/panel/ilanlarim','İlanlarım'],['/panel/satin-aldiklarim','Satın aldıklarım'],['/panel/ilan-alma-hakki','İlan alma hakkı'],['/panel/bildirimler','Bildirimler'],['/panel/profil','Profil'],['/panel/gelistirici','Geliştirici']] as const;
 export default function PanelShell({children,logoUrl}:{children:React.ReactNode;logoUrl?:string}) {
   const pathname=usePathname(),{user,setUser}=useAuthStore();
   const [ready,setReady]=useState(false),[error,setError]=useState(false),[retry,setRetry]=useState(0);

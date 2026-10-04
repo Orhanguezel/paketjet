@@ -1,5 +1,6 @@
 // src/modules/ilanlar/schema.ts
 import {
+  uniqueIndex,
   mysqlTable,
   json,
   char,
@@ -66,6 +67,8 @@ export const ilanlar = mysqlTable(
     content_declared_ip: varchar("content_declared_ip", { length: 64 }),
 
     // Durum: active | sold | paused | expired | removed
+    // Partner API: firmanin kendi sefer/kayit numarasi (kullanici basina benzersiz).
+    external_ref: varchar("external_ref", { length: 100 }),
     status: varchar("status", { length: 50 }).notNull().default("active"),
     sold_at: datetime("sold_at", { fsp: 3 }),
     sold_to_user_id: char("sold_to_user_id", { length: 36 }),
@@ -76,6 +79,7 @@ export const ilanlar = mysqlTable(
   (t) => [
     index("ilanlar_slug_idx").on(t.slug),
     index("ilanlar_user_id_idx").on(t.user_id),
+    uniqueIndex("uq_ilanlar_user_external_ref").on(t.user_id, t.external_ref),
     index("ilanlar_status_idx").on(t.status),
     index("ilanlar_from_city_idx").on(t.from_city),
     index("ilanlar_to_city_idx").on(t.to_city),

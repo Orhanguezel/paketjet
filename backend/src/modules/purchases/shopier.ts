@@ -6,6 +6,7 @@
 // "kontrol et" istegiyle siparis API'den OKUNARAK dogrulanir. Webhook govdesi tek basina kanit sayilmaz.
 import { createHmac, timingSafeEqual } from 'crypto';
 import { getShopierConfig } from './shopier-config';
+import { waitForShopierMedia } from './shopier-media';
 
 const API = 'https://api.shopier.com/v1';
 const TIMEOUT_MS = 8_000;
@@ -37,7 +38,7 @@ export type ShopierProduct = { id: string; url: string };
 /** Odeme basina tek kullanimlik urun. Stok 1: ayni urun ikinci kez satilamaz. */
 export async function createShopierCheckout(input: { title: string; description: string; amount: number }, fetcher?: typeof fetch) {
   const { productImageUrl } = await getShopierConfig();
-  const product = await call<{ id?: string; url?: string }>('POST', '/products', {
+  const product = await call<{ id?: string; url?: string; media?: { url?: string }[] }>('POST', '/products', {
     title: input.title.slice(0, 120),
     description: input.description,
     type: 'digital',
@@ -48,6 +49,10 @@ export async function createShopierCheckout(input: { title: string; description:
     customListing: true,
   }, fetcher);
   if (!product?.id || !product.url || !/^https:\/\/(www\.)?shopier\.com\//.test(product.url)) throw new ShopierApiError(502, 'invalid_product_response');
+  if (!product.media?.[0]?.url || !(await waitForShopierMedia(product.media[0].url, fetcher))) {
+    await deleteShopierCheckout(String(product.id), fetcher).catch(() => undefined);
+    throw new ShopierApiError(502, 'product_image_unavailable');
+  }
   return { id: String(product.id), url: product.url } satisfies ShopierProduct;
 }
 

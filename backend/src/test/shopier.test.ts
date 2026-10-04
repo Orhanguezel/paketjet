@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { createHmac } from "crypto";
 import { env } from "@/core/env";
 import { repoGetCreditBalance, repoGetCreditPackages, repoPurchaseIlan } from "@/modules/purchases/repository";
-import { checkShopierOrder, verifyShopierSignature } from "@/modules/purchases/shopier";
+import { checkShopierOrder, createShopierCheckout, verifyShopierSignature } from "@/modules/purchases/shopier";
 import { invalidateShopierConfig } from "@/modules/purchases/shopier-config";
 import { buyer, declaration, listing } from "./purchase-fixtures";
 import { authHeaders, closeTestApp, getTestApp, registerAdminUser } from "./setup";
@@ -25,6 +25,7 @@ beforeAll(() => {
   // Yalniz Shopier API sahte; app.inject fetch kullanmaz.
   globalThis.fetch = (async (input: string | URL | Request, init?: RequestInit) => {
     const url = new URL(String(input instanceof Request ? input.url : input));
+    if (url.host === "cdn.shopier.app" && init?.method === "HEAD") return new Response(null, { status: 200 });
     if (url.host !== "api.shopier.com") return realFetch(input, init);
     const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status });
     const auth = new Headers(init?.headers).get("authorization");
@@ -36,7 +37,7 @@ beforeAll(() => {
     if (init?.method === "POST" && url.pathname === "/v1/products") {
       const id = `P${Date.now()}${++seq}`;
       products.set(id, Number(JSON.parse(String(init.body)).priceData.price));
-      return json(200, { id, url: `https://www.shopier.com/${id}` });
+      return json(200, { id, url: `https://www.shopier.com/${id}`, media: [{ url: `https://cdn.shopier.app/pictures_large/test_${id}.png` }] });
     }
     if (init?.method === "POST" && url.pathname === "/v1/refunds") {
       const b = JSON.parse(String(init.body));
@@ -82,6 +83,38 @@ describe("shopier pure checks", () => {
     expect(checkShopierOrder(ok, { productId: "X", amount: 50 })).toEqual({ ok: false, reason: "product" });
     expect(checkShopierOrder(ok, { productId: "P", amount: 49.99 })).toEqual({ ok: false, reason: "amount" });
     expect(checkShopierOrder({ ...ok, currency: "USD" }, { productId: "P", amount: 50 })).toEqual({ ok: false, reason: "currency" });
+  });
+});
+
+describe("shopier product image readiness", () => {
+  it("waits until both image sizes are available before returning the checkout URL", async () => {
+    const seen: string[] = [];
+    let largeChecks = 0;
+    const fetcher = (async (input: string | URL | Request, init?: RequestInit) => {
+      const url = new URL(String(input instanceof Request ? input.url : input));
+      seen.push(`${init?.method} ${url.pathname}`);
+      if (url.pathname === "/v1/products") return new Response(JSON.stringify({ id: "P-ready", url: "https://www.shopier.com/P-ready", media: [{ url: "https://cdn.shopier.app/pictures_large/test.png" }] }), { status: 200 });
+      if (url.pathname === "/pictures_large/test.png") return new Response(null, { status: ++largeChecks === 1 ? 404 : 200 });
+      if (url.pathname === "/pictures_small/test.png") return new Response(null, { status: 200 });
+      throw new Error(`unexpected request ${url}`);
+    }) as typeof fetch;
+    const product = await createShopierCheckout({ title: "Test", description: "Test", amount: 50 }, fetcher);
+    expect(product.url).toBe("https://www.shopier.com/P-ready");
+    expect(largeChecks).toBe(2);
+    expect(seen).toContain("HEAD /pictures_small/test.png");
+  });
+
+  it("deletes a product whose image URL is missing", async () => {
+    const seen: string[] = [];
+    const fetcher = (async (input: string | URL | Request, init?: RequestInit) => {
+      const url = new URL(String(input instanceof Request ? input.url : input));
+      seen.push(`${init?.method} ${url.pathname}`);
+      if (init?.method === "POST") return new Response(JSON.stringify({ id: "P-broken", url: "https://www.shopier.com/P-broken", media: [] }), { status: 200 });
+      if (init?.method === "DELETE") return new Response("{}", { status: 200 });
+      throw new Error(`unexpected request ${url}`);
+    }) as typeof fetch;
+    await expect(createShopierCheckout({ title: "Test", description: "Test", amount: 50 }, fetcher)).rejects.toThrow("product_image_unavailable");
+    expect(seen).toContain("DELETE /v1/products/P-broken");
   });
 });
 

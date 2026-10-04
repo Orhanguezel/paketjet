@@ -36,6 +36,7 @@ export const ROUTES = {
     cuzdan:        "/panel/ilan-alma-hakki",
     bildirimler:   "/panel/bildirimler",
     profil:        "/panel/profil",
+    gelistirici:   "/panel/gelistirici",
 
   },
 
@@ -59,6 +60,7 @@ export const ROUTES = {
     tasimaKurallari: "/tasima-kurallari",
     mesafeliSatis: "/mesafeli-satis-sozlesmesi",
     iptalIade: "/iptal-ve-iade-kosullari",
+    gelistiriciler: "/gelistiriciler",
     blog: "/blog",
     rota: (slug: string) => `/rota/${slug}`,
   },

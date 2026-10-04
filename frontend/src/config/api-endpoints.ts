@@ -69,6 +69,11 @@ export const API = {
     update: "/api/profiles/me",
   },
 
+  apiKeys: {
+    list:   "/api/me/api-keys",
+    revoke: (id: string) => `/api/me/api-keys/${encodeURIComponent(id)}`,
+  },
+
   identity: {
     me:    "/api/identity/me",
     front: "/api/identity/me/front",

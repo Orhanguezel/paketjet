@@ -6,6 +6,7 @@ import { createIlan, getOwnedIlan, updateIlan } from "@/modules/ilan/ilan.servic
 import type { CreateIlanInput } from "@/modules/ilan/ilan.type";
 import { useAuthStore } from "@/modules/auth/auth.store";
 import { ROUTES } from "@/config/routes";
+import { trackListingSubmitted } from "@/components/analytics/listing-events";
 import { initialListing, localListingTime, listingPayload, validateListingStep } from "../ilan-wizard";
 import { RouteFields, DetailFields, ContactFields } from "./wizard/ListingFields";
 import ListingResult from "./wizard/ListingResult";
@@ -112,7 +113,10 @@ export default function IlanVerForm({ onSuccess, editId }: { onSuccess?: () => v
     try {
       const data = listingPayload(form, departure, arrival);
       if (editId) await updateIlan(editId, data);
-      else await createIlan(data);
+      else {
+        const created = await createIlan(data);
+        if (created?.id) trackListingSubmitted(created.id);
+      }
       setSuccess(true);
     } catch (e) {
       setError(

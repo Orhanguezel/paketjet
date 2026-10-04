@@ -11,6 +11,7 @@ import { registerAuth, registerUserAdmin } from '@/modules/auth';
 import { registerStorage, registerStorageAdmin } from '@/modules/storage';
 import { registerProfiles } from '@/modules/profiles';
 import { registerIdentity, registerIdentityAdmin } from '@/modules/identity';
+import { registerPartnerApi } from '@/modules/partner-api';
 import { registerSiteSettings, registerSiteSettingsAdmin } from '@/modules/siteSettings';
 import { registerUserRoles } from '@/modules/userRoles';
 import { registerHealth } from '@/modules/health';
@@ -47,6 +48,7 @@ const PUBLIC_ROUTE_REGISTRARS = [
   registerStorage,
   registerProfiles,
   registerIdentity,
+  registerPartnerApi,
   registerSiteSettings,
   registerUserRoles,
   registerMail,
