@@ -1,4 +1,7 @@
 import type {LocationValue} from './validation';
+import {env} from '@/core/env';
+// Konum saglayicisi kimlik bekler: ad ve site adresi dagitim ortamindan.
+const USER_AGENT=`${env.APP_NAME||'locations-client'}/1.0${env.FRONTEND_URL?` (${env.FRONTEND_URL})`:''}`;
 type Feature={properties?:Record<string,unknown>;geometry?:{coordinates?:number[]}};
 type Suggestion=LocationValue & {id:string;lat:number;lng:number};
 const cache=new Map<string,{until:number;data:Suggestion[]}>(),pending=new Map<string,Promise<Suggestion[]>>();
@@ -20,7 +23,7 @@ export async function searchLocations(query:string):Promise<Suggestion[]>{
  const work=(async()=>{
   const base=process.env.PHOTON_URL??'https://photon.komoot.io';
   const url=new URL('/api/',base);url.search=new URLSearchParams({q:query,limit:'8'}).toString();
-  const response=await fetch(url,{headers:{'User-Agent':'PaketJet/1.0 (https://paketjet.com; info@paketjet.net)'},signal:AbortSignal.timeout(5000)});
+  const response=await fetch(url,{headers:{'User-Agent':USER_AGENT},signal:AbortSignal.timeout(5000)});
   if(!response.ok)throw Object.assign(new Error('location_provider_unavailable'),{statusCode:503});
   const body=await response.json() as {features?:Feature[]};
   const data=(body.features??[]).map(normalizeLocation).filter((v):v is Suggestion=>!!v).filter((v,i,a)=>a.findIndex(x=>x.id===v.id)===i);

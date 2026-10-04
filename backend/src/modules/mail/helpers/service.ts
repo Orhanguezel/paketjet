@@ -3,15 +3,16 @@ import type { Transporter } from "nodemailer";
 import type { BookingMailInput, SendMailInput, WalletMailInput } from "../validation";
 import type { SmtpSettings } from "@/modules/siteSettings";
 import { z } from "zod";
+import { BRAND_LABEL } from "@/core/brand";
 
-const SITE_NAME = "PaketJet";
+const SITE_NAME = BRAND_LABEL;
 
 export function buildMailTransportSignature(cfg: SmtpSettings): string {
   return [cfg.host ?? "", cfg.port ?? "", cfg.username ?? "", cfg.secure ? "1" : "0"].join("|");
 }
 
 export function buildMailFromAddress(smtpCfg: SmtpSettings): string {
-  const fromEmail = smtpCfg.fromEmail || smtpCfg.username || "info@paketjet.net";
+  const fromEmail = smtpCfg.fromEmail || smtpCfg.username || "";
   return smtpCfg.fromName ? `${smtpCfg.fromName} <${fromEmail}>` : fromEmail;
 }
 

@@ -6,12 +6,13 @@ import { repoCreateCreditPackagePayment, repoCompleteCreditPackagePayment } from
 import { repoCreateIlanPayment, repoCompleteIlanPayment } from './listing-payment.repository';
 import { repoPaymentByRef } from './session.repository';
 import { purchaseDeclarationSchema } from './validation';
+import { APP_NAME } from '@/core/brand';
 
 const refParam = z.object({ ref: z.string().uuid() });
 const bankUnavailable = () => Object.assign(new Error('bank_transfer_unavailable'), { statusCode: 503 });
 const orderResponse = (ref: string, amount: number, policy: Awaited<ReturnType<typeof repoBankAvailability>>) => ({
   provider: policy.provider, mode: policy.mode, conversationId: ref, amount,
-  bank_details: policy.bank_details, transfer_description: `PaketJet ${ref}`,
+  bank_details: policy.bank_details, transfer_description: APP_NAME ? `${APP_NAME} ${ref}` : ref,
 });
 
 export async function getBankAvailability(req: FastifyRequest, reply: FastifyReply) {
@@ -55,7 +56,7 @@ export async function getBankOrder(req: FastifyRequest, reply: FastifyReply) {
     if (!row) return reply.code(404).send({ error: { message: 'payment_not_found' } });
     const policy = await repoBankAvailability(getAuthUserId(req));
     const details = row.provider === 'bank_transfer' && policy.mode === 'real' ? policy.bank_details : null;
-    return reply.header('Cache-Control', 'private, no-store').send({ provider: row.provider, mode: row.provider === 'bank_test' ? 'test' : 'real', amount: row.amount, state: row.state, expires_at: row.expires_at, bank_details: details, transfer_description: `PaketJet ${row.payment_ref}` });
+    return reply.header('Cache-Control', 'private, no-store').send({ provider: row.provider, mode: row.provider === 'bank_test' ? 'test' : 'real', amount: row.amount, state: row.state, expires_at: row.expires_at, bank_details: details, transfer_description: APP_NAME ? `${APP_NAME} ${row.payment_ref}` : row.payment_ref });
   } catch (error) { return handleRouteError(reply, req, error, 'bank_order'); }
 }
 

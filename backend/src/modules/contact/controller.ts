@@ -14,6 +14,7 @@ import { repoCreateContact } from './repository';
 import type { ContactView } from './schema';
 import { sendMailRaw } from '@/modules/mail';
 import { telegramNotify } from '@/modules/telegram';
+import { TEAM_SIGNATURE } from "@/core/brand";
 
 async function sendContactEmails(contact: ContactView, _locale: string | null) {
   const { getSmtpSettings } = await import('@/modules/siteSettings');
@@ -38,8 +39,8 @@ async function sendContactEmails(contact: ContactView, _locale: string | null) {
     subject: `Mesajınız alındı — ${escapeContactHtml(contact.subject)}`,
     html: `<p>Merhaba <strong>${escapeContactHtml(contact.name)}</strong>,</p>
            <p>Mesajınız tarafımıza ulaştı. En kısa sürede yanıt vereceğiz.</p>
-           <p>İyi günler,<br/>PaketJet Ekibi</p>`,
-    text: `Merhaba ${contact.name},\n\nMesajınız tarafımıza ulaştı. En kısa sürede yanıt vereceğiz.\n\nİyi günler,\nPaketJet Ekibi`,
+           <p>İyi günler,<br/>${TEAM_SIGNATURE}</p>`,
+    text: `Merhaba ${contact.name},\n\nMesajınız tarafımıza ulaştı. En kısa sürede yanıt vereceğiz.\n\nİyi günler,\n${TEAM_SIGNATURE}`,
   });
 }
 

@@ -2,13 +2,14 @@ import fp from 'fastify-plugin';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUi from '@fastify/swagger-ui';
 import { env } from '@/core/env';
+import { APP_NAME } from '@/core/brand';
 
 export default fp(async (app) => {
   await app.register(fastifySwagger, {
     openapi: {
       openapi: '3.0.3',
       info: {
-        title: 'PaketJet API',
+        title: APP_NAME ? `${APP_NAME} API` : 'API',
         version: '0.1.0',
       },
       servers: [{ url: env.PUBLIC_URL || 'http://localhost:8078' }],

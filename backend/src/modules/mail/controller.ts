@@ -4,6 +4,7 @@ import { handleRouteError, getAuthUserId } from "@/modules/_shared";
 import { resolveTestMailRecipient } from "./helpers";
 import { sendMailRaw } from "./service";
 import { sendMailSchema } from "./validation";
+import { withBrand } from "@/core/brand";
 
 /** POST /mail/test */
 export async function sendTestMail(req: FastifyRequest, reply: FastifyReply) {
@@ -15,7 +16,7 @@ export async function sendTestMail(req: FastifyRequest, reply: FastifyReply) {
 
     await sendMailRaw({
       to,
-      subject: "SMTP Test — PaketJet",
+      subject: withBrand("SMTP Test"),
       text: "Bu bir test mailidir. SMTP ayarlariniz basarili gorunuyor.",
       html: "<p>Bu bir <strong>test mailidir</strong>. SMTP ayarlariniz basarili gorunuyor.</p>",
     });

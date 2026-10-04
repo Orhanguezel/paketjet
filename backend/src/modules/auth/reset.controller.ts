@@ -5,6 +5,7 @@ import {sendMailRaw,sendPasswordChangedMail} from '../mail/service';
 import {passwordResetRequestBody,passwordResetConfirmBody} from './validation';
 import {repoGetUserByEmail,repoCreatePasswordChangedNotification} from './repository';
 import {repoCreatePasswordReset,repoConsumePasswordReset} from './reset.repository';
+import { withBrand } from '@/core/brand';
 const accepted={success:true,message:'Bu e-posta ile etkin bir hesap varsa sıfırlama bağlantısı gönderilecektir.'};
 export async function passwordResetRequest(req:FastifyRequest,reply:FastifyReply){
  try{
@@ -14,7 +15,7 @@ export async function passwordResetRequest(req:FastifyRequest,reply:FastifyReply
    const token=await repoCreatePasswordReset(user.id);
    const url=`${env.FRONTEND_URL}/sifre-sifirla?token=${encodeURIComponent(token)}`;
    // Never expose a reset credential through the API, logs or admin UI.
-   void sendMailRaw({to:user.email,subject:'PaketJet — Şifre sıfırlama',text:`Şifreni sıfırlamak için bir saat içinde bu bağlantıyı aç: ${url}\n\nBu isteği sen yapmadıysan dikkate alma.`}).catch(()=>req.log.error({code:'password_reset_mail_failed'},'password_reset_mail_failed'));
+   void sendMailRaw({to:user.email,subject:withBrand('Şifre sıfırlama'),text:`Şifreni sıfırlamak için bir saat içinde bu bağlantıyı aç: ${url}\n\nBu isteği sen yapmadıysan dikkate alma.`}).catch(()=>req.log.error({code:'password_reset_mail_failed'},'password_reset_mail_failed'));
   }
   return reply.send(accepted);
  }catch(error){return handleRouteError(reply,req,error,'password_reset_request');}

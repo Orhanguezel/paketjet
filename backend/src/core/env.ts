@@ -84,6 +84,9 @@ export const env = {
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ?? "",
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET ?? "",
 
+  // Gorunen marka adi (e-posta, API belgesi, user-agent). Kodda marka yazmaz; yoksa notr metin.
+  APP_NAME: (process.env.APP_NAME ?? "").trim(),
+
   // URLs
   PUBLIC_URL: process.env.PUBLIC_URL || "http://localhost:8083",
   FRONTEND_URL,
