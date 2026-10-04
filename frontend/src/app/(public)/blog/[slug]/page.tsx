@@ -96,7 +96,7 @@ export default async function BlogDetailPage({ params }: Props) {
           <div className="blog-side-cta"><span className="blog-guide-icon"><BookOpenText size={23} /></span><h2>Uygun güzergâhı bul</h2><p>Güncel taşıyıcı ilanlarını rota ve tarihe göre keşfet.</p><Link href="/ilanlar">İlanlara göz at <ArrowUpRight size={17} /></Link></div>
         </aside>
       </div>
-      {related.length > 0 && <section className="editorial-container blog-related"><p className="editorial-eyebrow">Keşfetmeye devam et</p><h2>Diğer rehberler</h2><div className="blog-guide-grid">{related.map((item) => <article className="blog-guide" key={item.slug}><span className="blog-guide-icon"><BookOpenText size={23} /></span><p className="blog-guide-category">{item.categoryLabel}</p><h3><Link href={item.canonicalPath}>{item.title}</Link></h3><p>{item.description}</p><Link className="editorial-link" href={item.canonicalPath}>Rehberi oku <ArrowUpRight size={17} /></Link></article>)}</div></section>}
+      {related.length > 0 && <section className="editorial-container blog-related"><p className="editorial-eyebrow">Keşfetmeye devam et</p><h2>Diğer rehberler</h2><div className="blog-guide-grid">{related.map((item) => <article className="blog-guide" key={item.slug}><span className="blog-guide-icon"><BookOpenText size={23} /></span><p className="blog-guide-category">{item.categoryLabel}</p><h3><Link href={item.canonicalPath}>{item.title}</Link></h3><p>{item.description}</p></article>)}</div></section>}
     </div>
   );
 }

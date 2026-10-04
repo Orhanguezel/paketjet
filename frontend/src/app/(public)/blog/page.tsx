@@ -44,7 +44,7 @@ export default async function BlogPage() {
             <p className="editorial-lead">
               Kargo rehberleri; şehirlerarası eşya gönderirken, taşıyıcıyla anlaşırken veya aracındaki boş kapasiteyi ilana dönüştürürken işine yarayacak pratik bilgileri bir araya getirir. Her rehberde somut ölçüler, kontrol listeleri, sık sorulan sorular ve ilgili resmî kaynaklar bulunur.
             </p>
-            <p className="blog-detail-meta">{brand.name ? `Hazırlayan: ${brand.name} Editör Ekibi · ` : ""}{ALL_GUIDES.length} rehber · Son güncelleme: <time dateTime={lastUpdated}>{fmtDate(lastUpdated)}</time></p>
+            <p className="blog-detail-meta">{brand.name ? `Yazan: ${brand.name} Editör Ekibi · ` : ""}{ALL_GUIDES.length} rehber · Son güncelleme: <time dateTime={lastUpdated}>{fmtDate(lastUpdated)}</time></p>
           </div>
           <Image className="blog-hero-art" aria-hidden="true" src="/assets/editorial/route-parcel.png" width={540} height={360}
             alt="" priority sizes="(max-width: 760px) 80vw, 420px" />
@@ -76,7 +76,6 @@ export default async function BlogPage() {
                     <h3><Link href={post.canonicalPath}>{post.title}</Link></h3>
                     <p>{post.description}</p>
                     <p className="blog-guide-date"><time dateTime={post.updatedAt}>{fmtDate(post.updatedAt)}</time></p>
-                    <Link href={post.canonicalPath} className="editorial-link">Rehberi oku <ArrowUpRight size={18} aria-hidden /></Link>
                   </article>
                 ))}
               </div>

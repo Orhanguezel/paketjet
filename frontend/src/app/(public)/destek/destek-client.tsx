@@ -42,7 +42,7 @@ export default function DestekClient({ faqs, brandName }: { faqs: SupportFaq[]; 
             İlan verme, iletişim erişimi, ilan alma hakkı, kartla ödeme, iade ve hesap işlemleriyle ilgili soruların yanıtları burada. Yanıtını bulamadığın konuda destek talebi oluşturabilirsin.
           </p>
           {(brandName || updatedAt) && <p className="mt-4 text-sm text-muted">
-            {brandName ? `Hazırlayan: ${brandName} Destek Ekibi` : null}{brandName && updatedAt ? " · " : null}
+            {brandName ? `Yazan: ${brandName} Destek Ekibi` : null}{brandName && updatedAt ? " · " : null}
             {updatedAt ? <>Son güncelleme: <time dateTime={updatedAt}>{new Date(updatedAt).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })}</time></> : null}
           </p>}
         </div>

@@ -56,7 +56,7 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
           <p className="about-hero-subtitle">Taşıyıcıyla doğrudan iletişim.</p>
           {summary ? <p className="editorial-lead">{summary}</p> : null}
           {(publishedLabel || updatedLabel || byline) && <div className="about-dates">
-            {byline && <span>Hazırlayan: {byline}</span>}
+            {byline && <span>Yazan: {byline}</span>}
             {publishedLabel && <span>Yayın tarihi: <time dateTime={createdAt}>{publishedLabel}</time></span>}
             {updatedLabel && <span>Son güncelleme: <time dateTime={updatedAt}>{updatedLabel}</time></span>}
           </div>}

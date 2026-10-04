@@ -96,7 +96,7 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
             <header className="legal-header">
               <h1>{title}</h1>
               {summary && <p className="legal-intro">{summary}</p>}
-              {date && <p className="legal-date"><CalendarDays size={16} />{APP_NAME ? `Hazırlayan: ${APP_NAME} Ekibi · ` : ""}Son güncelleme: <time dateTime={updatedAt}>{date}</time></p>}
+              {date && <p className="legal-date"><CalendarDays size={16} />{APP_NAME ? `Yazan: ${APP_NAME} Ekibi · ` : ""}Son güncelleme: <time dateTime={updatedAt}>{date}</time></p>}
             </header>
             <LegalArticle articleRef={article} title={title} html={content}/>
             {faqs && faqs.length > 0 && <section className="legal-faq" aria-labelledby="legal-faq-title">
