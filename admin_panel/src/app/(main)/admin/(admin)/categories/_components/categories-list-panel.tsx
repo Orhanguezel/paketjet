@@ -57,6 +57,8 @@ import {
 export default function CategoriesListPanel({ initialModuleKey }: { initialModuleKey?: string }) {
   const t = useAdminT('admin.categories');
   const [selectedCategory, setSelectedCategory] = React.useState<{ id: string; name: string } | null>(null);
+  const [categoryDirty, setCategoryDirty] = React.useState(false);
+  const [closeRequested, setCloseRequested] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
   const apiOrigin = React.useMemo(() => getCategoryApiOrigin(), []);
 
@@ -129,12 +131,17 @@ export default function CategoriesListPanel({ initialModuleKey }: { initialModul
   };
 
   const handleCreate = () => {
+    setCategoryDirty(false);
     setSelectedCategory({ id: 'new', name: t('actions.create') });
   };
 
   const handleEdit = (item: CategoryDto) => {
+    setCategoryDirty(false);
     setSelectedCategory({ id: item.id, name: item.name });
   };
+
+  const closeCategory = () => { if (categoryDirty) setCloseRequested(true); else { setSelectedCategory(null); refetch(); } };
+  const discardCategory = () => { setCategoryDirty(false); setCloseRequested(false); setSelectedCategory(null); refetch(); };
 
   const handleDelete = async (item: CategoryDto) => {
     try {
@@ -365,6 +372,7 @@ export default function CategoriesListPanel({ initialModuleKey }: { initialModul
                             size="icon-sm"
                             onClick={() => handleEdit(item)}
                             disabled={busy}
+                            aria-label={`${item.name} kategorisini düzenle`}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
@@ -388,8 +396,9 @@ export default function CategoriesListPanel({ initialModuleKey }: { initialModul
           )}
         </CardContent>
       </Card>
-      <AdminDetailDrawer open={!!selectedCategory} onOpenChange={open => { if (!open) setSelectedCategory(null); }} title={selectedCategory?.name ?? 'Kategori'} description={selectedCategory?.id === 'new' ? 'Yeni kategori' : selectedCategory?.id} eyebrow="Kategori detayı" className="sm:max-w-[760px]">
-        {selectedCategory && <CategoryDetailClient key={selectedCategory.id} id={selectedCategory.id} onClose={() => { setSelectedCategory(null); refetch(); }} />}
+      <AdminDetailDrawer open={!!selectedCategory} onOpenChange={open => { if (!open) closeCategory(); }} title={selectedCategory?.name ?? 'Kategori'} description={selectedCategory?.id === 'new' ? 'Yeni kategori' : selectedCategory?.id} eyebrow="Kategori detayı" className="sm:max-w-[760px]">
+        {closeRequested && <div className="mb-4 rounded-lg border border-destructive/40 p-4 text-sm"><p>Kaydedilmemiş değişiklikler var. Kapatılsın mı?</p><div className="mt-3 flex gap-2"><Button variant="outline" onClick={() => setCloseRequested(false)}>Düzenlemeye devam et</Button><Button variant="destructive" onClick={discardCategory}>Kaydetmeden kapat</Button></div></div>}
+        {selectedCategory && <CategoryDetailClient key={selectedCategory.id} id={selectedCategory.id} onClose={closeCategory} onSaved={discardCategory} onDirtyChange={setCategoryDirty} />}
       </AdminDetailDrawer>
     </div>
   );

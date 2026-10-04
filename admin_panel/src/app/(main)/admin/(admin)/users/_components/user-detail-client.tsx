@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
   ADMIN_USERS_ALL_ROLES,
@@ -39,7 +40,7 @@ import {
 } from '@/integrations/hooks';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 
-export default function UserDetailClient({ id, onClose }: { id: string; onClose?: () => void }) {
+export default function UserDetailClient({ id, onClose, onDeleted, onDirtyChange }: { id: string; onClose?: () => void; onDeleted?: () => void; onDirtyChange?: (dirty: boolean) => void }) {
   const router = useRouter();
   const t = useAdminT();
 
@@ -64,6 +65,11 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
   const [password, setPasswordLocal] = React.useState('');
   const [active, setActiveLocal] = React.useState(true);
   const [deleteRequested, setDeleteRequested] = React.useState(false);
+  const [profileDirty, setProfileDirty] = React.useState(false);
+  const [rolesDirty, setRolesDirty] = React.useState(false);
+  const [passwordDirty, setPasswordDirty] = React.useState(false);
+
+  React.useEffect(() => { onDirtyChange?.(profileDirty || rolesDirty || passwordDirty); }, [profileDirty, rolesDirty, passwordDirty, onDirtyChange]);
 
   const [roles, setRolesLocal] = React.useState<UserRoleName[]>([]);
 
@@ -75,6 +81,9 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
     setActiveLocal(!!u.is_active);
 
     setRolesLocal(u.roles.length > 0 ? u.roles : ['user']);
+    setProfileDirty(false);
+    setRolesDirty(false);
+    setPasswordDirty(false);
   }, [u]);
 
   const busy =
@@ -95,6 +104,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
       }).unwrap();
 
       toast.success(t('admin.users.detail.profile.saved'));
+      setProfileDirty(false);
       userQ.refetch();
     } catch (err) {
       toast.error(getErrorMessage(err, t('admin.users.detail.errorFallback')));
@@ -120,6 +130,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
     try {
       await setRoles({ id, roles }).unwrap();
       toast.success(t('admin.users.detail.roles.saved'));
+      setRolesDirty(false);
       userQ.refetch();
     } catch (err) {
       toast.error(getErrorMessage(err, t('admin.users.detail.errorFallback')));
@@ -136,6 +147,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
       await setPassword({ id, password: p }).unwrap();
       toast.success(t('admin.users.detail.password.updated'));
       setPasswordLocal('');
+      setPasswordDirty(false);
     } catch (err) {
       toast.error(getErrorMessage(err, t('admin.users.detail.errorFallback')));
     }
@@ -145,7 +157,8 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
     try {
       await removeUser({ id }).unwrap();
       toast.success(t('admin.users.detail.delete.deleted'));
-      if (onClose) onClose();
+      if (onDeleted) onDeleted();
+      else if (onClose) onClose();
       else { router.replace('/admin/users'); router.refresh(); }
     } catch (err) {
       toast.error(getErrorMessage(err, t('admin.users.detail.errorFallback')));
@@ -153,6 +166,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
   }
 
   function chooseRole(r: UserRoleName) {
+    setRolesDirty(true);
     setRolesLocal([r]);
   }
 
@@ -213,7 +227,14 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
         </div>
       </div>
 
-      <Card>
+      <Tabs defaultValue="profile" className="space-y-4">
+        <TabsList className="h-auto flex-wrap justify-start">
+          <TabsTrigger value="profile">Bilgiler</TabsTrigger>
+          <TabsTrigger value="roles">Roller</TabsTrigger>
+          <TabsTrigger value="password">Şifre</TabsTrigger>
+          <TabsTrigger value="delete">Silme</TabsTrigger>
+        </TabsList>
+      <TabsContent value="profile"><Card>
         <CardHeader>
           <CardTitle className="text-base">{t('admin.users.detail.profile.title')}</CardTitle>
           <CardDescription>
@@ -227,7 +248,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
               <Input
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => { setEmail(e.target.value); setProfileDirty(true); }}
                 disabled={busy}
               />
             </div>
@@ -236,7 +257,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
               <Input
                 id="full_name"
                 value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                onChange={(e) => { setFullName(e.target.value); setProfileDirty(true); }}
                 disabled={busy}
               />
             </div>
@@ -245,7 +266,7 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
               <Input
                 id="phone"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => { setPhone(e.target.value); setProfileDirty(true); }}
                 disabled={busy}
               />
             </div>
@@ -272,9 +293,9 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card></TabsContent>
 
-      <Card>
+      <TabsContent value="roles"><Card>
         <CardHeader>
           <CardTitle className="text-base">{t('admin.users.detail.roles.title')}</CardTitle>
           <CardDescription>{t('admin.users.detail.roles.description')}</CardDescription>
@@ -312,14 +333,15 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
             </Button>
           </div>
         </CardContent>
-      </Card>
+      </Card></TabsContent>
 
-      <Card>
+      <TabsContent value="password"><Card>
         <CardHeader>
           <CardTitle className="text-base">{t('admin.users.detail.password.title')}</CardTitle>
           <CardDescription>{t('admin.users.detail.password.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
+          <form onSubmit={(event) => { event.preventDefault(); void onSetPassword(); }} className="space-y-3">
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="password">{t('admin.users.detail.password.label')}</Label>
@@ -328,22 +350,23 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
                 type="password"
                 placeholder={t('admin.users.detail.password.placeholder')}
                 value={password}
-                onChange={(e) => setPasswordLocal(e.target.value)}
+                onChange={(e) => { setPasswordLocal(e.target.value); setPasswordDirty(true); }}
                 disabled={busy}
               />
             </div>
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={onSetPassword} disabled={busy}>
+            <Button type="submit" disabled={busy}>
               <KeyRound className="mr-2 size-4" />
               {t('admin.users.detail.password.updateButton')}
             </Button>
           </div>
+          </form>
         </CardContent>
-      </Card>
+      </Card></TabsContent>
 
-      <Card className="border-destructive/40">
+      <TabsContent value="delete"><Card className="border-destructive/40">
         <CardHeader>
           <CardTitle className="text-base">{t('admin.users.detail.delete.title')}</CardTitle>
           <CardDescription>{t('admin.users.detail.delete.description')}</CardDescription>
@@ -356,7 +379,8 @@ export default function UserDetailClient({ id, onClose }: { id: string; onClose?
             {deleteRequested ? 'Evet, sil' : t('admin.users.detail.delete.button')}
           </Button>
         </CardContent>
-      </Card>
+      </Card></TabsContent>
+      </Tabs>
     </div>
   );
 }

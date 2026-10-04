@@ -55,6 +55,10 @@ import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 
 export default function UsersListClient() {
   const [selectedUser, setSelectedUser] = React.useState<AdminUserView | null>(null);
+  const [userDirty, setUserDirty] = React.useState(false);
+  const [closeRequested, setCloseRequested] = React.useState(false);
+  const closeUser = () => { if (userDirty) setCloseRequested(true); else { setSelectedUser(null); usersQ.refetch(); } };
+  const discardUser = () => { setUserDirty(false); setCloseRequested(false); setSelectedUser(null); usersQ.refetch(); };
   const router = useRouter();
   const sp = useSearchParams();
   const t = useAdminT('admin.users');
@@ -268,7 +272,7 @@ export default function UsersListClient() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="outline" size="sm" onClick={() => setSelectedUser(u)}>
+                      <Button variant="outline" size="sm" onClick={() => { setUserDirty(false); setSelectedUser(u); }}>
                         {t('list.table.viewButton')}
                       </Button>
                     </TableCell>
@@ -314,8 +318,9 @@ export default function UsersListClient() {
           </div>
         </CardContent>
       </Card>
-      <AdminDetailDrawer open={!!selectedUser} onOpenChange={open => { if (!open) setSelectedUser(null); }} title={selectedUser ? displayName(selectedUser) : 'Kullanıcı'} description={selectedUser?.email ?? undefined} eyebrow="Kullanıcı detayı" className="sm:max-w-[760px]">
-        {selectedUser && <UserDetailClient id={selectedUser.id} onClose={() => { setSelectedUser(null); usersQ.refetch(); }} />}
+      <AdminDetailDrawer open={!!selectedUser} onOpenChange={open => { if (!open) closeUser(); }} title={selectedUser ? displayName(selectedUser) : 'Kullanıcı'} description={selectedUser?.email ?? undefined} eyebrow="Kullanıcı detayı" className="sm:max-w-[760px]">
+        {closeRequested && <div className="mb-4 rounded-lg border border-destructive/40 p-4 text-sm"><p>Kaydedilmemiş değişiklikler var. Kapatılsın mı?</p><div className="mt-3 flex gap-2"><Button variant="outline" onClick={() => setCloseRequested(false)}>Düzenlemeye devam et</Button><Button variant="destructive" onClick={discardUser}>Kaydetmeden kapat</Button></div></div>}
+        {selectedUser && <UserDetailClient id={selectedUser.id} onClose={closeUser} onDeleted={discardUser} onDirtyChange={setUserDirty} />}
       </AdminDetailDrawer>
     </div>
   );

@@ -48,9 +48,11 @@ import {
 interface Props {
   id: string;
   onClose?: () => void;
+  onSaved?: () => void;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
-export default function CategoryDetailClient({ id, onClose }: Props) {
+export default function CategoryDetailClient({ id, onClose, onSaved, onDirtyChange }: Props) {
   const t = useAdminT('admin.categories');
   const router = useRouter();
   const adminLocale = usePreferencesStore((s) => s.adminLocale);
@@ -72,6 +74,7 @@ export default function CategoryDetailClient({ id, onClose }: Props) {
 
   // Form state
   const [formData, setFormData] = React.useState(() => createEmptyCategoryDetailForm(activeLocale));
+  const [dirty, setDirty] = React.useState(false);
 
   // Load data when editing/locale changes
   React.useEffect(() => {
@@ -79,8 +82,10 @@ export default function CategoryDetailClient({ id, onClose }: Props) {
       setFormData(
         mapCategoryToDetailForm(category as unknown as Partial<typeof formData>, activeLocale),
       );
+      onDirtyChange?.(false);
+      setDirty(false);
     }
-  }, [category, isNew, activeLocale]);
+  }, [category, isNew, activeLocale, onDirtyChange]);
 
   React.useEffect(() => {
     if (!isNew && id) {
@@ -91,6 +96,7 @@ export default function CategoryDetailClient({ id, onClose }: Props) {
   const handleBack = () => onClose ? onClose() : router.push('/admin/categories');
 
   const handleLocaleChange = (nextLocale: string) => {
+    if (dirty) { toast.error('Kaydedilmemiş değişiklikleri önce kaydedin.'); return; }
     setActiveLocale(nextLocale);
     setFormData((prev) => ({ ...prev, locale: nextLocale }));
   };
@@ -113,7 +119,9 @@ export default function CategoryDetailClient({ id, onClose }: Props) {
         await updateCategory({ id, patch: payload }).unwrap();
         toast.success(t('messages.updated'));
       }
-      handleBack();
+      setDirty(false);
+      onDirtyChange?.(false);
+      if (onSaved) onSaved(); else handleBack();
     } catch (error: any) {
       const errMsg = error?.data?.error?.message || error?.message || t('messages.unknownError');
       toast.error(`${t('messages.errorPrefix')}: ${errMsg}`);
@@ -121,10 +129,14 @@ export default function CategoryDetailClient({ id, onClose }: Props) {
   };
 
   const handleChange = (field: string, value: unknown) => {
+    setDirty(true);
+    onDirtyChange?.(true);
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleImageChange = (url: string) => {
+    setDirty(true);
+    onDirtyChange?.(true);
     setFormData((prev) => ({ ...prev, image_url: url }));
   };
 
@@ -148,7 +160,7 @@ export default function CategoryDetailClient({ id, onClose }: Props) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={handleBack}>
+              <Button variant="ghost" size="icon" onClick={handleBack} aria-label="Kategori listesine dön">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <div>
