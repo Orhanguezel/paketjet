@@ -1,5 +1,5 @@
 import { db } from '@/db/client';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import { users } from '@/modules/auth/schema';
 import { identityDocuments, type IdentityStatus } from './schema';
 
@@ -47,17 +47,38 @@ export async function repoListIdentityDocuments(status?: IdentityStatus) {
   const grouped = new Map<string, typeof rows>();
   for (const row of rows) grouped.set(row.user_id, [...(grouped.get(row.user_id) ?? []), row]);
   return [...grouped.values()].map((docs) => {
-    const front = docs.find((row) => row.side === 'front');
-    const back = docs.find((row) => row.side === 'back');
     const latest = docs[0]!;
-    const effectiveStatus: IdentityStatus = docs.some((row) => row.status === 'rejected') ? 'rejected'
-      : front && back && docs.every((row) => row.status === 'approved') ? 'approved' : 'pending';
     return { id: latest.id, user_id: latest.user_id, email: latest.email, full_name: latest.full_name,
-      status: effectiveStatus, has_front: !!front, has_back: !!back,
-      reject_reason: docs.find((row) => row.reject_reason)?.reject_reason ?? null,
-      reviewed_at: docs.find((row) => row.reviewed_at)?.reviewed_at ?? null,
-      created_at: latest.created_at, updated_at: latest.updated_at };
+      ...summarizeIdentity(docs), created_at: latest.created_at, updated_at: latest.updated_at };
   }).filter((row) => !status || (row.has_front && row.has_back && row.status === status));
+}
+
+type IdentityDocSummaryInput = { side: string; status: IdentityStatus; reject_reason: string | null; reviewed_at: Date | null; updated_at: Date };
+export type IdentitySummary = { status: IdentityStatus; has_front: boolean; has_back: boolean; reject_reason: string | null; reviewed_at: Date | null; updated_at: Date | null };
+
+/** Iki yuzun ortak karari: biri reddedildiyse reddedildi, ikisi de onayliysa onaylandi, aksi halde inceleniyor. */
+function summarizeIdentity(docs: IdentityDocSummaryInput[]): IdentitySummary {
+  const front = docs.find((row) => row.side === 'front');
+  const back = docs.find((row) => row.side === 'back');
+  const status: IdentityStatus = docs.some((row) => row.status === 'rejected') ? 'rejected'
+    : front && back && docs.every((row) => row.status === 'approved') ? 'approved' : 'pending';
+  return { status, has_front: !!front, has_back: !!back,
+    reject_reason: docs.find((row) => row.reject_reason)?.reject_reason ?? null,
+    reviewed_at: docs.find((row) => row.reviewed_at)?.reviewed_at ?? null,
+    updated_at: docs.reduce<Date | null>((max, row) => (!max || row.updated_at > max ? row.updated_at : max), null) };
+}
+
+/** Verilen kullanicilarin kimlik ozeti; belge yuklememis kullanici haritada yer almaz. */
+export async function repoIdentitySummaries(userIds: string[]): Promise<Map<string, IdentitySummary>> {
+  const result = new Map<string, IdentitySummary>();
+  if (!userIds.length) return result;
+  const rows = await db.select({ user_id: identityDocuments.user_id, side: identityDocuments.side, status: identityDocuments.status,
+    reject_reason: identityDocuments.reject_reason, reviewed_at: identityDocuments.reviewed_at, updated_at: identityDocuments.updated_at })
+    .from(identityDocuments).where(inArray(identityDocuments.user_id, userIds));
+  const grouped = new Map<string, typeof rows>();
+  for (const row of rows) grouped.set(row.user_id, [...(grouped.get(row.user_id) ?? []), row]);
+  for (const [userId, docs] of grouped) result.set(userId, summarizeIdentity(docs));
+  return result;
 }
 
 export async function repoReviewIdentityDocuments(userId: string, reviewerId: string, status: 'approved' | 'rejected', reason: string | null) {

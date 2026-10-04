@@ -3,3 +3,4 @@
 export { registerIdentity } from './router';
 export { registerIdentityAdmin } from './admin.routes';
 export { identityDocuments } from './schema';
+export { repoIdentitySummaries, type IdentitySummary } from './repository';

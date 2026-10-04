@@ -2,6 +2,31 @@
 
 export const CARRIERS_ADMIN_BASE = '/admin/carriers';
 
+/** Taşıyıcının kimlik belgesi durumu; 'none' = hiç belge yüklemedi. */
+export type CarrierIdentityStatus = 'none' | 'pending' | 'approved' | 'rejected';
+export interface CarrierIdentity {
+  status: CarrierIdentityStatus;
+  has_front: boolean;
+  has_back: boolean;
+  reject_reason: string | null;
+  reviewed_at: string | null;
+  updated_at: string | null;
+}
+type CarrierIdentityDto = Partial<Omit<CarrierIdentity, 'reviewed_at' | 'updated_at'>> & { reviewed_at?: string | Date | null; updated_at?: string | Date | null };
+
+const toIso = (v?: string | Date | null) => (v == null ? null : typeof v === 'string' ? v : v.toISOString());
+export function normalizeCarrierIdentity(dto?: CarrierIdentityDto | null): CarrierIdentity {
+  const status = dto?.status;
+  return {
+    status: status === 'pending' || status === 'approved' || status === 'rejected' ? status : 'none',
+    has_front: !!dto?.has_front,
+    has_back: !!dto?.has_back,
+    reject_reason: dto?.reject_reason ?? null,
+    reviewed_at: toIso(dto?.reviewed_at),
+    updated_at: toIso(dto?.updated_at),
+  };
+}
+
 export interface CarrierListItemDto {
   id: string;
   email: string;
@@ -19,6 +44,7 @@ export interface CarrierListItemDto {
   rating_count: number;
   wallet_balance: string;
   wallet_status: string | null;
+  identity?: CarrierIdentityDto | null;
 }
 
 export interface CarrierListItem {
@@ -38,6 +64,7 @@ export interface CarrierListItem {
   rating_count: number;
   wallet_balance: string;
   wallet_status: string | null;
+  identity: CarrierIdentity;
 }
 
 export interface CarrierListQueryParams {
@@ -107,6 +134,7 @@ export interface CarrierDetailDto {
   recent_ilanlar: CarrierDetailIlanDto[];
   recent_bookings: CarrierDetailBookingDto[];
   recent_ratings: CarrierDetailRatingDto[];
+  identity?: CarrierIdentityDto | null;
 }
 
 export interface CarrierListResponseDto {
@@ -182,6 +210,7 @@ export interface CarrierDetail {
   recent_ilanlar: CarrierDetailIlan[];
   recent_bookings: CarrierDetailBooking[];
   recent_ratings: CarrierDetailRating[];
+  identity: CarrierIdentity;
 }
 
 export function normalizeCarrierListItem(dto: CarrierListItemDto): CarrierListItem {
@@ -202,6 +231,7 @@ export function normalizeCarrierListItem(dto: CarrierListItemDto): CarrierListIt
     rating_count: Number(dto.rating_count ?? 0),
     wallet_balance: dto.wallet_balance ?? '0.00',
     wallet_status: dto.wallet_status ?? null,
+    identity: normalizeCarrierIdentity(dto.identity),
   };
 }
 
@@ -293,5 +323,6 @@ export function normalizeCarrierDetail(dto: CarrierDetailDto): CarrierDetail {
     recent_ratings: Array.isArray(dto.recent_ratings)
       ? dto.recent_ratings.map(normalizeCarrierDetailRating)
       : [],
+    identity: normalizeCarrierIdentity(dto.identity),
   };
 }

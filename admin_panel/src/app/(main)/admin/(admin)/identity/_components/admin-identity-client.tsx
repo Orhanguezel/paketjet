@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/card";
 import { useListIdentityDocumentsQuery } from "@/integrations/hooks";
 import type { IdentityListItem, IdentityStatus } from "@/integrations/shared";
 
-import { IdentityReviewDetail } from "./identity-review-detail";
+import { IdentityReviewDetail } from "@/components/admin/identity/identity-review-detail";
 
 type Filter = IdentityStatus | "all";
 const tabs: { key: Filter; label: string }[] = [

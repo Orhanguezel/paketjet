@@ -1,4 +1,5 @@
-import type { CarrierListItem, CarrierListQueryParams } from '@/integrations/shared/carriers';
+import type { CarrierDetail, CarrierIdentity, CarrierListItem, CarrierListQueryParams } from '@/integrations/shared/carriers';
+import type { IdentityListItem } from '@/integrations/shared/identity';
 
 type AdminCarrierIdentity = Pick<CarrierListItem, 'full_name' | 'email'>;
 
@@ -88,4 +89,29 @@ export function getAdminCarrierWalletStatusKey(
   if (value === 'suspended') return 'suspended';
   if (value === 'closed') return 'closed';
   return 'unknown';
+}
+
+export type AdminCarrierIdentityKey = 'none' | 'incomplete' | 'pending' | 'approved' | 'rejected';
+
+/** Liste/detay rozeti için durum anahtarı: iki yüz yüklenmeden karar verilemez, "Eksik belge" gösterilir. */
+export function getAdminCarrierIdentityKey(identity: CarrierIdentity): AdminCarrierIdentityKey {
+  if (identity.status === 'none') return 'none';
+  if (identity.status !== 'rejected' && !(identity.has_front && identity.has_back)) return 'incomplete';
+  return identity.status;
+}
+
+export function getAdminCarrierIdentityBadgeVariant(key: AdminCarrierIdentityKey): 'default' | 'secondary' | 'destructive' | 'outline' {
+  return key === 'approved' ? 'default' : key === 'rejected' ? 'destructive' : key === 'pending' ? 'secondary' : 'outline';
+}
+
+/** Taşıyıcı detayından kimlik inceleme çekmecesinin beklediği kaydı üretir; belge yoksa null. */
+export function buildCarrierIdentityReviewItem(carrier: CarrierDetail): IdentityListItem | null {
+  const identity = carrier.identity;
+  if (identity.status === 'none') return null;
+  const at = identity.updated_at ?? carrier.created_at;
+  return {
+    id: carrier.id, user_id: carrier.id, email: carrier.email, full_name: carrier.full_name,
+    status: identity.status, has_front: identity.has_front, has_back: identity.has_back,
+    reject_reason: identity.reject_reason, reviewed_at: identity.reviewed_at, created_at: at, updated_at: at,
+  };
 }

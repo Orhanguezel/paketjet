@@ -35,6 +35,8 @@ import {
   formatAdminCarrierDate,
   formatAdminCarrierRating,
   getAdminCarrierDisplayName,
+  getAdminCarrierIdentityBadgeVariant,
+  getAdminCarrierIdentityKey,
   getAdminCarrierStatusKey,
   type AdminCarriersActiveFilter,
   type AdminCarriersFilters,
@@ -155,6 +157,7 @@ export default function AdminCarriersClient() {
                 <TableHead>{t('columns.carrier')}</TableHead>
                 <TableHead>{t('columns.phone')}</TableHead>
                 <TableHead>{t('columns.status')}</TableHead>
+                <TableHead>{t('columns.identity')}</TableHead>
                 <TableHead>{t('columns.ilanlar')}</TableHead>
                 <TableHead>{t('columns.rating')}</TableHead>
                 <TableHead>{t('columns.createdAt')}</TableHead>
@@ -165,7 +168,7 @@ export default function AdminCarriersClient() {
             <TableBody>
               {rows.length === 0 && listQ.isFetching && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center text-sm text-muted-foreground">
                     {t('list.loading')}
                   </TableCell>
                 </TableRow>
@@ -173,7 +176,7 @@ export default function AdminCarriersClient() {
 
               {rows.length === 0 && !listQ.isFetching && (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={9} className="text-center text-sm text-muted-foreground">
                     {t('list.empty')}
                   </TableCell>
                 </TableRow>
@@ -197,6 +200,11 @@ export default function AdminCarriersClient() {
                         {item.email_verified ? t('admin.common.yes') : t('admin.common.no')}
                       </Badge>
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={getAdminCarrierIdentityBadgeVariant(getAdminCarrierIdentityKey(item.identity))}>
+                      {t(`identity.${getAdminCarrierIdentityKey(item.identity)}`)}
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     <div className="space-y-1 text-sm">

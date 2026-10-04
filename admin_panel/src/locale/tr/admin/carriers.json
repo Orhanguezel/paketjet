@@ -26,6 +26,7 @@
     "carrier": "Taşıyıcı",
     "phone": "Telefon",
     "status": "Durum",
+    "identity": "Kimlik",
     "ilanlar": "İlanlar",
     "bookings": "Rezervasyonlar",
     "rating": "Puan",
@@ -111,9 +112,30 @@
       "description": "Taşıyıcı için bırakılan son değerlendirmeler.",
       "empty": "Henüz puan bulunmuyor.",
       "noComment": "Yorum bırakılmadı."
+    },
+    "identity": {
+      "title": "Kimlik Bilgileri",
+      "description": "Taşıyıcının yüklediği kimlik belgesinin durumu. Görselleri yalnız gerektiğinde açın; her açılış kayda geçer.",
+      "status": "Durum",
+      "front": "Ön yüz",
+      "back": "Arka yüz",
+      "uploaded": "Yüklendi",
+      "missing": "Yüklenmedi",
+      "reviewedAt": "İnceleme tarihi",
+      "updatedAt": "Son yükleme",
+      "rejectReason": "Ret nedeni",
+      "review": "Kimliği incele",
+      "empty": "Bu taşıyıcı henüz kimlik belgesi yüklemedi."
     }
   },
   "messages": {
     "loadError": "Taşıyıcı listesi yüklenemedi."
+  },
+  "identity": {
+    "none": "Yüklenmedi",
+    "incomplete": "Eksik belge",
+    "pending": "İnceleniyor",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
   }
 }

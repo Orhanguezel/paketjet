@@ -238,6 +238,9 @@ export {
   type AdminCarriersFilters,
   type AdminCarriersHasIlanFilter,
   type CarrierDetail,
+  type CarrierIdentity,
+  type CarrierIdentityStatus,
+  normalizeCarrierIdentity,
   type CarrierDetailBooking,
   type CarrierDetailBookingDto,
   type CarrierDetailDto,
@@ -258,6 +261,10 @@ export {
   formatAdminCarrierMoney,
   formatAdminCarrierRating,
   getAdminCarrierDisplayName,
+  buildCarrierIdentityReviewItem,
+  getAdminCarrierIdentityBadgeVariant,
+  getAdminCarrierIdentityKey,
+  type AdminCarrierIdentityKey,
   getAdminCarrierStatusKey,
   getAdminCarrierWalletStatusKey,
   normalizeCarrierDetail,
@@ -895,5 +902,5 @@ export {
 } from '@/integrations/shared/payment-settings';
 export * from '@/integrations/shared/commerce';
 export * from '@/integrations/shared/payment-display';
-export { IDENTITY_ADMIN_BASE, type IdentityStatus, type IdentityListItem } from '@/integrations/shared/identity';
+export { IDENTITY_ADMIN_BASE, type IdentitySide, type IdentityStatus, type IdentityListItem } from '@/integrations/shared/identity';
 export * from '@/integrations/shared/content-management';

@@ -1,5 +1,8 @@
 export {
   CARRIERS_ADMIN_BASE,
+  type CarrierIdentity,
+  type CarrierIdentityStatus,
+  normalizeCarrierIdentity,
   type CarrierDetail,
   type CarrierDetailBooking,
   type CarrierDetailBookingDto,
@@ -38,6 +41,10 @@ export {
   formatAdminCarrierMoney,
   formatAdminCarrierRating,
   getAdminCarrierDisplayName,
+  buildCarrierIdentityReviewItem,
+  getAdminCarrierIdentityBadgeVariant,
+  getAdminCarrierIdentityKey,
+  type AdminCarrierIdentityKey,
   getAdminCarrierStatusKey,
   getAdminCarrierWalletStatusKey,
 } from '@/integrations/shared/carriers-ui';

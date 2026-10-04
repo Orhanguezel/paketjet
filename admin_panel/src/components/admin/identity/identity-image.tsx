@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { IdCard } from 'lucide-react';
 import { fetchIdentitySideUrl } from '@/integrations/core/identity-file';
-import type { IdentitySide } from '@/integrations/shared/identity';
+import type { IdentitySide } from '@/integrations/shared';
 
 /** Görsel yalnız açıkça istendiğinde yüklenir; her görüntüleme backend'de loglanır. */
 export default function IdentityImage({ userId, side }: { userId: string; side: IdentitySide }) {

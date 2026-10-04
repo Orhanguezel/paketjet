@@ -1,9 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { ArrowLeft, RefreshCcw } from 'lucide-react';
+import { ArrowLeft, IdCard, RefreshCcw } from 'lucide-react';
+
+import IdentityImage from '@/components/admin/identity/identity-image';
+import { IdentityReviewDetail } from '@/components/admin/identity/identity-review-detail';
 
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +15,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import {
+  buildCarrierIdentityReviewItem,
   formatAdminCarrierDate,
+  getAdminCarrierIdentityBadgeVariant,
+  getAdminCarrierIdentityKey,
   formatAdminCarrierMoney,
   formatAdminCarrierRating,
   getErrorMessage,
@@ -34,6 +41,7 @@ export default function CarrierDetailClient({ id, onClose }: CarrierDetailClient
   const carrierQ = useGetCarrierAdminQuery({ id });
   const [setUserActive, setUserActiveState] = useSetUserActiveAdminMutation();
   const carrier = carrierQ.data;
+  const [reviewing, setReviewing] = useState(false);
 
   async function onToggleActive() {
     if (!carrier) return;
@@ -146,6 +154,57 @@ export default function CarrierDetailClient({ id, onClose }: CarrierDetailClient
           </div>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3 space-y-0">
+          <div className="space-y-1.5">
+            <CardTitle className="flex items-center gap-2 text-base"><IdCard className="size-4 text-primary" />{t('detail.identity.title')}</CardTitle>
+            <CardDescription>{t('detail.identity.description')}</CardDescription>
+          </div>
+          <Badge variant={getAdminCarrierIdentityBadgeVariant(getAdminCarrierIdentityKey(carrier.identity))}>
+            {t(`identity.${getAdminCarrierIdentityKey(carrier.identity)}`)}
+          </Badge>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {carrier.identity.status === 'none' ? (
+            <p className="text-sm text-muted-foreground">{t('detail.identity.empty')}</p>
+          ) : (
+            <>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {(['front', 'back'] as const).map((side) => (
+                  <div key={side} className="space-y-2">
+                    <div className="text-xs text-muted-foreground">{t(`detail.identity.${side}`)}</div>
+                    {(side === 'front' ? carrier.identity.has_front : carrier.identity.has_back)
+                      ? <IdentityImage key={`${carrier.id}-${side}-${carrier.identity.updated_at}`} userId={carrier.id} side={side} />
+                      : <p className="rounded-lg border border-dashed p-5 text-sm text-muted-foreground">{t('detail.identity.missing')}</p>}
+                  </div>
+                ))}
+              </div>
+              <dl className="grid gap-4 text-sm sm:grid-cols-2">
+                <div className="space-y-1">
+                  <dt className="text-xs text-muted-foreground">{t('detail.identity.updatedAt')}</dt>
+                  <dd className="font-medium">{formatAdminCarrierDate(carrier.identity.updated_at)}</dd>
+                </div>
+                <div className="space-y-1">
+                  <dt className="text-xs text-muted-foreground">{t('detail.identity.reviewedAt')}</dt>
+                  <dd className="font-medium">{formatAdminCarrierDate(carrier.identity.reviewed_at)}</dd>
+                </div>
+              </dl>
+              {carrier.identity.status === 'rejected' && carrier.identity.reject_reason && (
+                <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
+                  <div className="text-xs font-medium text-destructive">{t('detail.identity.rejectReason')}</div>
+                  <p className="mt-1">{carrier.identity.reject_reason}</p>
+                </div>
+              )}
+              <Button type="button" variant="outline" onClick={() => setReviewing(true)}>{t('detail.identity.review')}</Button>
+            </>
+          )}
+        </CardContent>
+      </Card>
+      <IdentityReviewDetail
+        item={reviewing ? buildCarrierIdentityReviewItem(carrier) : null}
+        onClose={() => { setReviewing(false); carrierQ.refetch(); }}
+      />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <Card>
