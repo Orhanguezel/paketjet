@@ -6,7 +6,7 @@ import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
 import { getPublishedLegalSlugs } from "@/modules/customPage/legal/legal-published";
 import { BreadcrumbSchema } from "@/components/JsonLd";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const SLUG = "iptal-ve-iade-kosullari";
 
 export const revalidate = 300;

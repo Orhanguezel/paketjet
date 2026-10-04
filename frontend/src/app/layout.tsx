@@ -6,6 +6,7 @@ import { OrganizationSchema } from "@/components/JsonLd";
 import { getAnalyticsConfig } from "@/lib/analytics-config";
 import { AnalyticsHead, AnalyticsNoScript } from "@/components/analytics/Analytics";
 import CookieConsent from "@/components/analytics/CookieConsent";
+import { APP_NAME, withBrand } from "@/lib/app-name";
 
 
 const dmSans = DM_Sans({
@@ -14,7 +15,7 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const API_URL = process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:8078";
 
 async function fetchGlobalSeo() {
@@ -55,15 +56,15 @@ export async function generateMetadata(): Promise<Metadata> {
   const googleVerification = analytics.googleVerification;
   const bingVerification = process.env.BING_VERIFICATION ?? "";
 
-  const siteName = seo?.site_name ?? "PaketJet";
-  const titleTemplate = seo?.title_template ?? "%s | PaketJet";
-  const titleDefault = meta?.title ?? seo?.title_default ?? "PaketJet — Güzergâh ve taşıyıcı ilanları";
+  const siteName = seo?.site_name ?? APP_NAME;
+  const titleTemplate = seo?.title_template ?? withBrand("%s");
+  const titleDefault = meta?.title ?? seo?.title_default ?? withBrand("Güzergâh ve taşıyıcı ilanları", " — ");
   const description = meta?.description ?? seo?.description
     ?? "Taşıyıcı güzergâhlarını keşfet, iletişim bilgilerine eriş ve doğrudan görüş. Güzergâhını ücretsiz ilan ver.";
   const keywords = meta?.keywords
     ? meta.keywords.split(",").map((k: string) => k.trim()).filter(Boolean)
-    : ["kargo",  "tasiyicilik", "lojistik", "turkiye", "paketjet", "p2p kargo"];
-  const author = seo?.author ?? "PaketJet";
+    : ["kargo",  "tasiyicilik", "lojistik", "turkiye", "p2p kargo"];
+  const author = seo?.author ?? APP_NAME;
 
   const ogImages = seo?.open_graph?.images?.length
     ? seo.open_graph.images.map((img: string) => img.startsWith("/") ? `${SITE_URL}${img}` : img)

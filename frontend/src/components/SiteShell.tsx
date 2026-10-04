@@ -1,3 +1,4 @@
+import { APP_NAME } from "@/lib/app-name";
 import { getPublicJson } from "@/lib/public-fetch";
 import { ROUTES } from "@/config/routes";
 import { API } from "@/config/api-endpoints";
@@ -63,7 +64,7 @@ export default async function SiteShell({ children }: { children: React.ReactNod
   if (refundPolicy) purchaseLegalLinks.push({ title: "İptal ve iade koşulları", path: ROUTES.static.iptalIade });
   const logoUrl = mediaUrl(logoLight) || mediaUrl(logo) || toUrl(logo?.logo_url);
   const logoDarkUrl = mediaUrl(logoDark) || toUrl(logo?.logo_dark_url) || logoUrl;
-  const logoAlt = logo?.alt || logo?.logo_alt || "PaketJet";
+  const logoAlt = logo?.alt || logo?.logo_alt || APP_NAME;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

@@ -1,4 +1,5 @@
 "use client";
+import { Wordmark } from "@/components/Wordmark";
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -45,7 +46,7 @@ export default function SplashLoader({ logoUrl }: { logoUrl?: string }) {
     <div className="brand-intro" aria-hidden="true">
       <div className="brand-intro-content">
         {logoUrl && <Image src={logoUrl} alt="" width={80} height={80} unoptimized className="brand-intro-logo" />}
-        <span className="brand-intro-name">Paket<span>Jet</span></span>
+        <span className="brand-intro-name"><Wordmark /></span>
         <svg className="brand-intro-route" viewBox="0 0 240 40" fill="none">
           <path d="M12 30C65 30 65 10 120 10S180 30 228 10" pathLength="1" />
           <circle cx="12" cy="30" r="4" /><circle cx="228" cy="10" r="4" />

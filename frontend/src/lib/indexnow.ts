@@ -1,7 +1,7 @@
 const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
 
 export async function pingIndexNow(urls: string[]) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const key = process.env.INDEXNOW_KEY;
   const host = new URL(siteUrl).host;
 

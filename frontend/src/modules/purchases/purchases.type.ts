@@ -15,6 +15,7 @@ export interface PurchaseDeclarationInput {
   estimated_value: number;
   estimated_value_currency?: "TRY";
   content_declared: true;
+  terms_accepted: true;
 }
 
 export interface MyPurchase {

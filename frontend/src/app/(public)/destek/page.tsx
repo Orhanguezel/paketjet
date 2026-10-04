@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
     canonicalPath: "/destek",
     title: "Destek ve sıkça sorulan sorular",
     description: "Destek ve sıkça sorulan sorular: taşıyıcı ilanları, iletişim erişimi, ilan alma hakkı, kartla ödeme, iade ve hesap işlemleri hakkında yanıtlar.",
-    fallbackDescription: "PaketJet destek merkezi. İlanlar, iletişim erişimi, ödeme ve hesap hakkında sıkça sorulan sorular.",
+    fallbackDescription: "Destek merkezi. İlanlar, iletişim erişimi, ödeme ve hesap hakkında sıkça sorulan sorular.",
   });
 }
 

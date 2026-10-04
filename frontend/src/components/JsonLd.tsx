@@ -16,7 +16,7 @@ export function JsonLd({ data }: JsonLdProps) {
   );
 }
 
-const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com").replace(/\/$/, "");
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
 const abs = (u: string) => (u.startsWith("/") ? `${SITE_URL}${u}` : u);
 const ORG = { "@id": `${SITE_URL}/#organization` };
 const WEBSITE = { "@id": `${SITE_URL}/#website` };

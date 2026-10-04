@@ -1,4 +1,6 @@
 "use client";
+import { APP_NAME } from "@/lib/app-name";
+import { Wordmark } from "@/components/Wordmark";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -97,9 +99,9 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
         <div className="relative z-10 flex flex-col justify-between px-12 py-10 w-full">
           <Link href={ROUTES.home}>
             {logoUrl ? (
-              <img src={logoUrl} alt="PaketJet" className="h-16 w-auto max-w-44 object-contain" />
+              <img src={logoUrl} alt={APP_NAME} className="h-16 w-auto max-w-44 object-contain" />
             ) : (
-              <span className="text-2xl font-semibold text-white tracking-tight">paket<span className="text-brand">jet</span></span>
+              <span className="text-2xl font-semibold text-white tracking-tight"><Wordmark accentClassName="text-brand" /></span>
             )}
           </Link>
           <div>
@@ -125,7 +127,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
               ))}
             </ul>
           </div>
-          <p className="text-white/70 text-xs">© 2026 PaketJet</p>
+          <p className="text-white/70 text-xs">© {new Date().getFullYear()} {APP_NAME}</p>
         </div>
       </div>
 
@@ -134,7 +136,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
         <div className="w-full max-w-md mx-auto">
           <div className="lg:hidden mb-6">
             <Link href={ROUTES.home} className="text-xl font-semibold text-brand tracking-tight">
-              {logoUrl ? <img src={logoUrl} alt="PaketJet" className="h-12 w-auto max-w-36 object-contain"/> : <>paket<span className="text-foreground">jet</span></>}
+              {logoUrl ? <img src={logoUrl} alt={APP_NAME} className="h-12 w-auto max-w-36 object-contain"/> : <><Wordmark accentClassName="text-foreground" /></>}
             </Link>
           </div>
 

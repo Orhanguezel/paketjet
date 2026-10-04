@@ -1,4 +1,5 @@
 'use client';
+import { Wordmark } from "@/components/Wordmark";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,7 +9,7 @@ import Header from '@/components/Header';
 import { useAuthStore } from '@/modules/auth/auth.store';
 import { getMe } from '@/modules/auth/auth.service';
 import { ROUTES } from '@/config/routes';
-const nav=[['/panel','Genel bakış'],['/panel/ilanlarim','İlanlarım'],['/panel/satin-aldiklarim','Satın aldıklarım'],['/panel/ilan-alma-hakki','İlan alma hakkı'],['/panel/bildirimler','Bildirimler'],['/panel/profil','Profil'],['/panel/gelistirici','Geliştirici']] as const;
+const nav=[['/panel','Genel bakış'],['/panel/ilanlarim','İlanlarım'],['/panel/satin-aldiklarim','Satın aldıklarım'],['/panel/ilan-alma-hakki','İlan alma hakkı'],['/panel/degerlendirmelerim','Değerlendirmelerim'],['/panel/bildirimler','Bildirimler'],['/panel/profil','Profil'],['/panel/gelistirici','Geliştirici']] as const;
 export default function PanelShell({children,logoUrl}:{children:React.ReactNode;logoUrl?:string}) {
   const pathname=usePathname(),{user,setUser}=useAuthStore();
   const [ready,setReady]=useState(false),[error,setError]=useState(false),[retry,setRetry]=useState(0);
@@ -22,7 +23,7 @@ export default function PanelShell({children,logoUrl}:{children:React.ReactNode;
       <div className="member-welcome"><div className="member-welcome-art" aria-hidden="true"><Image src="/assets/motion/route-landscape.webp" alt="" fill sizes="500px" className="object-cover"/></div><div className="member-identity"><span className="member-avatar" aria-hidden="true">{user?.avatar_url?<Image src={user.avatar_url} alt="Profil fotoğrafın" width={76} height={76} unoptimized className="h-full w-full rounded-full object-cover"/>:(name||'P').slice(0,1).toLocaleUpperCase('tr-TR')}</span><div><p className="member-greeting">{name?`Merhaba, ${name}`:'Hesabım'}</p><p className="mt-2 text-muted">İlanların ve bağlantıların burada.</p></div></div><Link href={ROUTES.panel.profil} className="member-profile"><Pencil size={17}/>Profilini düzenle</Link></div>
       <nav aria-label="Hesap menüsü" className="member-tabs">{nav.map(([href,label])=><Link key={href} href={href} aria-current={selected(href)?'page':undefined}>{label}</Link>)}</nav>
       <main id="main-content" className="member-main">{children}</main>
-      <footer className="member-footer"><Link href={ROUTES.home} className="font-semibold text-foreground">Paket<span className="text-brand">Jet</span></Link><div className="flex flex-wrap gap-x-6 gap-y-2"><Link href={ROUTES.static.destek}><HelpCircle size={16}/>Destek merkezi</Link><Link href="/panel/tasima-kurallari">Taşıma kuralları</Link></div></footer>
+      <footer className="member-footer"><Link href={ROUTES.home} className="font-semibold text-foreground"><Wordmark accentClassName="text-brand" /></Link><div className="flex flex-wrap gap-x-6 gap-y-2"><Link href={ROUTES.static.destek}><HelpCircle size={16}/>Destek merkezi</Link><Link href="/panel/tasima-kurallari">Taşıma kuralları</Link></div></footer>
     </div>
   </div>;
 }

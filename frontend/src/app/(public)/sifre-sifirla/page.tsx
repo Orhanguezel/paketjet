@@ -3,7 +3,7 @@ import { noIndexMetadata } from "@/lib/seo";
 import SifreSifirlaClient from "./sifre-sifirla-client";
 
 export function generateMetadata(): Metadata {
-  return noIndexMetadata("Sifre Sifirla | PaketJet", "PaketJet hesabiniza ait yeni sifrenizi belirleyerek erisiminizi yenileyin.");
+  return noIndexMetadata("Şifre sıfırla", "Hesabınıza ait yeni şifrenizi belirleyerek erişiminizi yenileyin.");
 }
 
 export default function SifreSifirlaPage() {

@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   return Response.json({
     ok: true,
     hasKey: Boolean(process.env.INDEXNOW_KEY),
-    keyLocation: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com"}/indexnow-key.txt`,
+    keyLocation: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/indexnow-key.txt`,
   });
 }
 

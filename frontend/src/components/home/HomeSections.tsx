@@ -3,7 +3,7 @@ import {ArrowRight, Handshake, MapPinned, MessageCircle, Route, FilePlus2} from 
 import BrandMotion from './BrandMotion';
 import {ROUTES} from '@/config/routes';
 export function HomePrinciples(){
-  return <section className="home-principles" aria-label="PaketJet ile nasıl ilerlersin"><div className="site-container">
+  return <section className="home-principles" aria-label="Nasıl ilerlersin"><div className="site-container">
     {[[MessageCircle,'Doğrudan iletişim','Taşıyıcıyla doğrudan görüş.'],[FilePlus2,'Ücretsiz taşıyıcı ilanı','Güzergâhını ücretsiz paylaş.'],[Handshake,'Taşıma detayları taraflar arasında','Fiyatı, yükü ve teslimatı birlikte netleştirin.']].map(([Icon,title,copy])=>{const Symbol=Icon as typeof MessageCircle;return <div className="principle" key={String(title)}><span className="principle-icon"><Symbol size={24} strokeWidth={1.6}/></span><div><h2>{String(title)}</h2><p>{String(copy)}</p></div></div>;})}
   </div></section>;
 }

@@ -1,4 +1,5 @@
 "use client";
+import { Wordmark } from "@/components/Wordmark";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -37,7 +38,7 @@ export default function SifremiUnuttumClient() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <Link href="/" className="text-2xl font-extrabold text-foreground tracking-tight">
-            paket<span className="text-brand">jet</span>
+            <Wordmark accentClassName="text-brand" />
           </Link>
           <h1 className="text-xl font-bold text-foreground mt-4">Şifremi Unuttum</h1>
           <p className="text-sm text-muted mt-1">

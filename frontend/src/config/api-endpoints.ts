@@ -89,6 +89,9 @@ export const API = {
     create:         "/api/ratings",
     byBooking:      (bookingId: string) => `/api/ratings/booking/${bookingId}`,
     byCarrier:      (carrierId: string) => `/api/ratings/carrier/${carrierId}`,
+    member:         (memberId: string) => `/api/ratings/member/${memberId}`,
+    eligible:       '/api/ratings/eligible',
+    purchase:       (purchaseId: string) => `/api/ratings/purchase/${purchaseId}`,
   },
 
   siteSettings: {

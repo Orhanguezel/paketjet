@@ -36,6 +36,7 @@ export const ROUTES = {
     cuzdan:        "/panel/ilan-alma-hakki",
     bildirimler:   "/panel/bildirimler",
     profil:        "/panel/profil",
+    degerlendirmelerim: '/panel/degerlendirmelerim',
     gelistirici:   "/panel/gelistirici",
 
   },
@@ -63,5 +64,6 @@ export const ROUTES = {
     gelistiriciler: "/gelistiriciler",
     blog: "/blog",
     rota: (slug: string) => `/rota/${slug}`,
+    uye: (id: string) => `/uyeler/${encodeURIComponent(id)}`,
   },
 } as const;

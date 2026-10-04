@@ -1,4 +1,5 @@
 "use client";
+import { APP_NAME } from "@/lib/app-name";
 
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
@@ -19,7 +20,7 @@ export default function GlobalError({
       <body className="min-h-screen bg-background text-foreground">
         <div className="min-h-screen flex items-center justify-center px-6 py-16">
           <div className="w-full max-w-xl rounded-3xl border border-border-soft bg-surface shadow-sm p-8 text-center">
-            <p className="text-xs font-semibold tracking-[0.24em] uppercase text-brand mb-3">PaketJet</p>
+            <p className="text-xs font-semibold tracking-[0.24em] uppercase text-brand mb-3">{APP_NAME}</p>
             <h1 className="text-3xl font-extrabold tracking-tight mb-3">Bir hata oluştu</h1>
             <p className="text-sm text-muted mb-6">
               Sayfa yüklenirken beklenmeyen bir sorun oluştu. Tekrar deneyin.

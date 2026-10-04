@@ -6,7 +6,7 @@ import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
 import { getPublishedLegalSlugs } from "@/modules/customPage/legal/legal-published";
 import { BreadcrumbSchema } from "@/components/JsonLd";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 const SLUG = "mesafeli-satis-sozlesmesi";
 
 export const revalidate = 300;
@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       ogKind: "Yasal",
       canonicalPath: `/${SLUG}`,
       title: { absolute: page.meta_title || page.title },
-      description: page.meta_description || page.summary || "paketjet.com üzerinden satın alınan dijital hizmetlere ilişkin mesafeli satış sözleşmesi.",
+      description: page.meta_description || page.summary || "Site üzerinden satın alınan dijital hizmetlere ilişkin mesafeli satış sözleşmesi.",
       alternates: { canonical: `${SITE_URL}/${SLUG}` },
     });
   } catch {

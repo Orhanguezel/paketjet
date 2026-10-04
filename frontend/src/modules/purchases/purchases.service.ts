@@ -29,10 +29,10 @@ export function getMyCredits() {
 }
 
 export function purchaseCreditPackage(packageKey: string) {
-  return apiPost<CreditPackagePaymentResponse>(API.purchases.buyCredits, { package_key: packageKey });
+  return apiPost<CreditPackagePaymentResponse>(API.purchases.buyCredits, { package_key: packageKey, terms_accepted: true });
 }
 export function createBankCreditOrder(packageKey:string) {
-  return apiPost<BankOrder>(API.purchases.bankBuyCredits, {package_key:packageKey});
+  return apiPost<BankOrder>(API.purchases.bankBuyCredits, {package_key:packageKey,terms_accepted:true});
 }
 export function createBankListingOrder(id:string,declaration:PurchaseDeclarationInput) {
   return apiPost<BankOrder>(API.ilanlar.bankPay(id),declaration);

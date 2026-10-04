@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { BreadcrumbSchema } from "@/components/JsonLd";
 
-const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com").replace(/\/$/, "");
+const SITE = (process.env.NEXT_PUBLIC_SITE_URL ?? "").replace(/\/$/, "");
 const API = `${SITE}/api/v1/partner/listings`;
 
 export const metadata: Metadata = {

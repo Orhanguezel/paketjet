@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ROUTES } from '@/config/routes';
 import { SiteBreadcrumb } from '@/components/SiteBreadcrumb';
+import { MemberRatingCard } from '@/components/MemberRatingCard';
 import type { PublicIlan } from '@/modules/ilan/ilan.type';
 import { getListingCreditPrice } from '@/modules/pricing/pricing.service';
 import { createBankListingOrder, getListingAccess, initiateIlanPayment, purchaseIlan, type ListingAccess } from '@/modules/purchases/purchases.service';
@@ -39,8 +40,9 @@ export default function IlanDetailClient({ilan}:{ilan:PublicIlan}) {
       {(ilan.from_district||ilan.to_district)&&<p className="mt-3 text-muted">{ilan.from_district} / {ilan.to_district}</p>}
       <div className="my-7 flex flex-wrap gap-x-6 gap-y-3 border-b border-border-soft pb-7 text-sm"><time dateTime={ilan.departure_date}>{formatDate(ilan.departure_date)}</time><span>{vehicles[ilan.vehicle_type]??ilan.vehicle_type}</span><span>{status}</span></div>
       <h2 className="text-2xl font-semibold">Açıklama</h2><p className="mt-4 whitespace-pre-wrap break-words leading-8 text-muted">{ilan.description||'İlan sahibi ek açıklama paylaşmadı.'}</p>
+      {ilan.member_id&&<MemberRatingCard memberId={ilan.member_id} memberName={ilan.member_name}/>}
       {ilan.arrival_date&&<p className="mt-5 text-sm text-muted">Planlanan varış: {formatDate(ilan.arrival_date)}</p>}
       <details className="mt-8 rounded-lg border border-border p-5" onToggle={e=>setMap(e.currentTarget.open)}><summary className="font-medium">Haritayı göster</summary>{map&&<div className="mt-4"><RouteMap fromCity={ilan.from_city} toCity={ilan.to_city} fromLocation={ilan.from_location} toLocation={ilan.to_location} height={300}/><p className="mt-2 text-sm text-muted">Harita güzergâhı yaklaşık gösterir. Kesin buluşma yerini taşıyıcıyla görüş.</p></div>}</details>
-    </div><div><RevealAside contact={access?.contact??null} error={error} isAuthenticated={isAuthenticated} isActive={ilan.status==='active'} listingPrice={price} revealing={busy} state={access?.state} paymentsEnabled={enabled} bankMode={bankMode} onLogin={login} onPay={d=>purchase(d,true)} onReveal={d=>purchase(d,false)}/>{(error||price===null)&&<button onClick={()=>setAttempt(n=>n+1)} className="mt-3 min-h-11 text-brand">Bilgileri yeniden yükle</button>}</div></div>
+    </div><div><RevealAside key={ilan.id} contact={access?.contact??null} error={error} isAuthenticated={isAuthenticated} isActive={ilan.status==='active'} isSample={!!ilan.is_sample} listingPrice={price} revealing={busy} state={access?.state} paymentsEnabled={enabled} bankMode={bankMode} onLogin={login} onPay={d=>purchase(d,true)} onReveal={d=>purchase(d,false)}/>{(error||price===null)&&<button onClick={()=>setAttempt(n=>n+1)} className="mt-3 min-h-11 text-brand">Bilgileri yeniden yükle</button>}</div></div>
   </section>;
 }

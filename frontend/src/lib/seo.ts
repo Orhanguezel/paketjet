@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://paketjet.com').replace(/\/$/, '');
+import { APP_NAME, stripBrand, withBrand } from '@/lib/app-name';
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? '').replace(/\/$/, '');
 export const DEFAULT_DESCRIPTION = 'Taşıyıcı güzergâhlarını keşfet, iletişim bilgilerine eriş ve doğrudan görüş. Güzergâhını ücretsiz ilan ver. İletişim erişim bedeli taşıma ücretinden ayrıdır.';
 const API_URL = (process.env.API_INTERNAL_URL || process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8078').replace(/\/$/, '');
 export interface PageSeoData {
@@ -22,11 +23,11 @@ const interpolate = (text: string, vars: Record<string,string>) => text.replace(
 export function buildMetadata(seo: PageSeoData | null, overrides: Overrides = {}): Metadata {
   const {vars={}, canonicalPath, fallbackDescription, publishedTime, modifiedTime, ogKind, ...explicit} = overrides;
   const rawTitle = explicit.title ?? (seo?.title ? interpolate(seo.title,vars) : 'Taşıyıcı ilanları');
-  const title = typeof rawTitle === 'string' ? rawTitle.replace(/\s*[|—-]\s*PaketJet\s*$/i,'').replace(/^PaketJet\s*\|\s*/i,'') : rawTitle;
-  const shareTitle = typeof title === 'string' ? `${title} | PaketJet` : title && 'absolute' in title ? title.absolute : 'PaketJet';
+  const title = typeof rawTitle === 'string' ? stripBrand(rawTitle) : rawTitle;
+  const shareTitle = typeof title === 'string' ? withBrand(title) : title && 'absolute' in title ? title.absolute : APP_NAME;
   const description = explicit.description ?? (seo?.description ? interpolate(seo.description,vars) : fallbackDescription ?? DEFAULT_DESCRIPTION);
   const url = canonicalPath ? `${SITE_URL}${canonicalPath}` : undefined;
-  const ogTitle = typeof title === 'string' ? title : title && 'absolute' in title ? String(title.absolute).replace(/\s*[|—-]\s*PaketJet\s*$/i,'') : '';
+  const ogTitle = typeof title === 'string' ? title : title && 'absolute' in title ? stripBrand(String(title.absolute)) : '';
   // Yonetici sayfaya ozel gorsel yuklediyse o; genel/varsayilan gorselse sayfa basliginden uretilir.
   const custom = (seo?.open_graph?.images ?? []).filter(img => !/og-default|opengraph-image/.test(img));
   const images = custom.length ? custom.map(img=>img.startsWith('/')?`${SITE_URL}${img}`:img) : [{url: ogImageUrl(ogTitle, ogKind), width: 1200, height: 630, alt: ogTitle}];
@@ -36,7 +37,7 @@ export function buildMetadata(seo: PageSeoData | null, overrides: Overrides = {}
     ...(seo?.keywords && {keywords:seo.keywords.split(',').map(s=>s.trim()).filter(Boolean)}),
     ...(robots && {robots}), ...(explicit.robots && {robots:explicit.robots}),
     ...(url && {alternates:{...explicit.alternates,canonical:url}}),
-    openGraph:{type:'website',siteName:'PaketJet',locale:'tr_TR',title:shareTitle,description,images,...(url && {url}),...(publishedTime && {publishedTime}),...(modifiedTime && {modifiedTime}),...explicit.openGraph},
+    openGraph:{type:'website',...(APP_NAME && {siteName:APP_NAME}),locale:'tr_TR',title:shareTitle,description,images,...(url && {url}),...(publishedTime && {publishedTime}),...(modifiedTime && {modifiedTime}),...explicit.openGraph},
     twitter:{card:'summary_large_image',title:shareTitle,description,images,...(seo?.twitter?.site && {site:seo.twitter.site}),...explicit.twitter},
   };
 }

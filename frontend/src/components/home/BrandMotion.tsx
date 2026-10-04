@@ -15,7 +15,7 @@ export default function BrandMotion() {
     else element.pause();
   },[running,loaded,manual,visible,paused,hidden]);
   return <div ref={root} className="brand-motion">
-    <video ref={video} poster="/assets/motion/brand-poster.webp" src={loaded?'/uploads/media/hero/arkaplan.mp4':undefined} preload="none" muted loop playsInline aria-label="PaketJet marka animasyonu" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onError={()=>setFailed(true)}/>
+    <video ref={video} poster="/assets/motion/brand-poster.webp" src={loaded?'/uploads/media/hero/arkaplan.mp4':undefined} preload="none" muted loop playsInline aria-label="Marka animasyonu" onPlay={()=>setPlaying(true)} onPause={()=>setPlaying(false)} onError={()=>setFailed(true)}/>
     <div className="brand-motion-bar"><span>Yollar insanları buluşturur.</span>{failed?<span role="status">Animasyon şu anda oynatılamıyor.</span>:<button type="button" aria-label={playing?'Marka animasyonunu duraklat':'Marka animasyonunu oynat'} onClick={()=>{if(playing){setPaused(true);setManual(false);video.current?.pause();}else{setLoaded(true);setPaused(false);setManual(true);void video.current?.play().catch(()=>{});}}}>{playing?<Pause size={17}/>:<Play size={17}/>}<span>{playing?'Duraklat':'Oynat'}</span></button>}</div>
   </div>;
 }
