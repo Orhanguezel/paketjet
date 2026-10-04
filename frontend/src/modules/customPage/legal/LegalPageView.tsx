@@ -6,15 +6,16 @@ import { legalDate, legalHtml, legalPages } from "./legal-content";
 import { LegalArticle } from "./LegalArticle";
 import { ROUTES } from "@/config/routes";
 import { SiteBreadcrumb } from "@/components/SiteBreadcrumb";
-type Props = { slug: string; title: string; summary?: string | null; html?: string | null; updatedAt?: string; embedded?: boolean };
+type Props = { slug: string; title: string; summary?: string | null; html?: string | null; updatedAt?: string; embedded?: boolean; publishedSlugs?: string[] };
 type Section = { id: string; label: string };
-export function LegalPageView({ slug, title, summary, html, updatedAt, embedded = false }: Props) {
+export function LegalPageView({ slug, title, summary, html, updatedAt, embedded = false, publishedSlugs }: Props) {
+  const isPublished = (page: (typeof legalPages)[number]) => page.slug === slug || (publishedSlugs ? publishedSlugs.includes(page.slug) : page.published);
   const article = useRef<HTMLElement>(null),
     [sections, setSections] = useState<Section[]>([]),
     [active, setActive] = useState("");
   const content = legalHtml(html),
     date = legalDate(updatedAt);
-  const publishedPages = legalPages.filter((page) => page.published || page.slug === slug);
+  const publishedPages = legalPages.filter(isPublished);
   const pageIndex = publishedPages.findIndex((page) => page.slug === slug);
   const previousPage = publishedPages[pageIndex - 1];
   const nextPage = publishedPages[pageIndex + 1];
@@ -47,7 +48,7 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
   const navigation = (
     <nav aria-label="Yasal sayfalar">
       <p className="legal-nav-title">Yasal sayfalar</p>
-      {legalPages.map((item) => item.published || item.slug === slug ? (
+      {legalPages.map((item) => isPublished(item) ? (
         <Link key={item.slug} href={`/${item.slug}`} aria-current={item.slug === slug ? "page" : undefined}>
           <FileText size={17} />
           <span>{item.label}</span>

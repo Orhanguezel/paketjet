@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
 import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
+import { getPublishedLegalSlugs } from "@/modules/customPage/legal/legal-published";
 import { BreadcrumbSchema } from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
@@ -37,7 +38,7 @@ export default async function KullanimKosullariPage() {
     return (
       <>
         <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: page.title }]} />
-        <LegalPageView slug="kullanim-kosullari" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} />
+        <LegalPageView slug="kullanim-kosullari" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} publishedSlugs={await getPublishedLegalSlugs()} />
       </>
     );
   } catch {

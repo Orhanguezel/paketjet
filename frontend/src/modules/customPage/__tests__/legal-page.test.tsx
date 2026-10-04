@@ -18,3 +18,9 @@ it('preserves document wording when normalizing exported heading markup',()=>{
  const text='<h1\nid="eski">Ana belge</h1><h2 id="madde">1. Madde</h2><p><strong>Önemli:</strong> Metin &amp; haklar.</p>';
  expect(legalHtml(text).replace(/<[^>]*>/g,'')).toBe(text.replace(/<[^>]*>/g,''));expect(legalHtml(text)).toContain('id="eski"');expect(legalHtml(text)).not.toContain('<h1');
 });
+it('links legal pages published from the panel instead of marking them as pending',()=>{
+ render(<LegalPageView slug="kvkk" title="KVKK" html="<p>Metin</p>" publishedSlugs={['kvkk','mesafeli-satis-sozlesmesi']}/>);
+ const nav=screen.getByRole('navigation',{name:'Yasal sayfalar'});
+ expect(within(nav).getByRole('link',{name:/Mesafeli satış sözleşmesi/})).toHaveAttribute('href','/mesafeli-satis-sozlesmesi');
+ expect(within(nav).queryByRole('link',{name:/İptal ve iade/})).not.toBeInTheDocument();
+});
