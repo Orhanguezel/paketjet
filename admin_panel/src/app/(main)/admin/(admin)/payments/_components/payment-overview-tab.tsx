@@ -1,5 +1,10 @@
 import type { PaymentOperation } from "@/integrations/shared";
-import { formatIlanPurchaseDate, formatIlanPurchaseMoney, paymentStateLabels } from "@/integrations/shared";
+import {
+  formatIlanPurchaseDate,
+  formatIlanPurchaseMoney,
+  paymentErrorLabel,
+  paymentStateLabels,
+} from "@/integrations/shared";
 
 const providerLabel = (provider: string) =>
   provider === "bank_test"
@@ -14,6 +19,7 @@ const kindLabel = (kind: string) =>
 
 export function PaymentOverviewTab({ payment }: { payment: PaymentOperation }) {
   const fields = [
+    ["PaketJet ödeme işlem kimliği", payment.payment_ref],
     ["Durum", paymentStateLabels[payment.state] ?? payment.state],
     ["Tutar", formatIlanPurchaseMoney(payment.amount)],
     ["İşlem türü", kindLabel(payment.kind)],
@@ -21,7 +27,8 @@ export function PaymentOverviewTab({ payment }: { payment: PaymentOperation }) {
     ["İlan kimliği", payment.ilan_id || "—"],
     ["Sağlayıcı", providerLabel(payment.provider)],
     ["Sağlayıcı işlem kimliği", payment.provider_payment_id ?? "Doğrulanmış bildirim yok"],
-    ["Neden / hata kodu", payment.error_code ?? "—"],
+    ["İnceleme nedeni", payment.error_code ? paymentErrorLabel(payment.error_code) : "—"],
+    ["Teknik neden kodu", payment.error_code ?? "—"],
     ["Oluşturulma", formatIlanPurchaseDate(payment.created_at)],
     ["Güncellenme", formatIlanPurchaseDate(payment.updated_at)],
     ["Sağlayıcı ödeme kaydı", payment.receipt?.paymentId || "—"],

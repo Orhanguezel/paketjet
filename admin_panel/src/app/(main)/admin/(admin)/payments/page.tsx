@@ -7,7 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useListPaymentOperationsQuery } from "@/integrations/hooks";
-import { formatIlanPurchaseDate, formatIlanPurchaseMoney, paymentStateLabels } from "@/integrations/shared";
+import {
+  formatIlanPurchaseDate,
+  formatIlanPurchaseMoney,
+  paymentErrorLabel,
+  paymentShortRef,
+  paymentStateLabels,
+} from "@/integrations/shared";
 
 import { PaymentDetailDrawer } from "./_components/payment-detail-drawer";
 
@@ -55,7 +61,7 @@ export default function PaymentsPage() {
             }}
           >
             <label htmlFor="payment-search" className="space-y-2 text-sm">
-              Referans veya kullanıcı kimliği
+              İşlem kimliği veya kullanıcı kimliği
               <Input
                 id="payment-search"
                 value={search}
@@ -99,7 +105,7 @@ export default function PaymentsPage() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Referans / zaman</TableHead>
+                      <TableHead>Ödeme kaydı / tarih</TableHead>
                       <TableHead>İşlem</TableHead>
                       <TableHead>Tutar</TableHead>
                       <TableHead>Durum</TableHead>
@@ -114,8 +120,10 @@ export default function PaymentsPage() {
                         onClick={() => openDetail(row.payment_ref)}
                       >
                         <TableCell>
-                          <span className="block max-w-64 break-all font-mono text-xs">{row.payment_ref}</span>
-                          <span className="text-muted-foreground text-sm">
+                          <span className="block font-medium">
+                            PaketJet işlem no: {paymentShortRef(row.payment_ref)}
+                          </span>
+                          <span className="mt-1 block whitespace-nowrap text-muted-foreground text-sm">
                             {formatIlanPurchaseDate(row.created_at)}
                           </span>
                         </TableCell>
@@ -127,8 +135,11 @@ export default function PaymentsPage() {
                         <TableCell>
                           {paymentStateLabels[row.state] ?? row.state}
                           {row.error_code && (
-                            <span className="block max-w-56 break-words text-muted-foreground text-xs">
-                              {row.error_code}
+                            <span
+                              className="block max-w-64 break-words text-muted-foreground text-xs"
+                              title={`Teknik kod: ${row.error_code}`}
+                            >
+                              {paymentErrorLabel(row.error_code)}
                             </span>
                           )}
                         </TableCell>

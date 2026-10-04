@@ -894,5 +894,6 @@ export {
   type BankDetails,
 } from '@/integrations/shared/payment-settings';
 export * from '@/integrations/shared/commerce';
+export * from '@/integrations/shared/payment-display';
 export { IDENTITY_ADMIN_BASE, type IdentityStatus, type IdentityListItem } from '@/integrations/shared/identity';
 export * from '@/integrations/shared/content-management';

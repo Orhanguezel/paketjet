@@ -45,7 +45,7 @@ export function PaymentDetailDrawer({
       }}
       eyebrow="Ödeme incelemesi"
       title="Ödeme kaydı"
-      description={reference}
+      description={`PaketJet ödeme işlem kimliği: ${reference}`}
       className="sm:max-w-[720px]"
     >
       {detail.isError ? (
