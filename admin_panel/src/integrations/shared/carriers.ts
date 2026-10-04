@@ -2,6 +2,9 @@
 
 export const CARRIERS_ADMIN_BASE = '/admin/carriers';
 
+/** Liste filtresi: 'incomplete' = yalnız bir yüz yüklenmiş. */
+export type AdminCarrierIdentityFilterValue = 'all' | 'none' | 'incomplete' | 'pending' | 'approved' | 'rejected';
+
 /** Taşıyıcının kimlik belgesi durumu; 'none' = hiç belge yüklemedi. */
 export type CarrierIdentityStatus = 'none' | 'pending' | 'approved' | 'rejected';
 export interface CarrierIdentity {
@@ -71,6 +74,7 @@ export interface CarrierListQueryParams {
   search?: string;
   is_active?: boolean;
   has_active_ilan?: boolean;
+  identity?: Exclude<AdminCarrierIdentityFilterValue, 'all'>;
   limit?: number;
   offset?: number;
 }

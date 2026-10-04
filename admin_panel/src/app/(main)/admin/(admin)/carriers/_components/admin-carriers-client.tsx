@@ -29,6 +29,7 @@ import {
 
 import {
   ADMIN_CARRIERS_ACTIVE_ILAN_OPTIONS,
+  ADMIN_CARRIERS_IDENTITY_OPTIONS,
   ADMIN_CARRIERS_ACTIVE_OPTIONS,
   ADMIN_CARRIERS_DEFAULT_FILTERS,
   buildAdminCarriersListParams,
@@ -87,7 +88,7 @@ export default function AdminCarriersClient() {
           <CardTitle className="text-base">{t('filters.title')}</CardTitle>
           <CardDescription>{t('filters.description')}</CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-3">
+        <CardContent className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div className="space-y-2">
             <Label>{t('admin.common.search')}</Label>
             <div className="relative">
@@ -137,6 +138,27 @@ export default function AdminCarriersClient() {
                 {ADMIN_CARRIERS_ACTIVE_ILAN_OPTIONS.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {t(`filters.${option.labelKey}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>{t('filters.identityLabel')}</Label>
+            <Select
+              value={filters.identity}
+              onValueChange={(value) =>
+                setFilters((prev) => ({ ...prev, identity: value as AdminCarriersFilters['identity'] }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {ADMIN_CARRIERS_IDENTITY_OPTIONS.map((value) => (
+                  <SelectItem key={value} value={value}>
+                    {value === 'all' ? t('filters.all') : t(`identity.${value}`)}
                   </SelectItem>
                 ))}
               </SelectContent>

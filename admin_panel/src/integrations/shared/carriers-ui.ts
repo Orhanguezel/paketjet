@@ -1,4 +1,4 @@
-import type { CarrierDetail, CarrierIdentity, CarrierListItem, CarrierListQueryParams } from '@/integrations/shared/carriers';
+import type { AdminCarrierIdentityFilterValue, CarrierDetail, CarrierIdentity, CarrierListItem, CarrierListQueryParams } from '@/integrations/shared/carriers';
 import type { IdentityListItem } from '@/integrations/shared/identity';
 
 type AdminCarrierIdentity = Pick<CarrierListItem, 'full_name' | 'email'>;
@@ -10,12 +10,14 @@ export type AdminCarriersFilters = {
   search: string;
   isActive: AdminCarriersActiveFilter;
   hasActiveIlan: AdminCarriersHasIlanFilter;
+  identity: AdminCarrierIdentityFilterValue;
 };
 
 export const ADMIN_CARRIERS_DEFAULT_FILTERS: AdminCarriersFilters = {
   search: '',
   isActive: 'all',
   hasActiveIlan: 'all',
+  identity: 'all',
 };
 
 export const ADMIN_CARRIERS_RECENT_LIMIT = 5;
@@ -32,6 +34,8 @@ export const ADMIN_CARRIERS_ACTIVE_ILAN_OPTIONS = [
   { value: 'no', labelKey: 'no' },
 ] as const;
 
+export const ADMIN_CARRIERS_IDENTITY_OPTIONS: readonly AdminCarrierIdentityFilterValue[] = ['all', 'pending', 'incomplete', 'approved', 'rejected', 'none'];
+
 export function buildAdminCarriersListParams(
   filters: AdminCarriersFilters,
 ): CarrierListQueryParams {
@@ -41,6 +45,7 @@ export function buildAdminCarriersListParams(
       filters.isActive === 'all' ? undefined : filters.isActive === 'active',
     has_active_ilan:
       filters.hasActiveIlan === 'all' ? undefined : filters.hasActiveIlan === 'yes',
+    identity: filters.identity === 'all' ? undefined : filters.identity,
     limit: 100,
     offset: 0,
   };

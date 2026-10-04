@@ -115,5 +115,14 @@ describe("Admin Carriers", () => {
     expect((await detail()).identity).toMatchObject({ status: "pending", has_front: true, has_back: false });
     const list = (await app.inject({ method: "GET", url: `/api/admin/carriers?search=${encodeURIComponent(carrierEmail)}`, headers: adminHeaders })).json() as { data: Array<{ id: string; identity: { status: string } }> };
     expect(list.data.find((row) => row.id === carrierId)?.identity.status).toBe("pending");
+
+    const ids = async (query: string) => ((await app.inject({ method: "GET", url: `/api/admin/carriers?search=${encodeURIComponent(carrierEmail)}&${query}`, headers: adminHeaders })).json() as { data: Array<{ id: string }> }).data.map((row) => row.id);
+    expect(await ids("identity=incomplete")).toContain(carrierId);
+    expect(await ids("identity=none")).not.toContain(carrierId);
+    expect(await ids("identity=pending")).not.toContain(carrierId);
+    expect((await app.inject({ method: "GET", url: "/api/admin/carriers?identity=bogus", headers: adminHeaders })).statusCode).toBe(400);
+    // "false" metni true'ya dönüşmemeli: aktif taşıyıcı pasif filtresinde görünmez.
+    expect(await ids("is_active=false")).not.toContain(carrierId);
+    expect(await ids("is_active=true")).toContain(carrierId);
   });
 });

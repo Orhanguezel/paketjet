@@ -230,6 +230,7 @@ export {
 
 export {
   ADMIN_CARRIERS_ACTIVE_ILAN_OPTIONS,
+  ADMIN_CARRIERS_IDENTITY_OPTIONS,
   ADMIN_CARRIERS_ACTIVE_OPTIONS,
   ADMIN_CARRIERS_DEFAULT_FILTERS,
   ADMIN_CARRIERS_RECENT_LIMIT,
@@ -240,6 +241,7 @@ export {
   type CarrierDetail,
   type CarrierIdentity,
   type CarrierIdentityStatus,
+  type AdminCarrierIdentityFilterValue,
   normalizeCarrierIdentity,
   type CarrierDetailBooking,
   type CarrierDetailBookingDto,

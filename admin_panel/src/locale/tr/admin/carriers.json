@@ -13,7 +13,8 @@
     "active": "Aktif",
     "inactive": "Pasif",
     "yes": "Var",
-    "no": "Yok"
+    "no": "Yok",
+    "identityLabel": "Kimlik Durumu"
   },
   "list": {
     "title": "Taşıyıcı Listesi",
