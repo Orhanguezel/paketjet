@@ -150,8 +150,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       data-sidebar-collapsible={sidebar_collapsible}
       data-font={font}
     >
-      <head>{themeCss && <style id="managed-admin-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}</head>
       <body className={`${fontVars} min-h-screen antialiased`} suppressHydrationWarning>
+        {themeCss && <style id="managed-admin-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}
         <ThemeBootInlineScript managedMode={managedTheme?.enabled ? managedTheme.darkMode : null} />
         <ManagedThemeRuntime />
 

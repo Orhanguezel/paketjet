@@ -120,9 +120,9 @@ export default async function RootLayout({
     <html lang="tr" suppressHydrationWarning className={`${dmSans.variable} font-sans`}>
       <head>
         <AnalyticsHead {...analytics} />
-        {themeCss && <style id="managed-storefront-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}
       </head>
       <body suppressHydrationWarning>
+        {themeCss && <style id="managed-storefront-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}
         <AnalyticsNoScript gtmId={analytics.gtmId} />
         <OrganizationSchema />
         <ThemeProvider managedTheme={managedTheme}>
