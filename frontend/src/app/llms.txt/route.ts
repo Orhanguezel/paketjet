@@ -28,7 +28,6 @@ export async function GET() {
     "- Platform taşıma yapmaz; rezervasyon, paket takibi, emanet ödeme veya teslim garantisi sunmaz.",
     "- Kartla ödemeler güvenli ödeme sayfasında 3D Secure ile alınır; kart bilgileri siteye iletilmez.",
     "- Firmalar ilanlarını Partner API ile kendi sistemlerinden otomatik oluşturabilir.",
-    "- Başlığı ÖRNEK ile başlayan ilanlar örnek içeriktir; güncel bilgi için ilan sayfası esas alınır.",
     "",
     "## Sorular ve yanıtlar",
     "",

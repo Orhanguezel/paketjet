@@ -34,7 +34,7 @@ export function DashboardActivity() {
 
   return <Card className="admin-dashboard-panel admin-activity-panel">
     <div className="admin-panel-heading">
-      <div><h2>Platform aktivitesi</h2><p>Günlük ilan ve yeni üye sayıları · örnek ilanlar dahil</p></div>
+      <div><h2>Platform aktivitesi</h2><p>Günlük ilan ve yeni üye sayıları</p></div>
       <select aria-label="Grafik dönemi" value={days} onChange={(event) => setDays(Number(event.target.value) as 7 | 30)} className="admin-period-select">
         <option value={7}>Son 7 gün</option><option value={30}>Son 30 gün</option>
       </select>

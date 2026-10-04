@@ -28,7 +28,8 @@ it('province suggestion still finds older city-only examples and validates short
 });
 it('province alternatives exclude similarly named districts and preserve date, vehicle and destination',async()=>{
  const app=await getTestApp(),{token}=await registerUser(app,{email:randomEmail(),password:'Test1234!',role:'carrier'});
- const departure=new Date(Date.now()+86400000*20).toISOString();
+ // Günün ortası: arama gün eşleşmesini Türkiye saatine göre yapar; gece yarısına yakın UTC saatleri günü kaydırırdı.
+ const departureAt=new Date(Date.now()+86400000*20);departureAt.setUTCHours(9,0,0,0);const departure=departureAt.toISOString();
  async function create(from_city:string,from_district:string){
   const response=await app.inject({method:'POST',url:'/api/ilanlar',headers:authHeaders(token!),payload:{from_city,from_district,to_city:'Ankara',departure_date:departure,vehicle_type:'van',contact_phone:'05551234567'}});
   expect(response.statusCode).toBe(201);const row=response.json();await repoUpdateIlan(row.id,{status:'active'},true);return row.id;

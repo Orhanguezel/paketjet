@@ -19,9 +19,9 @@ describe('SEO signals',()=>{
   const rules=robots().rules as Array<{userAgent:string|string[];disallow:string[]}>;
   expect(rules[0].disallow).not.toContain('/_next/');expect(rules[1].userAgent).toContain('OAI-SearchBot');expect(rules[1].disallow).toEqual(rules[0].disallow);
  });
- it('excludes sample listings and does not invent a modification date',async()=>{
-  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({total:2,data:[{id:'example',is_sample:true},{id:'real',slug:'real-route',updated_at:'invalid'}]})}));
-  expect(await listingSitemap('https://api.test')).toEqual([{url:'https://paketjet.com/ilanlar/real-route'}]);
+ it('lists every published listing and does not invent a modification date',async()=>{
+  vi.stubGlobal('fetch',vi.fn().mockResolvedValue({ok:true,json:async()=>({total:2,data:[{id:'first-id'},{id:'real',slug:'real-route',updated_at:'invalid'}]})}));
+  expect(await listingSitemap('https://api.test')).toEqual([{url:'https://paketjet.com/ilanlar/first-id'},{url:'https://paketjet.com/ilanlar/real-route'}]);
  });
  it('fails rather than producing a partial sitemap after an API failure',async()=>{
   vi.stubGlobal('fetch',vi.fn().mockResolvedValueOnce({ok:true,json:async()=>({total:101,data:[{id:'first'}]})}).mockResolvedValueOnce({ok:false}));

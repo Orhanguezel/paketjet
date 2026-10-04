@@ -16,7 +16,7 @@ export default function AdminDashboardClient() {
   const data = summary.data;
   const revenue = data ? Number(data.listing_receipts) + Number(data.package_receipts) : null;
   const cards = [
-    { label: 'Aktif ilanlar', value: data?.active_listings, note: 'Güncel gerçek ilan', url: '/admin/ilanlar', icon: FileText },
+    { label: 'Aktif ilanlar', value: data?.active_listings, note: 'Yayındaki ilanlar', url: '/admin/ilanlar', icon: FileText },
     { label: 'Satın almalar', value: data?.contact_sales, note: 'Tamamlanan iletişim erişimi', url: '/admin/ilan-purchases', icon: ShoppingCart },
     { label: 'Ödeme kuyruğu', value: data?.payment_queue, note: 'İnceleme ve bekleyen işlemler', url: '/admin/payments', icon: CreditCard },
     { label: 'Tahsilat', value: revenue === null || !Number.isFinite(revenue) ? undefined : formatIlanPurchaseMoney(revenue), note: 'Tamamlanan kart ve hak paketi', url: '/admin/payments', icon: TrendingUp },

@@ -164,7 +164,7 @@ export function buildTelegramPreviewVars(defaultLocaleCode: string): TelegramTem
     customer_name: 'Ayse Yilmaz',
     customer_email: 'ayse@example.com',
     customer_phone: '+90 532 000 0000',
-    company_name: 'Örnek Lojistik',
+    company_name: 'Kaya Lojistik',
     message: 'Yarin icin kurye rezervasyonu olusturmak istiyorum.',
     created_at: '2026-03-20 10:30:00',
     product_service: 'Sehir ici ekspres teslimat',

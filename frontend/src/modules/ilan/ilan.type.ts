@@ -6,7 +6,6 @@ export type IlanStatus = "active" | "pending_approval" | "paused" | "sold" | "ex
 export interface Ilan {
   id: string;
   slug?: string;
-  is_sample?: boolean;
   user_id: string;
   member_id?: string;
   member_name?: string | null;
@@ -86,5 +85,5 @@ export interface CreateIlanInput {
   contact_address?: string;
 }
 
-export type PublicIlan = Pick<Ilan, 'id'|'slug'|'member_id'|'member_name'|'from_location'|'to_location'|'is_sample'|'from_city'|'to_city'|'from_district'|'to_district'|'departure_date'|'arrival_date'|'vehicle_type'|'title'|'description'|'status'|'created_at'|'updated_at'|'photos'|'contact_locked'>;
+export type PublicIlan = Pick<Ilan, 'id'|'slug'|'member_id'|'member_name'|'from_location'|'to_location'|'from_city'|'to_city'|'from_district'|'to_district'|'departure_date'|'arrival_date'|'vehicle_type'|'title'|'description'|'status'|'created_at'|'updated_at'|'photos'|'contact_locked'>;
 export type OwnerIlan = Ilan;

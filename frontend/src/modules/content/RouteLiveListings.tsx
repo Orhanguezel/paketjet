@@ -1,14 +1,14 @@
-// Güzergâh rehberinde o rotadaki yayındaki GERÇEK ilanlar (örnek ilanlar sayılmaz). Veri: herkese açık ilan araması.
+// Güzergâh rehberinde o rotadaki yayındaki ilanlar. Veri: herkese açık ilan araması.
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { getPublicJson } from "@/lib/public-fetch";
 
-type Row = { id: string; slug?: string; from_city: string; to_city: string; departure_date?: string; vehicle_type?: string; is_sample?: boolean };
+type Row = { id: string; slug?: string; from_city: string; to_city: string; departure_date?: string; vehicle_type?: string };
 const VEHICLE: Record<string, string> = { car: "Otomobil", van: "Kamyonet", truck: "Kamyon", motorcycle: "Motosiklet", other: "Diğer" };
 
 export default async function RouteLiveListings({ from, to }: { from: string; to: string }) {
   const res = await getPublicJson<Row[] | { data?: Row[] }>(`/api/ilanlar?from_city=${encodeURIComponent(from)}&to_city=${encodeURIComponent(to)}&limit=10`, 600);
-  const rows = (Array.isArray(res) ? res : res?.data ?? []).filter((r) => !r.is_sample).slice(0, 5);
+  const rows = (Array.isArray(res) ? res : res?.data ?? []).slice(0, 5);
   const search = `${ROUTES.ilanlar.list}?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
   return (
     <section id="guncel-ilanlar">

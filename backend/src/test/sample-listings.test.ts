@@ -4,7 +4,6 @@ import mysql from 'mysql2/promise';
 import {eq} from 'drizzle-orm';
 import {db} from '@/db/client';
 import {ilanlar} from '@/modules/ilanlar/schema';
-import {stripIlanContact} from '@/modules/ilanlar/helpers/repository';
 import {repoListingAccess} from '@/modules/purchases/access.repository';
 import {repoGrantCredits,repoGetCreditBalance,repoPurchaseIlan} from '@/modules/purchases/repository';
 import {repoCreateIlanPayment,repoCompleteIlanPayment} from '@/modules/purchases/listing-payment.repository';
@@ -27,8 +26,6 @@ it('sample listing can be bought with an existing right',async()=>{
  expect(await db.select().from(creditLedger).where(eq(creditLedger.user_id,user.id))).toHaveLength(2);
  expect(await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id))).toHaveLength(1);
  expect(await db.select().from(paymentSessions).where(eq(paymentSessions.ilan_id,id))).toHaveLength(0);
- expect(stripIlanContact({is_sample:1}).is_sample).toBe(true);
- expect(stripIlanContact({is_sample:0}).is_sample).toBe(false);
 });
 it('sample listing can be bought by Shopier without a preexisting right',async()=>{
  const owner=await buyer(), user=await buyer(), id=await listing(owner.id);
@@ -73,7 +70,7 @@ it('sample seed is repeatable, contains 30 future examples and preserves later e
   await conn.query(seed);
   const rows=await db.select().from(ilanlar).where(eq(ilanlar.user_id,'e09a0000-0000-4000-8000-000000000000'));
   expect(rows).toHaveLength(30);
-  expect(rows.every(r=>r.is_sample===1&&r.title?.startsWith('ÖRNEK İLAN —'))).toBe(true);
+  expect(rows.every(r=>r.title?.startsWith('ÖRNEK İLAN —'))).toBe(true);
   expect(rows.find(r=>r.id===id)?.title).toBe('ÖRNEK İLAN — Düzenlenmiş açıklama');
   expect(rows.find(r=>r.id===id)?.departure_date).toEqual(original.departure_date);
  }finally{await db.update(ilanlar).set({title:original.title}).where(eq(ilanlar.id,id));await conn.end();}
