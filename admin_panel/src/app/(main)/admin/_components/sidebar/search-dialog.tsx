@@ -12,8 +12,9 @@ import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
 import {
-  CommandDialog,
+  Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
@@ -100,7 +101,8 @@ export function SearchDialog() {
         </kbd>
       </Button>
 
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <AdminDetailDrawer open={open} onOpenChange={setOpen} title="Panelde ara" description="Yönetim sayfalarına git" eyebrow="Hızlı erişim">
+      <Command>
         <CommandInput placeholder={t('admin.sidebar.searchPlaceholder')} value={q} onValueChange={setQ} />
         <CommandList>
           <CommandEmpty>{t('admin.sidebar.noResults')}</CommandEmpty>
@@ -125,7 +127,8 @@ export function SearchDialog() {
             </React.Fragment>
           ))}
         </CommandList>
-      </CommandDialog>
+      </Command>
+      </AdminDetailDrawer>
     </>
   );
 }

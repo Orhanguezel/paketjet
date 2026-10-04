@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
+import { AdminConfirmDrawer } from '@/components/admin/admin-confirm-drawer';
 
 const SOURCE: Record<string, string> = { panel: 'panelden', server: 'sunucu ayarından' };
 const sourceText = (s: ShopierSource | 'panel' | 'server') => (s ? SOURCE[s] : 'tanımlı değil');
@@ -30,6 +31,7 @@ export default function GatewaysCard() {
   const [testConn, testing] = useTestShopierConnectionMutation();
   const [rebuild, rebuilding] = useRebuildShopierWebhooksMutation();
   const [pat, setPat] = useState(''), [image, setImage] = useState<string | null>(null), [test, setTest] = useState<ShopierTest | null>(null);
+  const [pendingAction, setPendingAction] = useState<'delete-pat' | 'rebuild-webhooks' | null>(null);
   const s = status.data;
   if (status.isError) return <Card><CardContent className="pt-6"><p role="alert">Shopier ayarları alınamadı. <Button variant="outline" onClick={() => status.refetch()}>Tekrar dene</Button></p></CardContent></Card>;
   if (!s) return <Card><CardContent className="pt-6"><output>Yükleniyor…</output></CardContent></Card>;
@@ -82,7 +84,7 @@ export default function GatewaysCard() {
             <Input id={`${id}-pat`} type="password" autoComplete="off" spellCheck={false} placeholder="eyJ…" value={pat} onChange={(e) => setPat(e.target.value)} />
             <div className="flex flex-wrap gap-2">
               <Button type="submit" disabled={!pat.trim() || updating.isLoading}>Doğrula ve kaydet</Button>
-              {s.pat.source === 'panel' && <Button type="button" variant="ghost" disabled={updating.isLoading} onClick={() => { if (window.confirm('Paneldeki anahtar silinsin mi? Sunucu ayarında anahtar varsa o kullanılır.')) void save({ pat: null }, 'Paneldeki anahtar silindi.'); }}>Paneldeki anahtarı sil</Button>}
+              {s.pat.source === 'panel' && <Button type="button" variant="ghost" disabled={updating.isLoading} onClick={() => setPendingAction('delete-pat')}>Paneldeki anahtarı sil</Button>}
             </div>
           </form>
         </CardContent>
@@ -93,7 +95,7 @@ export default function GatewaysCard() {
         <CardContent className="space-y-3">
           <p className="text-sm">İmza anahtarı: {s.webhook.count}/{s.webhook.expected} · {sourceText(s.webhook.source)}</p>
           <p className="text-sm text-muted-foreground">Anahtar değiştirdiyseniz veya test eksik bildirim gösteriyorsa yeniden kurun. Bu siteye ait abonelikler silinip yeniden oluşturulur; birkaç saniyelik aralıkta gelen bildirim kaçarsa ödeme sonuç sayfası durumu Shopier'den kendisi sorgular.</p>
-          <Button variant="outline" disabled={rebuilding.isLoading || !s.pat.set} onClick={async () => { if (!window.confirm('Bildirim abonelikleri yeniden kurulsun mu?')) return; try { await rebuild().unwrap(); toast.success('Bildirimler yeniden kuruldu.'); setTest(null); } catch { toast.error('Bildirimler kurulamadı. Anahtarı ve bağlantıyı kontrol edin.'); } }}>{rebuilding.isLoading ? 'Kuruluyor…' : 'Bildirimleri yeniden kur'}</Button>
+          <Button variant="outline" disabled={rebuilding.isLoading || !s.pat.set} onClick={() => setPendingAction('rebuild-webhooks')}>{rebuilding.isLoading ? 'Kuruluyor…' : 'Bildirimleri yeniden kur'}</Button>
         </CardContent>
       </Card>
 
@@ -111,6 +113,7 @@ export default function GatewaysCard() {
           </form>
         </CardContent>
       </Card>
+      <AdminConfirmDrawer open={!!pendingAction} onOpenChange={open => { if (!open) setPendingAction(null); }} title={pendingAction === 'delete-pat' ? 'Paneldeki anahtarı sil' : 'Bildirimleri yeniden kur'} description={pendingAction === 'delete-pat' ? 'Paneldeki anahtar silinsin mi? Sunucu ayarında anahtar varsa o kullanılır.' : 'Bildirim abonelikleri yeniden kurulsun mu?'} busy={updating.isLoading || rebuilding.isLoading} onConfirm={async () => { if (pendingAction === 'delete-pat') { if (await save({ pat: null }, 'Paneldeki anahtar silindi.')) setPendingAction(null); } else if (pendingAction === 'rebuild-webhooks') { try { await rebuild().unwrap(); toast.success('Bildirimler yeniden kuruldu.'); setTest(null); setPendingAction(null); } catch { toast.error('Bildirimler kurulamadı. Anahtarı ve bağlantıyı kontrol edin.'); } } }} />
     </div>
   );
 }

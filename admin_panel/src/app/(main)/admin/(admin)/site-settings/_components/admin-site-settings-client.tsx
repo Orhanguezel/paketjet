@@ -34,6 +34,9 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 import { SiteSettingsList } from './site-settings-list';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import { AdminConfirmDrawer } from '@/components/admin/admin-confirm-drawer';
+import SiteSettingsDetailClient from './admin-site-settings-detail-client';
 
 // tabs (content sources)
 import { GeneralSettingsTab } from '../tabs/general-settings-tab';
@@ -75,6 +78,7 @@ function ListPanel({
   prefix?: string;
   onDeleteRow: (row: SiteSetting) => void;
 }) {
+  const [selectedSetting, setSelectedSetting] = React.useState<SiteSetting | null>(null);
   const qArgs = React.useMemo(() => {
     const q = search.trim() || undefined;
     return {
@@ -95,15 +99,18 @@ function ListPanel({
 
   const loading = listQ.isLoading || listQ.isFetching;
 
-  return (
+  return (<>
     <SiteSettingsList
       settings={(listQ.data ?? []) as SiteSetting[]}
       loading={loading}
       selectedLocale={locale}
       onDelete={onDeleteRow}
-      getEditHref={(s) => `/admin/site-settings/${encodeURIComponent(String(s.key || ''))}?locale=${encodeURIComponent(locale)}`}
+      onEdit={setSelectedSetting}
     />
-  );
+    <AdminDetailDrawer open={!!selectedSetting} onOpenChange={open => { if (!open) { setSelectedSetting(null); listQ.refetch(); } }} title={String(selectedSetting?.key ?? 'Site ayarı')} description={locale} eyebrow="Ayar detayı" className="sm:max-w-[760px]">
+      {selectedSetting && <SiteSettingsDetailClient id={String(selectedSetting.key)} embedded initialLocale={locale} onClose={() => { setSelectedSetting(null); listQ.refetch(); }} />}
+    </AdminDetailDrawer>
+  </>);
 }
 
 /* ----------------------------- main component ----------------------------- */
@@ -123,6 +130,7 @@ export default function AdminSiteSettingsClient() {
   const [search, setSearch] = React.useState('');
   const [locale, setLocale] = React.useState<string>('');
   const [localeTouched, setLocaleTouched] = React.useState<boolean>(false);
+  const [pendingDelete, setPendingDelete] = React.useState<SiteSetting | null>(null);
 
   const [deleteSetting, { isLoading: isDeleting }] = useDeleteSiteSettingAdminMutation();
 
@@ -159,18 +167,17 @@ export default function AdminSiteSettingsClient() {
     }
   };
 
-  const handleDeleteRow = async (row: SiteSetting) => {
+  const handleDeleteRow = (row: SiteSetting) => setPendingDelete(row);
+
+  const confirmDeleteRow = async () => {
+    const row = pendingDelete;
     const key = String(row?.key || '').trim();
     const rowLocale = row?.locale ? String(row.locale) : undefined;
     if (!key) return;
 
-    const ok = window.confirm(
-      t('admin.siteSettings.list.deleteConfirm', { key, locale: rowLocale || locale || '—' }),
-    );
-    if (!ok) return;
-
     try {
       await deleteSetting({ key, locale: rowLocale ?? undefined }).unwrap();
+      setPendingDelete(null);
       toast.success(t('admin.siteSettings.messages.deleted'));
     } catch (err) {
       toast.error(getErrorMessage(err, t('admin.siteSettings.messages.error')));
@@ -458,6 +465,7 @@ export default function AdminSiteSettingsClient() {
           </div>
         </section>
       </div>
+      <AdminConfirmDrawer open={!!pendingDelete} onOpenChange={open => { if (!open) setPendingDelete(null); }} title="Site ayarını sil" description={pendingDelete ? t('admin.siteSettings.list.deleteConfirm', { key: String(pendingDelete.key), locale: String(pendingDelete.locale || locale || '—') }) : ''} onConfirm={confirmDeleteRow} busy={isDeleting} confirmLabel="Evet, sil" />
     </div>
   );
 }

@@ -25,9 +25,10 @@ import {
 
 type CarrierDetailClientProps = {
   id: string;
+  onClose?: () => void;
 };
 
-export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
+export default function CarrierDetailClient({ id, onClose }: CarrierDetailClientProps) {
   const router = useRouter();
   const t = useAdminT('admin.carriers');
   const carrierQ = useGetCarrierAdminQuery({ id });
@@ -50,7 +51,7 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
   if (carrierQ.isError) {
     return (
       <div className="space-y-4">
-        <Button variant="outline" onClick={() => router.push('/admin/carriers')}>
+        <Button variant="outline" onClick={() => onClose ? onClose() : router.push('/admin/carriers')}>
           <ArrowLeft className="mr-2 size-4" />
           {t('detail.backButton')}
         </Button>
@@ -64,7 +65,7 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
   if (!carrier) {
     return (
       <div className="space-y-4">
-        <Button variant="outline" onClick={() => router.push('/admin/carriers')}>
+        <Button variant="outline" onClick={() => onClose ? onClose() : router.push('/admin/carriers')}>
           <ArrowLeft className="mr-2 size-4" />
           {t('detail.backButton')}
         </Button>
@@ -80,7 +81,7 @@ export default function CarrierDetailClient({ id }: CarrierDetailClientProps) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => router.push('/admin/carriers')}>
+            <Button variant="outline" onClick={() => onClose ? onClose() : router.push('/admin/carriers')}>
               <ArrowLeft className="mr-2 size-4" />
               {t('detail.backButton')}
             </Button>

@@ -104,6 +104,7 @@ export const SiteSettingsForm: React.FC<SiteSettingsFormProps> = ({
 
   // raw
   const [rawText, setRawText] = React.useState<string>('');
+  const [deleteRequested, setDeleteRequested] = React.useState(false);
 
   const coercedInitial = React.useMemo(() => coerceSiteSettingsValue(row?.value), [row?.value]);
 
@@ -145,13 +146,9 @@ export const SiteSettingsForm: React.FC<SiteSettingsFormProps> = ({
   const handleDelete = async () => {
     if (!onDelete || disabled) return;
 
-    const ok = window.confirm(
-      t('admin.siteSettings.form.deleteConfirm', { key: settingKey, locale }),
-    );
-    if (!ok) return;
-
     try {
       await onDelete({ key: settingKey, locale });
+      setDeleteRequested(false);
       toast.success(t('admin.siteSettings.form.deleted', { key: settingKey, locale }));
     } catch (err: any) {
       toast.error(
@@ -166,8 +163,8 @@ export const SiteSettingsForm: React.FC<SiteSettingsFormProps> = ({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             {onDelete ? (
-              <Button type="button" variant="outline" size="sm" onClick={handleDelete} disabled={disabled}>
-                {t('admin.siteSettings.actions.delete')}
+              <Button type="button" variant="outline" size="sm" onClick={() => deleteRequested ? void handleDelete() : setDeleteRequested(true)} disabled={disabled}>
+                {deleteRequested ? 'Evet, sil' : t('admin.siteSettings.actions.delete')}
               </Button>
             ) : null}
 
@@ -175,6 +172,7 @@ export const SiteSettingsForm: React.FC<SiteSettingsFormProps> = ({
               {t('admin.siteSettings.actions.save')}
             </Button>
           </div>
+          {deleteRequested && <div className="flex items-center gap-2 text-sm text-destructive"><span>{t('admin.siteSettings.form.deleteConfirm', { key: settingKey, locale })}</span><Button type="button" size="sm" variant="ghost" onClick={() => setDeleteRequested(false)}>Vazgeç</Button></div>}
         </div>
 
         {/* Mode tabs */}

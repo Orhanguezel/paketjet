@@ -6,7 +6,8 @@
 // =============================================================
 
 import * as React from 'react';
-import Link from 'next/link';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import UserDetailClient from './user-detail-client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Filter, RefreshCcw, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
@@ -53,6 +54,7 @@ import { useListUsersAdminQuery } from '@/integrations/hooks';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 
 export default function UsersListClient() {
+  const [selectedUser, setSelectedUser] = React.useState<AdminUserView | null>(null);
   const router = useRouter();
   const sp = useSearchParams();
   const t = useAdminT('admin.users');
@@ -240,7 +242,7 @@ export default function UsersListClient() {
             </div>
           ) : null}
 
-          <div className="rounded-md border">
+          <div className="overflow-x-auto rounded-md border">
             <Table>
               <TableHeader>
                 <TableRow>
@@ -266,10 +268,8 @@ export default function UsersListClient() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button asChild variant="outline" size="sm">
-                        <Link prefetch={false} href={`/admin/users/${encodeURIComponent(u.id)}`}>
-                          {t('list.table.viewButton')}
-                        </Link>
+                      <Button variant="outline" size="sm" onClick={() => setSelectedUser(u)}>
+                        {t('list.table.viewButton')}
                       </Button>
                     </TableCell>
                   </TableRow>
@@ -314,6 +314,9 @@ export default function UsersListClient() {
           </div>
         </CardContent>
       </Card>
+      <AdminDetailDrawer open={!!selectedUser} onOpenChange={open => { if (!open) setSelectedUser(null); }} title={selectedUser ? displayName(selectedUser) : 'Kullanıcı'} description={selectedUser?.email ?? undefined} eyebrow="Kullanıcı detayı" className="sm:max-w-[760px]">
+        {selectedUser && <UserDetailClient id={selectedUser.id} onClose={() => { setSelectedUser(null); usersQ.refetch(); }} />}
+      </AdminDetailDrawer>
     </div>
   );
 }

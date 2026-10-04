@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import CarrierDetailClient from './carrier-detail-client';
 import { RefreshCcw, Search } from 'lucide-react';
 
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
@@ -30,7 +31,6 @@ import {
   ADMIN_CARRIERS_ACTIVE_ILAN_OPTIONS,
   ADMIN_CARRIERS_ACTIVE_OPTIONS,
   ADMIN_CARRIERS_DEFAULT_FILTERS,
-  buildAdminCarrierDetailHref,
   buildAdminCarriersListParams,
   formatAdminCarrierDate,
   formatAdminCarrierRating,
@@ -42,6 +42,7 @@ import {
 import { useListCarriersAdminQuery } from '@/integrations/hooks';
 
 export default function AdminCarriersClient() {
+  const [selectedCarrier, setSelectedCarrier] = React.useState<{ id: string; name: string; email: string } | null>(null);
   const t = useAdminT('admin.carriers');
   const [filters, setFilters] = React.useState<AdminCarriersFilters>(ADMIN_CARRIERS_DEFAULT_FILTERS);
 
@@ -147,7 +148,7 @@ export default function AdminCarriersClient() {
           <CardTitle className="text-base">{t('list.title')}</CardTitle>
           <CardDescription>{t('list.description')}</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-x-auto">
           <Table>
             <TableHeader>
               <TableRow>
@@ -214,10 +215,8 @@ export default function AdminCarriersClient() {
                   <TableCell>{formatAdminCarrierDate(item.created_at)}</TableCell>
                   <TableCell>{formatAdminCarrierDate(item.last_sign_in_at)}</TableCell>
                   <TableCell>
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={buildAdminCarrierDetailHref(item.id)}>
-                        {t('list.detailButton')}
-                      </Link>
+                    <Button variant="outline" size="sm" onClick={() => setSelectedCarrier({ id: item.id, name: getAdminCarrierDisplayName(item), email: item.email })}>
+                      {t('list.detailButton')}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -226,6 +225,9 @@ export default function AdminCarriersClient() {
           </Table>
         </CardContent>
       </Card>
+      <AdminDetailDrawer open={!!selectedCarrier} onOpenChange={open => { if (!open) setSelectedCarrier(null); }} title={selectedCarrier?.name ?? 'Taşıyıcı'} description={selectedCarrier?.email} eyebrow="Taşıyıcı detayı" className="sm:max-w-[760px]">
+        {selectedCarrier && <CarrierDetailClient id={selectedCarrier.id} onClose={() => { setSelectedCarrier(null); listQ.refetch(); }} />}
+      </AdminDetailDrawer>
     </div>
   );
 }

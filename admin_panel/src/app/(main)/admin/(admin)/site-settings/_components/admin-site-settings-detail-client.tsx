@@ -3,7 +3,6 @@
 // FILE: src/app/(main)/admin/(admin)/site-settings/_components/admin-site-settings-detail-client.tsx
 // =============================================================
 import * as React from 'react';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { RefreshCcw } from 'lucide-react';
@@ -29,7 +28,7 @@ import {SocialsStructuredRenderer} from './settings-renderers-2';
 import {CompanyStructuredRenderer} from './settings-renderers-3';
 import {UiHeaderStructuredRenderer} from './settings-renderers-3';
 import {BusinessHoursStructuredRenderer} from './settings-renderers-4';
-export default function SiteSettingsDetailClient({ id }: { id: string }) {
+export default function SiteSettingsDetailClient({ id, embedded = false, initialLocale: drawerLocale, onClose }: { id: string; embedded?: boolean; initialLocale?: string; onClose?: () => void }) {
   const router = useRouter();
   const sp = useSearchParams();
   const adminLocale = usePreferencesStore((s) => s.adminLocale);
@@ -61,9 +60,9 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
   );
 
   const localeFromQuery = React.useMemo(() => {
-    const q = sp?.get('locale');
+    const q = embedded ? drawerLocale : sp?.get('locale');
     return (q ?? '').trim();
-  }, [sp]);
+  }, [sp, embedded, drawerLocale]);
 
   const initialLocale = React.useMemo(
     () =>
@@ -89,7 +88,7 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
 
   // keep URL in sync
   React.useEffect(() => {
-    if (!settingKey || !selectedLocale) return;
+    if (embedded || !settingKey || !selectedLocale) return;
 
     const cur = localeFromQuery === '*' ? '*' : toShortSiteSettingsLocale(localeFromQuery);
     if (cur === selectedLocale) return;
@@ -98,7 +97,7 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
     qs.set('locale', selectedLocale);
     router.replace(`/admin/site-settings/${encodeURIComponent(rawSettingKey)}?${qs.toString()}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rawSettingKey, selectedLocale, localeFromQuery, router.replace, settingKey, sp?.entries]);
+  }, [rawSettingKey, selectedLocale, localeFromQuery, router.replace, settingKey, sp?.entries, embedded]);
 
   // load row for key+locale (same pattern as /pages)
   const listArgs = React.useMemo(() => {
@@ -225,11 +224,7 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button asChild variant="outline" size="sm">
-              <Link prefetch={false} href={backHref}>
-                {t('admin.siteSettings.detail.localesMissingAction')}
-              </Link>
-            </Button>
+            <Button variant="outline" size="sm" onClick={() => onClose ? onClose() : router.push(backHref)}>{t('admin.siteSettings.detail.localesMissingAction')}</Button>
           </CardContent>
         </Card>
       </div>
@@ -247,11 +242,7 @@ export default function SiteSettingsDetailClient({ id }: { id: string }) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button asChild variant="outline" size="sm">
-            <Link prefetch={false} href={backHref}>
-              {t('admin.siteSettings.detail.backToList')}
-            </Link>
-          </Button>
+          <Button variant="outline" size="sm" onClick={() => onClose ? onClose() : router.push(backHref)}>{t('admin.siteSettings.detail.backToList')}</Button>
 
           <div className="w-32 sm:w-40">
             <AdminLocaleSelect

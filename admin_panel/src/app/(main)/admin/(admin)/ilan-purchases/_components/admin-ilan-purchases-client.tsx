@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription } from '@/components/ui/dialog';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
 import { Textarea } from '@/components/ui/textarea';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 import { useListIlanPurchasesAdminQuery,useGrantPurchaseCreditRemedyMutation } from '@/integrations/hooks';
@@ -95,7 +95,7 @@ export default function AdminIlanPurchasesClient() {
                         <div className="text-xs text-muted-foreground">{item.contact?.phone ?? '-'}</div>
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">{formatIlanPurchaseDate(item.created_at)}</TableCell>
-                      <TableCell>{item.remedy_id?<span className="text-xs">1 hak tanımlandı</span>:item.status==='completed'?<Button size="sm" variant="outline" onClick={()=>{setSelected(item);setReason('');setVerified(false);setRemedyError('');}}>İncele</Button>:'—'}</TableCell>
+                      <TableCell><Button size="sm" variant="outline" onClick={()=>{setSelected(item);setReason('');setVerified(false);setRemedyError('');}}>Detay</Button></TableCell>
                     </TableRow>
                   ))
                 )}
@@ -112,7 +112,7 @@ export default function AdminIlanPurchasesClient() {
             </div>
           </div>
         )}
-        <Dialog open={!!selected} onOpenChange={open=>{if(!open)setSelected(null);}}><DialogContent><DialogHeader><DialogTitle>Doğrulanmış şikâyet için 1 hak tanımla</DialogTitle><DialogDescription>Bu işlem aynı satın alma için yalnızca bir kez yapılır. Yasal para iadesi talebinin yerine geçmez.</DialogDescription></DialogHeader><form className="space-y-4" onSubmit={async event=>{event.preventDefault();if(!selected||!verified)return;try{await grant({id:selected.id,reason,verified:true}).unwrap();setSelected(null);refetch();}catch{setRemedyError('Hak tanımlanamadı. Satın alma ve önceki işlemleri kontrol edin.');}}}><label className="block text-sm">İnceleme sonucu ve kanıt referansı<Textarea className="mt-2" minLength={10} maxLength={500} required value={reason} onChange={event=>setReason(event.target.value)}/></label><label className="flex gap-2 text-sm"><input type="checkbox" checked={verified} onChange={event=>setVerified(event.target.checked)}/>Şikâyetin doğrulandığını teyit ediyorum.</label>{remedyError&&<p role="alert" className="text-sm text-destructive">{remedyError}</p>}<Button disabled={granting||!verified||reason.trim().length<10}>1 hak tanımla</Button></form></DialogContent></Dialog>
+        <AdminDetailDrawer open={!!selected} onOpenChange={open=>{if(!open)setSelected(null);}} title="İletişim satışı" description={selected?.id} eyebrow="Satın alma detayı"><div className="space-y-5">{selected&&<><dl className="grid grid-cols-2 gap-3 text-sm"><div className="col-span-2"><dt className="text-muted-foreground">Rota</dt><dd className="font-medium">{selected.from_city} → {selected.to_city}</dd></div><div><dt className="text-muted-foreground">Alıcı</dt><dd>{selected.buyer_name||'—'}<br/>{selected.buyer_email||'—'}</dd></div><div><dt className="text-muted-foreground">Satıcı</dt><dd>{selected.seller_name||'—'}<br/>{selected.seller_email||'—'}</dd></div><div><dt className="text-muted-foreground">Ödeme</dt><dd>{selected.pay_method} · {formatIlanPurchaseMoney(selected.price_paid)}</dd></div><div><dt className="text-muted-foreground">Tarih</dt><dd>{formatIlanPurchaseDate(selected.created_at)}</dd></div><div className="col-span-2"><dt className="text-muted-foreground">İletişim</dt><dd>{selected.contact?.name||'—'} · {selected.contact?.phone||'—'}</dd></div></dl>{selected.remedy_id?<p className="rounded-lg border p-4 text-sm">Bu satın alma için 1 hak tanımlandı.</p>:selected.status==='completed'?<section className="space-y-3 border-t pt-5"><h3 className="font-semibold">Doğrulanmış şikâyet için 1 hak tanımla</h3><p className="text-sm text-muted-foreground">Bu işlem aynı satın alma için yalnızca bir kez yapılır. Yasal para iadesi talebinin yerine geçmez.</p><form className="space-y-4" onSubmit={async event=>{event.preventDefault();if(!verified)return;try{await grant({id:selected.id,reason,verified:true}).unwrap();setSelected(null);refetch();}catch{setRemedyError('Hak tanımlanamadı. Satın alma ve önceki işlemleri kontrol edin.');}}}><label className="block text-sm">İnceleme sonucu ve kanıt referansı<Textarea className="mt-2" minLength={10} maxLength={500} required value={reason} onChange={event=>setReason(event.target.value)}/></label><label className="flex gap-2 text-sm"><input type="checkbox" checked={verified} onChange={event=>setVerified(event.target.checked)}/>Şikâyetin doğrulandığını teyit ediyorum.</label>{remedyError&&<p role="alert" className="text-sm text-destructive">{remedyError}</p>}<Button disabled={granting||!verified||reason.trim().length<10}>1 hak tanımla</Button></form></section>:null}</>}</div></AdminDetailDrawer>
       </CardContent>
     </Card>
   );

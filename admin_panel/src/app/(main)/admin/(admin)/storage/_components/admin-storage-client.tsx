@@ -21,11 +21,10 @@ import {
 
 import { cn } from '@/lib/utils';
 
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -216,6 +215,7 @@ export default function AdminStorageClient() {
 
   function requestDelete(item: StorageAsset) {
     setItemToDelete(item);
+    setActiveItem(null);
     setDeleteDialogOpen(true);
   }
 
@@ -471,8 +471,7 @@ export default function AdminStorageClient() {
         </div>
       ) : null}
 
-      <Dialog open={Boolean(activeItem)} onOpenChange={(open) => !open && setActiveItem(null)}>
-        <DialogContent className="max-w-[900px] p-6">
+      <AdminDetailDrawer open={Boolean(activeItem)} onOpenChange={(open) => !open && setActiveItem(null)} title="Dosya detayları" description={activeItem?.name} eyebrow="Medya kütüphanesi" className="sm:max-w-[760px]">
           {activeItem ? (
             <div className="grid gap-6 md:grid-cols-[minmax(0,1fr)_300px]">
               <div className="flex min-h-[360px] items-center justify-center overflow-hidden rounded-lg bg-muted">
@@ -487,10 +486,6 @@ export default function AdminStorageClient() {
               </div>
 
               <div className="flex flex-col gap-4">
-                <DialogHeader>
-                  <DialogTitle>Dosya Detayları</DialogTitle>
-                  <DialogDescription className="sr-only">Seçili dosya bilgileri ve medya işlemleri.</DialogDescription>
-                </DialogHeader>
 
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Dosya Adı:</p>
@@ -533,7 +528,7 @@ export default function AdminStorageClient() {
                   </div>
                 ) : null}
 
-                <DialogFooter className="mt-auto">
+                <div className="mt-auto flex justify-end gap-2 border-t pt-4">
                   <Button variant="destructive" onClick={() => requestDelete(activeItem)} disabled={busy}>
                     <Trash2 className="mr-2 size-4" />
                     Sil
@@ -541,27 +536,15 @@ export default function AdminStorageClient() {
                   <Button variant="outline" onClick={() => setActiveItem(null)}>
                     Kapat
                   </Button>
-                </DialogFooter>
+                </div>
               </div>
             </div>
           ) : null}
-        </DialogContent>
-      </Dialog>
+      </AdminDetailDrawer>
 
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('list.deleteConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('list.deleteConfirmDescription', { name: itemToDelete ? fileName(itemToDelete) : t('list.defaultFileName') })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('list.cancelButton')}</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>{t('list.deleteButton')}</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AdminDetailDrawer open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t('list.deleteConfirmTitle')} description={itemToDelete ? fileName(itemToDelete) : t('list.defaultFileName')} eyebrow="Dosya silme">
+        <div className="space-y-5"><p className="text-sm">{t('list.deleteConfirmDescription', { name: itemToDelete ? fileName(itemToDelete) : t('list.defaultFileName') })}</p><div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>{t('list.cancelButton')}</Button><Button variant="destructive" onClick={confirmDelete}>{t('list.deleteButton')}</Button></div></div>
+      </AdminDetailDrawer>
     </>
   );
 }

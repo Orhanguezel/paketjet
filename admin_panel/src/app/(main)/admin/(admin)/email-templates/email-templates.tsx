@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import EmailTemplateDetailClient from './_components/email-template-detail-client';
 import { Pencil, RefreshCcw, Search, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -35,6 +36,8 @@ export default function EmailTemplatesPage() {
   const t = useAdminT('admin.emailTemplates');
   const [search, setSearch] = React.useState('');
   const [status, setStatus] = React.useState<StatusFilter>('all');
+  const [selectedTemplate, setSelectedTemplate] = React.useState<{ id: string; key: string } | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
   const params = React.useMemo(
     () => ({
@@ -50,9 +53,9 @@ export default function EmailTemplatesPage() {
   const rows = listQ.data ?? [];
 
   async function onDelete(id: string, key: string) {
-    if (!window.confirm(`${key} — ${t('list.actions.delete')}?`)) return;
     try {
       await deleteTemplate({ id }).unwrap();
+      setPendingDeleteId(null);
       toast.success(t('list.actions.delete'));
       listQ.refetch();
     } catch {
@@ -158,21 +161,20 @@ export default function EmailTemplatesPage() {
                       <TableCell className="text-sm text-muted-foreground">{fmtDate(tpl.updated_at)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button asChild type="button" variant="outline" size="sm">
-                            <Link href={`/admin/email-templates/${tpl.id}`}>
+                          <Button type="button" variant="outline" size="sm" onClick={() => setSelectedTemplate({ id: tpl.id, key: tpl.template_key })}>
                               <Pencil className="mr-1.5 size-3.5" />
                               {t('list.actions.edit')}
-                            </Link>
                           </Button>
+                          {pendingDeleteId === tpl.id && <Button type="button" variant="ghost" size="sm" onClick={() => setPendingDeleteId(null)}>Vazgeç</Button>}
                           <Button
                             type="button"
                             variant="outline"
                             size="sm"
                             disabled={deleteState.isLoading}
-                            onClick={() => onDelete(tpl.id, tpl.template_key)}
+                            onClick={() => pendingDeleteId === tpl.id ? void onDelete(tpl.id, tpl.template_key) : setPendingDeleteId(tpl.id)}
                           >
                             <Trash2 className="mr-1.5 size-3.5" />
-                            {t('list.actions.delete')}
+                            {pendingDeleteId === tpl.id ? 'Evet, sil' : t('list.actions.delete')}
                           </Button>
                         </div>
                       </TableCell>
@@ -184,6 +186,9 @@ export default function EmailTemplatesPage() {
           </Table>
         </CardContent>
       </Card>
+      <AdminDetailDrawer open={!!selectedTemplate} onOpenChange={open => { if (!open) setSelectedTemplate(null); }} title={selectedTemplate?.key ?? 'E-posta şablonu'} description={selectedTemplate?.id} eyebrow="Şablon detayı" className="sm:max-w-[760px]">
+        {selectedTemplate && <EmailTemplateDetailClient id={selectedTemplate.id} onClose={() => { setSelectedTemplate(null); listQ.refetch(); }} />}
+      </AdminDetailDrawer>
     </div>
   );
 }

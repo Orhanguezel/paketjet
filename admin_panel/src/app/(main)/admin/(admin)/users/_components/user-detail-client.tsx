@@ -39,7 +39,7 @@ import {
 } from '@/integrations/hooks';
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 
-export default function UserDetailClient({ id }: { id: string }) {
+export default function UserDetailClient({ id, onClose }: { id: string; onClose?: () => void }) {
   const router = useRouter();
   const t = useAdminT();
 
@@ -63,6 +63,7 @@ export default function UserDetailClient({ id }: { id: string }) {
   const [email, setEmail] = React.useState('');
   const [password, setPasswordLocal] = React.useState('');
   const [active, setActiveLocal] = React.useState(true);
+  const [deleteRequested, setDeleteRequested] = React.useState(false);
 
   const [roles, setRolesLocal] = React.useState<UserRoleName[]>([]);
 
@@ -141,12 +142,11 @@ export default function UserDetailClient({ id }: { id: string }) {
   }
 
   async function onDeleteUser() {
-    if (!confirm(t('admin.users.detail.delete.confirm'))) return;
     try {
       await removeUser({ id }).unwrap();
       toast.success(t('admin.users.detail.delete.deleted'));
-      router.replace('/admin/users');
-      router.refresh();
+      if (onClose) onClose();
+      else { router.replace('/admin/users'); router.refresh(); }
     } catch (err) {
       toast.error(getErrorMessage(err, t('admin.users.detail.errorFallback')));
     }
@@ -159,7 +159,7 @@ export default function UserDetailClient({ id }: { id: string }) {
   if (userQ.isError) {
     return (
       <div className="space-y-3">
-        <Button variant="outline" onClick={() => router.back()}>
+        <Button variant="outline" onClick={() => onClose ? onClose() : router.back()}>
           <ArrowLeft className="mr-2 size-4" />
           {t('admin.users.detail.backButton')}
         </Button>
@@ -176,7 +176,7 @@ export default function UserDetailClient({ id }: { id: string }) {
   if (!u) {
     return (
       <div className="space-y-3">
-        <Button variant="outline" onClick={() => router.back()}>
+        <Button variant="outline" onClick={() => onClose ? onClose() : router.back()}>
           <ArrowLeft className="mr-2 size-4" />
           {t('admin.users.detail.backButton')}
         </Button>
@@ -192,7 +192,7 @@ export default function UserDetailClient({ id }: { id: string }) {
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Button variant="outline" onClick={() => router.back()} disabled={busy}>
+            <Button variant="outline" onClick={() => onClose ? onClose() : router.back()} disabled={busy}>
               <ArrowLeft className="mr-2 size-4" />
               {t('admin.users.detail.backButton')}
             </Button>
@@ -348,10 +348,12 @@ export default function UserDetailClient({ id }: { id: string }) {
           <CardTitle className="text-base">{t('admin.users.detail.delete.title')}</CardTitle>
           <CardDescription>{t('admin.users.detail.delete.description')}</CardDescription>
         </CardHeader>
-        <CardContent className="flex justify-end">
-          <Button variant="destructive" onClick={onDeleteUser} disabled={busy}>
+        <CardContent className="flex flex-wrap items-center justify-end gap-2">
+          {deleteRequested && <p className="mr-auto text-sm text-destructive">{t('admin.users.detail.delete.confirm')}</p>}
+          {deleteRequested && <Button variant="outline" onClick={() => setDeleteRequested(false)} disabled={busy}>Vazgeç</Button>}
+          <Button variant="destructive" onClick={() => deleteRequested ? void onDeleteUser() : setDeleteRequested(true)} disabled={busy}>
             <Trash2 className="mr-2 size-4" />
-            {t('admin.users.detail.delete.button')}
+            {deleteRequested ? 'Evet, sil' : t('admin.users.detail.delete.button')}
           </Button>
         </CardContent>
       </Card>

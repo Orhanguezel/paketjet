@@ -34,14 +34,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import { AdminConfirmDrawer } from '@/components/admin/admin-confirm-drawer';
 
 import { useAdminT } from '@/app/(main)/admin/_components/common/use-admin-t';
 
@@ -93,6 +87,7 @@ export default function AdminContactsClient() {
   const [editOpen, setEditOpen] = React.useState(false);
   const [editState, setEditState] = React.useState<AdminContactsEditState | null>(null);
   const [selected, setSelected] = React.useState<ContactView | null>(null);
+  const [pendingDelete, setPendingDelete] = React.useState<ContactView | null>(null);
 
   function openEdit(item: ContactView) {
     setEditState(createAdminContactEditState(item));
@@ -127,16 +122,9 @@ export default function AdminContactsClient() {
   }
 
   async function onDelete(item: ContactView) {
-    const msg = t('confirmDelete', {
-      name: item.name,
-      email: item.email,
-      subject: item.subject,
-      id: item.id,
-    });
-    if (!window.confirm(msg)) return;
-
     try {
       await removeContact(item.id).unwrap();
+      setPendingDelete(null);
       toast.success(t('messages.deleted'));
       listQ.refetch();
     } catch (err: any) {
@@ -336,7 +324,7 @@ export default function AdminContactsClient() {
                         type="button"
                         variant="destructive"
                         size="sm"
-                        onClick={() => onDelete(item)}
+                        onClick={() => setPendingDelete(item)}
                         disabled={busy}
                       >
                         <Trash2 className="mr-2 size-4" />
@@ -351,12 +339,7 @@ export default function AdminContactsClient() {
         </CardContent>
       </Card>
 
-      <Dialog open={editOpen} onOpenChange={(v) => (v ? null : closeEdit())}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('editDialog.title')}</DialogTitle>
-            <DialogDescription>{t('editDialog.description')}</DialogDescription>
-          </DialogHeader>
+      <AdminDetailDrawer open={editOpen} onOpenChange={(v) => (v ? null : closeEdit())} title={t('editDialog.title')} description={t('editDialog.description')} eyebrow="İletişim detayı">
 
           {editState && (
             <div className="grid gap-4">
@@ -446,16 +429,16 @@ export default function AdminContactsClient() {
             </div>
           )}
 
-          <DialogFooter>
+          <div className="flex justify-end gap-2 border-t pt-4">
             <Button variant="outline" onClick={closeEdit} disabled={busy}>
               {t('admin.common.cancel')}
             </Button>
             <Button onClick={onSaveEdit} disabled={busy || !editState}>
               {t('admin.common.save')}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+      </AdminDetailDrawer>
+      <AdminConfirmDrawer open={!!pendingDelete} onOpenChange={open => { if (!open) setPendingDelete(null); }} title={t('admin.common.delete')} description={pendingDelete ? t('confirmDelete', { name: pendingDelete.name, email: pendingDelete.email, subject: pendingDelete.subject, id: pendingDelete.id }) : ''} onConfirm={() => pendingDelete ? onDelete(pendingDelete) : undefined} busy={removeState.isLoading} confirmLabel={t('admin.common.delete')} />
     </div>
   );
 }

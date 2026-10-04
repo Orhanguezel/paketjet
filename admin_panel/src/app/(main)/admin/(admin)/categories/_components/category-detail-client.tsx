@@ -47,9 +47,10 @@ import {
 
 interface Props {
   id: string;
+  onClose?: () => void;
 }
 
-export default function CategoryDetailClient({ id }: Props) {
+export default function CategoryDetailClient({ id, onClose }: Props) {
   const t = useAdminT('admin.categories');
   const router = useRouter();
   const adminLocale = usePreferencesStore((s) => s.adminLocale);
@@ -87,7 +88,7 @@ export default function CategoryDetailClient({ id }: Props) {
     }
   }, [id, isNew, refetch]);
 
-  const handleBack = () => router.push('/admin/categories');
+  const handleBack = () => onClose ? onClose() : router.push('/admin/categories');
 
   const handleLocaleChange = (nextLocale: string) => {
     setActiveLocale(nextLocale);
@@ -112,7 +113,7 @@ export default function CategoryDetailClient({ id }: Props) {
         await updateCategory({ id, patch: payload }).unwrap();
         toast.success(t('messages.updated'));
       }
-      router.push('/admin/categories');
+      handleBack();
     } catch (error: any) {
       const errMsg = error?.data?.error?.message || error?.message || t('messages.unknownError');
       toast.error(`${t('messages.errorPrefix')}: ${errMsg}`);

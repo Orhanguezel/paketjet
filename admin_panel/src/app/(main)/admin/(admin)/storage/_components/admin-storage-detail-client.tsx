@@ -19,16 +19,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
 
 import type { StorageUpdateInput } from '@/integrations/shared';
 import {
@@ -483,21 +474,9 @@ export default function AdminStorageDetailClient({ id }: { id: string }) {
         </Card>
       </form>
 
-      {/* Delete Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('list.deleteConfirmTitle')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('list.deleteConfirmDescription', { name: formData.name || t('list.defaultFileName') })}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('detail.cancelButton')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeleteConfirm}>{t('detail.deleteButton')}</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <AdminDetailDrawer open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen} title={t('list.deleteConfirmTitle')} description={formData.name || t('list.defaultFileName')} eyebrow="Dosya silme">
+        <div className="space-y-5"><p className="text-sm">{t('list.deleteConfirmDescription', { name: formData.name || t('list.defaultFileName') })}</p><div className="flex justify-end gap-2"><Button variant="outline" onClick={() => setDeleteDialogOpen(false)}>{t('detail.cancelButton')}</Button><Button variant="destructive" onClick={handleDeleteConfirm}>{t('detail.deleteButton')}</Button></div></div>
+      </AdminDetailDrawer>
     </>
   );
 }

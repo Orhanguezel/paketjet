@@ -11,14 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
 
 import {
   useListWalletsAdminQuery,
@@ -230,19 +223,7 @@ export default function AdminWalletClient() {
       )}
 
       {/* Adjust Balance Dialog */}
-      <Dialog open={!!adjustDialog} onOpenChange={(o) => !o && setAdjustDialog(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('adjustDialog.title')}</DialogTitle>
-            <DialogDescription>
-              {t('adjustDialog.description', {
-                name: adjustDialog?.full_name ?? adjustDialog?.email ?? '',
-                balance: adjustDialog
-                  ? formatAdminWalletAmount(adjustDialog.balance, adjustDialog.currency)
-                  : '',
-              })}
-            </DialogDescription>
-          </DialogHeader>
+      <AdminDetailDrawer open={!!adjustDialog} onOpenChange={(o) => !o && setAdjustDialog(null)} title={t('adjustDialog.title')} description={t('adjustDialog.description', { name: adjustDialog?.full_name ?? adjustDialog?.email ?? '', balance: adjustDialog ? formatAdminWalletAmount(adjustDialog.balance, adjustDialog.currency) : '' })} eyebrow="Cüzdan düzeltmesi">
           <div className="space-y-4">
             <div>
               <Label>{t('adjustDialog.typeLabel')}</Label>
@@ -287,16 +268,15 @@ export default function AdminWalletClient() {
               />
             </div>
           </div>
-          <DialogFooter>
+          <div className="flex justify-end gap-2 border-t pt-4">
             <Button variant="outline" onClick={() => setAdjustDialog(null)}>
               {t('adjustDialog.cancel')}
             </Button>
             <Button onClick={handleAdjust} disabled={isAdjusting}>
               {isAdjusting ? t('adjustDialog.submitting') : t('adjustDialog.submit')}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+      </AdminDetailDrawer>
     </div>
   );
 }

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { AdminConfirmDrawer } from '@/components/admin/admin-confirm-drawer';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -433,6 +434,7 @@ export default function AdminAuditClient() {
 
 
   const [clearAuditLogs, { isLoading: isClearing }] = useClearAuditLogsAdminMutation();
+  const [clearRequested, setClearRequested] = React.useState(false);
 
   async function onRefresh() {
     try {
@@ -450,12 +452,12 @@ export default function AdminAuditClient() {
   }
 
   async function onClearLogs() {
-    if (!window.confirm(t('clear.dialogDescription'))) return;
     const target = tab === 'requests' ? 'requests' : tab === 'auth' ? 'auth' : 'all';
     try {
       const data = await clearAuditLogs({ target }).unwrap();
       const total = (data.deletedRequests ?? 0) + (data.deletedAuth ?? 0);
       toast.success(t('clear.success', { count: String(total) }));
+      setClearRequested(false);
     } catch (err: any) {
       toast.error(err?.data?.error?.message || err?.message || t('error'));
     }
@@ -476,7 +478,7 @@ export default function AdminAuditClient() {
             <RefreshCcw className="mr-2 h-4 w-4" />
             {t('refresh')}
           </Button>
-          <Button variant="destructive" onClick={onClearLogs} disabled={isClearing}>
+          <Button variant="destructive" onClick={() => setClearRequested(true)} disabled={isClearing}>
             <Trash2 className="mr-2 h-4 w-4" />
             {t('clear.button')}
           </Button>
@@ -1007,6 +1009,7 @@ export default function AdminAuditClient() {
           </Card>
         </TabsContent>
       </Tabs>
+      <AdminConfirmDrawer open={clearRequested} onOpenChange={setClearRequested} title={t('clear.button')} description={t('clear.dialogDescription')} onConfirm={onClearLogs} busy={isClearing} confirmLabel={t('clear.button')} />
     </div>
   );
 }

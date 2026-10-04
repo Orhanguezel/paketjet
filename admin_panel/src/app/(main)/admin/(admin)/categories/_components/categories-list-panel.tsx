@@ -6,7 +6,8 @@
 'use client';
 
 import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import CategoryDetailClient from './category-detail-client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,7 +56,8 @@ import {
 
 export default function CategoriesListPanel({ initialModuleKey }: { initialModuleKey?: string }) {
   const t = useAdminT('admin.categories');
-  const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = React.useState<{ id: string; name: string } | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
   const apiOrigin = React.useMemo(() => getCategoryApiOrigin(), []);
 
   // Locale management (like CustomPage)
@@ -127,21 +129,18 @@ export default function CategoriesListPanel({ initialModuleKey }: { initialModul
   };
 
   const handleCreate = () => {
-    router.push('/admin/categories/new');
+    setSelectedCategory({ id: 'new', name: t('actions.create') });
   };
 
   const handleEdit = (item: CategoryDto) => {
-    router.push(`/admin/categories/${item.id}`);
+    setSelectedCategory({ id: item.id, name: item.name });
   };
 
   const handleDelete = async (item: CategoryDto) => {
-    if (!confirm(t('messages.confirmDelete', { title: item.name }))) {
-      return;
-    }
-
     try {
       await deleteCategory(item.id).unwrap();
       toast.success(buildCategoryToastMessage(item.name, t('messages.deleted')));
+      setPendingDeleteId(null);
       refetch();
     } catch (error) {
       toast.error(`${t('messages.deleteError')}: ${error}`);
@@ -369,13 +368,15 @@ export default function CategoriesListPanel({ initialModuleKey }: { initialModul
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
+                          {pendingDeleteId === item.id && <Button variant="outline" size="sm" onClick={() => setPendingDeleteId(null)}>Vazgeç</Button>}
                           <Button
                             variant="ghost"
-                            size="icon-sm"
-                            onClick={() => handleDelete(item)}
+                            size={pendingDeleteId === item.id ? "sm" : "icon-sm"}
+                            onClick={() => pendingDeleteId === item.id ? void handleDelete(item) : setPendingDeleteId(item.id)}
                             disabled={busy}
+                            aria-label={t('messages.confirmDelete', { title: item.name })}
                           >
-                            <Trash2 className="h-4 w-4 text-destructive" />
+                            <Trash2 className="h-4 w-4 text-destructive" />{pendingDeleteId === item.id && 'Evet, sil'}
                           </Button>
                         </div>
                       </TableCell>
@@ -387,6 +388,9 @@ export default function CategoriesListPanel({ initialModuleKey }: { initialModul
           )}
         </CardContent>
       </Card>
+      <AdminDetailDrawer open={!!selectedCategory} onOpenChange={open => { if (!open) setSelectedCategory(null); }} title={selectedCategory?.name ?? 'Kategori'} description={selectedCategory?.id === 'new' ? 'Yeni kategori' : selectedCategory?.id} eyebrow="Kategori detayı" className="sm:max-w-[760px]">
+        {selectedCategory && <CategoryDetailClient key={selectedCategory.id} id={selectedCategory.id} onClose={() => { setSelectedCategory(null); refetch(); }} />}
+      </AdminDetailDrawer>
     </div>
   );
 }
