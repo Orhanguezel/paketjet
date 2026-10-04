@@ -14,8 +14,8 @@ import { cn } from '@/lib/utils';
 import { AccountSwitcher } from './_components/sidebar/account-switcher';
 import { AdminFooter } from './_components/sidebar/admin-footer';
 import { AdminBrandTitle } from './_components/sidebar/admin-brand-title';
-import { LayoutControls } from './_components/sidebar/layout-controls';
 import { ThemeSwitcher } from './_components/sidebar/theme-switcher';
+import { AdminPage } from '@/components/admin/admin-page';
 
 import AdminAuthGate from './_components/admin-auth-gate';
 import { AdminSettingsProvider } from './_components/admin-settings-provider';
@@ -43,15 +43,12 @@ export default function Layout({ children }: Readonly<{ children: ReactNode }>) 
 
           <SidebarInset
             className={cn(
-              'flex flex-col',
-              '[html[data-content-layout=centered]_&]:mx-auto! [html[data-content-layout=centered]_&]:max-w-screen-2xl!',
-              'max-[113rem]:peer-data-[variant=inset]:mr-2! min-[101rem]:peer-data-[variant=inset]:peer-data-[state=collapsed]:peer-data-[state=collapsed]:mr-auto!',
+              'admin-workspace flex min-w-0 flex-col',
             )}
           >
             <header
               className={cn(
-                'flex h-12 shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12',
-                '[html[data-navbar-style=sticky]_&]:sticky [html[data-navbar-style=sticky]_&]:top-0 [html[data-navbar-style=sticky]_&]:z-50 [html[data-navbar-style=sticky]_&]:overflow-hidden [html[data-navbar-style=sticky]_&]:rounded-t-[inherit] [html[data-navbar-style=sticky]_&]:bg-background/50 [html[data-navbar-style=sticky]_&]:backdrop-blur-md',
+                'sticky top-0 z-50 flex h-12 shrink-0 items-center gap-2 rounded-t-[inherit] border-b bg-background/95 backdrop-blur-md',
               )}
             >
               <div className="flex w-full items-center justify-between px-4 lg:px-6">
@@ -65,7 +62,6 @@ export default function Layout({ children }: Readonly<{ children: ReactNode }>) 
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <LayoutControls />
                   <ThemeSwitcher />
                   {/* AccountSwitcher me bilgisini AdminAuthGate hydrate edecek; burada placeholder */}
                   <AccountSwitcher me={{ id: 'me', email: 'admin', role: 'admin' }} />
@@ -75,7 +71,7 @@ export default function Layout({ children }: Readonly<{ children: ReactNode }>) 
 
             <div className="flex flex-1 flex-col overflow-hidden">
               <div className="flex-1 min-w-0 overflow-auto p-4 md:p-6">
-                {children}
+                <AdminPage>{children}</AdminPage>
               </div>
               <AdminFooter />
             </div>

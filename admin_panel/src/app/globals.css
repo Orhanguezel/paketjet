@@ -3,31 +3,7 @@
 
 @import "tailwindcss/index.css";
 @import "tw-animate-css";
-
-/* Theme preset styles: these override CSS variables based on the selected data-theme-preset */
-@import "../styles/presets/brutalist.css";
-@import "../styles/presets/soft-pop.css";
-@import "../styles/presets/tangerine.css";
-
-/* Ensotek Brand Colors */
-:root {
-  /* Logo Primary Colors */
-  --logo-coral-light: #F4BDB3;      /* Highlights, light bg text */
-  --logo-coral: #E8A598;            /* Main brand color */
-  --logo-coral-medium: #D88D7E;     /* Default logo on light */
-  --logo-coral-dark: #C77665;       /* Logo on very light bg */
-  --logo-coral-darkest: #A6604F;    /* Text, details */
-  
-  /* Background Colors for Logo */
-  --logo-bg-light: #FDFCFB;         /* Light mode primary */
-  --logo-bg-white: #FFFFFF;         /* Pure white */
-  --logo-bg-dark: #1A1512;          /* Dark mode */
-  --logo-bg-black: #0A0806;         /* Pure black */
-  
-  /* Logo Accents */
-  --logo-gold: #E8C57A;             /* Accent touch */
-  --logo-shadow: rgba(232, 165, 152, 0.15);  /* Soft glow */
-}
+@import "./admin-design.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -74,16 +50,7 @@
   /* Brand Colors */
   --color-brand: var(--primary);
   --color-brand-foreground: var(--primary-foreground);
-  --color-logo-coral-light: var(--logo-coral-light);
-  --color-logo-coral: var(--logo-coral);
-  --color-logo-coral-medium: var(--logo-coral-medium);
-  --color-logo-coral-dark: var(--logo-coral-dark);
-  --color-logo-coral-darkest: var(--logo-coral-darkest);
-  --color-logo-bg-light: var(--logo-bg-light);
-  --color-logo-bg-white: var(--logo-bg-white);
-  --color-logo-bg-dark: var(--logo-bg-dark);
-  --color-logo-bg-black: var(--logo-bg-black);
-  --color-logo-gold: var(--logo-gold);
+
 }
 
 /* Default theme styles (used when no data-theme-preset is set or when 'default' is selected).
@@ -96,9 +63,8 @@ These serve as the fallback; there is no separate default.css file. */
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
-  /* Primary: Ensotek Coral */
-  --primary: var(--logo-coral);
-  --primary-foreground: oklch(0.985 0 0); /* Light text on coral */
+  --primary: #542bd5;
+  --primary-foreground: #fff;
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.967 0.001 286.375);
@@ -135,9 +101,8 @@ These serve as the fallback; there is no separate default.css file. */
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.21 0.006 285.885);
   --popover-foreground: oklch(0.985 0 0);
-  /* Primary Dark: Coral Light or Medium */
-  --primary: var(--logo-coral-medium);
-  --primary-foreground: oklch(0.141 0.005 285.823); /* Dark text on light coral */
+  --primary: #9d81ff;
+  --primary-foreground: #140c2d;
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.274 0.006 286.033);
