@@ -143,6 +143,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html
       lang={branding.html_lang}
       suppressHydrationWarning
+      className={fontVars}
       data-theme-preset={theme_preset}
       data-content-layout={content_layout}
       data-navbar-style={navbar_style}
@@ -150,7 +151,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       data-sidebar-collapsible={sidebar_collapsible}
       data-font={font}
     >
-      <body className={`${fontVars} min-h-screen antialiased`} suppressHydrationWarning>
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
         {themeCss && <style id="managed-admin-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}
         <ThemeBootInlineScript managedMode={managedTheme?.enabled ? managedTheme.darkMode : null} />
         <ManagedThemeRuntime />
