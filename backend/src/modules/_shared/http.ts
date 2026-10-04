@@ -56,6 +56,13 @@ export function sendForbidden(reply: FastifyReply) {
   return reply.code(403).send({ error: { message: "forbidden" } });
 }
 
+/** MySQL 1451: silinmek istenen satıra başka tablolar bağlı (ör. ödeme kaydı). Drizzle hatayı `cause` içinde taşır. */
+export function isForeignKeyBlocked(err: unknown): boolean {
+  const e = err as { errno?: number; code?: string; cause?: { errno?: number; code?: string } } | null;
+  const c = e?.cause ?? e;
+  return c?.errno === 1451 || c?.code === "ER_ROW_IS_REFERENCED_2" || e?.errno === 1451;
+}
+
 export function sendNotFound(reply: FastifyReply) {
   return reply.code(404).send({ error: { message: "not_found" } });
 }

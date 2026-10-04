@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { handleRouteError, sendNotFound, toBool, formatAdminUserRow } from '@/modules/_shared';
+import { handleRouteError, isForeignKeyBlocked, sendNotFound, toBool, formatAdminUserRow } from '@/modules/_shared';
 import { sendPasswordChangedMail } from '@/modules/mail';
 import {
   repoGetUserById,
@@ -137,6 +137,11 @@ export async function adminDeleteUser(req: FastifyRequest, reply: FastifyReply) 
     await repoAdminDeleteUser(id);
     return reply.send({ ok: true });
   } catch (e) {
+    // Ödeme/satın alma kayıtları yasal saklama gereği silinmez; işlem geri alınır ve nedeni bildirilir.
+    if (isForeignKeyBlocked(e)) {
+      req.log.warn({ event: 'admin_delete_user_blocked', userId: (req.params as Record<string, string>).id }, 'admin_delete_user_blocked');
+      return reply.code(409).send({ error: { code: 'user_has_linked_records', message: 'Bu kullanıcıya veya ilanlarına bağlı ödeme ya da satın alma kayıtları var; bu kayıtlar saklanmak zorunda olduğu için kullanıcı kalıcı silinemez. Hesabı pasifleştirebilirsiniz.' } });
+    }
     return handleRouteError(reply, req, e, 'admin_delete_user');
   }
 }
