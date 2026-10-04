@@ -28,13 +28,13 @@ export const colorTokensSchema = z.object({
 }).partial();
 
 export const typographySchema = z.object({
-  fontHeading: z.string().min(1).max(200),
-  fontBody: z.string().min(1).max(200),
+  fontHeading: z.string().min(1).max(200).regex(/^[\w\s,'".-]+$/),
+  fontBody: z.string().min(1).max(200).regex(/^[\w\s,'".-]+$/),
 }).partial();
 
 export const themeUpdateSchema = z.object({
   colors: colorTokensSchema.optional(),
   typography: typographySchema.optional(),
-  radius: z.string().max(20).optional(),
+  radius: z.enum(['0rem', '0.3rem', '0.375rem', '0.5rem', '0.75rem', '1rem', '1.5rem']).optional(),
   darkMode: z.enum(['light', 'dark', 'system']).optional(),
 });

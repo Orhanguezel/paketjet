@@ -10,3 +10,8 @@ export const themeConfig = mysqlTable('theme_config', {
 });
 
 export const THEME_ROW_ID = '00000000-0000-4000-8000-000000000001';
+export const SCOPED_THEME_IDS = {
+  storefront: '00000000-0000-4000-8000-000000000002',
+  'admin-panel': '00000000-0000-4000-8000-000000000003',
+} as const;
+export type ThemeScope = keyof typeof SCOPED_THEME_IDS;

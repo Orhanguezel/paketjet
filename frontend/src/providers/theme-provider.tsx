@@ -3,6 +3,7 @@
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import type { ComponentProps } from "react";
 import { THEME_STORAGE_KEY, DEFAULT_THEME } from "@/lib/theme";
+import { ManagedStorefrontTheme } from './managed-storefront-theme';
 
 type ThemeProviderProps = ComponentProps<typeof NextThemesProvider>;
 
@@ -15,6 +16,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       enableSystem={false}
       {...props}
     >
+      <ManagedStorefrontTheme />
       {children}
     </NextThemesProvider>
   );

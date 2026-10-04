@@ -53,6 +53,7 @@ html.dark:root:has(.admin-workspace) {
 }
 .admin-workspace { background: var(--background); color: var(--foreground); }
 html:root:has(.admin-workspace) body { --font-sans: var(--font-dm-sans); }
+.admin-workspace h1, .admin-workspace h2, .admin-workspace h3 { font-family: var(--pj-font-heading, var(--font-sans)); }
 .admin-workspace [data-slot="sidebar-inset"] { background: var(--background); }
 .admin-workspace [data-slot="sidebar"] { background: var(--sidebar); }
 .admin-workspace [data-slot="card"] { border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 2px 14px rgb(21 34 69 / 3%); }

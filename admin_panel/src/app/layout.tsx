@@ -17,6 +17,7 @@ import { PREFERENCE_DEFAULTS } from '@/lib/preferences/preferences-config';
 import { fetchBrandingConfig } from '@/server/fetch-branding';
 
 import StoreProvider from '@/stores/provider';
+import { ManagedThemeRuntime } from './managed-theme-runtime';
 import { PreferencesStoreProvider } from '@/stores/preferences/preferences-provider';
 import { LocaleProvider } from '@/i18n/locale-provider';
 
@@ -138,6 +139,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     >
       <body className={`${fontVars} min-h-screen antialiased`} suppressHydrationWarning>
         <ThemeBootInlineScript />
+        <ManagedThemeRuntime />
 
         <StoreProvider>
           <PreferencesStoreProvider>

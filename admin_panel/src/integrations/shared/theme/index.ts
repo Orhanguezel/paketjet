@@ -1,6 +1,8 @@
 export {
-  THEME_ADMIN_BASE,
   type LayoutBlock,
+  normalizeThemeConfig,
+  sanitizeHex,
+  THEME_ADMIN_BASE,
   type ThemeColors,
   type ThemeConfigView,
   type ThemeDarkMode,
@@ -9,26 +11,24 @@ export {
   type ThemeRadius,
   type ThemeSection,
   type ThemeUpdateInput,
-  normalizeThemeConfig,
-  sanitizeHex,
-} from '@/integrations/shared/theme-admin-types';
-
+} from "@/integrations/shared/theme-admin-types";
 export {
   COLOR_TOKEN_LABELS,
+  type ColorTokens,
   DEFAULT_THEME_CONFIG,
   RADIUS_OPTIONS,
-  type ColorTokens,
+  type ScopedThemeConfig,
   type ThemeConfig,
+  type ThemeScope,
   type ThemeTypography,
-} from '@/integrations/shared/theme-types';
-
+} from "@/integrations/shared/theme-types";
 export {
+  groupThemeColorTokens,
   THEME_COLOR_HEX_PLACEHOLDER,
   THEME_DARK_MODE_OPTIONS,
   THEME_FONT_BODY_PLACEHOLDER,
   THEME_FONT_HEADING_PLACEHOLDER,
   THEME_RADIUS_PREVIEW_SIZES,
   type ThemeDarkModeOption,
-  groupThemeColorTokens,
   toThemeDraft,
-} from '@/integrations/shared/theme-ui';
+} from "@/integrations/shared/theme-ui";

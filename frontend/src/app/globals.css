@@ -17,6 +17,8 @@
    next-themes: attribute="data-theme"
 ───────────────────────────────────────────────────────── */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+:root h1, :root h2, :root h3 { font-family: var(--pj-font-heading, var(--font-sans)); }
+:root:not([data-theme="dark"]) .site-header { color: var(--managed-nav-fg, inherit); }
 
 /* ─────────────────────────────────────────────────────────
    @theme — Tailwind v4 token tanımları

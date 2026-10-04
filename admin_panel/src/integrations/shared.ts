@@ -806,6 +806,8 @@ export {
   type LayoutBlock,
   type ThemeColors,
   type ThemeConfig,
+  type ThemeScope,
+  type ScopedThemeConfig,
   type ThemeConfigView,
   type ThemeDarkMode,
   type ThemeDarkModeOption,

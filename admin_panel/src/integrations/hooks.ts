@@ -84,6 +84,11 @@ export {
   useUpdateThemeAdminMutation,
   useResetThemeAdminMutation,
 } from '@/integrations/endpoints/admin/theme-admin-endpoints';
+export {
+  useGetScopedThemeQuery,
+  useUpdateScopedThemeMutation,
+  useResetScopedThemeMutation,
+} from '@/integrations/endpoints/admin/scoped-theme-endpoints';
 
 export {
   useListAuditRequestLogsAdminQuery,
