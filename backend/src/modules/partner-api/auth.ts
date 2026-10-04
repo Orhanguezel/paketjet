@@ -12,11 +12,11 @@ const touched = new Map<string, number>();
 
 export async function requireApiKey(req: FastifyRequest, reply: FastifyReply) {
   const key = readApiKey(req.headers);
-  if (!key) return reply.code(401).send({ error: { code: 'api_key_missing', message: 'Authorization: Bearer <API anahtari> gerekli.' } });
+  if (!key) return reply.code(401).send({ error: { code: 'api_key_missing', message: 'Authorization: Bearer <API anahtarı> başlığı gerekli.' } });
   const row = await repoFindApiKeyByHash(hashApiKey(key));
-  if (!row || row.revoked_at) return reply.code(401).send({ error: { code: 'api_key_invalid', message: 'API anahtari gecersiz veya iptal edilmis.' } });
+  if (!row || row.revoked_at) return reply.code(401).send({ error: { code: 'api_key_invalid', message: 'API anahtarı geçersiz veya iptal edilmiş.' } });
   const user = await repoGetUserById(row.user_id);
-  if (!user || !user.is_active) return reply.code(403).send({ error: { code: 'account_disabled', message: 'Hesap kullanima kapali.' } });
+  if (!user || !user.is_active) return reply.code(403).send({ error: { code: 'account_disabled', message: 'Hesap kullanıma kapalı.' } });
   const role = await getPrimaryRole(user.id);
   (req as FastifyRequest & { user: unknown }).user = { sub: user.id, role: role === 'admin' ? 'customer' : role, roles: [role === 'admin' ? 'customer' : role], is_admin: false, via: 'api_key', api_key_id: row.id };
   const last = touched.get(row.id) ?? 0;

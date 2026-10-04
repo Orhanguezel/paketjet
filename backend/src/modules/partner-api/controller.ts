@@ -7,7 +7,7 @@ import { toPartnerListing } from './dto';
 import { repoCountOpenListings, repoPartnerListing, repoPartnerListingByRef, repoPartnerListings } from './repository';
 import { MAX_OPEN_LISTINGS, partnerCreateSchema, partnerListSchema, partnerStatusSchema, partnerUpdateSchema } from './validation';
 
-const notFound = (reply: FastifyReply) => reply.code(404).send({ error: { code: 'not_found', message: 'Ilan bulunamadi.' } });
+const notFound = (reply: FastifyReply) => reply.code(404).send({ error: { code: 'not_found', message: 'İlan bulunamadı.' } });
 
 async function own(req: FastifyRequest) {
   return repoPartnerListing(getAuthUserId(req), (req.params as { id: string }).id);
@@ -37,7 +37,7 @@ export async function partnerCreate(req: FastifyRequest, reply: FastifyReply) {
       if (existing) return reply.header('idempotent-replay', 'true').send(toPartnerListing(existing));
     }
     if ((await repoCountOpenListings(userId)) >= MAX_OPEN_LISTINGS) {
-      return reply.code(429).send({ error: { code: 'open_listing_limit', message: `En fazla ${MAX_OPEN_LISTINGS} acik ilan.` } });
+      return reply.code(429).send({ error: { code: 'open_listing_limit', message: `En fazla ${MAX_OPEN_LISTINGS} açık ilan olabilir.` } });
     }
     try {
       const created = await repoCreateIlan(userId, { ...createIlanInsertPayload(body), external_ref: ref ?? null });
