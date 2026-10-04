@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCustomPageBySlug } from "@/modules/customPage/customPage.service";
 import { LegalPageView } from "@/modules/customPage/legal/LegalPageView";
+import { BreadcrumbSchema } from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
 
@@ -33,7 +34,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function KullanimKosullariPage() {
   try {
     const page = await getCustomPageBySlug("kullanim-kosullari");
-    return <LegalPageView slug="kullanim-kosullari" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} />;
+    return (
+      <>
+        <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: page.title }]} />
+        <LegalPageView slug="kullanim-kosullari" title={page.title} summary={page.summary} html={page.content} updatedAt={page.updated_at} />
+      </>
+    );
   } catch {
     notFound();
   }

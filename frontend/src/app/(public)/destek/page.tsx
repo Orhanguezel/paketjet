@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata("faq", {
     canonicalPath: "/destek",
     title: "Destek ve sıkça sorulan sorular",
-    description: "PaketJet ilanları, iletişim erişimi, ilan alma hakkı ve hesap işlemleri hakkında soruların yanıtları.",
+    description: "Destek ve sıkça sorulan sorular: taşıyıcı ilanları, iletişim erişimi, ilan alma hakkı, kartla ödeme, iade ve hesap işlemleri hakkında yanıtlar.",
     fallbackDescription: "PaketJet destek merkezi. İlanlar, iletişim erişimi, ödeme ve hesap hakkında sıkça sorulan sorular.",
   });
 }

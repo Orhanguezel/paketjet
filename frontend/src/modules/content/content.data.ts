@@ -1,8 +1,8 @@
 import type {ArticleContent, ContentSource} from './content.type';
 
 const publishedAt='2026-03-30T09:00:00.000Z';
-const updatedAt='2026-10-04T09:00:00.000Z';
-const newPublishedAt='2026-10-04T09:00:00.000Z';
+const updatedAt='2026-10-04T00:00:00.000Z';
+const newPublishedAt='2026-10-04T00:00:00.000Z';
 
 /** Resmî kaynaklar (mevzuat.gov.tr ve kurum siteleri). */
 const SRC: Record<string, ContentSource> = {
