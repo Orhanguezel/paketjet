@@ -2,6 +2,7 @@
 // FILE: src/modules/contact/validation.ts
 // =============================================================
 import { z } from "zod";
+import { queryBoolean } from "@/modules/_shared";
 
 export const ContactCreateSchema = z.object({
   name: z.string().min(2).max(255),
@@ -22,8 +23,7 @@ export const ContactUpdateSchema = z.object({
 export const ContactListParamsSchema = z.object({
   search: z.string().optional(),
   status: z.enum(["new", "in_progress", "closed"]).optional(),
-  // 🔧 Query string'den geldiği için coerce et
-  resolved: z.coerce.boolean().optional(),
+  resolved: queryBoolean,
   limit: z.coerce.number().int().min(1).max(200).optional(),
   offset: z.coerce.number().int().min(0).optional(),
   orderBy: z.enum(["created_at", "updated_at", "status", "name"]).optional(),

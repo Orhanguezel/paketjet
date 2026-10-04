@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { queryBoolean } from '@/modules/_shared';
 
 export const adminListUsersQuery = z.object({
   q: z.string().optional(),
   role: z.enum(['admin', 'carrier', 'customer']).optional(),
-  is_active: z.coerce.boolean().optional(),
+  is_active: queryBoolean,
   limit: z.coerce.number().int().min(1).max(200).default(50),
   offset: z.coerce.number().int().min(0).max(1_000_000).default(0),
   sort: z.enum(['created_at', 'email', 'last_login_at']).optional(),

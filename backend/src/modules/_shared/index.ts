@@ -34,6 +34,7 @@ export type { RangeKey, TrendBucket, DashboardAnalyticsDto } from './dashboard-a
 
 export {
   boolLike,
+  queryBoolean,
   LOCALE_LIKE,
   UUID36,
   URL2000,

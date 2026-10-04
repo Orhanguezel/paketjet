@@ -14,6 +14,13 @@ export const boolLike = z.union([
 
 export type BooleanLike = z.infer<typeof boolLike>;
 
+/** Sorgu dizesi boolean'ı: "true"/"1" → true, "false"/"0" → false, diğerleri hata.
+ * z.coerce.boolean kullanılmaz: "false" metnini true yapar. */
+export const queryBoolean = z.preprocess(
+  (v) => (v === 'true' || v === '1' || v === true ? true : v === 'false' || v === '0' || v === false ? false : v),
+  z.boolean().optional(),
+);
+
 export const LOCALE_LIKE = z
   .string()
   .trim()
