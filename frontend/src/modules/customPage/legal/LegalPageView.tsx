@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUp, ArrowUpRight, CalendarDays, ChevronRight, FileText,
 import { legalDate, legalHtml, legalPages } from "./legal-content";
 import { LegalArticle } from "./LegalArticle";
 import { ROUTES } from "@/config/routes";
+import { SiteBreadcrumb } from "@/components/SiteBreadcrumb";
 type Props = { slug: string; title: string; summary?: string | null; html?: string | null; updatedAt?: string; embedded?: boolean };
 type Section = { id: string; label: string };
 export function LegalPageView({ slug, title, summary, html, updatedAt, embedded = false }: Props) {
@@ -13,9 +14,10 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
     [active, setActive] = useState("");
   const content = legalHtml(html),
     date = legalDate(updatedAt);
-  const pageIndex = legalPages.findIndex((page) => page.slug === slug);
-  const previousPage = legalPages[pageIndex - 1];
-  const nextPage = legalPages[pageIndex + 1];
+  const publishedPages = legalPages.filter((page) => page.published || page.slug === slug);
+  const pageIndex = publishedPages.findIndex((page) => page.slug === slug);
+  const previousPage = publishedPages[pageIndex - 1];
+  const nextPage = publishedPages[pageIndex + 1];
   useEffect(() => {
     const headings = Array.from(article.current?.querySelectorAll<HTMLHeadingElement>("h2:not([data-document-title]),h3") ?? []);
     const items = headings
@@ -44,34 +46,20 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
   }
   const navigation = (
     <nav aria-label="Yasal sayfalar">
-      <h2>Yasal sayfalar</h2>
-      {legalPages.map((item) => (
+      <p className="legal-nav-title">Yasal sayfalar</p>
+      {legalPages.map((item) => item.published || item.slug === slug ? (
         <Link key={item.slug} href={`/${item.slug}`} aria-current={item.slug === slug ? "page" : undefined}>
           <FileText size={17} />
           <span>{item.label}</span>
           <ChevronRight size={15} />
         </Link>
-      ))}
+      ) : <span key={item.slug} className="legal-nav-pending" title="Yasal metin henüz yayımlanmadı"><FileText size={17}/><span>{item.label}<small>Hazırlanıyor</small></span></span>)}
     </nav>
   );
   return (
     <div className={`legal-page${embedded ? " legal-page-embedded" : ""}`}>
       <div className={embedded ? "" : "site-container"}>
-        <header className="legal-header" id="legal-top">
-          <nav aria-label="İçerik yolu" className="legal-breadcrumb">
-            <Link href={embedded ? ROUTES.panel.root : ROUTES.home}>{embedded ? "Hesabım" : "Ana sayfa"}</Link>
-            <ChevronRight size={14} />
-            <span>{title}</span>
-          </nav>
-          <h1>{title}</h1>
-          {summary && <p className="legal-intro">{summary}</p>}
-          {date && (
-            <p className="legal-date">
-              <CalendarDays size={16} />
-              Son güncelleme: <time dateTime={updatedAt}>{date}</time>
-            </p>
-          )}
-        </header>
+        {embedded ? <nav aria-label="İçerik yolu" className="site-breadcrumb" id="legal-top"><Link href={ROUTES.panel.root}>Hesabım</Link><ChevronRight size={15} aria-hidden="true"/><span aria-current="page">{title}</span></nav> : <SiteBreadcrumb id="legal-top" items={[{ label: title }]} />}
         <div className="legal-layout">
           <aside className="legal-sidebar">
             <div className="legal-sidebar-sticky">
@@ -103,6 +91,11 @@ export function LegalPageView({ slug, title, summary, html, updatedAt, embedded 
             </div>
           </aside>
           <div className="legal-document">
+            <header className="legal-header">
+              <h1>{title}</h1>
+              {summary && <p className="legal-intro">{summary}</p>}
+              {date && <p className="legal-date"><CalendarDays size={16} />Son güncelleme: <time dateTime={updatedAt}>{date}</time></p>}
+            </header>
             <LegalArticle articleRef={article} title={title} html={content}/>
             {!embedded && (previousPage || nextPage) && <nav className="legal-neighbor-nav" aria-label="Diğer yasal sayfalar">
               {previousPage ? <Link href={`/${previousPage.slug}`}><ArrowLeft size={17} /><span><small>Önceki sayfa</small>{previousPage.label}</span></Link> : <span />}

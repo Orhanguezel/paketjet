@@ -1,14 +1,30 @@
 {
-  "title": "PaketJet",
-  "slug": "paketjet",
-  "summary": "P2P cargo freight marketplace — carriers post route & capacity listings, customers book cargo space. BlaBlaCar model applied to freight logistics.",
-  "category": "MARKETPLACE PLATFORM",
+  "schemaVersion": 2,
+  "project": {
+    "key": "paketjet",
+    "title": "PaketJet",
+    "summary": "P2P cargo freight marketplace — carriers post route & capacity listings, customers book cargo space. BlaBlaCar model applied to freight logistics.",
+    "description": "P2P cargo freight marketplace — carriers post route & capacity listings, customers book cargo space. BlaBlaCar model applied to freight logistics.",
+    "category": "web-ecommerce",
+    "status": "completed",
+    "ownership": "own",
+    "owner": {
+      "id": "orhan-guzel",
+      "name": "Orhan Güzel",
+      "kind": "person"
+    },
+    "group": {
+      "id": "independent",
+      "name": "Bağımsız Projeler"
+    },
+    "productType": "marketplace"
+  },
   "services": [
     "Full-Stack Development",
     "Marketplace Architecture",
     "Admin Panel"
   ],
-  "techs": [
+  "technologies": [
     "TypeScript",
     "Next.js 15",
     "React 19",
@@ -29,25 +45,46 @@
     "Admin panel with revenue stats",
     "JWT cookie auth with role guards"
   ],
-  "designHighlights": [
-    "Token-based Tailwind v4 design system",
-    "Dark mode with data-theme attribute",
-    "Mobile-first responsive panel UI",
-    "Capacity bar visualization"
+  "timeline": {
+    "startedAt": "2026-03-01",
+    "targetEndAt": null,
+    "completedAt": "2026-03-12",
+    "progressPercent": null
+  },
+  "links": {
+    "website": "https://paketjet.com",
+    "demo": null,
+    "repository": null
+  },
+  "media": [
+    {
+      "id": "legacy-1",
+      "role": "cover",
+      "src": "/assets/imgs/work/projects/paketjet.png",
+      "alt": "PaketJet Logistics Platform",
+      "caption": "",
+      "displayPermission": true,
+      "rightsConfirmed": true
+    }
   ],
-  "featured": false,
-  "displayOrder": 60,
-  "clientName": "Own Project",
-  "status": "live",
-  "startDate": "2026-03-01",
-  "completeDate": "2026-03-12",
-  "completionTimeLabel": "2 weeks",
-  "repoUrl": null,
-  "websiteUrl": "https://paketjet.com",
-  "demoUrl": null,
-  "featuredImage": "/assets/imgs/work/projects/paketjet.png",
-  "featuredImageAlt": "PaketJet Logistics Platform",
-  "resumeTitle": "PaketJet",
-  "resumeSubtitle": "Logistics & Delivery Platform",
-  "excludeFromPortfolio": false
+  "channels": {
+    "website": {
+      "enabled": false,
+      "disabledReason": "CRM v2 geçişinde web yayın içeriği ve izinleri kullanıcı onayı bekliyor"
+    },
+    "bionluk": {
+      "enabled": false,
+      "disabledReason": "CRM v2 geçişinde Bionluk içeriği ve ticari uygunluk kullanıcı onayı bekliyor"
+    }
+  },
+  "publication": {
+    "privacy": "public",
+    "displayPermission": true
+  },
+  "management": {
+    "priority": "normal",
+    "controlPlane": "gzl-gelir-crm",
+    "lastChangedBy": "orhan"
+  },
+  "updatedAt": "2026-08-16T13:35:14.536Z"
 }

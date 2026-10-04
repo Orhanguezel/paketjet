@@ -18,7 +18,7 @@ module.exports = {
       instances: 1,
       watch: false,
       autorestart: true,
-      max_memory_restart: "300M",
+      max_memory_restart: "700M",
 
       // Kritik: crash loop kontrolü
       min_uptime: "20s",

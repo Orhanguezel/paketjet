@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ROUTES } from '@/config/routes';
+import { SiteBreadcrumb } from '@/components/SiteBreadcrumb';
 import type { PublicIlan } from '@/modules/ilan/ilan.type';
 import { getListingCreditPrice } from '@/modules/pricing/pricing.service';
 import { createBankListingOrder, getListingAccess, initiateIlanPayment, purchaseIlan, type ListingAccess } from '@/modules/purchases/purchases.service';
@@ -31,9 +32,9 @@ export default function IlanDetailClient({ilan}:{ilan:PublicIlan}) {
   }
   const status=ilan.status==='sold'?'Satıldı':ilan.status==='expired'?'Süresi doldu':ilan.status==='active'?'Aktif': 'Kapalı';
   return <section className="site-container py-8 sm:py-10">
-    <nav aria-label="İçerik yolu" className="mb-8 flex flex-wrap gap-3 text-sm text-muted"><Link href={ROUTES.ilanlar.list} className="hover:text-brand">İlanlar</Link><span aria-hidden="true">/</span><span>{ilan.from_city} – {ilan.to_city}</span></nav>
+    <SiteBreadcrumb items={[{label:'İlanlar',href:ROUTES.ilanlar.list},{label:`${ilan.from_city} – ${ilan.to_city}`}]} />
     <div className="grid items-start gap-8 lg:grid-cols-[1.65fr_1fr]"><div className="min-w-0">
-      <h1 className="text-3xl font-bold tracking-tight sm:text-5xl">{ilan.title||`${ilan.from_city} → ${ilan.to_city}`}</h1>
+      <h1 className="site-page-title">{ilan.title||`${ilan.from_city} → ${ilan.to_city}`}</h1>
       {(ilan.title||ilan.from_location||ilan.to_location)&&<p className="mt-4 break-words text-xl font-medium">{ilan.from_location?.label||ilan.from_city} → {ilan.to_location?.label||ilan.to_city}</p>}
       {(ilan.from_district||ilan.to_district)&&<p className="mt-3 text-muted">{ilan.from_district} / {ilan.to_district}</p>}
       <div className="my-7 flex flex-wrap gap-x-6 gap-y-3 border-b border-border-soft pb-7 text-sm"><time dateTime={ilan.departure_date}>{formatDate(ilan.departure_date)}</time><span>{vehicles[ilan.vehicle_type]??ilan.vehicle_type}</span><span>{status}</span></div>

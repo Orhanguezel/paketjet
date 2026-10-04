@@ -1,22 +1,17 @@
 import RelatedGuides from "@/modules/content/RelatedGuides";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArticleSchema, BreadcrumbSchema } from "@/components/JsonLd";
+import { ArticleSchema, BreadcrumbSchema, FAQPageSchema } from "@/components/JsonLd";
+import { SiteBreadcrumb } from "@/components/SiteBreadcrumb";
 import { getPageMetadata } from "@/lib/seo";
 import { ROUTE_GUIDES, getRouteGuideBySlug } from "@/modules/content/content.data";
+import { GuideByline, GuideFaqs, GuideKeyFacts, GuidePriceTable, GuideSection, GuideSources, GuideTrust } from "@/modules/content/GuideExtras";
+import RouteLiveListings from "@/modules/content/RouteLiveListings";
 
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
-function formatDate(iso: string) {
-  return new Intl.DateTimeFormat("tr-TR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(iso));
-}
 
 export function generateStaticParams() {
   return ROUTE_GUIDES.map((guide) => ({ slug: guide.slug }));
@@ -31,7 +26,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return getPageMetadata(guide.seoKey, {
-    title: `${guide.title} taşıyıcı güzergâhı`,
+    title: guide.metaTitle ?? `${guide.title} taşıyıcı güzergâhı`,
+    ogKind: guide.categoryLabel,
     description: guide.description,
     canonicalPath: guide.canonicalPath,
     fallbackDescription: guide.description,
@@ -60,7 +56,10 @@ export default async function RouteGuidePage({ params }: Props) {
         publishedTime={guide.publishedAt}
         modifiedTime={guide.updatedAt}
         section="Rota Rehberi"
+        authorName="Editör Ekibi"
+        citations={guide.sources?.map((s) => s.url)}
       />
+      {guide.faqs?.length ? <FAQPageSchema items={guide.faqs} /> : null}
       <BreadcrumbSchema
         items={[
           { name: "Ana Sayfa", url: "/" },
@@ -70,27 +69,23 @@ export default async function RouteGuidePage({ params }: Props) {
       />
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-4xl px-6 py-16">
+          <SiteBreadcrumb items={[{ label: "Blog", href: "/blog" }, { label: guide.title }]} />
           <p className="text-sm font-semibold uppercase tracking-normal text-brand">{guide.eyebrow}</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight">{guide.title}</h1>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">{guide.summary}</p>
-          <div className="mt-5 flex flex-wrap gap-4 text-xs font-medium text-muted">
-            <span>Yayın tarihi: {formatDate(guide.publishedAt)}</span>
-            <span>Son güncelleme: {formatDate(guide.updatedAt)}</span>
-          </div>
+          <h1 className="site-page-title mt-3">{guide.title}</h1>
+          <p className="site-page-lead mt-4 max-w-2xl text-muted">{guide.summary}</p>
+          <GuideByline item={guide} />
         </div>
       </section>
       <section className="mx-auto max-w-4xl px-6 py-12 pb-24">
         <article className="legal-prose">
-          {guide.sections.map((section, index) => (
-            <div key={`${guide.slug}-${index}`}>
-              {section.title ? <h2>{section.title}</h2> : null}
-              {section.paragraphs.map((paragraph, paragraphIndex) => (
-                <p key={`${guide.slug}-${index}-${paragraphIndex}`}>{paragraph}</p>
-              ))}
-            </div>
-          ))}
+          <GuideKeyFacts facts={guide.keyFacts} />
+          {guide.sections.map((section, index) => <GuideSection key={`${guide.slug}-${index}`} section={section} id={`bolum-${index + 1}`} />)}
+          <RouteLiveListings from={guide.title.split(" – ")[0]!} to={guide.title.split(" – ")[1]!} />
+          <GuidePriceTable />
+          <GuideFaqs item={guide} />
+          <GuideSources item={guide} />
+          <GuideTrust />
         </article>
-        <p className="mt-6 text-sm text-muted">Hazırlayan: PaketJet · Platform kullanım rehberi</p>
         <RelatedGuides currentPath={guide.canonicalPath}/>
       </section>
     </div>

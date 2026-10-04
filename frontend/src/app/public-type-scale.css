@@ -1,0 +1,83 @@
+/* Shared public typography: one font family and a small, predictable scale. */
+:root {
+  --type-display: clamp(2.75rem, 4vw, 3.5rem);
+  --type-page-title: clamp(2.125rem, 3.4vw, 3rem);
+  --type-section-title: clamp(1.625rem, 2.4vw, 2rem);
+  --type-article-title: 1.375rem;
+  --type-card-title: 1.25rem;
+  --type-lead: 1.125rem;
+  --type-body: 1rem;
+  --type-small: .875rem;
+}
+
+#main-content .site-page-title,
+#main-content .editorial-hero h1,
+#main-content .about-hero-copy h1,
+#main-content .contact-hero h1,
+#main-content .legal-header h1,
+#main-content .listing-page h1 {
+  font-family: var(--font-sans);
+  font-size: var(--type-page-title);
+  line-height: 1.14;
+  letter-spacing: -.04em;
+  font-weight: 750;
+}
+#main-content .hero-copy h1 {
+  font-size: var(--type-display);
+  line-height: 1.09;
+}
+#main-content .about-hero-copy h1 {
+  font-size: clamp(3rem, 6vw, 5.25rem);
+  line-height: 1.04;
+  letter-spacing: -.06em;
+  font-weight: 800;
+}
+#main-content .editorial-lead,
+#main-content .contact-hero p,
+#main-content .site-page-lead {
+  font-size: var(--type-lead);
+  line-height: 1.65;
+}
+#main-content .section-heading h2,
+#main-content .about-content > h2,
+#main-content .blog-related > h2,
+#main-content .carrier-invitation h2 {
+  font-size: var(--type-section-title);
+  line-height: 1.22;
+}
+#main-content .blog-featured h2 { font-size: var(--type-section-title); }
+#main-content .blog-guide h2,
+#main-content .blog-guide h3,
+#main-content .about-step h3 { font-size: var(--type-card-title); }
+#main-content .blog-article .legal-prose h2,
+#main-content .blog-article h2,
+#main-content .legal-prose h2:not([data-document-title]) {
+  font-size: var(--type-article-title);
+  line-height: 1.35;
+}
+#main-content .legal-prose,
+#main-content .blog-article p { font-size: var(--type-body); }
+#main-content .blog-detail-meta,
+#main-content .legal-date { font-size: var(--type-small); }
+.site-header .site-wordmark,
+.site-footer .footer-wordmark { font-size: 1.5rem; }
+
+.site-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  color: var(--color-muted);
+  font-family: var(--font-sans);
+  font-size: var(--type-small);
+  line-height: 1.5;
+}
+.site-breadcrumb-item { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.site-breadcrumb svg { flex: none; color: var(--color-faint); }
+.site-breadcrumb a:hover { color: var(--color-brand-dark); }
+.site-breadcrumb [aria-current="page"] { color: var(--color-foreground); font-weight: 600; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .site-breadcrumb { margin-bottom: 22px; }
+}

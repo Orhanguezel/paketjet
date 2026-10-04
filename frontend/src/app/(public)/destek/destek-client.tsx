@@ -35,7 +35,7 @@ export default function DestekClient({ faqs }: { faqs: SupportFaq[] }) {
       <section className="border-b border-border-soft bg-bg-alt">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <p className="text-sm font-semibold uppercase tracking-normal text-brand">Destek Merkezi</p>
-          <h1 className="mt-3 text-4xl font-semibold tracking-tight">Sıkça Sorulan Sorular ve Destek Talebi</h1>
+          <h1 className="site-page-title mt-3">Sıkça Sorulan Sorular ve Destek Talebi</h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
             SSS içeriği sunucu tarafında render edilir. Böylece arama motorları ve yapay zeka tarayıcıları soruları doğrudan okuyabilir.
           </p>

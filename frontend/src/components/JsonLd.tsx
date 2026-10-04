@@ -1,7 +1,9 @@
 /**
  * JSON-LD Schema bileşenleri — GEO/SEO
- * Layout ve sayfa seviyesinde kullanılır
+ * Kurum bilgisi (ad, logo, iletişim, sosyal profiller) admin ayarlarından gelir: getBrand().
+ * Varlıklar @id ile birbirine bağlanır (#organization, #website); sayfa şemaları bunlara referans verir.
  */
+import { getBrand } from "@/lib/brand";
 
 type JsonLdProps = { data: Record<string, unknown> };
 
@@ -14,52 +16,67 @@ export function JsonLd({ data }: JsonLdProps) {
   );
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com";
+const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://paketjet.com").replace(/\/$/, "");
+const abs = (u: string) => (u.startsWith("/") ? `${SITE_URL}${u}` : u);
+const ORG = { "@id": `${SITE_URL}/#organization` };
+const WEBSITE = { "@id": `${SITE_URL}/#website` };
 
-/** Site geneli — root layout'a eklenecek */
-export function OrganizationSchema() {
+/** Site geneli — root layout */
+export async function OrganizationSchema() {
+  const b = await getBrand();
   return (
     <JsonLd
       data={{
         "@context": "https://schema.org",
         "@type": "Organization",
-        "@id": `${SITE_URL}/#organization`,
-        name: "PaketJet",
+        ...ORG,
+        name: b.name,
         url: SITE_URL,
-        logo: `${SITE_URL}/uploads/media/logo/logo-512x512.png`,
-        description:
-          "Türkiye'nin P2P kargo pazaryeri. Taşıyıcılar ücretsiz güzergâh ilanı açar, göndericiler iletişim bilgilerine erişerek doğrudan görüşür.",
-
+        ...(b.logo && { logo: { "@type": "ImageObject", url: b.logo, width: 512, height: 512 } }),
+        ...(b.description && { description: b.description }),
+        ...(b.sameAs.length && { sameAs: b.sameAs }),
+        areaServed: { "@type": "Country", name: "Türkiye" },
+        ...((b.email || b.phone) && {
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            availableLanguage: ["Turkish"],
+            areaServed: "TR",
+            ...(b.email && { email: b.email }),
+            ...(b.phone && { telephone: b.phone }),
+          },
+        }),
       }}
     />
   );
 }
 
-/** Anasayfa — WebSite + SearchAction */
-export function WebSiteSchema() {
+/** Anasayfa — WebSite + site içi arama */
+export async function WebSiteSchema() {
+  const b = await getBrand();
   return (
     <JsonLd
       data={{
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "@id": `${SITE_URL}/#website`,
-        name: "PaketJet",
-        publisher: {"@id": `${SITE_URL}/#organization`},
+        ...WEBSITE,
+        name: b.name,
         url: SITE_URL,
-        inLanguage: "tr",
-        description: "Türkiye'nin P2P kargo pazaryeri",
-
+        inLanguage: "tr-TR",
+        publisher: ORG,
+        ...(b.description && { description: b.description }),
+        potentialAction: {
+          "@type": "SearchAction",
+          target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/ilanlar?from_city={from_city}` },
+          "query-input": "required name=from_city",
+        },
       }}
     />
   );
 }
 
-/** SSS / Destek — FAQPage */
-export function FAQPageSchema({
-  items,
-}: {
-  items: { question: string; answer: string }[];
-}) {
+/** SSS — FAQPage */
+export function FAQPageSchema({ items }: { items: { question: string; answer: string }[] }) {
   return (
     <JsonLd
       data={{
@@ -68,45 +85,92 @@ export function FAQPageSchema({
         mainEntity: items.map((item) => ({
           "@type": "Question",
           name: item.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: item.answer,
-          },
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
         })),
       }}
     />
   );
 }
 
-/** İletişim — ContactPoint */
-export function ContactPointSchema({
-  phone,
-  email,
+/** Kurumsal sayfalar — AboutPage / ContactPage / CollectionPage / WebPage */
+export function WebPageSchema({
+  type = "WebPage",
+  name,
+  description,
+  url,
+  dateModified,
 }: {
-  phone?: string;
-  email?: string;
+  type?: "WebPage" | "AboutPage" | "ContactPage" | "CollectionPage" | "FAQPage";
+  name: string;
+  description?: string;
+  url: string;
+  dateModified?: string;
 }) {
   return (
     <JsonLd
       data={{
         "@context": "https://schema.org",
-        "@type": "Organization",
-        name: "PaketJet",
-        url: SITE_URL,
-        contactPoint: {
-          "@type": "ContactPoint",
-          contactType: "customer service",
-          availableLanguage: "Turkish",
-          ...(phone && { telephone: phone }),
-          ...(email && { email }),
+        "@type": type,
+        name,
+        ...(description && { description }),
+        url: abs(url),
+        inLanguage: "tr-TR",
+        isPartOf: WEBSITE,
+        about: ORG,
+        publisher: ORG,
+        ...(dateModified && { dateModified }),
+      }}
+    />
+  );
+}
+
+/** İletişim — ContactPage + kurumun iletişim noktası */
+export async function ContactPointSchema({ phone, email }: { phone?: string; email?: string }) {
+  const b = await getBrand();
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        url: `${SITE_URL}/iletisim`,
+        inLanguage: "tr-TR",
+        isPartOf: WEBSITE,
+        mainEntity: {
+          "@type": "Organization",
+          ...ORG,
+          name: b.name,
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            availableLanguage: ["Turkish"],
+            areaServed: "TR",
+            ...((phone ?? b.phone) && { telephone: phone ?? b.phone }),
+            ...((email ?? b.email) && { email: email ?? b.email }),
+          },
         },
       }}
     />
   );
 }
 
-/** Blog / rota icerikleri — Article */
-export function ArticleSchema({
+/** Liste sayfaları — ItemList (ilanlar, blog) */
+export function ItemListSchema({ name, items }: { name: string; items: { name: string; url: string }[] }) {
+  if (!items.length) return null;
+  return (
+    <JsonLd
+      data={{
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name,
+        numberOfItems: items.length,
+        itemListElement: items.map((item, i) => ({ "@type": "ListItem", position: i + 1, name: item.name, url: abs(item.url) })),
+      }}
+    />
+  );
+}
+
+/** Blog / rota içerikleri — Article (yazar: editör ekibi, yayıncı: kurum) */
+export async function ArticleSchema({
   headline,
   description,
   url,
@@ -114,6 +178,9 @@ export function ArticleSchema({
   modifiedTime,
   image,
   section,
+  authorName,
+  wordCount,
+  citations,
 }: {
   headline: string;
   description: string;
@@ -122,7 +189,11 @@ export function ArticleSchema({
   modifiedTime: string;
   image?: string;
   section?: string;
+  authorName?: string;
+  wordCount?: number;
+  citations?: string[];
 }) {
+  const b = await getBrand();
   return (
     <JsonLd
       data={{
@@ -133,34 +204,21 @@ export function ArticleSchema({
         datePublished: publishedTime,
         dateModified: modifiedTime,
         ...(section && { articleSection: section }),
-        image: image ? (image.startsWith("/") ? `${SITE_URL}${image}` : image) : `${SITE_URL}/opengraph-image`,
+        ...(wordCount && { wordCount }),
+        ...(citations?.length && { citation: citations }),
+        image: image ? abs(image) : `${SITE_URL}/og?title=${encodeURIComponent(headline)}`,
         inLanguage: "tr-TR",
-        mainEntityOfPage: url.startsWith("/") ? `${SITE_URL}${url}` : url,
-        author: {
-          "@type": "Organization",
-          name: "PaketJet",
-          url: SITE_URL,
-        },
-        publisher: {
-          "@type": "Organization",
-          name: "PaketJet",
-          url: SITE_URL,
-          logo: {
-            "@type": "ImageObject",
-            url: `${SITE_URL}/uploads/media/logo/logo-512x512.png`,
-          },
-        },
+        mainEntityOfPage: abs(url),
+        isPartOf: WEBSITE,
+        author: authorName ? { "@type": "Organization", name: authorName, parentOrganization: ORG, url: `${SITE_URL}/hakkimizda` } : ORG,
+        publisher: { "@type": "Organization", ...ORG, name: b.name, ...(b.logo && { logo: { "@type": "ImageObject", url: b.logo } }) },
       }}
     />
   );
 }
 
 /** Tüm sayfalar — BreadcrumbList */
-export function BreadcrumbSchema({
-  items,
-}: {
-  items: { name: string; url?: string }[];
-}) {
+export function BreadcrumbSchema({ items }: { items: { name: string; url?: string }[] }) {
   return (
     <JsonLd
       data={{
@@ -170,7 +228,7 @@ export function BreadcrumbSchema({
           "@type": "ListItem",
           position: i + 1,
           name: item.name,
-          ...(item.url && { item: item.url.startsWith("/") ? `${SITE_URL}${item.url}` : item.url }),
+          ...(item.url && { item: abs(item.url) }),
         })),
       }}
     />

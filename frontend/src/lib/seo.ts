@@ -9,7 +9,9 @@ export interface PageSeoData {
   robots?: {noindex?: boolean; index?: boolean; follow?: boolean};
   _fallback?: boolean;
 }
-type Overrides = Partial<Metadata> & {vars?: Record<string,string>; canonicalPath?: string; fallbackDescription?: string; publishedTime?: string; modifiedTime?: string};
+type Overrides = Partial<Metadata> & {vars?: Record<string,string>; canonicalPath?: string; fallbackDescription?: string; publishedTime?: string; modifiedTime?: string; ogKind?: string};
+/** Sayfa basina paylasim gorseli: /og?title=…&kind=… (tum sayfalarin ayni gorseli kullanmasini onler). */
+export const ogImageUrl = (title: string, kind?: string) => `${SITE_URL}/og?title=${encodeURIComponent(title)}${kind ? `&kind=${encodeURIComponent(kind)}` : ''}`;
 export async function fetchPageSeo(pageKey: string): Promise<PageSeoData | null> {
   try {
     const res = await fetch(`${API_URL}/api/site_settings/seo/${pageKey}`, {next:{revalidate:300}, signal:AbortSignal.timeout(5000)});
@@ -18,13 +20,16 @@ export async function fetchPageSeo(pageKey: string): Promise<PageSeoData | null>
 }
 const interpolate = (text: string, vars: Record<string,string>) => text.replace(/\{\{(\w+)\}\}/g, (_,key)=>vars[key]??'');
 export function buildMetadata(seo: PageSeoData | null, overrides: Overrides = {}): Metadata {
-  const {vars={}, canonicalPath, fallbackDescription, publishedTime, modifiedTime, ...explicit} = overrides;
+  const {vars={}, canonicalPath, fallbackDescription, publishedTime, modifiedTime, ogKind, ...explicit} = overrides;
   const rawTitle = explicit.title ?? (seo?.title ? interpolate(seo.title,vars) : 'Taşıyıcı ilanları');
   const title = typeof rawTitle === 'string' ? rawTitle.replace(/\s*[|—-]\s*PaketJet\s*$/i,'').replace(/^PaketJet\s*\|\s*/i,'') : rawTitle;
   const shareTitle = typeof title === 'string' ? `${title} | PaketJet` : title && 'absolute' in title ? title.absolute : 'PaketJet';
   const description = explicit.description ?? (seo?.description ? interpolate(seo.description,vars) : fallbackDescription ?? DEFAULT_DESCRIPTION);
   const url = canonicalPath ? `${SITE_URL}${canonicalPath}` : undefined;
-  const images = seo?.open_graph?.images?.length ? seo.open_graph.images.map(img=>img.startsWith('/')?`${SITE_URL}${img}`:img) : [`${SITE_URL}/opengraph-image`];
+  const ogTitle = typeof title === 'string' ? title : title && 'absolute' in title ? String(title.absolute).replace(/\s*[|—-]\s*PaketJet\s*$/i,'') : '';
+  // Yonetici sayfaya ozel gorsel yuklediyse o; genel/varsayilan gorselse sayfa basliginden uretilir.
+  const custom = (seo?.open_graph?.images ?? []).filter(img => !/og-default|opengraph-image/.test(img));
+  const images = custom.length ? custom.map(img=>img.startsWith('/')?`${SITE_URL}${img}`:img) : [{url: ogImageUrl(ogTitle, ogKind), width: 1200, height: 630, alt: ogTitle}];
   const robots = seo?.robots ? {index:!seo.robots.noindex && seo.robots.index!==false,follow:seo.robots.follow!==false} : undefined;
   return {
     ...explicit, title, description,

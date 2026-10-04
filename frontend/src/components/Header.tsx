@@ -8,7 +8,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { ROUTES } from '@/config/routes';
 type NavLink = {title:string;path:string};
 interface HeaderProps {overlay?:boolean;logoUrl?:string;logoDarkUrl?:string;logoAlt?:string;navLinks?:NavLink[]|null;}
-const navigation=[{title:'İlanlar',path:ROUTES.ilanlar.list},{title:'Nasıl çalışır',path:'/#nasil-calisir'},{title:'Destek',path:ROUTES.static.destek}];
+const navigation=[{title:'İlanlar',path:ROUTES.ilanlar.list},{title:'Nasıl çalışır',path:'/#nasil-calisir'},{title:'Hakkımızda',path:ROUTES.static.hakkinda},{title:'Destek',path:ROUTES.static.destek}];
 export default function Header({logoUrl,logoDarkUrl,logoAlt}:HeaderProps) {
   const router=useRouter(), pathname=usePathname();
   const {isAuthenticated,logout:clearAuth}=useAuthStore();
@@ -22,7 +22,7 @@ export default function Header({logoUrl,logoDarkUrl,logoAlt}:HeaderProps) {
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:bg-surface focus:p-4">İçeriğe geç</a>
     <div className="site-container flex min-h-18 items-center gap-8">
       <Link href={ROUTES.home} aria-label="PaketJet ana sayfa" className="mr-auto inline-flex shrink-0 items-center gap-2 lg:mr-0">
-        {logoUrl ? <><img src={logoUrl} alt={logoAlt??'PaketJet'} className="site-logo-img site-logo-img--light h-12 w-auto max-w-36 object-contain"/>{logoDarkUrl&&<img src={logoDarkUrl} alt="" className="site-logo-img site-logo-img--dark h-12 w-auto max-w-36 object-contain"/>}</> : <img src="/assets/logo/logo.jpeg" alt="PaketJet" width="48" height="48"/>}
+        {logoUrl ? <><img src={logoUrl} alt={logoAlt??''} width={55} height={48} className="site-logo-img site-logo-img--light h-12 w-auto max-w-36 object-contain"/>{logoDarkUrl&&<img src={logoDarkUrl} alt="" aria-hidden="true" width={55} height={48} className="site-logo-img site-logo-img--dark h-12 w-auto max-w-36 object-contain"/>}</> : <img src="/assets/logo/logo.jpeg" alt="PaketJet" width="48" height="48"/>}
       <span className="site-wordmark" aria-hidden="true">Paket<span>Jet</span></span></Link>
       <nav aria-label="Ana menü" className="hidden items-center gap-7 lg:flex">{navigation.map(item=><Link key={item.path} href={item.path} aria-current={pathname===item.path?'page':undefined} className="py-3 text-sm font-medium hover:text-brand">{item.title}</Link>)}</nav>
       <div className="ml-auto hidden items-center gap-4 lg:flex"><ThemeToggle/>{signedIn?<><Link href={ROUTES.panel.root} className="py-3 text-sm">Hesabım</Link><button onClick={signOut} className="py-3 text-sm">Çıkış yap</button></>:<Link href={ROUTES.auth.login} className="py-3 text-sm">Giriş Yap</Link>}<Link href={ROUTES.ilanVer} className="primary-action text-sm">Ücretsiz İlan Ver</Link></div>

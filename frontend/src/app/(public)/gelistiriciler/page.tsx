@@ -115,7 +115,7 @@ export default function GelistiricilerPage() {
       <BreadcrumbSchema items={[{ name: "Anasayfa", url: "/" }, { name: "Geliştiriciler" }]} />
       <div className="max-w-3xl">
         <p className="text-sm font-semibold text-brand">Partner API · v1</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight">Kendi sisteminizden otomatik ilan oluşturun</h1>
+        <h1 className="site-page-title mt-2">Kendi sisteminizden otomatik ilan oluşturun</h1>
         <p className="mt-4 text-lg leading-8 text-muted">Düzenli seferleri olan taşıyıcı ve lojistik firmaları, güzergâh ilanlarını panelden tek tek girmek yerine kendi yazılımlarından (ERP, sefer planlama, web sitesi) REST API ile açabilir, güncelleyebilir ve kapatabilir.</p>
         <nav aria-label="Sayfa içi" className="mt-6 flex flex-wrap gap-2 text-sm">
           {[["baslangic", "Başlangıç"], ["kimlik", "Kimlik doğrulama"], ["uclar", "Uç noktalar"], ["alanlar", "Alanlar"], ["ornekler", "Örnek kod"], ["kurallar", "Kurallar ve sınırlar"], ["hatalar", "Hata kodları"]].map(([id, t]) => <a key={id} href={`#${id}`} className="rounded-full border border-border px-3 py-1.5 hover:border-brand">{t}</a>)}

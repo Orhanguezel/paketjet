@@ -36,4 +36,4 @@ export async function middleware(req: NextRequest) {
     return response;
   } catch {return new NextResponse('Oturum kontrolü şu anda yapılamıyor. Lütfen yeniden deneyin.',{status:503});}
 }
-export const config={matcher:['/((?!api|_next/static|_next/image|favicon.ico|uploads|assets|robots.txt|sitemap.xml|llms.txt).*)']};
+export const config={matcher:['/((?!api|_next/static|_next/image|favicon.ico|manifest.webmanifest|uploads|assets|robots.txt|sitemap.xml|llms.txt).*)']};

@@ -3,7 +3,7 @@ export interface PaymentOperation {
  events?:Array<{id:string;actor_id:string;event:string;note:string|null;created_at:string}>;
 }
 export interface CreditAccount {user_id:string;email:string;balance:number;}
-export interface CommerceSummary {active_listings:number;moderation:number;contact_sales:number;listing_receipts:string;package_receipts:string;credit_spends:number;payment_queue:number;}
+export interface CommerceSummary {active_listings:number;moderation:number;submitted_listings_total:number;submitted_listings_30d:number;published_listings_30d:number;contact_sales:number;listing_receipts:string;package_receipts:string;credit_spends:number;payment_queue:number;}
 export interface CommercePage<T> {data:T[];total:number;page:number;limit:number;}
 export interface CommerceFilters {page:number;search?:string;state?:string;}
 export const paymentStateLabels:Record<string,string>={initializing:'Başlatılıyor',pending:'Bildirim bekleniyor',completed:'Tamamlandı',failed:'Başarısız',review:'İncelemede',refund_pending:'İade bekliyor',refunded:'İade edildi'};

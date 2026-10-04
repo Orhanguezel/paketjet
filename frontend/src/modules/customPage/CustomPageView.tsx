@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowUpRight, MapPinned, MessagesSquare, Truck } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 
 interface CustomPageViewProps {
   title: string;
@@ -41,48 +42,31 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
   const steps = stepMatches.length === 3 && !displayHtml.replace(/<h2\b[^>]*>[\s\S]*?<\/h2>\s*<p\b[^>]*>[\s\S]*?<\/p>/gi, "").trim()
     ? stepMatches.map((match) => ({ title: match[1].replace(/<[^>]+>/g, ""), body: match[2] }))
     : null;
-  const icons = [MapPinned, MessagesSquare, Truck];
-
   return (
-    <main className="editorial-page about-page">
-      <header className="editorial-hero about-hero">
-        <div className="editorial-container">
-          <p className="editorial-eyebrow">Kurumsal</p>
+    <div className="editorial-page about-page">
+      <header className="about-hero">
+        <div className="about-hero-copy">
+          <p className="editorial-eyebrow">Hakkımızda</p>
           <h1>{title}</h1>
+          <p className="about-hero-subtitle">Taşıyıcıyla doğrudan iletişim.</p>
           {summary ? <p className="editorial-lead">{summary}</p> : null}
-          {(publishedLabel || updatedLabel) ? (
-            <div className="about-dates">
-              {publishedLabel ? <span>Yayın tarihi: {publishedLabel}</span> : null}
-              {updatedLabel ? <span>Son güncelleme: {updatedLabel}</span> : null}
-            </div>
-          ) : null}
+          {(publishedLabel || updatedLabel) && <div className="about-dates">
+            {publishedLabel && <span>Yayın tarihi: {publishedLabel}</span>}
+            {updatedLabel && <span>Son güncelleme: {updatedLabel}</span>}
+          </div>}
         </div>
+        <div className="about-hero-image"><Image src="/assets/editorial/about-handoff-2026-10-04.png" alt="Bir taşıyıcı ile göndericinin paket teslimi" fill priority sizes="(max-width: 760px) 100vw, 52vw" /></div>
       </header>
-      {heroVideoUrl ? (
-        <section className="about-video-band">
-          <div className="editorial-container">
-            <div className="about-video-frame">
-              <video
-                src={heroVideoUrl}
-                controls
-                playsInline
-                preload="metadata"
-                className="w-full object-cover"
-              />
-            </div>
-          </div>
-        </section>
-      ) : null}
 
       <section className="editorial-container about-content">
         <p className="editorial-eyebrow">Nasıl çalışır?</p>
-        <h2>Gönderici ve taşıyıcı nasıl buluşur?</h2>
+        <h2>Sadece üç adımda, doğru taşıyıcıyla buluşun.</h2>
         {steps ? <div className="about-step-grid">{steps.map((step, index) => {
-          const Icon = icons[index];
-          return <article className="about-step" key={index}><span className="about-step-icon"><Icon size={25} /></span><span className="about-step-number">0{index + 1}</span><h3>{step.title}</h3><p dangerouslySetInnerHTML={{ __html: step.body }} /></article>;
+          return <article className="about-step" key={index}><span className="about-step-number">{index + 1}</span><div><h3>{step.title}</h3><p dangerouslySetInnerHTML={{ __html: step.body }} /></div></article>;
         })}</div> : <article className="about-prose prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand" dangerouslySetInnerHTML={{ __html: displayHtml }} />}
-        <div className="about-cta"><div><h2>Uygun güzergâhı keşfet</h2><p>Güncel taşıyıcı ilanlarını incele ve iletişim bilgilerine eriş.</p></div><Link href="/ilanlar">İlanları keşfet <ArrowUpRight size={18} /></Link></div>
       </section>
-    </main>
+      <section className="about-cta"><div className="editorial-container"><div><p className="editorial-eyebrow">Doğrudan iletişim</p><h2>İlanları keşfet, taşıyıcıyla görüş.</h2><p>Güzergâh ve kapasite ilanlarını inceleyip uygun taşıyıcıyla doğrudan iletişime geçebilirsin.</p></div><Link href="/ilanlar">İlanları keşfet <ArrowUpRight size={18} /></Link></div></section>
+      {heroVideoUrl && <section className="about-video-band"><div className="editorial-container"><details className="about-video-disclosure"><summary>Tanıtım videosunu izle</summary><div className="about-video-frame"><video src={heroVideoUrl} controls playsInline preload="metadata" className="w-full object-cover" /></div></details></div></section>}
+    </div>
   );
 }

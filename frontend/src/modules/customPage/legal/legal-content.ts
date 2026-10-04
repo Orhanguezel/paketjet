@@ -20,8 +20,10 @@ export function legalDate(value?: string) {
     : null;
 }
 export const legalPages = [
-  { slug: "kullanim-kosullari", label: "Kullanım koşulları" },
-  { slug: "gizlilik-politikasi", label: "Gizlilik politikası" },
-  { slug: "kvkk", label: "KVKK aydınlatma metni" },
-  { slug: "tasima-kurallari", label: "Taşıma kuralları" },
+  { slug: "kullanim-kosullari", label: "Kullanım koşulları", published: true },
+  { slug: "gizlilik-politikasi", label: "Gizlilik politikası", published: true },
+  { slug: "kvkk", label: "KVKK aydınlatma metni", published: true },
+  { slug: "tasima-kurallari", label: "Taşıma kuralları", published: true },
+  { slug: "mesafeli-satis-sozlesmesi", label: "Mesafeli satış sözleşmesi", published: false },
+  { slug: "iptal-ve-iade-kosullari", label: "İptal ve iade koşulları", published: false },
 ] as const;

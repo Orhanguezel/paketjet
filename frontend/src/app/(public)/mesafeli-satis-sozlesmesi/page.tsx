@@ -15,6 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug(SLUG);
     return buildMetadata(null, {
+      ogKind: "Yasal",
       canonicalPath: `/${SLUG}`,
       title: { absolute: page.meta_title || page.title },
       description: page.meta_description || page.summary || "paketjet.com üzerinden satın alınan dijital hizmetlere ilişkin mesafeli satış sözleşmesi.",

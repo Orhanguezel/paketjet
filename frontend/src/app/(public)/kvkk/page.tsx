@@ -13,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     const page = await getCustomPageBySlug("kvkk");
     return buildMetadata(null, {
+      ogKind: "Yasal",
       canonicalPath: "/kvkk",
       title: { absolute: page.meta_title || `${page.title} | PaketJet` },
       description: page.meta_description || page.summary || "PaketJet KVKK aydınlatma metni.",

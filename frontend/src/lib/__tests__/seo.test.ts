@@ -8,7 +8,7 @@ describe('SEO signals',()=>{
   const meta=buildMetadata({pageKey:'home',title:'Old title',description:'Old model'}, {title:'Yeni başlık',description:'Doğru açıklama',canonicalPath:'/blog/test',openGraph:{type:'article'}});
   expect(meta.title).toBe('Yeni başlık');expect(meta.description).toBe('Doğru açıklama');
   expect(meta.openGraph).toMatchObject({title:'Yeni başlık | PaketJet',description:'Doğru açıklama',type:'article',url:'https://paketjet.com/blog/test'});
-  expect(meta.openGraph?.images).toEqual(['https://paketjet.com/opengraph-image']);
+  expect(meta.openGraph?.images).toEqual([{url:'https://paketjet.com/og?title=Yeni%20ba%C5%9Fl%C4%B1k',width:1200,height:630,alt:'Yeni başlık'}]);
   expect(meta.twitter).toMatchObject({description:'Doğru açıklama'});expect(meta).not.toHaveProperty('canonicalPath');
  });
  it('honors explicit index false and removes duplicate brand suffixes',()=>{
