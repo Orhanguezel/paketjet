@@ -44,6 +44,7 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
     : null;
   return (
     <div className="editorial-page about-page">
+      <div className="site-container about-layout">
       <header className="about-hero">
         <div className="about-hero-copy">
           <p className="editorial-eyebrow">Hakkımızda</p>
@@ -58,15 +59,16 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
         <div className="about-hero-image"><Image src="/assets/editorial/about-handoff-2026-10-04.png" alt="Bir taşıyıcı ile göndericinin paket teslimi" fill priority sizes="(max-width: 760px) 100vw, 52vw" /></div>
       </header>
 
-      <section className="editorial-container about-content">
+      <section className="about-content">
         <p className="editorial-eyebrow">Nasıl çalışır?</p>
         <h2>Sadece üç adımda, doğru taşıyıcıyla buluşun.</h2>
         {steps ? <div className="about-step-grid">{steps.map((step, index) => {
           return <article className="about-step" key={index}><span className="about-step-number">{index + 1}</span><div><h3>{step.title}</h3><p dangerouslySetInnerHTML={{ __html: step.body }} /></div></article>;
         })}</div> : <article className="about-prose prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand" dangerouslySetInnerHTML={{ __html: displayHtml }} />}
       </section>
-      <section className="about-cta"><div className="editorial-container"><div><p className="editorial-eyebrow">Doğrudan iletişim</p><h2>İlanları keşfet, taşıyıcıyla görüş.</h2><p>Güzergâh ve kapasite ilanlarını inceleyip uygun taşıyıcıyla doğrudan iletişime geçebilirsin.</p></div><Link href="/ilanlar">İlanları keşfet <ArrowUpRight size={18} /></Link></div></section>
-      {heroVideoUrl && <section className="about-video-band"><div className="editorial-container"><details className="about-video-disclosure"><summary>Tanıtım videosunu izle</summary><div className="about-video-frame"><video src={heroVideoUrl} controls playsInline preload="metadata" className="w-full object-cover" /></div></details></div></section>}
+      <section className="about-cta"><div><p className="editorial-eyebrow">Doğrudan iletişim</p><h2>İlanları keşfet, taşıyıcıyla görüş.</h2><p>Güzergâh ve kapasite ilanlarını inceleyip uygun taşıyıcıyla doğrudan iletişime geçebilirsin.</p></div><Link href="/ilanlar">İlanları keşfet <ArrowUpRight size={18} /></Link></section>
+      {heroVideoUrl && <section className="about-video-band"><details className="about-video-disclosure"><summary>Tanıtım videosunu izle</summary><div className="about-video-frame"><video src={heroVideoUrl} controls playsInline preload="metadata" className="w-full object-cover" /></div></details></section>}
+      </div>
     </div>
   );
 }
