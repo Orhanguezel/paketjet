@@ -1,4 +1,5 @@
 // src/modules/mail/helpers/service.ts
+import { createHash } from "node:crypto";
 import type { Transporter } from "nodemailer";
 import type { BookingMailInput, SendMailInput, WalletMailInput } from "../validation";
 import type { SmtpSettings } from "@/modules/siteSettings";
@@ -8,7 +9,9 @@ import { BRAND_LABEL } from "@/core/brand";
 const SITE_NAME = BRAND_LABEL;
 
 export function buildMailTransportSignature(cfg: SmtpSettings): string {
-  return [cfg.host ?? "", cfg.port ?? "", cfg.username ?? "", cfg.secure ? "1" : "0"].join("|");
+  // Sifre de imzaya girer (ozet olarak): panelden degisince eski baglanti yeniden kullanilmaz.
+  const pass = cfg.password ? createHash("sha256").update(cfg.password).digest("hex") : "";
+  return [cfg.host ?? "", cfg.port ?? "", cfg.username ?? "", cfg.secure ? "1" : "0", pass].join("|");
 }
 
 export function buildMailFromAddress(smtpCfg: SmtpSettings): string {

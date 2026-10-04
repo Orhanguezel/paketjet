@@ -87,13 +87,13 @@ INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
 -- SMTP / MAIL CONFIG
 -- =============================================================
 INSERT INTO `site_settings` (`id`,`key`,`locale`,`value`) VALUES
-(UUID(), 'smtp_host',        '*', '"smtp.example.com"'),
-(UUID(), 'smtp_port',        '*', '587'),
+(UUID(), 'smtp_host',        '*', '"smtpout.secureserver.net"'),
+(UUID(), 'smtp_port',        '*', '465'),
 (UUID(), 'smtp_username',    '*', '"info@paketjet.net"'),
 (UUID(), 'smtp_password',    '*', '"__SET_IN_ENV__"'),
 (UUID(), 'smtp_from_email',  '*', '"info@paketjet.net"'),
 (UUID(), 'smtp_from_name',   '*', '"PaketJet"'),
-(UUID(), 'smtp_ssl',         '*', 'false');
+(UUID(), 'smtp_ssl',         '*', 'true');
 
 -- =============================================================
 -- HEADER
