@@ -28,12 +28,17 @@ export function AdminDetailDrawer({
   className,
 }: AdminDetailDrawerProps) {
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className={cn("w-full gap-0 border-border bg-card p-0 sm:max-w-[640px]", className)}>
+    <Sheet open={open} onOpenChange={onOpenChange} modal={false}>
+      <SheetContent
+        side="right"
+        showOverlay={false}
+        onInteractOutside={(event) => event.preventDefault()}
+        className={cn("w-full gap-0 border-border bg-card p-0 sm:max-w-[640px]", className)}
+      >
         <SheetHeader className="shrink-0 border-border border-b px-6 py-6 pr-12">
           {eyebrow && <span className="font-bold text-primary text-xs uppercase tracking-widest">{eyebrow}</span>}
           <SheetTitle className="font-bold text-xl tracking-tight">{title}</SheetTitle>
-          <SheetDescription>{description || "Kayıt ayrıntıları"}</SheetDescription>
+          <SheetDescription className="break-all">{description || "Kayıt ayrıntıları"}</SheetDescription>
         </SheetHeader>
         <div className="min-h-0 flex-1 overflow-y-auto px-6 py-6">{children}</div>
         {footer && <SheetFooter className="shrink-0 border-border border-t bg-card px-6 py-4">{footer}</SheetFooter>}
