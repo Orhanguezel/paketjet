@@ -242,7 +242,7 @@ export const SeoSettingsTab: React.FC<SeoSettingsTabProps> = ({ locale, settingP
                           <p className="text-xs text-muted-foreground truncate">
                             {SITE_SETTINGS_INLINE_SEO_PREVIEW_HOST_WWW} › {previewPath}
                           </p>
-                          <p className="text-sm font-medium text-[#1a0dab] truncate">
+                          <p className="text-sm font-medium text-primary truncate">
                             {page.title || t('admin.siteSettings.seo.inline.siteName')}
                           </p>
                           <p className="text-xs text-muted-foreground line-clamp-2">

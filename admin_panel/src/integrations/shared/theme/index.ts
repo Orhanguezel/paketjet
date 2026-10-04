@@ -15,7 +15,6 @@ export {
 export {
   COLOR_TOKEN_LABELS,
   type ColorTokens,
-  DEFAULT_THEME_CONFIG,
   RADIUS_OPTIONS,
   type ScopedThemeConfig,
   type ThemeConfig,
@@ -28,6 +27,7 @@ export {
   THEME_DARK_MODE_OPTIONS,
   THEME_FONT_BODY_PLACEHOLDER,
   THEME_FONT_HEADING_PLACEHOLDER,
+  THEME_FONT_OPTIONS,
   THEME_RADIUS_PREVIEW_SIZES,
   type ThemeDarkModeOption,
   toThemeDraft,

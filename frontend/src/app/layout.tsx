@@ -7,11 +7,13 @@ import { getAnalyticsConfig } from "@/lib/analytics-config";
 import { AnalyticsHead, AnalyticsNoScript } from "@/components/analytics/Analytics";
 import CookieConsent from "@/components/analytics/CookieConsent";
 import { APP_NAME, withBrand } from "@/lib/app-name";
+import { storefrontThemeCss } from "@/lib/storefront-theme-css";
+import { getStorefrontTheme } from "@/lib/storefront-theme-data";
 
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
@@ -111,15 +113,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const analytics = await getAnalyticsConfig();
+  const [analytics, managedTheme] = await Promise.all([getAnalyticsConfig(), getStorefrontTheme()]);
   const tracking = Boolean(analytics.gtmId || analytics.ga4Id);
+  const themeCss = managedTheme ? storefrontThemeCss(managedTheme) : "";
   return (
     <html lang="tr" suppressHydrationWarning className={`${dmSans.variable} font-sans`}>
-      <head><AnalyticsHead {...analytics} /></head>
+      <head>
+        <AnalyticsHead {...analytics} />
+        {themeCss && <style id="managed-storefront-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}
+      </head>
       <body suppressHydrationWarning>
         <AnalyticsNoScript gtmId={analytics.gtmId} />
         <OrganizationSchema />
-        <ThemeProvider>
+        <ThemeProvider managedTheme={managedTheme}>
           <>
             {children}
           </>

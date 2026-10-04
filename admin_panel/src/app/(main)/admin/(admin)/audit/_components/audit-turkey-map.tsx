@@ -74,7 +74,7 @@ function fillFor(hits: number, max: number): string {
   if (hits <= 0 || max <= 0) return 'var(--muted)';
   const ratio = Math.min(1, hits / max);
   // açık mavi → koyu mavi
-  return `hsl(217 90% ${72 - ratio * 40}%)`;
+  return `color-mix(in srgb, var(--primary) ${Math.round(25 + ratio * 75)}%, var(--card))`;
 }
 
 type Props = {

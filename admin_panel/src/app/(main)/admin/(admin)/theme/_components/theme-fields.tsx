@@ -3,11 +3,11 @@
 import type { Dispatch, SetStateAction } from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ThemeConfig } from "@/integrations/shared";
-import { groupThemeColorTokens, RADIUS_OPTIONS } from "@/integrations/shared";
+import { groupThemeColorTokens, RADIUS_OPTIONS, THEME_FONT_OPTIONS } from "@/integrations/shared";
+import { themeFontStack } from "@/lib/managed-admin-theme";
 
 import { ColorField } from "./color-field";
 
@@ -58,8 +58,9 @@ export function ThemeFields({
             {(["fontHeading", "fontBody"] as const).map((key) => (
               <div key={key} className="space-y-2">
                 <Label htmlFor={key}>{key === "fontHeading" ? "Başlık yazı tipi" : "Gövde yazı tipi"}</Label>
-                <Input
+                <select
                   id={key}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3"
                   value={draft.typography[key]}
                   onChange={(event) =>
                     onChange(
@@ -67,8 +68,12 @@ export function ThemeFields({
                         current && { ...current, typography: { ...current.typography, [key]: event.target.value } },
                     )
                   }
-                />
-                <p style={{ fontFamily: draft.typography[key] }}>PaketJet ile doğrudan iletişim.</p>
+                >
+                  {THEME_FONT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+                <p style={{ fontFamily: themeFontStack(draft.typography[key]) }}>PaketJet ile doğrudan iletişim.</p>
               </div>
             ))}
           </CardContent>

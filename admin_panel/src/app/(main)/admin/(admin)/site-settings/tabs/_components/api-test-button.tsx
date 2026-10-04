@@ -55,7 +55,7 @@ export function ApiTestButton({ endpoint, label }: ApiTestButtonProps) {
   return (
     <div className="flex items-center gap-2">
       {result ? (
-        <span className={`text-[10px] ${result.ok ? 'text-green-600' : 'text-destructive'}`}>
+        <span className={`text-[10px] ${result.ok ? 'text-success' : 'text-destructive'}`}>
           {result.ok ? t('admin.siteSettings.api.inline.okShort') : t('admin.siteSettings.api.inline.errorShort')}{' '}
           {result.message.slice(0, 50)}
         </span>

@@ -88,7 +88,7 @@ export default function DestekClient({ faqs, brandName }: { faqs: SupportFaq[]; 
             <textarea value={form.message} onChange={(event) => setForm({ ...form, message: event.target.value })} required rows={6} placeholder="Sorununuzu veya talebinizi yazın" className="rounded-xl border border-border bg-background px-4 py-3" />
           </div>
           {done ? <p className="mt-4 text-sm text-brand">{done}</p> : null}
-          <button disabled={saving} className="mt-6 w-full rounded-xl bg-action px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-dark disabled:opacity-60">
+          <button disabled={saving} className="mt-6 w-full rounded-xl bg-action px-5 py-3 text-sm font-bold text-on-dark transition hover:bg-brand-dark disabled:opacity-60">
             {saving ? "Gönderiliyor..." : "Talebi Gönder"}
           </button>
         </form>

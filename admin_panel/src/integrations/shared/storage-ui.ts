@@ -88,9 +88,9 @@ export function getAdminStorageMimeIcon(mime: string): LucideIcon {
 }
 
 export function getAdminStorageMimeColorClass(mime: string): string {
-  if (mime.startsWith('image/')) return 'text-blue-600 dark:text-blue-400';
-  if (mime.startsWith('video/')) return 'text-purple-600 dark:text-purple-400';
-  if (mime.startsWith('audio/')) return 'text-green-600 dark:text-green-400';
-  if (mime.includes('pdf')) return 'text-red-600 dark:text-red-400';
+  if (mime.startsWith('image/')) return 'text-primary dark:text-primary';
+  if (mime.startsWith('video/')) return 'text-primary dark:text-primary';
+  if (mime.startsWith('audio/')) return 'text-success dark:text-success';
+  if (mime.includes('pdf')) return 'text-danger dark:text-danger';
   return 'text-muted-foreground';
 }

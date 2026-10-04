@@ -25,26 +25,26 @@ export function formatAdminWalletDateTime(iso: string) {
 }
 
 export const ADMIN_WALLET_STATUS_BADGE_CLASS: Record<WalletStatus, string> = {
-  active: 'bg-green-100 text-green-800',
-  suspended: 'bg-yellow-100 text-yellow-800',
-  closed: 'bg-red-100 text-red-800',
+  active: 'bg-success-muted text-success',
+  suspended: 'bg-warning-muted text-warning',
+  closed: 'bg-danger-muted text-danger',
 };
 
 export const ADMIN_WALLET_TX_STATUS_BADGE_CLASS: Record<WalletTxStatus, string> = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  completed: 'bg-green-100 text-green-800',
-  failed: 'bg-red-100 text-red-800',
-  refunded: 'bg-blue-100 text-blue-800',
+  pending: 'bg-warning-muted text-warning',
+  completed: 'bg-success-muted text-success',
+  failed: 'bg-danger-muted text-danger',
+  refunded: 'bg-info-muted text-primary',
 };
 
 export const ADMIN_WALLET_TX_TYPE_BADGE_CLASS: Record<WalletTxType, string> = {
-  credit: 'bg-green-100 text-green-700',
-  debit: 'bg-red-100 text-red-700',
+  credit: 'bg-success-muted text-success',
+  debit: 'bg-danger-muted text-danger',
 };
 
 export const ADMIN_WALLET_TX_AMOUNT_CLASS: Record<WalletTxType, string> = {
-  credit: 'text-green-600',
-  debit: 'text-red-600',
+  credit: 'text-success',
+  debit: 'text-danger',
 };
 
 export function getAdminWalletSignedAmountPrefix(type: WalletTxType) {

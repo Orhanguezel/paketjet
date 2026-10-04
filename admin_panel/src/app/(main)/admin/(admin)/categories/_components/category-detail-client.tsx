@@ -375,8 +375,8 @@ export default function CategoryDetailClient({ id, onClose, onSaved, onDirtyChan
               <div className="space-y-2">
                 <Label className="text-muted-foreground text-xs uppercase tracking-wide">{t('detail.seoPreview')}</Label>
                 <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-1">
-                  <div className="text-xs text-green-700 truncate">{seoPreviewUrl}</div>
-                  <div className="text-base text-blue-700 font-medium truncate">
+                  <div className="text-xs text-success truncate">{seoPreviewUrl}</div>
+                  <div className="text-base text-primary font-medium truncate">
                     {formData.meta_title || formData.name || t('detail.seoPreviewTitleFallback')}
                   </div>
                   <div className="text-sm text-muted-foreground line-clamp-2">

@@ -111,19 +111,19 @@ export const BrandingSettingsTab: React.FC<BrandingSettingsTabProps> = ({ locale
           <div className="flex flex-wrap items-center gap-2">
             {configRow?.locale === '*' ? (
               <Badge variant="secondary" className="gap-1.5">
-                <span className="size-1.5 rounded-full bg-blue-500" />
+                <span className="size-1.5 rounded-full bg-primary" />
                 {t('admin.siteSettings.badges.global')}
               </Badge>
             ) : (
               <Badge variant="default" className="gap-1.5">
-                <span className="size-1.5 rounded-full bg-green-500" />
+                <span className="size-1.5 rounded-full bg-success-muted0" />
                 {t('admin.siteSettings.seo.override')} ({configRow?.locale})
               </Badge>
             )}
             
             {/* Show a hint if we are on a locale but seeing global values */}
             {locale !== '*' && configRow?.locale === '*' && (
-              <Badge variant="outline" className="text-[10px] border-amber-200 bg-amber-50 text-amber-700">
+              <Badge variant="outline" className="text-[10px] border-warning bg-warning-muted text-warning">
                 {t('admin.siteSettings.messages.usingGlobalFallback')}
               </Badge>
             )}

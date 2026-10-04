@@ -28,8 +28,8 @@ export const colorTokensSchema = z.object({
 }).partial();
 
 export const typographySchema = z.object({
-  fontHeading: z.string().min(1).max(200).regex(/^[\w\s,'".-]+$/),
-  fontBody: z.string().min(1).max(200).regex(/^[\w\s,'".-]+$/),
+  fontHeading: z.enum(['DM Sans, system-ui, sans-serif', 'DM Sans, system-ui, -apple-system, sans-serif', 'system-ui, sans-serif', 'Georgia, serif']),
+  fontBody: z.enum(['DM Sans, system-ui, sans-serif', 'DM Sans, system-ui, -apple-system, sans-serif', 'system-ui, sans-serif', 'Georgia, serif']),
 }).partial();
 
 export const themeUpdateSchema = z.object({

@@ -78,36 +78,3 @@ export const RADIUS_OPTIONS: Array<{ value: ThemeRadius; label: string }> = [
   { value: "1rem", label: "XL" },
   { value: "1.5rem", label: "2XL" },
 ];
-
-export const DEFAULT_THEME_CONFIG: ThemeConfig = {
-  colors: {
-    primary: "#542bd5",
-    primaryDark: "#4221ad",
-    accent: "#eee9ff",
-    background: "#f8fafc",
-    surfaceBase: "#ffffff",
-    surfaceRaised: "#ffffff",
-    surfaceMuted: "#f5f1ff",
-    border: "#cbd5e1",
-    borderLight: "#e7eaf2",
-    textStrong: "#0f172a",
-    textBody: "#334155",
-    textMuted: "#64748b",
-    navBg: "#0f2340",
-    navFg: "#ffffff",
-    surfaceDarkBg: "#111827",
-    surfaceDarkHeading: "#f8fafc",
-    surfaceDarkText: "#cbd5e1",
-    footerBg: "#0f2340",
-    footerFg: "#ffffff",
-    success: "#16a34a",
-    warning: "#f59e0b",
-    danger: "#ef4444",
-  },
-  typography: {
-    fontHeading: "DM Sans, system-ui, sans-serif",
-    fontBody: "DM Sans, system-ui, sans-serif",
-  },
-  radius: "0.375rem",
-  darkMode: "light",
-};

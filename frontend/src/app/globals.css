@@ -18,7 +18,8 @@
 ───────────────────────────────────────────────────────── */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 :root h1, :root h2, :root h3 { font-family: var(--pj-font-heading, var(--font-sans)); }
-:root:not([data-theme="dark"]) .site-header { color: var(--managed-nav-fg, inherit); }
+:root .site-header { background: var(--managed-nav-bg, var(--design-mist)); color: var(--managed-nav-fg, var(--design-ink)); }
+.carrier-invitation h2, .about-page .about-cta h2 { color: var(--design-heading-dark, var(--design-on-dark)); }
 
 /* ─────────────────────────────────────────────────────────
    @theme — Tailwind v4 token tanımları
@@ -27,7 +28,7 @@
    Örnek: bg-brand, text-foreground, border-border vb.
 ───────────────────────────────────────────────────────── */
 @theme {
-  --color-action: hsl(256 67% 49%);
+  --color-action: hsl(var(--col-brand));
   /* Brand — Mor (Primary) */
   --color-brand:        hsl(var(--col-brand));
   --color-brand-dark:   hsl(var(--col-brand-dark));
@@ -45,32 +46,39 @@
   --color-cta-light:    hsl(var(--col-cta-light));
 
   /* Navy — Lacivert */
-  --color-navy:         hsl(215 68% 16%);  /* #0F2340 — footer, dark header */
-  --color-navy-mid:     hsl(215 52% 26%);  /* #1F3B63 — dark section */
-  --color-navy-soft:    hsl(215 38% 36%);  /* #385880 — muted dark */
+  --color-navy:         hsl(var(--col-navy));
+  --color-navy-mid:     hsl(var(--col-navy-mid));
+  --color-navy-soft:    hsl(var(--col-navy-soft));
 
   /* Accent — Logo "jet" moru (ikincil CTA) */
-  --color-accent:       hsl(270 52% 36%);  /* #5B2D8E — logodaki mor */
-  --color-accent-dark:  hsl(270 52% 28%);  /* #462170 — hover */
-  --color-accent-light: hsl(270 52% 94%);  /* #F0E6F7 — tint */
+  --color-accent:       hsl(var(--col-accent));
+  --color-accent-dark:  hsl(var(--col-accent-dark));
+  --color-accent-light: hsl(var(--col-accent-light));
 
   /* Semantic */
   --color-success:      hsl(var(--col-success));
   --color-success-bg:   hsl(var(--col-success-bg));
-  --color-warning:      hsl(38 92% 50%);   /* #F59E0B */
-  --color-danger:       hsl(0 84% 60%);    /* #EF4444 */
-  --color-danger-bg:    hsl(0 84% 95%);    /* #FEE2E2 */
-  --color-info:         hsl(199 89% 48%);  /* #0EA5E9 */
+  --color-warning:      hsl(var(--col-warning));
+  --color-danger:       hsl(var(--col-danger));
+  --color-danger-bg:    hsl(var(--col-danger-bg));
+  --color-info:         hsl(var(--col-info));
+  --color-success-muted: hsl(var(--col-success-bg));
+  --color-warning-muted: hsl(var(--col-cta-light));
+  --color-danger-muted: hsl(var(--col-danger-bg));
+  --color-info-muted: hsl(var(--col-blue-xsoft));
+  --color-on-dark: var(--design-on-dark);
+  --color-overlay: hsl(var(--col-navy));
+  --color-media-canvas: hsl(var(--col-media-canvas));
 
   /* Neutral — Light mode defaults */
-  --color-foreground:   hsl(215 28% 9%);   /* #0F172A — birincil metin */
-  --color-muted:        hsl(215 16% 47%);  /* #64748B — ikincil metin */
-  --color-faint:        hsl(215 14% 66%);  /* #94A3B8 — disabled/hint */
-  --color-border:       hsl(215 20% 88%);  /* #CBD5E1 — input border */
-  --color-border-soft:  hsl(215 20% 94%);  /* #E2E8F0 — subtle divider */
-  --color-surface:      hsl(0 0% 100%);    /* #FFFFFF — kart, form yüzeyi */
-  --color-background:   hsl(210 17% 98%);  /* #F8FAFC — sayfa bg */
-  --color-bg-alt:       hsl(210 17% 95%);  /* #EEF2F7 — alt section bg */
+  --color-foreground:   hsl(var(--col-foreground));
+  --color-muted:        hsl(var(--col-muted));
+  --color-faint:        hsl(var(--col-faint));
+  --color-border:       hsl(var(--col-border));
+  --color-border-soft:  hsl(var(--col-border-soft));
+  --color-surface:      hsl(var(--col-surface));
+  --color-background:   hsl(var(--col-bg));
+  --color-bg-alt:       hsl(var(--col-bg-alt));
 
   /* Panel */
   --color-panel-bg-from: hsl(var(--col-panel-bg-from));
@@ -81,20 +89,20 @@
   --color-panel-surface: hsl(var(--col-panel-surface));
 
   /* ── Font stacks ── */
-  --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
   /* ── Border radius ── */
-  --radius-sm:   0.25rem;
+  --radius-sm:   calc(var(--radius) * .5);
   --radius:      0.5rem;
-  --radius-md:   0.5rem;
-  --radius-lg:   0.75rem;
-  --radius-xl:   1rem;
-  --radius-2xl:  1.5rem;
+  --radius-md:   var(--radius);
+  --radius-lg:   calc(var(--radius) * 1.5);
+  --radius-xl:   calc(var(--radius) * 2);
+  --radius-2xl:  calc(var(--radius) * 3);
   --radius-full: 9999px;
 
   /* ── Custom shadows ── */
-  --shadow-brand: 0 4px 16px hsl(27 96% 53% / 0.30);
+  --shadow-brand: 0 4px 16px hsl(var(--col-brand) / 0.30);
 
   /* ── Animations ── */
   --animate-fade-in: fade-in 200ms ease forwards;
@@ -119,21 +127,25 @@
   color-scheme: light;
 
   /* Açık tema raw token'ları — @theme ile senkron */
-  --col-brand:         255 90% 66%;
-  --col-brand-dark:    255 74% 56%;
+  --col-brand:         256 67% 49%;
+  --col-brand-dark:    256 67% 40%;
   --col-brand-light:   255 90% 95%;
   --col-brand-xlight:  255 90% 97%;
   --col-blue:          214 90% 60%;
   --col-blue-soft:     214 80% 92%;
   --col-blue-xsoft:    214 100% 96%;
-  --col-cta:           27 96% 53%;
-  --col-cta-dark:      22 92% 44%;
-  --col-cta-light:     27 96% 94%;
-  --col-foreground:    215 28%  9%;
+  --col-accent:        270 52% 36%;
+  --col-accent-dark:   270 52% 28%;
+  --col-accent-light:  270 52% 94%;
+  --col-media-canvas:  0 0% 100%;
+  --col-cta:           256 67% 49%;
+  --col-cta-dark:      256 67% 40%;
+  --col-cta-light:     256 70% 96%;
+  --col-foreground:    228 65% 12%;
   --col-muted:         215 16% 47%;
   --col-faint:         215 14% 66%;
   --col-border:        215 20% 88%;
-  --col-border-soft:   215 20% 94%;
+  --col-border-soft:   218 25% 88%;
   --col-surface:         0  0% 100%;
   --col-bg:            210 17% 98%;
   --col-bg-alt:        210 17% 95%;
@@ -150,7 +162,7 @@
   --col-panel-bg-to:   216 72% 90%;
   --col-panel-accent:  255 90% 66%;
   --col-panel-idle:    214 80% 92%;
-  --col-panel-ink:     215 68% 16%;
+  --col-panel-ink:     228 65% 12%;
   --col-panel-surface:   0  0% 100%;
 }
 
@@ -165,6 +177,9 @@
   --col-blue:          214 90% 66%;
   --col-blue-soft:     214 40% 18%;
   --col-blue-xsoft:    214 35% 12%;
+  --col-accent:        270 52% 50%;
+  --col-accent-dark:   270 52% 42%;
+  --col-accent-light:  270 35% 18%;
   --col-cta:           27 96% 53%;
   --col-cta-dark:      27 96% 63%;
   --col-cta-light:     27 60% 15%;
@@ -193,14 +208,14 @@
   --col-panel-surface: 215 30% 11%;
 
   /* Tailwind --color-* override'ları — bg-*, text-*, border-* utility'lerini dark'ta doğru çalıştırır */
-  --color-foreground:   hsl(215 5% 93%);
-  --color-muted:        hsl(215 10% 60%);
-  --color-faint:        hsl(215 10% 40%);
-  --color-border:       hsl(215 20% 18%);
-  --color-border-soft:  hsl(215 20% 14%);
-  --color-surface:      hsl(215 30% 11%);
-  --color-background:   hsl(215 35% 7%);
-  --color-bg-alt:       hsl(215 30% 10%);
+  --color-foreground:   hsl(var(--col-foreground));
+  --color-muted:        hsl(var(--col-muted));
+  --color-faint:        hsl(var(--col-faint));
+  --color-border:       hsl(var(--col-border));
+  --color-border-soft:  hsl(var(--col-border-soft));
+  --color-surface:      hsl(var(--col-surface));
+  --color-background:   hsl(var(--col-bg));
+  --color-bg-alt:       hsl(var(--col-bg-alt));
   --color-brand:        hsl(var(--col-brand));
   --color-brand-dark:   hsl(var(--col-brand-dark));
   --color-brand-light:  hsl(var(--col-brand-light));
@@ -213,15 +228,16 @@
   --color-cta-light:    hsl(var(--col-cta-light));
   --color-success:      hsl(var(--col-success));
   --color-success-bg:   hsl(var(--col-success-bg));
-  --color-accent:       hsl(270 52% 50%);
-  --color-accent-dark:  hsl(270 52% 42%);
-  --color-danger:       hsl(0 80% 65%);
-  --color-danger-bg:    hsl(0 40% 12%);
-  --color-warning:      hsl(38 80% 55%);
-  --color-info:         hsl(199 70% 55%);
-  --color-navy:         hsl(215 68%  6%);
-  --color-navy-mid:     hsl(215 52%  8%);
-  --color-navy-soft:    hsl(215 38% 12%);
+  --color-accent:       hsl(var(--col-accent));
+  --color-accent-dark:  hsl(var(--col-accent-dark));
+  --color-accent-light: hsl(var(--col-accent-light));
+  --color-danger:       hsl(var(--col-danger));
+  --color-danger-bg:    hsl(var(--col-danger-bg));
+  --color-warning:      hsl(var(--col-warning));
+  --color-info:         hsl(var(--col-info));
+  --color-navy:         hsl(var(--col-navy));
+  --color-navy-mid:     hsl(var(--col-navy-mid));
+  --color-navy-soft:    hsl(var(--col-navy-soft));
   --color-panel-bg-from: hsl(var(--col-panel-bg-from));
   --color-panel-bg-to: hsl(var(--col-panel-bg-to));
   --color-panel-accent: hsl(var(--col-panel-accent));
@@ -254,7 +270,7 @@
 
   ::-webkit-scrollbar-thumb {
     background: var(--color-border);
-    border-radius: 4px;
+    border-radius:calc(var(--radius) * 0.5);
   }
 
   ::-webkit-scrollbar-thumb:hover {
@@ -284,7 +300,7 @@
   :focus-visible {
     outline: 2px solid hsl(var(--col-brand));
     outline-offset: 2px;
-    border-radius: 4px;
+    border-radius:calc(var(--radius) * 0.5);
   }
 }
 
@@ -313,7 +329,7 @@
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  box-shadow: 0 4px 12px hsl(215 20% 50% / 0.08);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-foreground) 8%, transparent);
 }
 
 @utility surface-input {
@@ -326,7 +342,7 @@
 @utility surface-hero-overlay {
   position: relative;
   background-color: var(--color-navy);
-  color: white;
+  color: var(--design-on-dark);
 }
 
 @utility bg-panel-gradient {
@@ -335,27 +351,27 @@
 
 @utility surface-dark-shell {
   background-color: var(--color-navy);
-  color: white;
+  color: var(--design-on-dark);
 }
 
 @utility surface-brand-cta {
   background-color: var(--color-brand);
-  color: white;
+  color: var(--design-on-dark);
 }
 
 @utility text-heading-on-dark {
-  color: white;
+  color: var(--design-on-dark);
   letter-spacing: -0.02em;
 }
 
 @utility text-body-on-dark {
-  color: hsl(215 30% 75%);
+  color: var(--design-muted-dark);
 }
 
 @utility ring-brand-focus {
   outline: 2px solid var(--color-brand);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius:calc(var(--radius) * 0.5);
 }
 
 .site-logo-img--dark {
@@ -375,39 +391,37 @@
     brightness(1.28)
     contrast(1.22)
     saturate(1.12)
-    drop-shadow(0 0 1px rgb(255 255 255 / 0.85))
-    drop-shadow(0 1px 2px rgb(255 255 255 / 0.45));
+    drop-shadow(0 0 1px color-mix(in srgb, var(--design-on-dark) 85%, transparent))
+    drop-shadow(0 1px 2px color-mix(in srgb, var(--design-on-dark) 45%, transparent));
 }
 
 [data-theme="dark"] .how-it-works-section {
-  background: hsl(216 31% 10%);
+  background: var(--design-footer);
 }
 
 [data-theme="dark"] .how-it-works-card {
-  background: hsl(215 28% 15%);
-  border-color: hsl(214 22% 27%);
-  box-shadow: 0 16px 44px rgb(0 0 0 / 0.22);
+  background: var(--color-navy-mid);
+  border-color: var(--design-line);
+  box-shadow: 0 16px 44px color-mix(in srgb, var(--color-navy) 22%, transparent);
 }
 
 [data-theme="dark"] .how-it-works-card h3 {
-  color: hsl(0 0% 100%);
+  color: var(--design-on-dark);
 }
 
 [data-theme="dark"] .how-it-works-card p,
 [data-theme="dark"] .how-it-works-section > div > div:first-child p {
-  color: hsl(215 30% 78%);
+  color: var(--design-muted-dark);
 }
 
 [data-theme="dark"] .how-it-works-visual {
-  background: hsl(213 25% 18%);
+  background: var(--design-ice);
 }
 
 [data-theme="dark"] .how-it-works-step-bg {
-  color: hsl(258 86% 72% / 0.22);
+  color: color-mix(in srgb, var(--color-brand) 22%, transparent);
 }
 
-/* September 2026 shared interface tokens */
-:root:not([data-theme="dark"]) { --col-brand: 256 67% 49%; --col-brand-dark: 256 67% 40%; --col-cta: 256 67% 49%; --col-cta-dark: 256 67% 40%; --col-cta-light: 256 70% 96%; --col-border-soft: 218 25% 88%; --col-foreground: 228 65% 12%; --col-panel-ink: 228 65% 12%; --col-panel-surface: 0 0% 100%; }
 .site-container { width: min(100% - 3rem, 70rem); margin-inline:auto; }
 :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }

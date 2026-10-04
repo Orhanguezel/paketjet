@@ -187,20 +187,20 @@ export const BrandMediaTab: React.FC<BrandMediaTabProps> = ({ locale, settingPre
 
         <CardContent>
           <div className="mb-4 grid gap-3 rounded-lg border bg-muted/20 p-3 md:grid-cols-2">
-            <div className="rounded-md border bg-white p-4">
-              <p className="mb-2 text-xs font-semibold text-slate-600">Light tema önizleme</p>
+            <div className="rounded-md border bg-preview-light-bg p-4 text-preview-light-fg">
+              <p className="mb-2 text-xs font-semibold">Light tema önizleme</p>
               {current.logo_url ? (
                 <img src={current.logo_url} alt={current.logo_alt || logoAlt} className="h-16 w-auto max-w-48 object-contain" />
               ) : (
                 <span className="text-xs text-muted-foreground">{t('admin.siteSettings.brandMedia.inline.noImage')}</span>
               )}
             </div>
-            <div className="rounded-md border border-slate-800 bg-slate-950 p-4">
-              <p className="mb-2 text-xs font-semibold text-slate-300">Dark tema önizleme</p>
+            <div className="rounded-md border border-sidebar-border bg-preview-dark-bg p-4 text-preview-dark-fg">
+              <p className="mb-2 text-xs font-semibold">Dark tema önizleme</p>
               {current.logo_dark_url || current.logo_url ? (
                 <img src={current.logo_dark_url || current.logo_url} alt={current.logo_alt || logoAlt} className="h-16 w-auto max-w-48 object-contain" />
               ) : (
-                <span className="text-xs text-slate-400">{t('admin.siteSettings.brandMedia.inline.noImage')}</span>
+                <span className="text-xs opacity-70">{t('admin.siteSettings.brandMedia.inline.noImage')}</span>
               )}
             </div>
           </div>

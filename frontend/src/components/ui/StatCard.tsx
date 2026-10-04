@@ -10,7 +10,7 @@ interface StatCardProps {
 
 export default function StatCard({ title, value, icon, className }: StatCardProps) {
   return (
-    <div className={cn("rounded-2xl bg-panel-surface p-5 shadow-sm ring-1 ring-white/70", className)}>
+    <div className={cn("rounded-2xl bg-panel-surface p-5 shadow-sm ring-1 ring-on-dark/70", className)}>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-sm font-black text-panel-ink/65">{title}</p>

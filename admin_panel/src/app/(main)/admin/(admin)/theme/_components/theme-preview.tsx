@@ -40,7 +40,7 @@ export function ThemePreview({ colors, t }: ThemePreviewProps) {
         </div>
 
         <div className="flex gap-2">
-          <div className="rounded-md px-3 py-1.5 text-xs text-white" style={{ backgroundColor: colors.primary }}>
+          <div className="rounded-md px-3 py-1.5 text-xs text-on-dark" style={{ backgroundColor: colors.primary }}>
             {t('preview.primaryButton')}
           </div>
           <div

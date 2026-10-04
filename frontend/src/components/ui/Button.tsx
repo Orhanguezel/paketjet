@@ -6,11 +6,11 @@ type Size    = "sm" | "md" | "lg";
 
 const variantClass: Record<Variant, string> = {
   outline: "border border-border bg-surface text-foreground hover:bg-bg-alt",
-  primary:   "bg-action text-white hover:bg-brand-dark",
+  primary:   "bg-action text-on-dark hover:bg-brand-dark",
   secondary: "bg-bg-alt text-foreground border border-border hover:bg-border-soft",
   ghost:     "text-muted hover:bg-bg-alt",
-  danger:    "bg-danger text-white hover:brightness-90",
-  success:   "bg-success text-white hover:brightness-90",
+  danger:    "bg-danger text-on-dark hover:brightness-90",
+  success:   "bg-success text-on-dark hover:brightness-90",
 };
 
 const sizeClass: Record<Size, string> = {
@@ -38,7 +38,7 @@ export function Button({ variant = "primary", size = "md", loading, disabled, cl
         className
       )}
     >
-      {loading ? <span className="animate-spin mr-2 w-4 h-4 border-2 border-white/30 border-t-white rounded-full" /> : null}
+      {loading ? <span className="animate-spin mr-2 w-4 h-4 border-2 border-on-dark/30 border-t-white rounded-full" /> : null}
       {children}
     </button>
   );

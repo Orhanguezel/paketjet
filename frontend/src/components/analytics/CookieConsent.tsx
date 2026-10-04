@@ -57,7 +57,7 @@ export default function CookieConsent() {
           <button type="button" onClick={() => setDetails(true)} className="min-h-11 rounded-xl px-4 text-sm font-semibold text-brand">Tercihler</button>
         )}
         <button type="button" onClick={() => save(false, false)} className="min-h-11 rounded-xl border border-border px-4 text-sm font-semibold">Yalnızca zorunlu</button>
-        <button type="button" onClick={() => save(true, true)} className="min-h-11 rounded-xl bg-action px-4 text-sm font-semibold text-white">Tümünü kabul et</button>
+        <button type="button" onClick={() => save(true, true)} className="min-h-11 rounded-xl bg-action px-4 text-sm font-semibold text-on-dark">Tümünü kabul et</button>
       </div>
     </section>
   );

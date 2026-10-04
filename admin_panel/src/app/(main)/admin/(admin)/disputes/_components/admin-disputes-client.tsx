@@ -116,8 +116,8 @@ export default function AdminDisputesClient() {
               </div>
 
               {d.resolution && (
-                <div className="bg-green-50 dark:bg-green-900/10 rounded-lg p-3">
-                  <p className="text-xs font-medium text-green-600 mb-1">Çözüm:</p>
+                <div className="bg-success-muted dark:bg-success-muted rounded-lg p-3">
+                  <p className="text-xs font-medium text-success mb-1">Çözüm:</p>
                   <p className="text-sm">{d.resolution}</p>
                 </div>
               )}

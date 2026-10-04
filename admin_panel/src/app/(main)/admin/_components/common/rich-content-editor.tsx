@@ -346,7 +346,7 @@ const RichContentEditor: React.FC<RichContentEditorProps> = ({
           <div className="text-xs text-muted-foreground">{t('preview.title')}</div>
           <div className="rounded-md border bg-background p-3">
             {html && html.trim() ? (
-              <iframe title={t('preview.title')} sandbox="" srcDoc={html} className="h-80 w-full border-0 bg-white" />
+              <iframe title={t('preview.title')} sandbox="" srcDoc={html} className="h-80 w-full border-0 bg-document-canvas" />
             ) : (
               <div className="text-sm text-muted-foreground">
                 {t('preview.empty')}

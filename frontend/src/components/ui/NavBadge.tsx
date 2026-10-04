@@ -21,11 +21,11 @@ export default function NavBadge({ icon, label, href, active, badgeCount, onClic
       className={cn(
         "group flex min-h-14 items-center gap-3 rounded-full px-3 py-2 text-sm font-black transition-all focus-visible:outline-panel-accent",
         active
-          ? "bg-panel-accent text-white shadow-lg shadow-brand/20"
+          ? "bg-panel-accent text-on-dark shadow-lg shadow-brand/20"
           : "bg-blue-soft text-panel-ink hover:bg-blue-xsoft hover:text-brand"
       )}
     >
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-full", active ? "bg-white/15" : "bg-white/65")}>
+      <span className={cn("grid size-10 shrink-0 place-items-center rounded-full", active ? "bg-on-dark/15" : "bg-on-dark/65")}>
         <Icon name={icon} size={30} alt="" />
       </span>
       <span className="min-w-0 flex-1 truncate">{label}</span>
@@ -33,7 +33,7 @@ export default function NavBadge({ icon, label, href, active, badgeCount, onClic
         <span
           className={cn(
             "grid min-w-6 place-items-center rounded-full px-1.5 py-0.5 text-[10px] font-black",
-            active ? "bg-white text-brand" : "bg-action text-white"
+            active ? "bg-on-dark text-brand" : "bg-action text-on-dark"
           )}
         >
           {badgeCount > 99 ? "99+" : badgeCount}

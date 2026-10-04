@@ -11,7 +11,7 @@ import { normalizeSiteSettingsBrandingConfig } from '@/integrations/shared';
  * Backend API base URL (server-side only).
  * PANEL_API_URL > NEXT_PUBLIC_API_URL > fallback
  */
-function getServerApiUrl(): string {
+export function getServerApiUrl(): string {
   const panel = (process.env.PANEL_API_URL || '').trim().replace(/\/+$/, '');
   if (panel) return `${panel}/api`;
 

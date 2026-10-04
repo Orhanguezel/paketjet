@@ -30,7 +30,8 @@ const COUNTRY_NAMES: Record<string, string> = {
   LOCAL: 'Localhost',
 };
 
-const BAR_COLORS = ['#1e40af', '#1d4ed8', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd', '#bfdbfe', '#dbeafe', '#eff6ff', '#f8fafc'];
+const BAR_COLORS = Array.from({ length: 10 }, (_, index) =>
+  `color-mix(in srgb, var(--primary) ${100 - index * 10}%, var(--card))`);
 
 type Props = {
   items: AuditGeoStatsRowDto[];
@@ -134,7 +135,7 @@ export const AuditGeoMap: React.FC<Props> = ({ items, loading }) => {
                 <span className="w-12 text-right text-xs text-muted-foreground">{pct}%</span>
                 <div className="h-2 w-20 overflow-hidden rounded-full bg-muted">
                   <div
-                    className="h-full rounded-full bg-blue-500"
+                    className="h-full rounded-full bg-primary"
                     style={{ width: `${Math.min(100, (c.count / maxCount) * 100)}%` }}
                   />
                 </div>

@@ -5,6 +5,7 @@
  */
 
 export const API = {
+  theme: { storefront: "/api/theme/storefront" },
   locations: {search: "/api/locations/search"},
   auth: {
     login:    "/api/auth/token",

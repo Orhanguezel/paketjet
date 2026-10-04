@@ -3,10 +3,18 @@ import { Monitor, Moon, Sun } from "lucide-react";
 
 import type { ThemeDarkMode } from "@/integrations/shared/theme-admin-types";
 import type { ColorTokens, ThemeConfig } from "@/integrations/shared/theme-types";
-import { COLOR_TOKEN_LABELS, DEFAULT_THEME_CONFIG } from "@/integrations/shared/theme-types";
+import { COLOR_TOKEN_LABELS } from "@/integrations/shared/theme-types";
 
-export const THEME_FONT_HEADING_PLACEHOLDER = "Syne, system-ui, sans-serif";
+export const THEME_FONT_HEADING_PLACEHOLDER = "DM Sans, system-ui, sans-serif";
 export const THEME_FONT_BODY_PLACEHOLDER = "DM Sans, system-ui, sans-serif";
+export const THEME_FONT_OPTIONS = [
+  { value: "DM Sans, system-ui, sans-serif", label: "DM Sans" },
+  { value: "system-ui, sans-serif", label: "Sistem yazı tipi" },
+  { value: "Georgia, serif", label: "Georgia" },
+] as const;
+const supportedFont = (value: string) => value.startsWith("DM Sans")
+  ? THEME_FONT_OPTIONS[0].value
+  : THEME_FONT_OPTIONS.find((option) => option.value === value)?.value ?? THEME_FONT_OPTIONS[0].value;
 export const THEME_COLOR_HEX_PLACEHOLDER = "#000000";
 export const THEME_RADIUS_PREVIEW_SIZES = ["sm", "md", "lg"] as const;
 
@@ -22,12 +30,15 @@ export const THEME_DARK_MODE_OPTIONS: ThemeDarkModeOption[] = [
   { value: "system", icon: Monitor, labelKey: "darkModeSystem" },
 ];
 
-export function toThemeDraft(theme: Partial<ThemeConfig> | null | undefined): ThemeConfig {
+export function toThemeDraft(theme: ThemeConfig): ThemeConfig {
   return {
-    colors: { ...DEFAULT_THEME_CONFIG.colors, ...(theme?.colors ?? {}) },
-    typography: { ...DEFAULT_THEME_CONFIG.typography, ...(theme?.typography ?? {}) },
-    radius: theme?.radius || DEFAULT_THEME_CONFIG.radius,
-    darkMode: theme?.darkMode || DEFAULT_THEME_CONFIG.darkMode,
+    colors: { ...theme.colors },
+    typography: {
+      fontHeading: supportedFont(theme.typography.fontHeading),
+      fontBody: supportedFont(theme.typography.fontBody),
+    },
+    radius: theme.radius,
+    darkMode: theme.darkMode,
   };
 }
 

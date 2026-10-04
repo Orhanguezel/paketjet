@@ -82,7 +82,7 @@ export function SmtpTestSection({ busy }: SmtpTestSectionProps) {
         </Button>
       </div>
       {result ? (
-        <p className={`text-xs ${result.ok ? 'text-green-600' : 'text-destructive'}`}>
+        <p className={`text-xs ${result.ok ? 'text-success' : 'text-destructive'}`}>
           {result.message}
         </p>
       ) : null}

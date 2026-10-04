@@ -22,7 +22,7 @@ function RatingForm({ item, onSaved }: { item: EligibleRating; onSaved: () => vo
     <fieldset><legend className="text-sm font-medium">İletişim deneyimini puanla</legend><div className="mt-2 flex gap-1">{[1,2,3,4,5].map(value=><button type="button" key={value} aria-label={`5 üzerinden ${value} yıldız`} aria-pressed={score===value} onClick={()=>setScore(value)} className="min-h-11 min-w-11 text-2xl text-brand">{value<=score?'★':'☆'}</button>)}</div></fieldset>
     <label className="block text-sm">Yorum (isteğe bağlı)<textarea maxLength={500} value={comment} onChange={event=>setComment(event.target.value)} className="mt-2 block min-h-24 w-full rounded-lg border border-border bg-surface p-3"/></label>
     {error&&<p role="alert" className="text-sm text-danger">{error}</p>}
-    <button disabled={!score||busy} className="min-h-11 rounded-lg bg-action px-5 font-semibold text-white disabled:opacity-50">{busy?'Kaydediliyor…':'Değerlendirmeyi gönder'}</button>
+    <button disabled={!score||busy} className="min-h-11 rounded-lg bg-action px-5 font-semibold text-on-dark disabled:opacity-50">{busy?'Kaydediliyor…':'Değerlendirmeyi gönder'}</button>
   </form>;
 }
 

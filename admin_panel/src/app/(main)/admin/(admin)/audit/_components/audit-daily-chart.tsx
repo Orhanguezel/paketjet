@@ -195,8 +195,8 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
             const y = padT + (chartH * i) / yTicks;
             return (
               <g key={`t-${i}`}>
-                <line x1={padL} y1={y} x2={W - padR} y2={y} stroke="#e9ecef" strokeWidth="1" />
-                <text x={padL - 8} y={y + 4} textAnchor="end" fontSize="11" fill="#6c757d">
+                <line x1={padL} y1={y} x2={W - padR} y2={y} stroke="var(--border)" strokeWidth="1" />
+                <text x={padL - 8} y={y + 4} textAnchor="end" fontSize="11" fill="var(--muted-foreground)">
                   {tv}
                 </text>
               </g>
@@ -229,7 +229,7 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
                   width={barW}
                   height={h}
                   rx="3"
-                  fill={isHover ? '#0b5ed7' : '#0d6efd'}
+                  fill={isHover ? 'var(--primary)' : 'var(--primary)'}
                   opacity={r.requests === 0 ? 0.25 : 0.9}
                 />
                 {(data.length <= 14 || idx % 2 === 0) && (
@@ -238,7 +238,7 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
                     y={H - 10}
                     textAnchor="middle"
                     fontSize="11"
-                    fill="#6c757d"
+                    fill="var(--muted-foreground)"
                   >
                     {r.label}
                   </text>
@@ -248,16 +248,16 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
           })}
 
           {showHumans && data.length > 1 && (
-            <polyline fill="none" stroke="#16a34a" strokeWidth="3" points={linePoints('humans')} />
+            <polyline fill="none" stroke="var(--success)" strokeWidth="3" points={linePoints('humans')} />
           )}
           {showAds && data.length > 1 && (
-            <polyline fill="none" stroke="#f59e0b" strokeWidth="3" points={linePoints('ads')} />
+            <polyline fill="none" stroke="var(--warning)" strokeWidth="3" points={linePoints('ads')} />
           )}
           {showUnique && data.length > 1 && (
-            <polyline fill="none" stroke="#7c3aed" strokeWidth="2.5" points={linePoints('unique_ips')} />
+            <polyline fill="none" stroke="var(--chart-2)" strokeWidth="2.5" points={linePoints('unique_ips')} />
           )}
           {showErrors && data.length > 1 && (
-            <polyline fill="none" stroke="#dc2626" strokeWidth="2.5" points={linePoints('errors')} />
+            <polyline fill="none" stroke="var(--danger)" strokeWidth="2.5" points={linePoints('errors')} />
           )}
 
           {hoverIdx !== null &&
@@ -280,20 +280,20 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
                     height={boxH}
                     rx="8"
                     fill="white"
-                    stroke="#dee2e6"
+                    stroke="var(--border)"
                   />
-                  <text x={px + 12} y={py + 20} fontSize="12" fill="#212529">
+                  <text x={px + 12} y={py + 20} fontSize="12" fill="var(--foreground)">
                     <tspan fontWeight="600">{fmtIsoNice(r.date)}</tspan>
                   </text>
-                  <text x={px + 12} y={py + 40} fontSize="12" fill="#212529">
+                  <text x={px + 12} y={py + 40} fontSize="12" fill="var(--foreground)">
                     {t('labels.requests')}: <tspan fontWeight="600">{r.requests}</tspan>
                   </text>
-                  <text x={px + 12} y={py + 58} fontSize="12" fill="#212529">
+                  <text x={px + 12} y={py + 58} fontSize="12" fill="var(--foreground)">
                     {t('labels.humans')}: <tspan fontWeight="600">{r.humans}</tspan>
                     <tspan> · </tspan>
                     {t('labels.ads')}: <tspan fontWeight="600">{r.ads}</tspan>
                   </text>
-                  <text x={px + 12} y={py + 76} fontSize="12" fill="#212529">
+                  <text x={px + 12} y={py + 76} fontSize="12" fill="var(--foreground)">
                     {t('labels.unique')}: <tspan fontWeight="600">{r.unique_ips}</tspan>
                     <tspan> · </tspan>
                     {t('labels.errors')}: <tspan fontWeight="600">{r.errors}</tspan>
@@ -307,7 +307,7 @@ export const AuditDailyChart: React.FC<Props> = ({ rows, loading, height = 220 }
             y1={padT + chartH}
             x2={W - padR}
             y2={padT + chartH}
-            stroke="#dee2e6"
+            stroke="var(--border)"
             strokeWidth="1"
           />
         </svg>

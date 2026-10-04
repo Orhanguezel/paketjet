@@ -14,7 +14,9 @@ import Script from 'next/script';
 import { Toaster } from '@/components/ui/sonner';
 import { fontVars } from '@/lib/fonts/registry';
 import { PREFERENCE_DEFAULTS } from '@/lib/preferences/preferences-config';
-import { fetchBrandingConfig } from '@/server/fetch-branding';
+import { fetchBrandingConfig, getServerApiUrl } from '@/server/fetch-branding';
+import type { ScopedThemeConfig } from '@/integrations/shared/theme-types';
+import { managedAdminThemeCss } from '@/lib/managed-admin-theme';
 
 import StoreProvider from '@/stores/provider';
 import { ManagedThemeRuntime } from './managed-theme-runtime';
@@ -65,14 +67,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export async function generateViewport() {
-  const branding = await fetchBrandingConfig();
+  const [branding, managedTheme] = await Promise.all([fetchBrandingConfig(), fetchAdminTheme()]);
 
   return {
-    themeColor: branding.theme_color,
+    themeColor: managedTheme?.enabled ? managedTheme.colors.primary : branding.theme_color,
   };
 }
 
-function ThemeBootInlineScript() {
+async function fetchAdminTheme(): Promise<ScopedThemeConfig | null> {
+  try {
+    const response = await fetch(`${getServerApiUrl()}/theme/admin-panel`, { next: { revalidate: 30 } });
+    return response.ok ? (await response.json()) as ScopedThemeConfig : null;
+  } catch {
+    return null;
+  }
+}
+
+function ThemeBootInlineScript({ managedMode }: { managedMode: string | null }) {
   const {
     theme_mode,
     theme_preset,
@@ -95,7 +106,8 @@ function ThemeBootInlineScript() {
     }
 
     // theme mode (cookie → localStorage → default)
-    var mode = ck('theme_mode') || (function(){try{return localStorage.getItem('theme_mode')}catch(e){return null}})() || ${JSON.stringify(theme_mode)};
+    var mode = ${JSON.stringify(managedMode)} || ck('theme_mode') || (function(){try{return localStorage.getItem('theme_mode')}catch(e){return null}})() || ${JSON.stringify(theme_mode)};
+    if (mode === 'system') mode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     if (mode === 'dark') d.classList.add('dark');
     else d.classList.remove('dark');
 
@@ -121,7 +133,8 @@ function ThemeBootInlineScript() {
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
-  const branding = await fetchBrandingConfig();
+  const [branding, managedTheme] = await Promise.all([fetchBrandingConfig(), fetchAdminTheme()]);
+  const themeCss = managedTheme ? managedAdminThemeCss(managedTheme) : '';
 
   const { theme_preset, content_layout, navbar_style, sidebar_variant, sidebar_collapsible, font } =
     PREFERENCE_DEFAULTS;
@@ -137,8 +150,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       data-sidebar-collapsible={sidebar_collapsible}
       data-font={font}
     >
+      <head>{themeCss && <style id="managed-admin-theme" dangerouslySetInnerHTML={{ __html: themeCss }} />}</head>
       <body className={`${fontVars} min-h-screen antialiased`} suppressHydrationWarning>
-        <ThemeBootInlineScript />
+        <ThemeBootInlineScript managedMode={managedTheme?.enabled ? managedTheme.darkMode : null} />
         <ManagedThemeRuntime />
 
         <StoreProvider>

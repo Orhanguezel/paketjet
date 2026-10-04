@@ -43,13 +43,13 @@ export function DashboardActivity() {
     {query.isError ? <p role="alert" className="admin-panel-message">Aktivite verileri yüklenemedi.</p> : query.isLoading ? <div className="admin-chart-loading">Grafik yükleniyor…</div> : <div className="admin-chart-wrap" role="img" aria-label={`Son ${days} günün ilan ve yeni üye sayısı grafiği`}>
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart data={data} margin={{ top: 12, right: 8, left: -24, bottom: 0 }}>
-          <defs><linearGradient id="admin-listings-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="#5c36dc" stopOpacity={0.18} /><stop offset="100%" stopColor="#5c36dc" stopOpacity={0.01} /></linearGradient></defs>
+          <defs><linearGradient id="admin-listings-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor="var(--chart-1)" stopOpacity={0.18} /><stop offset="100%" stopColor="var(--chart-1)" stopOpacity={0.01} /></linearGradient></defs>
           <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
           <XAxis dataKey="day" axisLine={false} tickLine={false} minTickGap={28} tickFormatter={(day: string) => new Date(`${day}T00:00:00Z`).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', timeZone: 'UTC' })} tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }} />
           <YAxis allowDecimals={false} axisLine={false} tickLine={false} tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }} />
           <Tooltip labelFormatter={(day) => new Date(`${day}T00:00:00Z`).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', timeZone: 'UTC' })} formatter={(value, name) => [value, name === 'ilanlar' ? 'Yeni ilanlar' : 'Yeni üyeler']} />
-          <Area dataKey="ilanlar" type="monotone" stroke="#5930d6" strokeWidth={2.4} fill="url(#admin-listings-fill)" />
-          <Area dataKey="users" type="monotone" stroke="#ad99fa" strokeWidth={2} fill="transparent" />
+          <Area dataKey="ilanlar" type="monotone" stroke="var(--chart-1)" strokeWidth={2.4} fill="url(#admin-listings-fill)" />
+          <Area dataKey="users" type="monotone" stroke="var(--chart-2)" strokeWidth={2} fill="transparent" />
         </AreaChart>
       </ResponsiveContainer>
     </div>}

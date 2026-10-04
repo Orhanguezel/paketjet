@@ -2,8 +2,15 @@ import type { ThemeConfig } from './types';
 import { DEFAULT_THEME } from './defaults';
 import type { ThemeScope } from './schema';
 
+const typography = {
+  fontHeading: 'DM Sans, system-ui, sans-serif',
+  fontBody: 'DM Sans, system-ui, sans-serif',
+};
+
 const storefront: ThemeConfig = {
   ...DEFAULT_THEME,
+  radius: '0.5rem',
+  typography,
   colors: {
     ...DEFAULT_THEME.colors,
     primary: '#542BD5', primaryDark: '#4221AD', accent: '#EEE9FF',
@@ -17,6 +24,7 @@ const storefront: ThemeConfig = {
 
 const admin: ThemeConfig = {
   ...DEFAULT_THEME,
+  typography,
   colors: {
     ...DEFAULT_THEME.colors,
     primary: '#542BD5', primaryDark: '#4221AD', accent: '#EEE9FF',

@@ -42,7 +42,7 @@ export type CategoryDetailFormState = {
 };
 
 export const CATEGORY_DETAIL_INPUT_CLASS =
-  'w-full rounded border border-[#ccc] bg-white px-4 py-3 text-sm text-[#333] placeholder-[#999] outline-none focus:border-[#946e1c] focus:ring-1 focus:ring-[#946e1c]/30';
+  'w-full rounded border border-border bg-card px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary/30';
 
 export function getCategoryApiOrigin(): string {
   if (typeof window === 'undefined') return CATEGORY_API_FALLBACK_ORIGIN;

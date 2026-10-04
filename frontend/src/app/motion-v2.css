@@ -7,14 +7,14 @@
 .route-node {fill:var(--color-brand);stroke:var(--color-surface);stroke-width:3;}
 .route-halo {fill:var(--color-brand);opacity:.12;transform-box:fill-box;transform-origin:center;animation:route-pulse 4s ease-in-out infinite;}
 .route-label {font-size:15px;fill:var(--design-ink);font-weight:650;text-anchor:middle;}
-.route-vehicle {position:absolute;left:37%;top:35%;color:var(--color-brand);padding:6px;border-radius:10px;background:var(--design-glass);box-shadow:var(--design-shadow);animation:route-float 5s ease-in-out infinite;}
+.route-vehicle {position:absolute;left:37%;top:35%;color:var(--color-brand);padding:6px;border-radius:calc(var(--radius) * 1.25);background:var(--design-glass);box-shadow:var(--design-shadow);animation:route-float 5s ease-in-out infinite;}
 .route-caption {position:absolute;bottom:7%;right:6%;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--color-brand);}
 .route-caption button {height:36px;width:36px;border:1px solid var(--design-line);border-radius:50%;display:grid;place-items:center;background:var(--design-glass);}
 .route-scene[data-running="false"] * {animation-play-state:paused!important;}
-.brand-motion {position:relative;border:1px solid var(--design-line);border-radius:24px;overflow:hidden;box-shadow:var(--design-shadow);background:var(--design-ice);}
+.brand-motion {position:relative;border:1px solid var(--design-line);border-radius:calc(var(--radius) * 3);overflow:hidden;box-shadow:var(--design-shadow);background:var(--design-ice);}
 .brand-motion video {width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;display:block;}
 .brand-motion-bar {min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;background:var(--design-glass);font-size:13px;color:var(--color-muted);}
-.brand-motion-bar button {display:flex;align-items:center;gap:8px;padding:9px 12px;min-height:42px;border-radius:10px;background:var(--design-lilac);color:var(--color-brand);font-weight:650;}
+.brand-motion-bar button {display:flex;align-items:center;gap:8px;padding:9px 12px;min-height:42px;border-radius:calc(var(--radius) * 1.25);background:var(--design-lilac);color:var(--color-brand);font-weight:650;}
 @keyframes route-travel {to {stroke-dashoffset:-130;}}
 @keyframes route-pulse {0%,100%{transform:scale(.85);opacity:.12;}50%{transform:scale(1.2);opacity:.06;}}
 @keyframes route-float {0%,100%{transform:translate(0,0);}50%{transform:translate(10px,-5px);}}

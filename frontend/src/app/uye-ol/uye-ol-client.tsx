@@ -18,7 +18,7 @@ const inputCls = (err?: string) =>
   cn(
     "w-full px-4 py-3 rounded-xl border text-foreground text-sm outline-none transition bg-bg-alt",
     "placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/20 focus:bg-surface",
-    err ? "border-red-400" : "border-border"
+    err ? "border-danger" : "border-border"
   );
 
 interface FullFormState extends Omit<RegisterFormData, "rules_accepted" | "kvkk_explicit_consent"> {
@@ -101,12 +101,12 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
             {logoUrl ? (
               <img src={logoUrl} alt={APP_NAME} className="h-16 w-auto max-w-44 object-contain" />
             ) : (
-              <span className="text-2xl font-semibold text-white tracking-tight"><Wordmark accentClassName="text-brand" /></span>
+              <span className="text-2xl font-semibold text-on-dark tracking-tight"><Wordmark accentClassName="text-brand" /></span>
             )}
           </Link>
           <div>
-            <p className="text-4xl font-semibold text-white leading-tight mb-4">Taşıyıcıyla<br />doğrudan iletişim.</p>
-            <p className="text-white/70 text-sm leading-relaxed mb-8">
+            <p className="text-4xl font-semibold text-on-dark leading-tight mb-4">Taşıyıcıyla<br />doğrudan iletişim.</p>
+            <p className="text-on-dark/70 text-sm leading-relaxed mb-8">
               Taşıyıcı olarak ücretsiz ilan ver.<br />Gönderici olarak uygun ilanın iletişimine eriş.
             </p>
             <ul className="space-y-3">
@@ -116,7 +116,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
                 "İletişim bilgileriniz korunur",
                 "Satın alınan iletişime kalıcı erişim",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-2.5 text-sm text-white/90">
+                <li key={item} className="flex items-center gap-2.5 text-sm text-on-dark/90">
                   <span className="w-5 h-5 rounded-full bg-brand/20 flex items-center justify-center shrink-0">
                     <svg className="w-3 h-3 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
@@ -127,7 +127,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
               ))}
             </ul>
           </div>
-          <p className="text-white/70 text-xs">© {new Date().getFullYear()} {APP_NAME}</p>
+          <p className="text-on-dark/70 text-xs">© {new Date().getFullYear()} {APP_NAME}</p>
         </div>
       </div>
 
@@ -233,7 +233,7 @@ export default function UyeOlClient({ bgImageUrl, logoUrl }: { bgImageUrl?: stri
               <button
                 type="submit"
                 disabled={loading || !ready} data-ready={ready}
-                className="w-full py-3.5 bg-action text-white font-semibold rounded-xl hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm"
+                className="w-full py-3.5 bg-action text-on-dark font-semibold rounded-xl hover:bg-brand-dark transition disabled:opacity-60 disabled:cursor-not-allowed mt-2 text-sm"
               >
                 {loading ? "Kaydediliyor…" : "Üye Ol →"}
               </button>

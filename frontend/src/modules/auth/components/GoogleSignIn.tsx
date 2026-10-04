@@ -88,7 +88,7 @@ export default function GoogleSignIn({ onSuccess, text = "continue_with" }: { on
       <div ref={box} className="flex min-h-11 justify-center" aria-busy={busy} />
       {error && <p role="alert" className="mt-3 text-center text-sm text-danger">{error}</p>}
       {pending && (
-        <div role="dialog" aria-modal="true" aria-labelledby={`${id}-title`} className="fixed inset-0 z-50 grid place-items-center bg-black/50 p-4">
+        <div role="dialog" aria-modal="true" aria-labelledby={`${id}-title`} className="fixed inset-0 z-50 grid place-items-center bg-overlay/50 p-4">
           <form onSubmit={confirm} className="w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl">
             <h2 id={`${id}-title`} className="text-xl font-semibold">Hesabını oluştur</h2>
             <p className="mt-2 text-sm text-muted">{pending.email ? <><strong className="text-foreground">{pending.email}</strong> Google hesabıyla ilk kez giriş yapıyorsun.</> : "Google hesabınla ilk kez giriş yapıyorsun."} Devam etmek için aşağıdaki onayları ver.</p>
@@ -102,7 +102,7 @@ export default function GoogleSignIn({ onSuccess, text = "continue_with" }: { on
             </label>
             <div className="mt-6 flex flex-wrap justify-end gap-3">
               <button type="button" onClick={() => setPending(null)} className="min-h-11 rounded-xl border border-border px-5 text-sm">Vazgeç</button>
-              <button type="submit" disabled={!rules || !kvkk || busy} className="min-h-11 rounded-xl bg-action px-5 text-sm font-semibold text-white disabled:opacity-50">{busy ? "Hesap açılıyor…" : "Onayla ve devam et"}</button>
+              <button type="submit" disabled={!rules || !kvkk || busy} className="min-h-11 rounded-xl bg-action px-5 text-sm font-semibold text-on-dark disabled:opacity-50">{busy ? "Hesap açılıyor…" : "Onayla ve devam et"}</button>
             </div>
           </form>
         </div>

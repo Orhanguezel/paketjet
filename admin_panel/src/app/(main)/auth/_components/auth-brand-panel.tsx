@@ -63,8 +63,8 @@ export function AuthBrandPanel({ title, subtitle }: AuthBrandPanelProps) {
           />
         ) : null}
         <div className="space-y-2 px-8 text-center">
-          <h1 className="font-light text-4xl text-white">{title}</h1>
-          <p className="text-lg text-white/80">{subtitle}</p>
+          <h1 className="font-light text-4xl text-on-dark">{title}</h1>
+          <p className="text-lg text-on-dark/80">{subtitle}</p>
         </div>
       </div>
     </div>

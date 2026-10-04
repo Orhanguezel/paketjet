@@ -55,7 +55,7 @@ export default function GelistiriciPage() {
           <label htmlFor={`${id}-name`} className="min-w-64 flex-1 text-sm font-medium">Anahtar adı
             <input id={`${id}-name`} required minLength={2} maxLength={100} value={name} onChange={(e) => setName(e.target.value)} placeholder="Örn. ERP entegrasyonu" className="mt-2 h-12 w-full rounded-lg border border-border bg-surface px-3" />
           </label>
-          <button type="submit" disabled={busy || active.length >= max} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-action px-5 font-semibold text-white disabled:opacity-50"><KeyRound size={18} />{busy ? "Oluşturuluyor…" : "Anahtar oluştur"}</button>
+          <button type="submit" disabled={busy || active.length >= max} className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-action px-5 font-semibold text-on-dark disabled:opacity-50"><KeyRound size={18} />{busy ? "Oluşturuluyor…" : "Anahtar oluştur"}</button>
         </form>
         <p className="mt-2 text-xs text-muted">Etkin anahtar: {active.length}/{max}. Her entegrasyon için ayrı anahtar oluştur; biri sızarsa yalnız onu iptal edersin.</p>
       </section>

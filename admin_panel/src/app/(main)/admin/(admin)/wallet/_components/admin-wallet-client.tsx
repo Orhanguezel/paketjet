@@ -146,13 +146,13 @@ export default function AdminWalletClient() {
                       </div>
                     </TableCell>
                     <TableCell className="font-semibold">{formatAdminWalletAmount(w.balance, w.currency)}</TableCell>
-                    <TableCell className="text-green-600">
+                    <TableCell className="text-success">
                       <span className="flex items-center gap-1">
                         <TrendingUp className="h-3 w-3" />
                         {formatAdminWalletAmount(w.total_earnings, w.currency)}
                       </span>
                     </TableCell>
-                    <TableCell className="text-orange-600">
+                    <TableCell className="text-warning">
                       <span className="flex items-center gap-1">
                         <TrendingDown className="h-3 w-3" />
                         {formatAdminWalletAmount(w.total_withdrawn, w.currency)}

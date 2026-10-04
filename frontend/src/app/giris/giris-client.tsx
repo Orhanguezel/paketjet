@@ -98,7 +98,7 @@ function GirisForm({ logoUrl }: { logoUrl?: string | null }) {
         {errors.password&&<p id="password-error" role="alert" className="mt-2 text-sm text-danger">{errors.password}</p>}
         <Link href={ROUTES.auth.forgotPassword} className="mt-2 flex min-h-11 items-center justify-end text-sm font-medium text-brand hover:underline">Şifremi unuttum</Link>
       </div>
-      <button type="submit" disabled={loading||!ready} data-ready={ready} className="min-h-13 w-full rounded-xl bg-action px-5 font-semibold text-white transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60">{loading?'Giriş yapılıyor…':'Giriş yap'}</button>
+      <button type="submit" disabled={loading||!ready} data-ready={ready} className="min-h-13 w-full rounded-xl bg-action px-5 font-semibold text-on-dark transition hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60">{loading?'Giriş yapılıyor…':'Giriş yap'}</button>
     </form>
     <GoogleSignIn text="signin_with" onSuccess={(r)=>afterAuth(r.user)}/>
     <p className="mt-7 border-t border-border-soft pt-6 text-center text-sm text-muted">Hesabın yok mu? <Link href={ROUTES.auth.register} className="font-semibold text-brand hover:underline">Hemen üye ol</Link></p>
