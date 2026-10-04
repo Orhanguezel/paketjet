@@ -2,6 +2,7 @@
 // FILE: src/server/fetch-branding.ts
 // Server-only utility — SSR'da branding config'i backend'den çeker
 // =============================================================
+import { PUBLIC_SITE_URL } from '@/lib/app-brand';
 
 import { DEFAULT_BRANDING, type AdminBrandingConfig } from '@/config/app-config';
 import { normalizeSiteSettingsBrandingConfig } from '@/integrations/shared';
@@ -20,7 +21,7 @@ function getServerApiUrl(): string {
   const pub = (process.env.NEXT_PUBLIC_API_URL || '').trim().replace(/\/+$/, '');
   if (pub) return pub;
 
-  return 'https://paketjet.com/api';
+  return PUBLIC_SITE_URL ? `${PUBLIC_SITE_URL}/api` : 'http://127.0.0.1:8078/api';
 }
 
 /**

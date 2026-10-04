@@ -1,3 +1,4 @@
+import { PUBLIC_HOST } from '@/lib/app-brand';
 import { trimStr, tryParseJsonVal, type UnknownRow } from '@/integrations/shared/common';
 import { ensureLeadingSlash } from '@/integrations/shared/network';
 
@@ -16,7 +17,7 @@ export const SITE_SETTINGS_INLINE_SEO_PAGES = [
 ] as const;
 
 export const SITE_SETTINGS_INLINE_SEO_DEFAULT_EXPANDED_KEYS = ['home'] as const;
-export const SITE_SETTINGS_INLINE_SEO_PREVIEW_HOST = 'paketjet.com';
+export const SITE_SETTINGS_INLINE_SEO_PREVIEW_HOST = PUBLIC_HOST || 'example.com';
 export const SITE_SETTINGS_INLINE_SEO_PREVIEW_HOST_WWW = `www.${SITE_SETTINGS_INLINE_SEO_PREVIEW_HOST}`;
 
 export type SiteSettingsInlineSeoPageKey = (typeof SITE_SETTINGS_INLINE_SEO_PAGES)[number]['key'];

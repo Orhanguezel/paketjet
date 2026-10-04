@@ -1,4 +1,5 @@
 'use client';
+import { APP_NAME } from '@/lib/app-brand';
 
 import { useStatusQuery } from '@/integrations/hooks';
 import { normalizeMeFromStatus, cleanAppName } from '@/integrations/shared';
@@ -13,7 +14,7 @@ export function AdminBrandTitle() {
   const me = normalizeMeFromStatus(statusQ.data as any);
   const isAdmin = me?.isAdmin === true;
   const appName = branding?.app_name || '';
-  const cleanedName = cleanAppName(appName) || 'PaketJet';
+  const cleanedName = cleanAppName(appName) || APP_NAME || 'Panel';
   const panelType = isAdmin 
     ? t('sidebar.adminPanel', undefined, 'Admin') 
     : t('sidebar.carrierPanel', undefined, 'Taşıyıcı');

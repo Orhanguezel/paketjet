@@ -5,6 +5,7 @@
 // - ThemeBootScript runs before interactive via next/script
 // - suppressHydrationWarning on html + body to tolerate extension-added attrs
 // =============================================================
+import { PANEL_URL } from '@/lib/app-brand';
 
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
@@ -38,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const shortcut = branding.logo_icon || branding.favicon_32 || branding.favicon_16 || undefined;
 
   return {
-    metadataBase: new URL(branding.meta.og_url || 'https://paketjet.com'),
+    metadataBase: new URL(branding.meta.og_url || PANEL_URL || 'http://localhost'),
     title: branding.meta.title,
     description: branding.meta.description,
     icons: {

@@ -1,4 +1,5 @@
 'use client';
+import { APP_NAME } from '@/lib/app-brand';
 
 import { useMemo } from 'react';
 import {
@@ -39,7 +40,7 @@ export function AuthBrandPanel({ title, subtitle }: AuthBrandPanelProps) {
     return raw;
   }, [brandImageData]);
 
-  const logoAlt = branding?.app_name || 'PaketJet';
+  const logoAlt = branding?.app_name || APP_NAME;
 
   // /uploads/ ile başlayan relative path'leri backend origin'ine çevir
   const mediaOrigin = (process.env.NEXT_PUBLIC_API_URL || '').replace(/\/api$/, '');

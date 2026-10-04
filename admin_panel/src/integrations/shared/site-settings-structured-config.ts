@@ -100,7 +100,7 @@ export function toStructuredObjectSeed<T extends object>(value: unknown, seed: T
 }
 
 export const SITE_SETTINGS_COMPANY_PROFILE_EMPTY = {
-  company_name: 'PaketJet',
+  company_name: '',
   slogan: '',
   about: '',
 } as const;

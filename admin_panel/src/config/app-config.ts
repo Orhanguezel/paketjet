@@ -3,6 +3,7 @@
 // Admin Panel Config — DB'den gelen branding verileri için fallback
 // =============================================================
 
+import { APP_NAME, PANEL_TITLE, PANEL_URL } from '@/lib/app-brand';
 import packageJson from '../../package.json';
 import { FALLBACK_LOCALE } from '@/i18n/config';
 
@@ -31,8 +32,8 @@ export type AdminBrandingConfig = {
 };
 
 export const DEFAULT_BRANDING: AdminBrandingConfig = {
-  app_name: 'PaketJet Admin Panel',
-  app_copyright: 'PaketJet',
+  app_name: PANEL_TITLE,
+  app_copyright: APP_NAME,
   html_lang: FALLBACK_LOCALE,
   theme_color: '#F97316',
   logo: '',
@@ -42,13 +43,13 @@ export const DEFAULT_BRANDING: AdminBrandingConfig = {
   favicon_32: '',
   apple_touch_icon: '',
   meta: {
-    title: 'PaketJet Admin Panel',
+    title: PANEL_TITLE,
     description:
-      'PaketJet yonetim paneli. Tasiyicilar, ilanlar, rezervasyonlar ve site ayarlari yonetimi.',
-    og_url: 'https://paketjet.com/admin',
-    og_title: 'PaketJet Admin Panel',
+      'Yönetim paneli: taşıyıcılar, ilanlar, ödemeler ve site ayarları.',
+    og_url: PANEL_URL,
+    og_title: PANEL_TITLE,
     og_description:
-      'PaketJet yonetim paneli ile ilan ve rezervasyon yonetimini merkezi olarak yapin.',
+      'İlan, ödeme ve site yönetimi tek panelde.',
     og_image: '',
     twitter_card: 'summary_large_image',
   },

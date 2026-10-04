@@ -1,10 +1,11 @@
 // =============================================================
 // FILE: src/i18n/locale-helpers.ts  (UPDATED)
 // =============================================================
+import { APP_NAME } from '@/lib/app-brand';
 
 export { KNOWN_RTL } from './config';
 
-export const SITE_NAME = (process.env.NEXT_PUBLIC_SITE_NAME || process.env.NEXT_PUBLIC_SITE_BRAND || 'paketjet.com').trim();
+export const SITE_NAME = (process.env.NEXT_PUBLIC_SITE_NAME || APP_NAME).trim();
 
 // ✅ test uyumu: localhost default port’suz
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost').replace(

@@ -1,4 +1,5 @@
 'use client';
+import { APP_NAME } from '@/lib/app-brand';
 
 // =============================================================
 // FILE: src/app/(main)/admin/_components/sidebar/app-sidebar.tsx
@@ -107,7 +108,7 @@ export function AppSidebar({
   const sidebarRole: AdminSidebarRole = hasRole(currentUser as any, 'admin') ? 'admin' : 'seller';
   const groupsForMe: NavGroup[] = buildAdminSidebarItems(copy.nav, wrappedT, sidebarRole);
   // ✅ Clean app name for header
-  const cleanedName = cleanAppName(baseName) || 'PaketJet';
+  const cleanedName = cleanAppName(baseName) || APP_NAME || 'Panel';
   const panelSub = sidebarRole === 'admin' 
     ? t('sidebar.adminPanel', undefined, 'Admin Panel') 
     : t('sidebar.carrierPanel', undefined, 'Taşıyıcı Panel');
