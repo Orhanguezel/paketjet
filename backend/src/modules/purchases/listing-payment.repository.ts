@@ -22,7 +22,7 @@ import { repoGetFirstRowByFallback, rowToDto } from "../siteSettings/repository"
 
 export type IlanPaymentResult =
   | { ok: true; payment: IlanPurchasePayment; price: number; user: typeof users.$inferSelect }
-  | { ok: false; code: "user_not_found" | "listing_not_found" | "own_listing" | "unavailable" };
+  | { ok: false; code: "user_not_found" | "listing_not_found" | "own_listing" | "already_purchased" | "unavailable" };
 
 async function repoGetListingCreditPrice() {
   const row = await repoGetFirstRowByFallback("pricing.listing_credit_price", ["tr", "*"]);
@@ -46,7 +46,9 @@ export async function repoCreateIlanPayment(
   const [ilan] = await tx.select().from(ilanlar).where(eq(ilanlar.id, ilanId)).for("update");
   if (!ilan) return { ok: false, code: "listing_not_found" } satisfies IlanPaymentResult;
   if (ilan.user_id === buyerId) return { ok: false, code: "own_listing" } satisfies IlanPaymentResult;
-  if (ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId)) return { ok: false, code: "unavailable" } satisfies IlanPaymentResult;
+  const [existing] = await tx.select({id:ilanPurchases.id}).from(ilanPurchases).where(and(eq(ilanPurchases.ilan_id,ilanId),eq(ilanPurchases.buyer_id,buyerId),eq(ilanPurchases.status,'completed'))).limit(1);
+  if (existing) return { ok: false, code: "already_purchased" } satisfies IlanPaymentResult;
+  if (ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId, buyerId)) return { ok: false, code: "unavailable" } satisfies IlanPaymentResult;
 
   const id = randomUUID();
   const paymentRef = randomUUID();
@@ -84,7 +86,8 @@ export async function repoCompleteIlanPayment(paymentRef: string, proof: Payment
     const [payment] = await tx.select().from(ilanPurchasePayments).where(eq(ilanPurchasePayments.payment_ref, paymentRef)).for("update");
     if (!payment) return { ok: false, code: "not_found" as const };
     if (payment.status === "completed") return { ok: true, already_processed: true, payment };
-    if (payment.status !== "pending" || new Date(session.expires_at).getTime() <= Date.now() || !ilan || ilan.status !== "active" || ilan.user_id === payment.buyer_id || new Date(ilan.departure_date).getTime() <= Date.now()) {
+    const [existing] = await tx.select({id:ilanPurchases.id}).from(ilanPurchases).where(and(eq(ilanPurchases.ilan_id,payment.ilan_id),eq(ilanPurchases.buyer_id,payment.buyer_id),eq(ilanPurchases.status,'completed'))).limit(1);
+    if (payment.status !== "pending" || new Date(session.expires_at).getTime() <= Date.now() || !ilan || ilan.status !== "active" || ilan.user_id === payment.buyer_id || new Date(ilan.departure_date).getTime() <= Date.now() || existing) {
       await repoTransitionPayment(tx, paymentRef, "refund_pending", "delivery_unavailable");
       await tx.update(ilanPurchasePayments).set({ status: "refund_pending" }).where(eq(ilanPurchasePayments.id, payment.id));
       return { ok: false, code: "unavailable" as const, payment };
@@ -109,7 +112,6 @@ export async function repoCompleteIlanPayment(paymentRef: string, proof: Payment
       contact_snapshot: contact,
       status: "completed",
     });
-    await tx.update(ilanlar).set({ status: "sold", sold_at: new Date(), sold_to_user_id: payment.buyer_id }).where(eq(ilanlar.id, ilan.id));
     await tx.update(ilanPurchasePayments).set({ status: "completed" }).where(eq(ilanPurchasePayments.id, payment.id));
     await repoTransitionPayment(tx, paymentRef, "completed", null, proof.actorId);
     return { ok: true, already_processed: false, payment, purchase_id: purchaseId, contact };

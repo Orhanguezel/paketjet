@@ -138,7 +138,7 @@ export function ContactFields({ form, setForm }: Props) {
       </div>
       <p className="listing-notice">
         <LockKeyhole size={19} />
-        <span>İletişim bilgilerin yalnız ilanını satın alan kişiye açılır.</span>
+        <span>İletişim bilgilerin ilanını satın alan üyelere açılır.</span>
       </p>
     </div>
   );

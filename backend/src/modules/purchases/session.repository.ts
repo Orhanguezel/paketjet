@@ -7,8 +7,8 @@ import { paymentSessions, type PaymentSession } from './session.schema';
 export type PurchaseTx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 export const repoTokenHash = (token: string) => createHash('sha256').update(token).digest('hex');
 
-export async function repoFindReservation(tx: PurchaseTx, ilanId: string) {
-  const [row] = await tx.select().from(paymentSessions).where(and(eq(paymentSessions.ilan_id, ilanId), gt(paymentSessions.expires_at, new Date()), inArray(paymentSessions.state, ['initializing', 'pending', 'review']))).limit(1);
+export async function repoFindReservation(tx: PurchaseTx, ilanId: string, buyerId?: string) {
+  const [row] = await tx.select().from(paymentSessions).where(and(eq(paymentSessions.ilan_id, ilanId), buyerId ? eq(paymentSessions.user_id, buyerId) : undefined, gt(paymentSessions.expires_at, new Date()), inArray(paymentSessions.state, ['initializing', 'pending', 'review']))).limit(1);
   return row;
 }
 export async function repoSavePaymentToken(ref: string, token: string) {

@@ -73,7 +73,7 @@ export function ListingReview({ form, departure, arrival, onEdit }: Props & { on
           </p>
           {form.contact_email && <p>{form.contact_email}</p>}
           {form.contact_address && <p>{form.contact_address}</p>}
-          <p className="text-xs">Yalnız ilanını satın alan kişiye gösterilir.</p>
+          <p className="text-xs">İlanını satın alan üyelere gösterilir.</p>
         </>
       ),
     },

@@ -28,7 +28,7 @@ export interface CreditPackageDto {
 
 /**
  * Lead-reveal satın alma — ATOMİK.
- * İlan satırı FOR UPDATE ile kilitlenir → iki taşıyıcı aynı anda alamaz (tek alıcı).
+ * İlan satırı FOR UPDATE ile kilitlenir; farklı alıcılar ayrı erişim satın alabilir.
  * Hak (kontör) varsa düşülür; yoksa insufficient_credit (402 → frontend hak/kart akışı).
  */
 export async function repoPurchaseIlan(
@@ -46,7 +46,7 @@ export async function repoPurchaseIlan(
       const [balance] = await tx.select().from(userCredits).where(eq(userCredits.user_id, buyerId));
       return {ok: true, purchase_id: existing.id, contact: existing.contact_snapshot, credit_balance: balance?.balance ?? 0};
     }
-    if (ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId)) return { ok: false, code: "unavailable" };
+    if (ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId, buyerId)) return { ok: false, code: "unavailable" };
 
     const [credit] = await tx.select().from(userCredits).where(eq(userCredits.user_id, buyerId)).for("update");
     if (!credit || credit.balance < 1) return { ok: false, code: "insufficient_credit" };
@@ -64,7 +64,7 @@ export async function repoPurchaseIlan(
       name: ilan.contact_name, phone: ilan.contact_phone, email: ilan.contact_email, address: ilan.contact_address,
     };
 
-    // Satın alma kaydı — UNIQUE(ilan_id) eşzamanlılık backstop'u
+    // Her alıcı için ayrı iletişim erişimi; ilan açık kalır.
     await tx.insert(ilanPurchases).values({
       id: purchaseId, ilan_id: ilanId, buyer_id: buyerId, seller_id: ilan.user_id,
       price_paid: "0.00", pay_method: "credit", credit_used: 1,
@@ -76,9 +76,6 @@ export async function repoPurchaseIlan(
       contact_snapshot: contact, status: "completed",
     });
     await repoRecordTermsAcceptance(tx, buyerId, 'listing_credit', purchaseId);
-
-    // İlan satıldı (kapanır)
-    await tx.update(ilanlar).set({ status: "sold", sold_at: new Date(), sold_to_user_id: buyerId }).where(eq(ilanlar.id, ilanId));
 
     return { ok: true, purchase_id: purchaseId, contact, credit_balance: newBalance };
   });

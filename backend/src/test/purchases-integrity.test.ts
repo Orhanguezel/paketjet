@@ -13,33 +13,40 @@ afterAll(closeTestApp);
 const proof = (amount: number, paymentId: string) => ({provider: 'shopier', amount, currency: 'TRY', paymentId});
 
 describe('Contact purchase integrity with real MySQL locks', () => {
-  it('two credit buyers yield one purchase and one debit; winner replay is free', async () => {
+  it('two credit buyers each get access and each spend one right; replay is free', async () => {
     const owner = await buyer(), a = await buyer(), b = await buyer();
     const id = await listing(owner.id);
     await Promise.all([repoGrantCredits(a.id, 2, 'admin_grant'), repoGrantCredits(b.id, 2, 'admin_grant')]);
     const results = await Promise.all([repoPurchaseIlan(id, a.id, declaration, '127.0.0.1'), repoPurchaseIlan(id, b.id, declaration, '127.0.0.1')]);
-    expect(results.filter(x => x.ok)).toHaveLength(1);
-    const winner = results[0].ok ? a : b;
-    const again = await repoPurchaseIlan(id, winner.id, declaration, '127.0.0.1');
+    expect(results.filter(x => x.ok)).toHaveLength(2);
+    const again = await repoPurchaseIlan(id, a.id, declaration, '127.0.0.1');
     expect(again.ok).toBe(true);
-    expect(await repoGetCreditBalance(winner.id)).toBe(1);
-    expect(await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id))).toHaveLength(1);
+    expect(await repoGetCreditBalance(a.id)).toBe(1);
+    expect(await repoGetCreditBalance(b.id)).toBe(1);
+    expect((await db.select().from(ilanlar).where(eq(ilanlar.id,id)))[0]?.status).toBe('active');
+    expect(await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id))).toHaveLength(2);
   });
-  it('card reservation excludes another card buyer and credit spend', async () => {
+  it('card reservations are per buyer; another buyer may spend a right', async () => {
     const owner = await buyer(), a = await buyer(), b = await buyer();
     const id = await listing(owner.id);
     await repoGrantCredits(b.id, 2, 'admin_grant');
     const results = await Promise.all([repoCreateIlanPayment(id,a.id,'shopier',declaration,'127.0.0.1'),repoCreateIlanPayment(id,b.id,'shopier',declaration,'127.0.0.1')]);
-    expect(results.filter(x => x.ok)).toHaveLength(1);
+    expect(results.filter(x => x.ok)).toHaveLength(2);
+    const [first,second]=results;
+    if (!first.ok || !second.ok) throw new Error('fixture');
+    expect((await repoPurchaseIlan(id,a.id,declaration,'127.0.0.1')).ok).toBe(false);
     expect((await repoPurchaseIlan(id,b.id,declaration,'127.0.0.1')).ok).toBe(false);
-    const payment = results.find(x => x.ok)!;
-    if (!payment.ok) throw new Error('fixture');
-    const ref = payment.payment.payment_ref;
-    expect((await repoCompleteIlanPayment(ref,proof(payment.price+1,ref))).ok).toBe(false);
-    expect((await repoCompleteIlanPayment(ref,{...proof(payment.price,ref),currency:'USD'})).ok).toBe(false);
-    const callbacks = await Promise.all([repoCompleteIlanPayment(ref,proof(payment.price,ref)),repoCompleteIlanPayment(ref,proof(payment.price,ref))]);
+    const other=await buyer();
+    await repoGrantCredits(other.id,1,'admin_grant');
+    expect((await repoPurchaseIlan(id,other.id,declaration,'127.0.0.1')).ok).toBe(true);
+    const ref = first.payment.payment_ref;
+    expect((await repoCompleteIlanPayment(ref,proof(first.price+1,ref))).ok).toBe(false);
+    expect((await repoCompleteIlanPayment(ref,{...proof(first.price,ref),currency:'USD'})).ok).toBe(false);
+    const callbacks = await Promise.all([repoCompleteIlanPayment(ref,proof(first.price,ref)),repoCompleteIlanPayment(ref,proof(first.price,ref))]);
     expect(callbacks.every(x=>x.ok)).toBe(true);
-    expect(await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id))).toHaveLength(1);
+    expect((await repoCompleteIlanPayment(second.payment.payment_ref,proof(second.price,second.payment.payment_ref))).ok).toBe(true);
+    expect(await db.select().from(ilanPurchases).where(eq(ilanPurchases.ilan_id,id))).toHaveLength(3);
+    expect((await repoCreateIlanPayment(id,a.id,'shopier',declaration,'127.0.0.1')).ok).toBe(false);
     expect(await repoMyPayment(ref,owner.id)).toBeUndefined();
   });
   it('late captured payment is recorded for refund and does not deliver', async () => {

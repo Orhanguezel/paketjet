@@ -31,7 +31,7 @@ export interface PurchaseDeclaration {
   terms_accepted: true;
 }
 
-/** ilan_purchases — lead-reveal satın alma (UNIQUE(ilan_id) → tek alıcı) */
+/** ilan_purchases — her alıcı için ayrı iletişim erişimi */
 export const ilanPurchases = mysqlTable(
   "ilan_purchases",
   {
@@ -57,7 +57,7 @@ export const ilanPurchases = mysqlTable(
     updated_at: datetime("updated_at", { fsp: 3 }).notNull().default(sql`CURRENT_TIMESTAMP(3)`).$onUpdateFn(() => new Date()),
   },
   (t) => [
-    uniqueIndex("uniq_ilan_purchase").on(t.ilan_id),
+    index("ilan_purchases_listing_buyer_idx").on(t.ilan_id, t.buyer_id),
     index("ilan_purchases_buyer_idx").on(t.buyer_id),
     index("ilan_purchases_seller_idx").on(t.seller_id),
     foreignKey({ columns: [t.ilan_id], foreignColumns: [ilanlar.id], name: "fk_ilanpur_ilan" }).onDelete("restrict").onUpdate("cascade"),
