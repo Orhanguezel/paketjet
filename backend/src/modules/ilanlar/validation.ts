@@ -5,13 +5,20 @@ import { z } from "zod";
 const vehicleTypes = ["van", "truck", "motorcycle", "car", "other"] as const;
 const ilanStatuses = ["active", "pending_approval", "paused", "completed", "cancelled", "sold", "expired", "removed"] as const;
 
+/** Yer adi: bosluklar sadelestirilir, her kelimenin ilk kucuk harfi Turkce kurala gore buyutulur
+ * ("istanbul" -> "İstanbul", "kadı köy" -> "Kadı Köy"). Kelimenin geri kalanina dokunulmaz ("NRW" korunur). */
+export const capitalizePlace = (value: string) =>
+  value.replace(/\s+/g, " ").trim().replace(/(^|[\s-])(\p{Ll})/gu, (_, sep: string, ch: string) => sep + ch.toLocaleUpperCase("tr-TR"));
+const placeName = (max: number) => z.string().trim().min(1).max(max).transform(capitalizePlace);
+const optionalPlace = z.string().max(128).transform(capitalizePlace).optional().nullish();
+
 const ilanFields = z.object({
   from_location: locationValueSchema.optional().nullable(),
   to_location: locationValueSchema.optional().nullable(),
-  from_city: z.string().trim().min(1).max(128),
-  to_city: z.string().trim().min(1).max(128),
-  from_district: z.string().max(128).optional().nullish(),
-  to_district: z.string().max(128).optional().nullish(),
+  from_city: placeName(128),
+  to_city: placeName(128),
+  from_district: optionalPlace,
+  to_district: optionalPlace,
   departure_date: z.string().datetime({ offset: true }),
   arrival_date: z.string().datetime({ offset: true }).optional().nullish(),
 
