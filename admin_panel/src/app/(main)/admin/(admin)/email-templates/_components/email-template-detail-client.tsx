@@ -17,7 +17,7 @@ import {
   useUpdateEmailTemplateAdminMutation,
 } from '@/integrations/hooks';
 
-export default function EmailTemplateDetailClient({ id, onClose }: { id: string; onClose?: () => void }) {
+export default function EmailTemplateDetailClient({ id, onClose, onSaved, onDirtyChange }: { id: string; onClose?: () => void; onSaved?: () => void; onDirtyChange?: (dirty: boolean) => void }) {
   const t = useAdminT('admin.emailTemplates');
   const router = useRouter();
 
@@ -30,6 +30,7 @@ export default function EmailTemplateDetailClient({ id, onClose }: { id: string;
   const [subject, setSubject] = React.useState('');
   const [content, setContent] = React.useState('');
   const [loaded, setLoaded] = React.useState(false);
+  const markDirty = () => onDirtyChange?.(true);
 
   // Yüklenince formu doldur (varsayılan: tr çevirisi ya da ilk çeviri)
   React.useEffect(() => {
@@ -55,7 +56,8 @@ export default function EmailTemplateDetailClient({ id, onClose }: { id: string;
         body: { locale, template_name: name, subject, content, is_active: isActive },
       }).unwrap();
       toast.success(t('detail.toast.updated'));
-      if (onClose) onClose(); else router.push('/admin/email-templates');
+      onDirtyChange?.(false);
+      if (onSaved) onSaved(); else if (onClose) onClose(); else router.push('/admin/email-templates');
     } catch {
       toast.error(t('admin.common.error'));
     }
@@ -94,7 +96,7 @@ export default function EmailTemplateDetailClient({ id, onClose }: { id: string;
             <p className="text-xs text-muted-foreground">{t('detail.fields.templateKeyHelp')}</p>
           </div>
           <div className="flex items-center gap-3 pt-7">
-            <Switch checked={isActive} onCheckedChange={setIsActive} id="tpl-active" />
+            <Switch checked={isActive} onCheckedChange={value => { markDirty(); setIsActive(value); }} id="tpl-active" />
             <Label htmlFor="tpl-active">{t('detail.fields.statusLabel')}</Label>
           </div>
         </CardContent>
@@ -107,11 +109,11 @@ export default function EmailTemplateDetailClient({ id, onClose }: { id: string;
         <CardContent className="grid gap-4">
           <div className="space-y-2">
             <Label>{t('detail.fields.templateNameLabel')}</Label>
-            <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={t('detail.fields.templateNamePlaceholder')} />
+            <Input value={name} onChange={(e) => { markDirty(); setName(e.target.value); }} placeholder={t('detail.fields.templateNamePlaceholder')} />
           </div>
           <div className="space-y-2">
             <Label>{t('detail.fields.subjectLabel')}</Label>
-            <Input value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={t('detail.fields.subjectPlaceholder')} />
+            <Input value={subject} onChange={(e) => { markDirty(); setSubject(e.target.value); }} placeholder={t('detail.fields.subjectPlaceholder')} />
             <p className="text-xs text-muted-foreground">{t('detail.fields.subjectHelp')}</p>
           </div>
         </CardContent>
@@ -125,7 +127,7 @@ export default function EmailTemplateDetailClient({ id, onClose }: { id: string;
         <CardContent>
           <Textarea
             value={content}
-            onChange={(e) => setContent(e.target.value)}
+            onChange={(e) => { markDirty(); setContent(e.target.value); }}
             placeholder={t('detail.fields.contentPlaceholder')}
             className="min-h-[260px] font-mono text-xs"
           />

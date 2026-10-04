@@ -37,6 +37,8 @@ export default function EmailTemplatesPage() {
   const [search, setSearch] = React.useState('');
   const [status, setStatus] = React.useState<StatusFilter>('all');
   const [selectedTemplate, setSelectedTemplate] = React.useState<{ id: string; key: string } | null>(null);
+  const [templateDirty, setTemplateDirty] = React.useState(false);
+  const [closeRequested, setCloseRequested] = React.useState(false);
   const [pendingDeleteId, setPendingDeleteId] = React.useState<string | null>(null);
 
   const params = React.useMemo(
@@ -51,6 +53,8 @@ export default function EmailTemplatesPage() {
   const [deleteTemplate, deleteState] = useDeleteEmailTemplateAdminMutation();
 
   const rows = listQ.data ?? [];
+  const closeTemplate = () => { if (templateDirty) setCloseRequested(true); else { setSelectedTemplate(null); listQ.refetch(); } };
+  const discardTemplate = () => { setTemplateDirty(false); setCloseRequested(false); setSelectedTemplate(null); listQ.refetch(); };
 
   async function onDelete(id: string, key: string) {
     try {
@@ -161,7 +165,7 @@ export default function EmailTemplatesPage() {
                       <TableCell className="text-sm text-muted-foreground">{fmtDate(tpl.updated_at)}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button type="button" variant="outline" size="sm" onClick={() => setSelectedTemplate({ id: tpl.id, key: tpl.template_key })}>
+                          <Button type="button" variant="outline" size="sm" onClick={() => { setTemplateDirty(false); setSelectedTemplate({ id: tpl.id, key: tpl.template_key }); }}>
                               <Pencil className="mr-1.5 size-3.5" />
                               {t('list.actions.edit')}
                           </Button>
@@ -186,8 +190,9 @@ export default function EmailTemplatesPage() {
           </Table>
         </CardContent>
       </Card>
-      <AdminDetailDrawer open={!!selectedTemplate} onOpenChange={open => { if (!open) setSelectedTemplate(null); }} title={selectedTemplate?.key ?? 'E-posta şablonu'} description={selectedTemplate?.id} eyebrow="Şablon detayı" className="sm:max-w-[760px]">
-        {selectedTemplate && <EmailTemplateDetailClient id={selectedTemplate.id} onClose={() => { setSelectedTemplate(null); listQ.refetch(); }} />}
+      <AdminDetailDrawer open={!!selectedTemplate} onOpenChange={open => { if (!open) closeTemplate(); }} title={selectedTemplate?.key ?? 'E-posta şablonu'} description={selectedTemplate?.id} eyebrow="Şablon detayı" className="sm:max-w-[760px]">
+        {closeRequested && <div className="mb-4 rounded-lg border border-destructive/40 p-4 text-sm"><p>Kaydedilmemiş değişiklikler var. Kapatılsın mı?</p><div className="mt-3 flex gap-2"><Button variant="outline" onClick={() => setCloseRequested(false)}>Düzenlemeye devam et</Button><Button variant="destructive" onClick={discardTemplate}>Kaydetmeden kapat</Button></div></div>}
+        {selectedTemplate && <EmailTemplateDetailClient id={selectedTemplate.id} onClose={closeTemplate} onSaved={discardTemplate} onDirtyChange={setTemplateDirty} />}
       </AdminDetailDrawer>
     </div>
   );

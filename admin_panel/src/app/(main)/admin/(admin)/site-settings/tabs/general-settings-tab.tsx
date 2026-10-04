@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
 import { toast } from 'sonner';
 import { RefreshCcw, Plus, ChevronRight } from 'lucide-react';
 import { useAdminTranslations } from '@/i18n';
@@ -15,7 +14,6 @@ import {
 import {
   SITE_SETTINGS_DEFAULTS_BY_KEY,
   SITE_SETTINGS_GENERAL_KEYS,
-  buildSiteSettingsEditHref,
   buildSiteSettingsGeneralRows,
   getErrorMessage,
   summariseSiteSettingsValue,
@@ -24,6 +22,8 @@ import {
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { AdminDetailDrawer } from '@/components/admin/admin-detail-drawer';
+import SiteSettingsDetailClient from '../_components/admin-site-settings-detail-client';
 
 /* ----------------------------- component ----------------------------- */
 
@@ -33,6 +33,7 @@ export type GeneralSettingsTabProps = {
 };
 
 export const GeneralSettingsTab: React.FC<GeneralSettingsTabProps> = ({ locale, settingPrefix }) => {
+  const [selectedSetting, setSelectedSetting] = React.useState<{ key: string; locale: string } | null>(null);
   const [updateSetting, { isLoading: isSaving }] = useUpdateSiteSettingAdminMutation();
 
   const adminLocale = usePreferencesStore((s) => s.adminLocale) || 'tr';
@@ -106,14 +107,14 @@ export const GeneralSettingsTab: React.FC<GeneralSettingsTabProps> = ({ locale, 
           const summary = summariseSiteSettingsValue(r.value, t('admin.siteSettings.general.recordCount'));
 
           return (
-            <Link
+            <button
               key={r.key}
-              href={r.hasValue ? buildSiteSettingsEditHref(withPrefix(r.key), r.editLocale) : '#'}
-              prefetch={false}
-              className={`group flex items-center gap-3 rounded-lg border p-3 transition-colors sm:p-4 ${
+              type="button"
+              disabled={!r.hasValue}
+              className={`group flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors sm:p-4 ${
                 r.hasValue ? 'hover:bg-muted/50 cursor-pointer' : 'opacity-60'
               }`}
-              onClick={r.hasValue ? undefined : (e) => e.preventDefault()}
+              onClick={() => setSelectedSetting({ key: withPrefix(r.key), locale: r.editLocale })}
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
@@ -133,10 +134,13 @@ export const GeneralSettingsTab: React.FC<GeneralSettingsTabProps> = ({ locale, 
               {r.hasValue ? (
                 <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
               ) : null}
-            </Link>
+            </button>
           );
         })}
       </div>
+      <AdminDetailDrawer open={!!selectedSetting} onOpenChange={open => { if (!open) { setSelectedSetting(null); void refetchAll(); } }} title={selectedSetting?.key ?? 'Site ayarı'} description={selectedSetting?.locale} eyebrow="Ayar detayı" className="sm:max-w-[760px]">
+        {selectedSetting && <SiteSettingsDetailClient id={selectedSetting.key} embedded initialLocale={selectedSetting.locale} onClose={() => { setSelectedSetting(null); void refetchAll(); }} />}
+      </AdminDetailDrawer>
 
       {/* Create missing button */}
       {hasAnyMissing ? (
