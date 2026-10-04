@@ -34,7 +34,7 @@ import {
 export const listIlans: RouteHandler = async (req, reply) => {
   try {
     const filters = searchIlansSchema.parse(req.query ?? {});
-    const cacheKey = `public-v2:${cacheKeys.ilanList(filters)}`;
+    const cacheKey = `public-v3:${cacheKeys.ilanList(filters)}`;
     const cached = await repoGetCacheJson<Awaited<ReturnType<typeof repoListIlans>>>(cacheKey);
     if (cached) {
       reply.header("x-total-count", String(cached.total));
@@ -53,7 +53,7 @@ export const listIlans: RouteHandler = async (req, reply) => {
 export const getIlan: RouteHandler = async (req, reply) => {
   const { id } = req.params as { id: string };
   try {
-    const cacheKey = `public-v2:${cacheKeys.ilanDetail(id)}`;
+    const cacheKey = `public-v3:${cacheKeys.ilanDetail(id)}`;
     const cached = await repoGetCacheJson<Awaited<ReturnType<typeof repoGetIlanById>>>(cacheKey);
     if (cached) return reply.send(cached);
 

@@ -19,6 +19,7 @@ export interface IlanPurchaseAdminItem {
     address?: string | null;
   } | null;
   status: string;
+  remedy_id?: string | null;
   created_at: string;
   from_city?: string | null;
   to_city?: string | null;

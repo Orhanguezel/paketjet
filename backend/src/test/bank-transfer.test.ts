@@ -26,7 +26,7 @@ it('test havalesi yönetici onayına dek hak vermez; tekrar bildirim ve yanlış
   const initialSummary = (await app.inject({ method: 'GET', url: '/api/admin/commerce-summary', headers: authHeaders(admin.token!) })).json();
   const availability = await app.inject({ method: 'GET', url: '/api/payments/bank-transfer/availability', headers });
   expect(availability.json()).toMatchObject({ enabled: true, mode: 'test', bank_details: null });
-  const created = await app.inject({ method: 'POST', url: '/api/ilan-alma-hakki/satin-al/bank-transfer', headers, payload: { package_key: pack.key } });
+  const created = await app.inject({ method: 'POST', url: '/api/ilan-alma-hakki/satin-al/bank-transfer', headers, payload: { package_key: pack.key, terms_accepted: true } });
   expect(created.statusCode).toBe(201);
   const ref = created.json().conversationId;
   expect(await repoGetCreditBalance(user.body.user.id)).toBe(0);

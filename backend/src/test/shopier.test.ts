@@ -62,7 +62,7 @@ async function webhook(body: Record<string, unknown>, signature?: string, event 
 }
 async function buyCredits(token: string) {
   const [pack] = await repoGetCreditPackages();
-  const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(token), payload: { package_key: pack!.key } });
+  const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(token), payload: { package_key: pack!.key, terms_accepted: true } });
   expect(res.statusCode).toBe(200);
   return { ...(res.json() as { redirectUrl: string; conversationId: string; amount: number }), credits: pack!.credits };
 }
@@ -172,7 +172,7 @@ describe("shopier checkout over HTTP", () => {
     try {
       const user = await buyer();
       const [pack] = await repoGetCreditPackages();
-      const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(user.token), payload: { package_key: pack!.key } });
+      const res = await (await getTestApp()).inject({ method: "POST", url: "/api/ilan-alma-hakki/satin-al", headers: authHeaders(user.token), payload: { package_key: pack!.key, terms_accepted: true } });
       expect(res.statusCode).toBe(503);
     } finally { mutableEnv.SHOPIER_WEBHOOK_TOKEN = TOKEN; invalidateShopierConfig(); }
   });

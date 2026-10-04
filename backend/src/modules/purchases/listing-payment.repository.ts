@@ -1,4 +1,5 @@
 import { repoTransitionPayment } from "./event.repository";
+import { repoRecordTermsAcceptance } from './terms.repository';
 import { paymentSessions } from "./session.schema";
 import { repoAcceptReceipt, repoFindReservation, type PaymentProof } from "./session.repository";
 import { randomUUID } from "crypto";
@@ -45,7 +46,7 @@ export async function repoCreateIlanPayment(
   const [ilan] = await tx.select().from(ilanlar).where(eq(ilanlar.id, ilanId)).for("update");
   if (!ilan) return { ok: false, code: "listing_not_found" } satisfies IlanPaymentResult;
   if (ilan.user_id === buyerId) return { ok: false, code: "own_listing" } satisfies IlanPaymentResult;
-  if (ilan.is_sample || ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId)) return { ok: false, code: "unavailable" } satisfies IlanPaymentResult;
+  if (ilan.status !== "active" || new Date(ilan.departure_date).getTime() <= Date.now() || await repoFindReservation(tx, ilanId)) return { ok: false, code: "unavailable" } satisfies IlanPaymentResult;
 
   const id = randomUUID();
   const paymentRef = randomUUID();
@@ -65,6 +66,7 @@ export async function repoCreateIlanPayment(
     content_declared_ip: buyerIp,
     status: "pending",
   });
+  await repoRecordTermsAcceptance(tx, buyerId, 'listing_payment', paymentRef);
 
   const [payment] = await tx.select().from(ilanPurchasePayments).where(eq(ilanPurchasePayments.id, id)).limit(1);
   return { ok: true, payment, price, user } satisfies IlanPaymentResult;
@@ -82,7 +84,7 @@ export async function repoCompleteIlanPayment(paymentRef: string, proof: Payment
     const [payment] = await tx.select().from(ilanPurchasePayments).where(eq(ilanPurchasePayments.payment_ref, paymentRef)).for("update");
     if (!payment) return { ok: false, code: "not_found" as const };
     if (payment.status === "completed") return { ok: true, already_processed: true, payment };
-    if (payment.status !== "pending" || new Date(session.expires_at).getTime() <= Date.now() || !ilan || ilan.is_sample || ilan.status !== "active" || ilan.user_id === payment.buyer_id || new Date(ilan.departure_date).getTime() <= Date.now()) {
+    if (payment.status !== "pending" || new Date(session.expires_at).getTime() <= Date.now() || !ilan || ilan.status !== "active" || ilan.user_id === payment.buyer_id || new Date(ilan.departure_date).getTime() <= Date.now()) {
       await repoTransitionPayment(tx, paymentRef, "refund_pending", "delivery_unavailable");
       await tx.update(ilanPurchasePayments).set({ status: "refund_pending" }).where(eq(ilanPurchasePayments.id, payment.id));
       return { ok: false, code: "unavailable" as const, payment };

@@ -23,7 +23,7 @@ export async function getBankAvailability(req: FastifyRequest, reply: FastifyRep
 export async function createBankCreditOrder(req: FastifyRequest, reply: FastifyReply) {
   try {
     const userId = getAuthUserId(req);
-    const { package_key } = z.object({ package_key: z.string().min(1).max(80) }).strict().parse(req.body);
+    const { package_key } = z.object({ package_key: z.string().min(1).max(80), terms_accepted: z.literal(true) }).strict().parse(req.body);
     const policy = await repoBankAvailability(userId);
     if (!policy.enabled || !policy.provider) throw bankUnavailable();
     const result = await repoCreateCreditPackagePayment(userId, package_key, policy.provider);

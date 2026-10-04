@@ -35,6 +35,7 @@ export function stripIlanContact<T extends Record<string, unknown>>(ilan: T) {
   return {
     from_location: locationValueSchema.safeParse(ilan.from_location).data ?? null, to_location: locationValueSchema.safeParse(ilan.to_location).data ?? null,
     id: ilan.id, slug: ilan.slug, from_city: ilan.from_city, to_city: ilan.to_city,
+    member_id: ilan.user_id, member_name: typeof ilan.carrier_name === 'string' ? ilan.carrier_name : null,
     from_district: ilan.from_district, to_district: ilan.to_district,
     departure_date: departure, arrival_date: publicDate(ilan.arrival_date),
     vehicle_type: ilan.vehicle_type, title: ilan.title, description: ilan.description,

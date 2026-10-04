@@ -2,6 +2,7 @@ import { desc, eq, sql, and, or, like, gte, lte } from "drizzle-orm";
 import { db } from "@/db/client";
 import { ilanlar } from "../ilanlar/schema";
 import { ilanPurchases } from "./schema";
+import { purchaseCreditRemedies } from './trust.schema';
 
 export async function repoAdminListIlanPurchases(params: { limit: number; offset: number; search?:string; method?:string; status?:string; from?:string; to?:string }) {
   const where=and(
@@ -25,6 +26,7 @@ export async function repoAdminListIlanPurchases(params: { limit: number; offset
         estimated_value: ilanPurchases.estimated_value_snapshot,
         contact: ilanPurchases.contact_snapshot,
         status: ilanPurchases.status,
+        remedy_id: purchaseCreditRemedies.id,
         created_at: ilanPurchases.created_at,
         from_city: ilanlar.from_city,
         to_city: ilanlar.to_city,
@@ -36,6 +38,7 @@ export async function repoAdminListIlanPurchases(params: { limit: number; offset
       })
       .from(ilanPurchases)
       .leftJoin(ilanlar, eq(ilanPurchases.ilan_id, ilanlar.id))
+      .leftJoin(purchaseCreditRemedies, eq(ilanPurchases.id, purchaseCreditRemedies.purchase_id))
       .where(where)
       .orderBy(desc(ilanPurchases.created_at))
       .limit(params.limit)

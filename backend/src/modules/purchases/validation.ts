@@ -6,10 +6,16 @@ export const purchaseDeclarationSchema = z.object({
   content_declared: z.literal(true, {
     errorMap: () => ({ message: "content_declaration_required" }),
   }),
+  terms_accepted: z.literal(true, {
+    errorMap: () => ({ message: "terms_acceptance_required" }),
+  }),
 });
 
 export const purchaseCreditPackageSchema = z.object({
   package_key: z.string().min(1).max(80),
+  terms_accepted: z.literal(true, {
+    errorMap: () => ({ message: "terms_acceptance_required" }),
+  }),
   provider: z.enum(["shopier"]).optional(),
 });
 

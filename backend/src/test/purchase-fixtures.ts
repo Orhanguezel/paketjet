@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { db } from '@/db/client';
 import { ilanlar } from '@/modules/ilanlar/schema';
 import { getTestApp, registerUser, randomEmail } from './setup';
-export const declaration = {estimated_value: 1000, estimated_value_currency: 'TRY', content_declared: true} as const;
+export const declaration = {estimated_value: 1000, estimated_value_currency: 'TRY', content_declared: true, terms_accepted: true} as const;
 export async function buyer() {
   const app = await getTestApp();
   const result = await registerUser(app, {email: randomEmail(), password: randomUUID()});

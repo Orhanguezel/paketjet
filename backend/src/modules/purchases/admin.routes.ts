@@ -4,11 +4,13 @@ import { adminListIlanPurchases } from "./admin.controller";
 import { adminPayments,adminPayment,adminPaymentNote,adminCredits,adminCreditAdjustment,adminCommerceSummary } from "./operations.controller";
 import { registerBankTransferAdmin } from './bank-transfer.routes';
 import { adminRefundPayment, adminSyncRefund } from './refund.controller';
+import { adminGrantPurchaseCreditRemedy } from './credit-remedy.controller';
 import { adminRebuildShopierWebhooks, adminShopierStatus, adminTestShopier, adminUpdateShopier } from './shopier-admin.controller';
 
 export async function registerPurchasesAdmin(app: FastifyInstance) {
   await registerBankTransferAdmin(app);
   app.get("/ilan-purchases", adminListIlanPurchases);
+  app.post('/ilan-purchases/:id/credit-remedy', adminGrantPurchaseCreditRemedy);
   app.get("/payment-operations", adminPayments);
   app.get("/payment-operations/:ref", adminPayment);
   app.post("/payment-operations/:ref/notes", adminPaymentNote);

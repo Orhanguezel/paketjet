@@ -1,6 +1,7 @@
 // src/modules/purchases/repository.ts
 import { repoInvalidateIlanCache } from "../_shared/cache";
 import { repoFindReservation } from "./session.repository";
+import { repoRecordTermsAcceptance } from './terms.repository';
 import { users } from "../auth/schema";
 import { randomUUID } from "crypto";
 import { and, desc, eq, sql } from "drizzle-orm";
@@ -39,7 +40,6 @@ export async function repoPurchaseIlan(
   const result = await db.transaction<PurchaseResult>(async (tx) => {
     const [ilan] = await tx.select().from(ilanlar).where(eq(ilanlar.id, ilanId)).for("update");
     if (!ilan) return { ok: false, code: "not_found" };
-    if (ilan.is_sample) return { ok: false, code: "unavailable" };
     if (ilan.user_id === buyerId) return { ok: false, code: "own_listing" };
     const [existing] = await tx.select().from(ilanPurchases).where(and(eq(ilanPurchases.ilan_id, ilanId), eq(ilanPurchases.buyer_id, buyerId), eq(ilanPurchases.status, "completed")));
     if (existing?.contact_snapshot) {
@@ -75,6 +75,7 @@ export async function repoPurchaseIlan(
       content_declared_ip: buyerIp,
       contact_snapshot: contact, status: "completed",
     });
+    await repoRecordTermsAcceptance(tx, buyerId, 'listing_credit', purchaseId);
 
     // İlan satıldı (kapanır)
     await tx.update(ilanlar).set({ status: "sold", sold_at: new Date(), sold_to_user_id: buyerId }).where(eq(ilanlar.id, ilanId));

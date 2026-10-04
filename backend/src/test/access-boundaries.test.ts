@@ -69,7 +69,7 @@ describe('Access and public-data boundaries', () => {
   });
   it('disabled gateway cannot initialize checkout and old deposit cannot credit', async () => {
     const app = await getTestApp(), a = await buyer();
-    expect((await app.inject({method:'POST',url:'/api/ilan-alma-hakki/satin-al',headers:authHeaders(a.token),payload:{package_key:'test'}})).statusCode).toBe(503);
+    expect((await app.inject({method:'POST',url:'/api/ilan-alma-hakki/satin-al',headers:authHeaders(a.token),payload:{package_key:'test',terms_accepted:true}})).statusCode).toBe(503);
     expect((await app.inject({method:'POST',url:'/api/wallet/deposit',headers:authHeaders(a.token),payload:{amount:500}})).statusCode).toBe(410);
     expect((await app.inject({method:'GET',url:'/api/payments/unknown',headers:authHeaders(a.token)})).statusCode).toBe(404);
   });

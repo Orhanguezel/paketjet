@@ -3,8 +3,10 @@ import {retiredOperation} from '../purchases/legacy.controller';
 import type { FastifyInstance } from "fastify";
 import { requireAuth } from "@/common/middleware/auth";
 import { createRating, getBookingRating, getCarrierRatings } from "./controller";
+import { registerPurchaseRatings } from './purchase.routes';
 
 export async function registerRatings(app: FastifyInstance) {
+  registerPurchaseRatings(app);
   const B = "/ratings";
 
   // Auth gerekli

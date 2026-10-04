@@ -1,4 +1,5 @@
 import { repoTransitionPayment } from "./event.repository";
+import { repoRecordTermsAcceptance } from './terms.repository';
 import { paymentSessions } from "./session.schema";
 import { repoAcceptReceipt, repoFindReservation, type PaymentProof } from "./session.repository";
 import { randomUUID } from "crypto";
@@ -49,6 +50,7 @@ export async function repoCreateCreditPackagePayment(userId: string, packageKey:
       payment_ref: paymentRef,
       status: "pending",
     });
+  await repoRecordTermsAcceptance(tx, userId, 'credit_package', paymentRef);
 
   });
   const [row] = await db.select().from(creditPackagePurchases).where(eq(creditPackagePurchases.id, id)).limit(1);

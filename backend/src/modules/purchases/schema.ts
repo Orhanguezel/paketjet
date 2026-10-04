@@ -28,6 +28,7 @@ export interface PurchaseDeclaration {
   estimated_value: number;
   estimated_value_currency?: string;
   content_declared: true;
+  terms_accepted: true;
 }
 
 /** ilan_purchases — lead-reveal satın alma (UNIQUE(ilan_id) → tek alıcı) */
