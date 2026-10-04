@@ -64,6 +64,7 @@ export {
 
 export {
   useGetDashboardSummaryAdminQuery,
+  useGetDashboardActivityAdminQuery,
 } from '@/integrations/endpoints/admin/dashboard-admin-endpoints';
 
 export {

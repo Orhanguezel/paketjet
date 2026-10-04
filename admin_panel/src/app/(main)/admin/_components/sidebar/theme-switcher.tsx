@@ -22,7 +22,7 @@ export function ThemeSwitcher() {
   };
 
   return (
-    <Button size="icon" onClick={handleValueChange}>
+    <Button size="icon" variant="ghost" className="admin-theme-button" aria-label={themeMode === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'} onClick={handleValueChange}>
       {themeMode === "dark" ? <Sun /> : <Moon />}
     </Button>
   );

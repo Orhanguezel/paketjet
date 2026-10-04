@@ -7,7 +7,7 @@
 
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { LayoutDashboard, LogOut } from 'lucide-react';
+import { ChevronDown, LayoutDashboard, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -64,10 +64,14 @@ export function AccountSwitcher({ me: propMe }: { me: Me }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="size-9 rounded-lg">
-          <AvatarImage src={me.avatar || undefined} alt={displayName} />
-          <AvatarFallback className="rounded-lg">{getInitials(displayName)}</AvatarFallback>
-        </Avatar>
+        <button type="button" className="admin-account-trigger" aria-label={`${displayName} hesap menüsü`}>
+          <Avatar className="size-9 rounded-full">
+            <AvatarImage src={me.avatar || undefined} alt={displayName} />
+            <AvatarFallback className="rounded-full">{getInitials(displayName)}</AvatarFallback>
+          </Avatar>
+          <span className="admin-account-copy"><strong>{displayName}</strong><small>Admin</small></span>
+          <ChevronDown size={15} className="admin-account-chevron" />
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="min-w-64 rounded-lg" side="bottom" align="end" sideOffset={4}>

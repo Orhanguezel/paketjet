@@ -8,14 +8,13 @@ import { APP_NAME } from '@/lib/app-brand';
 // =============================================================
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ChevronDown, Headset } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
 } from '@/components/ui/sidebar';
 
 import { buildAdminSidebarItems } from '@/navigation/sidebar/sidebar-items';
@@ -29,7 +28,6 @@ import { normalizeMeFromStatus, cleanAppName } from '@/integrations/shared';
 
 import { useMemo } from 'react';
 import { NavMain } from './nav-main';
-import { NavUser } from './nav-user';
 import { useAdminSettings } from '../admin-settings-provider';
 import { useStatusQuery, useGetMyProfileQuery } from '@/integrations/hooks';
 
@@ -63,6 +61,7 @@ export function AppSidebar({
   appName?: string;
 }) {
   const { copy } = useAdminUiCopy();
+  const pathname = usePathname() ?? '/admin/dashboard';
   const t = useAdminT();
 
   // Admin settings override for page titles
@@ -107,6 +106,10 @@ export function AppSidebar({
   // ✅ admin ise tüm menu, değilse sadece dashboard
   const sidebarRole: AdminSidebarRole = hasRole(currentUser as any, 'admin') ? 'admin' : 'seller';
   const groupsForMe: NavGroup[] = buildAdminSidebarItems(copy.nav, wrappedT, sidebarRole);
+  const primaryUrls = ['/admin/dashboard', '/admin/ilanlar', '/admin/ilan-purchases', '/admin/payments', '/admin/users', '/admin/identity', '/admin/pages', '/admin/site-settings'];
+  const allItems = groupsForMe.flatMap((group) => group.items);
+  const primaryItems = primaryUrls.flatMap((url) => allItems.filter((item) => item.url === url));
+  const secondaryGroups = groupsForMe.map((group) => ({ ...group, items: group.items.filter((item) => !primaryUrls.includes(item.url)) })).filter((group) => group.items.length > 0);
   // ✅ Clean app name for header
   const cleanedName = cleanAppName(baseName) || APP_NAME || 'Panel';
   const panelSub = sidebarRole === 'admin' 
@@ -115,14 +118,14 @@ export function AppSidebar({
 
   return (
     <Sidebar {...props} variant={variant} collapsible={collapsible}>
-      <SidebarHeader>
-        <Link prefetch={false} href="/admin/dashboard" className="flex items-center gap-3 px-3 py-4 hover:bg-sidebar-accent/50 transition-colors">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-brand text-brand-foreground shadow-sm">
+      <SidebarHeader className="admin-sidebar-header">
+        <Link prefetch={false} href="/admin/dashboard" className="admin-sidebar-brand">
+          <div className="admin-sidebar-brand-icon">
             {branding?.logo_icon || branding?.logo ? (
               <img
                 src={branding.logo_icon || branding.logo}
                 alt={cleanedName}
-                className="size-6 object-contain"
+                className="size-7 object-contain"
               />
             ) : (
               <span className="text-xs font-bold">
@@ -130,20 +133,20 @@ export function AppSidebar({
               </span>
             )}
           </div>
-          <div className="flex flex-col gap-0.5 leading-none">
-            <span className="font-semibold text-lg tracking-tight text-sidebar-foreground">{cleanedName}</span>
-            <span className="text-[10px] font-medium tracking-widest text-muted-foreground uppercase">{panelSub}</span>
+          <div className="admin-sidebar-brand-copy">
+            <strong>{cleanedName}</strong>
+            <small>{panelSub}</small>
           </div>
         </Link>
       </SidebarHeader>
 
-      <SidebarContent>
-        {/* ✅ NavMain NavGroup[] bekliyor */}
-        <NavMain items={groupsForMe} showQuickCreate={false} />
+      <SidebarContent className="admin-sidebar-content">
+        <NavMain items={[{ id: 0, items: primaryItems }]} showQuickCreate={false} />
+        {secondaryGroups.length > 0 && <details key={pathname} open={secondaryGroups.some((group) => group.items.some((item) => pathname === item.url || pathname.startsWith(`${item.url}/`)))} className="admin-sidebar-more"><summary>Diğer yönetim <ChevronDown size={15} /></summary><NavMain items={secondaryGroups} showQuickCreate={false} /></details>}
       </SidebarContent>
 
-      <SidebarFooter>
-        <NavUser user={{ name: currentUser.name, email: currentUser.email, avatar: currentUser.avatar }} />
+      <SidebarFooter className="admin-sidebar-footer">
+        {sidebarRole === 'admin' && <Link href="/admin/support" className="admin-sidebar-support"><Headset size={20} /><span><strong>Destek ekibi</strong><small>Talepleri ve yanıtları görüntüle</small></span><span className="admin-sidebar-support-cta">Destek taleplerini aç →</span></Link>}
       </SidebarFooter>
     </Sidebar>
   );
