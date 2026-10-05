@@ -16,7 +16,7 @@ type FooterProps = {
 // Tuketici ve kisisel veri haklari icin resmi kurum sayfalari.
 // Tasarım imzası dağıtım ortamından gelir (kodda marka yazmaz); boşsa gösterilmez.
 const DESIGN_CREDIT_URL = (process.env.NEXT_PUBLIC_DESIGN_CREDIT_URL ?? '').trim();
-const DESIGN_CREDIT_HOST = DESIGN_CREDIT_URL.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+const DESIGN_CREDIT_NAME = (process.env.NEXT_PUBLIC_DESIGN_CREDIT_NAME ?? '').trim() || DESIGN_CREDIT_URL.replace(/^https?:\/\//, '').replace(/\/.*$/, '');
 const OFFICIAL_SOURCES = [
   {title: 'Tüketici hakları (T.C. Ticaret Bakanlığı)', url: 'https://tuketici.ticaret.gov.tr'},
   {title: 'Kişisel Verileri Koruma Kurumu', url: 'https://www.kvkk.gov.tr'},
@@ -31,6 +31,6 @@ export default function Footer({logoUrl,logoAlt,contact,socials,brandName,paymen
       <nav aria-label="Yasal bağlantılar"><h2 className="mb-5 text-sm font-semibold">Yasal</h2><div className="footer-muted flex flex-col gap-2 text-sm"><Link href={ROUTES.static.kullanim}>Kullanım koşulları</Link><Link href={ROUTES.static.gizlilik}>Gizlilik politikası</Link><Link href={ROUTES.static.kvkk}>KVKK</Link><Link href="/tasima-kurallari">Taşıma kuralları</Link><CookiePreferencesLink className="text-left"/>{purchaseLegalLinks.map(l=><Link key={l.path} href={l.path}>{l.title}</Link>)}</div></nav>
     </div>
     {paymentProvider&&<SecurePayment provider={paymentProvider}/>}
-    <div className="footer-muted mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs leading-6"><p>{`© ${new Date().getFullYear()}${brand?` ${brand}`:''}. Tüm hakları saklıdır.`}</p><nav aria-label="Resmî kaynaklar" className="flex flex-wrap gap-4">{OFFICIAL_SOURCES.map(s=><a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>)}</nav>{DESIGN_CREDIT_HOST&&<p className="footer-credit">Tasarım: <a href={DESIGN_CREDIT_URL} target="_blank" rel="noopener">{DESIGN_CREDIT_HOST}</a></p>}</div>
+    <div className="footer-muted mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs leading-6"><p>{`© ${new Date().getFullYear()}${brand?` ${brand}`:''}. Tüm hakları saklıdır.`}</p><nav aria-label="Resmî kaynaklar" className="flex flex-wrap gap-4">{OFFICIAL_SOURCES.map(s=><a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer">{s.title}</a>)}</nav>{DESIGN_CREDIT_URL&&DESIGN_CREDIT_NAME&&<p className="footer-credit">Tasarım: <a href={DESIGN_CREDIT_URL} target="_blank" rel="noopener">{DESIGN_CREDIT_NAME}</a></p>}</div>
   </div></footer>;
 }
