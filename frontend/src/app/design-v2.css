@@ -142,3 +142,11 @@ body .site-container {width:min(100% - 4rem,76rem);}
 }
 
 .hero-location-previews {grid-column:1 / -1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;}
+
+/* Footer: sosyal medya logoları (beyaz kutucukta marka rengi, ödeme rozetleriyle uyumlu) ve tasarım imzası */
+.footer-social {display:flex;flex-wrap:wrap;gap:10px;margin-top:20px;}
+.footer-social a {display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .12);transition:transform .15s ease, box-shadow .15s ease;}
+.footer-social a:hover {transform:translateY(-2px);box-shadow:0 6px 14px rgb(0 0 0 / .25);}
+.footer-social a:focus-visible {outline:2px solid var(--color-brand-light, #a78bfa);outline-offset:2px;}
+.footer-credit a {font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+.footer-credit a:hover {color:#fff;}
