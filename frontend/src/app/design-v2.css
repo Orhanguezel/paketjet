@@ -58,7 +58,7 @@ body .site-container {width:min(100% - 4rem,76rem);}
 .home-empty p {color:var(--color-muted);font-size:16px;line-height:1.7;margin:12px 0 18px;}
 .empty-route-art {position:relative;display:flex;align-items:center;justify-content:center;gap:25px;height:170px;color:var(--color-brand);background:radial-gradient(ellipse,var(--design-lilac),transparent 68%);}
 .empty-route-art > span {width:50px;height:50px;border-bottom:2px dashed var(--color-brand);border-radius:50%;transform:rotate(-24deg);}
-.home-how {padding:64px 0 80px;background:radial-gradient(ellipse at 10% 80%,var(--design-ice),transparent 65%),var(--design-mist);scroll-margin-top:24px;}
+.home-how {padding:64px 0 80px;background:radial-gradient(ellipse at 10% 80%,var(--design-ice),transparent 65%),var(--design-mist);scroll-margin-top:40px;}
 .how-composition {display:grid;grid-template-columns:1.25fr 1fr;gap:65px;align-items:center;margin-top:32px;}
 .how-composition ol {display:grid;gap:28px;}
 .how-composition li {display:flex;gap:20px;position:relative;}
