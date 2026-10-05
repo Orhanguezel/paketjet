@@ -9,6 +9,26 @@
 .about-hero-image img{object-fit:cover;object-position:center}
 .about-page .about-content{width:100%;padding-block:56px 48px}
 .about-page .about-content>h2{margin-bottom:18px}
+.about-page .about-content-heading{max-width:860px;margin:0 auto 30px}
+.about-page .about-content-heading h2{font-size:clamp(27px,3vw,36px);line-height:1.2;letter-spacing:-.035em;font-weight:750;margin:12px 0 14px}
+.about-page .about-content-intro{max-width:690px;margin:0;color:var(--color-muted);font-size:16px;line-height:1.75}
+.about-page .about-prose{max-width:860px;margin-inline:auto;padding:42px clamp(28px,5vw,60px);font-size:16px;line-height:1.8}
+.about-page .about-prose h2{font-size:clamp(21px,2vw,25px);line-height:1.3;letter-spacing:-.025em;font-weight:750;margin:42px 0 14px;padding-top:35px;border-top:1px solid var(--color-border-soft)}
+.about-page .about-prose h2:first-child{margin-top:0;padding-top:0;border-top:0}
+.about-page .about-prose p{margin:0 0 18px;color:var(--color-muted)}
+.about-page .about-prose ul,.about-page .about-prose ol{padding-left:24px;margin:18px 0 24px;list-style:disc}
+.about-page .about-prose ol{list-style:decimal}
+.about-page .about-prose li{padding-left:4px;margin:10px 0;color:var(--color-muted)}
+.about-page .about-prose li::marker{color:var(--color-brand-dark)}
+.about-page .about-prose strong{color:var(--color-foreground);font-weight:700}
+.about-page .about-extras{max-width:860px;margin:0 auto 64px;padding:42px clamp(28px,5vw,60px)}
+.about-page .about-extras section+section{margin-top:52px;padding-top:42px;border-top:1px solid var(--color-border-soft)}
+.about-page .about-extras section>h2{font-size:clamp(23px,2.3vw,28px);line-height:1.3;margin:0 0 16px;padding:0;border:0}
+.about-page .about-extras section>p{color:var(--color-muted);line-height:1.75}
+.about-page .about-extras #sss>div{padding:20px 0;border-bottom:1px solid var(--color-border-soft)}
+.about-page .about-extras #sss>div:last-child{padding-bottom:0;border-bottom:0}
+.about-page .about-extras #sss h3{font-size:17px;line-height:1.45;margin:0 0 8px;font-weight:700}
+.about-page .about-extras #sss p{margin:0;color:var(--color-muted);line-height:1.75}
 .about-page .about-step{display:flex;align-items:flex-start;gap:20px;min-height:175px;border-radius:10px;padding:20px 22px}
 .about-page .about-step-number{position:static;display:grid;place-items:center;flex:0 0 44px;width:44px;height:44px;border-radius:50%;background:var(--color-brand-dark);color:white;font-size:19px}
 .about-page .about-step h3{margin:3px 0 8px}
@@ -87,6 +107,11 @@
  .about-hero-copy{width:100%;padding:36px 24px}
  .about-hero-image{min-height:250px;grid-row:2}
  .about-page .about-content{padding-block:42px}
+ .about-page .about-content-heading{margin-bottom:24px}
+ .about-page .about-prose,.about-page .about-extras{padding:28px 24px}
+ .about-page .about-prose h2{margin-top:32px;padding-top:28px}
+ .about-page .about-extras{margin-bottom:48px}
+ .about-page .about-extras section+section{margin-top:36px;padding-top:32px}
  .about-page .about-step{min-height:0}
  .about-page .about-cta{flex-direction:column;align-items:flex-start;padding:28px 24px}
  .contact-hero{padding:38px 0}

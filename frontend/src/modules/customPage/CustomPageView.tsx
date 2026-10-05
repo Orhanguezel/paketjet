@@ -65,9 +65,11 @@ export function CustomPageView({ title, summary, html, createdAt, updatedAt, her
       </header>
 
       <section className="about-content">
-        <p className="editorial-eyebrow">Nasıl çalışır?</p>
-        <h2>Sadece üç adımda, doğru taşıyıcıyla buluşun.</h2>
-        <p className="about-content-intro">Kullanım süreci üç adımdan oluşur: ilanı bul, iletişim bilgisine eriş, koşulları taşıyıcıyla doğrudan görüş.</p>
+        <div className="about-content-heading">
+          <p className="editorial-eyebrow">{steps ? "Nasıl çalışır?" : "PaketJet’i tanıyın"}</p>
+          <h2>{steps ? "Sadece üç adımda, doğru taşıyıcıyla buluşun." : "PaketJet nasıl çalışır?"}</h2>
+          <p className="about-content-intro">{steps ? "İlanı bul, iletişim bilgisine eriş, koşulları taşıyıcıyla doğrudan görüş." : "Platformun işleyişini, ücret modelini ve taşıma sürecindeki rolümüzü keşfedin."}</p>
+        </div>
         {steps ? <div className="about-step-grid">{steps.map((step, index) => {
           return <article className="about-step" key={index}><span className="about-step-number">{index + 1}</span><div><h3>{step.title}</h3><p dangerouslySetInnerHTML={{ __html: step.body }} /></div></article>;
         })}</div> : <article className="about-prose prose prose-neutral max-w-none prose-headings:font-semibold prose-a:text-brand" dangerouslySetInnerHTML={{ __html: displayHtml }} />}
