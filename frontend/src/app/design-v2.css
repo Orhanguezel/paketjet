@@ -23,6 +23,8 @@
 body .site-container {width:min(100% - 4rem,76rem);}
 .site-header {background:var(--design-mist);border-bottom:1px solid var(--design-line);}
 .site-header > .site-container {min-height:86px;}
+/* Başlık sabit: sayfa içi bağlantı (#bolum) hedefi başlığın altında kalmasın. :where ile özgüllük 0; özel scroll-margin kuralları geçerli kalır. */
+:where([id]) {scroll-margin-top:96px;}
 .site-wordmark {font-size:25px;font-weight:800;letter-spacing:-1.2px;color:var(--design-ink);}
 .site-wordmark span {color:var(--color-brand);}
 .primary-action {display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:13px 23px;border-radius:13px;background:var(--color-action);color:var(--design-on-dark);font-weight:650;box-shadow:0 6px 15px hsl(var(--col-brand) / 0.15);transition:transform 180ms,box-shadow 180ms,background 180ms;}

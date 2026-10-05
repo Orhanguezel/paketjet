@@ -20,7 +20,7 @@ export default function Header({logoUrl,logoDarkUrl,logoAlt}:HeaderProps) {
   useEffect(()=>setOpen(false),[pathname]);
   async function signOut(){await logout().catch(()=>{});clearAuth();setOpen(false);window.location.assign(ROUTES.home);}
   const signedIn=mounted&&isAuthenticated;
-  return <header className="site-header relative z-40 text-foreground" onKeyDown={e=>{if(e.key==='Escape'){setOpen(false);toggle.current?.focus();}}}>
+  return <header className="site-header sticky top-0 z-40 text-foreground" onKeyDown={e=>{if(e.key==='Escape'){setOpen(false);toggle.current?.focus();}}}>
     <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:bg-surface focus:p-4">İçeriğe geç</a>
     <div className="site-container flex min-h-18 items-center gap-8">
       <Link href={ROUTES.home} aria-label={APP_NAME ? `${APP_NAME} ana sayfa` : "Ana sayfa"} className="mr-auto inline-flex shrink-0 items-center gap-2 lg:mr-0">
@@ -30,6 +30,6 @@ export default function Header({logoUrl,logoDarkUrl,logoAlt}:HeaderProps) {
       <div className="ml-auto hidden items-center gap-4 lg:flex"><ThemeToggle/>{signedIn?<><Link href={ROUTES.panel.root} className="py-3 text-sm">Hesabım</Link><button onClick={signOut} className="py-3 text-sm">Çıkış yap</button></>:<Link href={ROUTES.auth.login} className="py-3 text-sm">Giriş Yap</Link>}<Link href={ROUTES.ilanVer} className="primary-action text-sm">Ücretsiz İlan Ver</Link></div>
       <button ref={toggle} aria-expanded={open} aria-controls="mobile-navigation" aria-label={open?'Menüyü kapat':'Menüyü aç'} onClick={()=>setOpen(v=>!v)} className="grid size-11 place-items-center rounded-lg border border-border lg:hidden"><svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.8"><path d={open?'M6 6l12 12M6 18L18 6':'M4 6h16M4 12h16M4 18h16'}/></svg></button>
     </div>
-    {open&&<nav id="mobile-navigation" aria-label="Mobil menü" className="site-container flex flex-col gap-1 border-t border-border-soft py-4 lg:hidden">{navigation.map(item=><Link onClick={()=>setOpen(false)} key={item.path} href={item.path} className="rounded-lg px-3 py-3">{item.title}</Link>)}<Link href={signedIn?ROUTES.panel.root:ROUTES.auth.login} className="px-3 py-3">{signedIn?'Hesabım':'Giriş Yap'}</Link><Link href={ROUTES.ilanVer} className="rounded-lg bg-action px-3 py-3 font-semibold text-white">Ücretsiz İlan Ver</Link><ThemeToggle/>{signedIn&&<button onClick={signOut} className="px-3 py-3 text-left">Çıkış yap</button>}</nav>}
+    {open&&<nav id="mobile-navigation" aria-label="Mobil menü" className="site-container flex max-h-[calc(100svh-5rem)] flex-col gap-1 overflow-y-auto border-t border-border-soft py-4 lg:hidden">{navigation.map(item=><Link onClick={()=>setOpen(false)} key={item.path} href={item.path} className="rounded-lg px-3 py-3">{item.title}</Link>)}<Link href={signedIn?ROUTES.panel.root:ROUTES.auth.login} className="px-3 py-3">{signedIn?'Hesabım':'Giriş Yap'}</Link><Link href={ROUTES.ilanVer} className="rounded-lg bg-action px-3 py-3 font-semibold text-white">Ücretsiz İlan Ver</Link><ThemeToggle/>{signedIn&&<button onClick={signOut} className="px-3 py-3 text-left">Çıkış yap</button>}</nav>}
   </header>;
 }
